@@ -1,5 +1,8 @@
-import { GeistSans } from "geist/font/sans";
 import "./globals.css";
+
+import React from "react";
+
+import { Navigation } from "@/app/navigation";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -7,8 +10,8 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Next.js and Supabase Starter Kit",
-  description: "The fastest way to build apps with Next.js and Supabase",
+  title: "Frugalistic",
+  description: "Financial overview",
 };
 
 export default function RootLayout({
@@ -17,11 +20,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={GeistSans.className}>
-      <body className="bg-background text-foreground">
-        <main className="min-h-screen flex flex-col items-center">
-          {children}
-        </main>
+    <html lang="en" className="dark">
+      <body className="text-black bg-white dark:bg-background dark:text-white">
+        <div className="w-full">
+          <Navigation />
+          <main className="m-10">{children}</main>
+        </div>
       </body>
     </html>
   );

@@ -1,6 +1,14 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
+type Cookie = {
+  name: string;
+  value: string;
+  options?: {
+    [key: string]: string;
+  };
+};
+
 export const createClient = () => {
   const cookieStore = cookies();
 
@@ -9,10 +17,10 @@ export const createClient = () => {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() {
+        getAll(): { name: string; value: string }[] {
           return cookieStore.getAll();
         },
-        setAll(cookiesToSet) {
+        setAll(cookiesToSet: Cookie[]): void {
           try {
             cookiesToSet.forEach(({ name, value, options }) => {
               cookieStore.set(name, value, options);
