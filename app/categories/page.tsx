@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
 
@@ -9,7 +8,14 @@ import {
 } from "@/components/categories/categories-api";
 import DeleteCategory from "@/components/categories/DeleteCategory";
 import { Input } from "@/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger } from "@/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/ui/select";
 import {
   Table,
   TableBody,
@@ -33,16 +39,19 @@ export default async function CategoriesPage() {
 
   return (
     <>
-      <Link href="/">Home</Link>
       <form>
         <div className="flex gap-10 max-w-fit mb-10">
-          <Input className="input" name="name" placeholder="Name" />
+          <Input name="name" placeholder="Name" />
 
           <Select name="division">
-            <SelectTrigger>Select division</SelectTrigger>
+            <SelectTrigger>
+              <SelectValue placeholder="Select a division" />
+            </SelectTrigger>
             <SelectContent>
-              <SelectItem value="essentials">essentials</SelectItem>
-              <SelectItem value="leisure">leisure</SelectItem>
+              <SelectGroup>
+                <SelectItem value="essentials">essentials</SelectItem>
+                <SelectItem value="leisure">leisure</SelectItem>
+              </SelectGroup>
             </SelectContent>
           </Select>
 
