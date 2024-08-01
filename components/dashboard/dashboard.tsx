@@ -8,7 +8,7 @@ import DashboardTransactions from "@/components/dashboard/dashboard-transactions
 import DashboardCard from "@/components/dashboard-card";
 import MonthYearDashboard from "@/components/month-year-dashboard";
 import { getTransactionsTotal } from "@/components/transactions/transactions-api";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 
 export default async function Dashboard({
   month,

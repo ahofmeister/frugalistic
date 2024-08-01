@@ -5,7 +5,7 @@ import React from "react";
 import DashboardDivisionsChart, {
   DivisionTotal,
 } from "@/components/dashboard/dashboard-divisions-chart";
-import { Card, CardContent, CardHeader } from "@/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { createClient } from "@/utils/supabase/client";
 
 const DashboardDivisions = ({

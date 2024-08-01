@@ -7,7 +7,7 @@ import {
   getCategories,
 } from "@/components/categories/categories-api";
 import DeleteCategory from "@/components/categories/DeleteCategory";
-import { Input } from "@/ui/input";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -15,7 +15,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/ui/select";
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -23,7 +23,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/ui/table";
+} from "@/components/ui/table";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function CategoriesPage() {

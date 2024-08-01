@@ -1,8 +1,8 @@
 import React from "react";
 
 import TransactionAmount from "@/components/transactions/components/TransactionAmount";
+import { Card, CardHeader } from "@/components/ui/card";
 import { TransactionType } from "@/types";
-import { Card, CardHeader } from "@/ui/card";
 
 const DashboardCard = ({
   label,

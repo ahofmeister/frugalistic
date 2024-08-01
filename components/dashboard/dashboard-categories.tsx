@@ -4,7 +4,7 @@ import React from "react";
 
 import DashboardCategoriesChart from "@/components/dashboard/dashboard-categories-chart";
 import { TransactionTotalByMonth } from "@/components/transactions/transactions-api";
-import { Card, CardContent, CardHeader } from "@/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { createClient } from "@/utils/supabase/client";
 
 const DashboardCategories = ({

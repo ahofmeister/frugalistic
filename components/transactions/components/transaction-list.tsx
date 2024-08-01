@@ -7,8 +7,7 @@ import {
   deleteTransaction,
   makeTransactionRecurring,
 } from "@/components/transactions/transactions-api";
-import { TransactionWithCategory } from "@/types";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -16,13 +15,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/ui/table";
+} from "@/components/ui/table";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/ui/tooltip";
+} from "@/components/ui/tooltip";
+import { TransactionWithCategory } from "@/types";
 
 export default function TransactionList({
   transactions,
