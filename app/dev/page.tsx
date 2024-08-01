@@ -1,13 +1,8 @@
 import { redirect } from "next/navigation";
 
-import Dashboard from "@/components/dashboard/dashboard";
 import { createClient } from "@/utils/supabase/server";
 
-export default async function Index({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | undefined };
-}) {
+export default async function Index() {
   const {
     data: { user },
   } = await createClient().auth.getUser();
