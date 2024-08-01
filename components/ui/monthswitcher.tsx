@@ -6,7 +6,7 @@ const MonthSwitcher = ({
   onUpdate,
 }: {
   currentDate: Date;
-  onUpdate: Function;
+  onUpdate: (date: Date) => void;
 }) => {
   const goToPreviousMonth = () => {
     onUpdate(
