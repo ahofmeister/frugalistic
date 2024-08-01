@@ -35,7 +35,7 @@ module.exports = {
   },
   ignorePatterns: [
     "types/supabase.ts",
-    "/ui/*",
+    "/components/ui/*",
     ".eslintrc.cj",
     "next.config.js",
   ],
