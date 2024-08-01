@@ -18,6 +18,7 @@ export default async function TransactionsPage() {
   return (
     <>
       <div className="flex gap-10">
+        {process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA}
         <pre>{JSON.stringify(data, null, 2)}</pre>
       </div>
     </>
