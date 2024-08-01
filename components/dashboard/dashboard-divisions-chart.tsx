@@ -3,7 +3,11 @@ import React from "react";
 import { Bar, BarChart, Cell, XAxis, YAxis } from "recharts";
 
 import { colors } from "@/app/year/transaction-type-chart";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/ui/chart";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
 
 export type DivisionTotal = {
   month: number;

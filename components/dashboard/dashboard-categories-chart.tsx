@@ -3,7 +3,11 @@ import React from "react";
 import { Bar, BarChart, Cell, XAxis, YAxis } from "recharts";
 
 import { TransactionTotalByMonth } from "@/components/transactions/transactions-api";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/ui/chart";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
 
 const DashboardCategoriesChart = ({
   data,

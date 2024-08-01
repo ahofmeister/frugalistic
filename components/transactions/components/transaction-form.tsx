@@ -7,10 +7,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { createTransaction } from "@/components/transactions/transactions-api";
-import { cn } from "@/lib/utils";
-import { Category, NewTransaction } from "@/types";
-import { Button } from "@/ui/button";
-import { Calendar } from "@/ui/calendar";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Form,
   FormControl,
@@ -18,16 +16,22 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/ui/form";
-import { Input } from "@/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/ui/popover";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/ui/select";
+} from "@/components/ui/select";
+import { cn } from "@/lib/utils";
+import { Category, NewTransaction } from "@/types";
 
 const TransactionForm = ({ categories }: { categories: Category[] }) => {
   const formSchema = z.object({

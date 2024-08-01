@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 
 import useQueryParams from "@/app/useQueryParams";
-import { Input } from "@/ui/input";
+import { Input } from "@/components/ui/input";
 
 const TransactionSearch = () => {
   const { queryParam, setQueryParam } = useQueryParams("description");
