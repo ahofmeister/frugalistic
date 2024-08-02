@@ -11,8 +11,11 @@ export type TransactionType =
 export type Category = Database["public"]["Tables"]["categories"]["Row"];
 export type RecurringInterval =
   Database["public"]["Enums"]["recurring_interval"];
+
 export type NewRecurringTransaction =
   Database["public"]["Tables"]["transactions_recurring"]["Insert"];
+export type RecurringTransaction =
+  Database["public"]["Tables"]["transactions_recurring"]["Row"];
 
 export type TransactionWithCategory = Transaction & {
   category: Category;
