@@ -55,6 +55,12 @@ export default async function CategoriesPage() {
             </SelectContent>
           </Select>
 
+          <Input
+            name="color"
+            placeholder="Color"
+            pattern="^#(?:[0-9a-fA-F]{6})$"
+          />
+
           <SubmitButton formAction={createCategory} pendingText="Creating...">
             Create
           </SubmitButton>

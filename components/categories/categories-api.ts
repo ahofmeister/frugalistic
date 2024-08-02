@@ -11,6 +11,7 @@ export async function createCategory(formData: FormData) {
 
   const rawFormData = {
     name: formData.get("name") as string,
+    color: formData.get("color") as string,
     division: formData.get("division") as Division,
   };
 
@@ -20,6 +21,7 @@ export async function createCategory(formData: FormData) {
 
   const categoryInsert: TablesInsert<"categories"> = {
     name: rawFormData.name,
+    color: rawFormData.color,
     division: rawFormData.division,
     user_id: response.user!.id,
   };
