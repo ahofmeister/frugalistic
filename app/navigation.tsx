@@ -4,8 +4,15 @@ import React from "react";
 import AuthButton from "@/components/auth-button";
 import Greeting from "@/components/greeting";
 import NavigationItem from "@/components/navigation/navigation-item";
+import { createClient } from "@/utils/supabase/server";
 
-export function Navigation() {
+export async function Navigation() {
+  const supabase = createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
     <header className="flex flex-wrap sm:justify-start sm:flex-nowrap w-full text-sm py-4 bg-background">
       <nav
@@ -63,11 +70,15 @@ export function Navigation() {
           className="hidden transition-all duration-[0.1ms] overflow-hidden basis-full grow sm:block"
         >
           <div className="flex flex-col gap-5 mt-5 sm:flex-row sm:items-center sm:justify-end sm:mt-0 sm:ps-5">
-            <Greeting />
-            <NavigationItem title="Categories" pathname="/categories" />
-            <NavigationItem title="Transactions" pathname="/transactions" />
-            <NavigationItem title="Year" pathname="/year" />
-            <AuthButton />
+            {user && (
+              <>
+                <Greeting />
+                <NavigationItem title="Categories" pathname="/categories" />
+                <NavigationItem title="Transactions" pathname="/transactions" />
+                <NavigationItem title="Year" pathname="/year" />
+                <AuthButton />
+              </>
+            )}
           </div>
         </div>
       </nav>
