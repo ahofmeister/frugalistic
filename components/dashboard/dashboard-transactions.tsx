@@ -11,8 +11,8 @@ import { createClient } from "@/utils/supabase/client";
 export default function DashboardTransactions() {
   const searchParams = useSearchParams();
 
-  const year = Number(searchParams.get("year") ?? 2024);
-  const month = Number(searchParams.get("month") ?? 6);
+  const year = Number(searchParams.get("year") ?? new Date().getFullYear());
+  const month = Number(searchParams.get("month") ?? new Date().getMonth());
 
   const { data: transactions } = useQuery(
     createClient()
