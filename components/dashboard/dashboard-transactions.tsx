@@ -1,19 +1,19 @@
 "use client";
 import { useQuery } from "@supabase-cache-helpers/postgrest-swr";
 import { format, lastDayOfMonth } from "date-fns";
-import { useSearchParams } from "next/navigation";
 import React from "react";
 
 import TransactionList from "@/components/transactions/components/transaction-list";
 import { TransactionWithCategory } from "@/types";
 import { createClient } from "@/utils/supabase/client";
 
-export default function DashboardTransactions() {
-  const searchParams = useSearchParams();
-
-  const year = Number(searchParams.get("year") ?? new Date().getFullYear());
-  const month = Number(searchParams.get("month") ?? new Date().getMonth());
-
+export default function DashboardTransactions({
+  month,
+  year,
+}: {
+  month: number;
+  year: number;
+}) {
   const { data: transactions } = useQuery(
     createClient()
       .from("transactions")
