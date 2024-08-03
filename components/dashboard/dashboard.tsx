@@ -1,4 +1,5 @@
 "use client";
+import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@supabase-cache-helpers/postgrest-swr";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -24,11 +25,15 @@ type MonthYear = {
   year: number;
 };
 
+type MonthsByYear = {
+  [year: number]: number[];
+};
+
 export default function Dashboard() {
   const [month, setMonth] = useState(new Date().getMonth());
   const [year, setYear] = useState(new Date().getFullYear());
 
-  const { data: availableMonth } = useQuery(
+  const { data: availableMonthYear } = useQuery(
     createClient()
       .from("distinct_year_month")
       .select("*")
@@ -40,14 +45,31 @@ export default function Dashboard() {
     },
   );
 
-  console.log(availableMonth);
+  const monthsByYear = groupByYear(availableMonthYear ?? []);
+
+  const getCurrentMonths = () => {
+    const months = monthsByYear[year];
+
+    if (months) {
+      return months;
+    }
+    return [];
+  };
 
   return (
     <div className="flex-col">
       <div className="flex gap-5 my-5 justify-between">
         <div className="font-bold text-3xl flex gap-2">
-          <Button onClick={() => setMonth(month + -1)} variant="outline">
-            {"<"}
+          <Button
+            disabled={
+              getCurrentMonths().find(
+                (currentMonth) => currentMonth - 1 === month - 1,
+              ) === undefined
+            }
+            onClick={() => setMonth(month + -1)}
+            variant="outline"
+          >
+            <ChevronLeftIcon />
           </Button>
 
           <Select
@@ -59,9 +81,7 @@ export default function Dashboard() {
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                {Array.from(
-                  new Set(availableMonth?.map((monthYear) => monthYear.year)),
-                )?.map((year) => (
+                {Object.keys(monthsByYear)?.map((year) => (
                   <SelectItem key={year} value={year.toString()}>
                     {year}
                   </SelectItem>
@@ -79,21 +99,24 @@ export default function Dashboard() {
               <SelectValue placeholder="Month" />
             </SelectTrigger>
             <SelectContent>
-              <SelectGroup>
-                {availableMonth?.map((monthYear) => (
-                  <SelectItem
-                    key={monthYear.month}
-                    value={(monthYear.month - 1).toString()}
-                  >
-                    {format(new Date(year, monthYear.month - 1, 1), "MMM")}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
+              {getCurrentMonths()?.map((month) => (
+                <SelectItem key={month} value={(month - 1).toString()}>
+                  {format(new Date(year, month - 1, 1), "MMM")}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
-          <Button onClick={() => setMonth(month + 1)} variant="outline">
-            {">"}{" "}
+          <Button
+            onClick={() => setMonth(month + 1)}
+            variant="outline"
+            disabled={
+              getCurrentMonths().find(
+                (currentMonth) => currentMonth - 1 === month + 1,
+              ) === undefined
+            }
+          >
+            <ChevronRightIcon />
           </Button>
         </div>
         <Link href="/transactions/new">
@@ -114,4 +137,17 @@ export default function Dashboard() {
       </div>
     </div>
   );
+}
+
+function groupByYear(monthYearArray: MonthYear[]): MonthsByYear {
+  const result: MonthsByYear = {};
+
+  monthYearArray.forEach(({ month, year }) => {
+    if (!result[year]) {
+      result[year] = [];
+    }
+    result[year].push(month);
+  });
+
+  return result;
 }
