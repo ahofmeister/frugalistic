@@ -30,67 +30,62 @@ export const colors: { [index: string]: string } = {
 };
 
 export default function TransactionTypeChart({
-  data,
+  transactionTotals,
   year,
 }: {
-  data: TransactionTotal[];
+  transactionTotals: TransactionTotal[];
   year: number;
 }) {
-  const CustomTooltip = ({ payload }: TooltipProps<ValueType, NameType>) => {
-    return (
-      <div>
-        {payload?.map((line) => {
-          if (!line.value) {
-            return <></>;
-          }
-          return (
-            <div key={line.name}>
-              <TransactionAmount
-                amount={line.value as number}
-                type={line.name as TransactionType}
-              />
-            </div>
-          );
-        })}
-      </div>
-    );
-  };
-
   return (
-    <>
-      <div className="flex gap-3">
-        <LineChart
-          width={1200}
-          height={400}
-          data={data}
-          margin={{
-            top: 20,
-            right: 30,
-            left: 20,
-            bottom: 5,
+    <div className="flex gap-3">
+      <LineChart
+        width={1200}
+        height={400}
+        data={transactionTotals}
+        margin={{
+          top: 20,
+          right: 30,
+          left: 20,
+          bottom: 5,
+        }}
+      >
+        <XAxis
+          dataKey="month"
+          tickFormatter={(value) => format(new Date(year, value - 1, 1), "LLL")}
+        />
+        <YAxis tickFormatter={(value: number) => formatAmount(value)} />
+
+        <Tooltip
+          cursor={{ fill: "" }}
+          content={({ payload }) => {
+            return <CustomTooltip payload={payload} />;
           }}
-        >
-          <XAxis
-            dataKey="month"
-            tickFormatter={(value) =>
-              format(new Date(year, value - 1, 1), "LLL")
-            }
-          />
-          <YAxis tickFormatter={(value: number) => formatAmount(value)} />
-
-          <Tooltip
-            cursor={{ fill: "" }}
-            content={({ payload }) => {
-              return <CustomTooltip payload={payload} />;
-            }}
-          />
-          <Legend />
-
-          {Object.entries(colors).map(([key, value]) => (
-            <Line key={key} type="monotone" dataKey={key} stroke={value} />
-          ))}
-        </LineChart>
-      </div>
-    </>
+        />
+        <Legend />
+        {Object.entries(colors).map(([key, value]) => (
+          <Line key={key} type="monotone" dataKey={key} stroke={value} />
+        ))}
+      </LineChart>
+    </div>
   );
 }
+
+const CustomTooltip = ({ payload }: TooltipProps<ValueType, NameType>) => {
+  return (
+    <div>
+      {payload?.map((line) => {
+        if (!line.value) {
+          return <></>;
+        }
+        return (
+          <div key={line.name}>
+            <TransactionAmount
+              amount={line.value as number}
+              type={line.name as TransactionType}
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
+};

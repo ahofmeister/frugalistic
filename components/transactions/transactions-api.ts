@@ -153,3 +153,7 @@ export const deleteTransaction = async (id: string) => {
   const supabase = createClient();
   await supabase.from("transactions").delete().eq("id", id);
 };
+
+export const invokeRecurringTransactions = async () => {
+  await createClient().rpc("insert_recurring_transaction");
+};

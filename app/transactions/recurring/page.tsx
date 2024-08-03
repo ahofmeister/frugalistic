@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import React from "react";
 
+import InvokeRecurringTransactions from "@/app/transactions/recurring/invoke-recurring-transactions";
 import TransactionAmount from "@/components/transactions/components/TransactionAmount";
 import {
   Table,
@@ -30,6 +31,7 @@ export default async function TransactionsPage() {
 
   return (
     <>
+      <InvokeRecurringTransactions />
       <div className="flex gap-10">
         <Table>
           <TableHeader>

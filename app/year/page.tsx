@@ -18,12 +18,17 @@ export default async function Year() {
     return redirect("/login");
   }
 
-  const data = await getTransactionsTotal({ year: 2024 });
+  const transactionTotals = await getTransactionsTotal({
+    year: new Date().getFullYear(),
+  });
   const transactionsByCategory = await getTotalByCategory({ year: 2024 });
 
   return (
     <div className="gap-4">
-      <TransactionTypeChart data={data} year={2024} />
+      <TransactionTypeChart
+        transactionTotals={transactionTotals}
+        year={new Date().getFullYear()}
+      />
       <TransactionByCategoryChart data={transactionsByCategory} />
     </div>
   );
