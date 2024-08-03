@@ -7,7 +7,7 @@ import { TransactionTotal } from "@/components/transactions/transactions-api";
 import { createClient } from "@/utils/supabase/client";
 
 const DashboardCards = ({ month, year }: { month: number; year: number }) => {
-  const { data: transactionTotal, isLoading } = useQuery(
+  const { data: transactionTotal } = useQuery(
     createClient()
       .rpc("transaction_type_total5", { year: year })
       .select()
