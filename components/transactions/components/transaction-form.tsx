@@ -67,7 +67,7 @@ const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
   }
 
   const { data: categories } = useQuery(
-    createClient().from("categories").select("*"),
+    createClient().from("categories").select("*").returns<Category[]>(),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
