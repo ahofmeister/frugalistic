@@ -1,4 +1,5 @@
 import TransactionForm from "@/components/transactions/components/transaction-form";
+import { Transaction } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function TransactionEditPage({
@@ -10,7 +11,12 @@ export default async function TransactionEditPage({
     .from("transactions")
     .select("*")
     .eq("id", params.id)
+    .returns<Transaction>()
     .single();
 
-  return <TransactionForm transaction={transaction} />;
+  if (transaction) {
+    return <TransactionForm transaction={transaction} />;
+  }
+
+  return <TransactionForm />;
 }
