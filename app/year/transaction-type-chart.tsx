@@ -25,6 +25,8 @@ export const colors: { [index: string]: string } = {
   income: "#84F5F5",
   savings: "#e9c46a",
   expense: "#F58484",
+  leisure: "#6FCF97",
+  essentials: "#BEBEBE",
 };
 
 export default function TransactionTypeChart({

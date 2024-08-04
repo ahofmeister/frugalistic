@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 
-import { getCategories } from "@/components/categories/categories-api";
 import TransactionForm from "@/components/transactions/components/transaction-form";
 import { createClient } from "@/utils/supabase/server";
 
@@ -13,11 +12,9 @@ export default async function NewTransactionPage() {
     return redirect("/login");
   }
 
-  const categories = await getCategories();
-
   return (
     <div>
-      <TransactionForm categories={categories} />
+      <TransactionForm />
     </div>
   );
 }

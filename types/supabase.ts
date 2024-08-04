@@ -79,7 +79,7 @@ export type Database = {
           description: string;
           id: string;
           recurring_transaction: string | null;
-          type: Database["public"]["Enums"]["transaction_type"] | null;
+          type: Database["public"]["Enums"]["transaction_type"];
           user_id: string;
         };
         Insert: {
@@ -90,7 +90,7 @@ export type Database = {
           description: string;
           id?: string;
           recurring_transaction?: string | null;
-          type?: Database["public"]["Enums"]["transaction_type"] | null;
+          type: Database["public"]["Enums"]["transaction_type"];
           user_id: string;
         };
         Update: {
@@ -101,7 +101,7 @@ export type Database = {
           description?: string;
           id?: string;
           recurring_transaction?: string | null;
-          type?: Database["public"]["Enums"]["transaction_type"] | null;
+          type?: Database["public"]["Enums"]["transaction_type"];
           user_id?: string;
         };
         Relationships: [

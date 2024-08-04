@@ -1,12 +1,13 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon } from "@radix-ui/react-icons";
+import { useQuery } from "@supabase-cache-helpers/postgrest-swr";
 import { format } from "date-fns";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { createTransaction } from "@/components/transactions/transactions-api";
+import { upsertTransaction } from "@/components/transactions/transactions-api";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -31,9 +32,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { Category, NewTransaction } from "@/types";
+import { Category, NewTransaction, Transaction } from "@/types";
+import { createClient } from "@/utils/supabase/client";
 
-const TransactionForm = ({ categories }: { categories: Category[] }) => {
+const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
   const formSchema = z.object({
     description: z.string(),
     amount: z.coerce.number().min(0),
@@ -47,15 +49,31 @@ const TransactionForm = ({ categories }: { categories: Category[] }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      description: "",
-      type: "expense",
+      description: transaction ? transaction.description : "",
+      type: transaction ? transaction.type : "expense",
+      amount: transaction ? transaction.amount : undefined,
+      datetime: transaction ? new Date(transaction.datetime) : undefined,
+      category:
+        transaction && transaction.category ? transaction.category : undefined,
     },
   });
 
   async function handleSubmit(newTransaction: NewTransaction) {
     setSubmitting(true);
-    await createTransaction(newTransaction).then(() => setSubmitting(false));
+    await upsertTransaction({
+      ...newTransaction,
+      id: transaction ? transaction.id : undefined,
+    }).then(() => setSubmitting(false));
   }
+
+  const { data: categories } = useQuery(
+    createClient().from("categories").select("*"),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      revalidateIfStale: false,
+    },
+  );
 
   return (
     <Form {...form}>
@@ -140,7 +158,7 @@ const TransactionForm = ({ categories }: { categories: Category[] }) => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {categories.map((category) => (
+                      {categories?.map((category) => (
                         <SelectItem
                           key={category.id}
                           value={category.id.toString()}

@@ -1,6 +1,7 @@
 "use client";
-import { ReloadIcon, TrashIcon } from "@radix-ui/react-icons";
+import { Pencil1Icon, ReloadIcon, TrashIcon } from "@radix-ui/react-icons";
 import { formatDate } from "date-fns";
+import Link from "next/link";
 
 import TransactionAmount from "@/components/transactions/components/TransactionAmount";
 import {
@@ -62,7 +63,13 @@ export default function TransactionList({
                   type={transaction.type}
                 />
               </TableCell>
-              <TableCell className="text-right">
+              <TableCell className="flex justify-end gap-x-2">
+                <Link href={`transactions/edit/${transaction.id}`}>
+                  <Button variant="default" size="icon">
+                    <Pencil1Icon />
+                  </Button>
+                </Link>
+
                 <Button
                   variant="destructive"
                   size="icon"
@@ -70,6 +77,7 @@ export default function TransactionList({
                 >
                   <TrashIcon />
                 </Button>
+
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger>
