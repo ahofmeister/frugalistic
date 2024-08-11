@@ -2,6 +2,8 @@ import "./globals.css";
 
 import React from "react";
 
+import AuthButton from "@/components/auth/auth-button";
+import Greeting from "@/components/greeting";
 import MobileNavigation from "@/components/navigation/mobile-navigation";
 import Navigation from "@/components/navigation/navigation";
 
@@ -25,9 +27,17 @@ export default function RootLayout({
       <body className="text-black bg-white dark:bg-background dark:text-white">
         <div className="w-full">
           <header className="sticky top-0 z-50 w-full border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <div className="container flex h-14 max-w-screen-2xl items-center">
-              <Navigation />
-              <MobileNavigation />
+            <div className="container flex h-14 max-w-screen-2xl items-center justify-between">
+              <div>
+                <Navigation />
+                <MobileNavigation />
+              </div>
+              <div className="flex items-center justify-end">
+                <div className="hidden md:flex">
+                  <Greeting />
+                </div>
+                <AuthButton />
+              </div>
             </div>
           </header>
           <main className="m-10">{children}</main>
