@@ -4,7 +4,6 @@ import Link, { LinkProps } from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-import AuthButton from "@/components/auth/auth-button";
 import { docsConfig } from "@/components/navigation/docs-config";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
