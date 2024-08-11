@@ -26,22 +26,26 @@ const DashboardCards = ({ month, year }: { month: number; year: number }) => {
   const leftover = income - expense - savings;
 
   return (
-    <div className="grid grid-cols-2 max-w-fit  gap-10">
-      <DashboardCard amount={leftover} label="Leftover" total={income} />
-      <DashboardCard amount={income} type="income" label="Income" />
+    <div className="h-80 flex  gap-y-5 flex-col justify-between">
+      <div className=" flex gap-5">
+        <DashboardCard amount={leftover} label="Leftover" total={income} />
+        <DashboardCard amount={income} type="income" label="Income" />
+      </div>
 
-      <DashboardCard
-        amount={savings}
-        type="savings"
-        label="Savings"
-        total={income}
-      />
-      <DashboardCard
-        amount={expense}
-        type="expense"
-        label="Expenses"
-        total={income}
-      />
+      <div className="flex gap-5">
+        <DashboardCard
+          amount={savings}
+          type="savings"
+          label="Savings"
+          total={income}
+        />
+        <DashboardCard
+          amount={expense}
+          type="expense"
+          label="Expenses"
+          total={income}
+        />
+      </div>
     </div>
   );
 };

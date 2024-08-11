@@ -124,11 +124,13 @@ export default function Dashboard() {
         </Link>
       </div>
 
-      <div className="h-72 flex gap-5 mb-10 justify-between">
+      <div className="flex mb-10 justify-between flex-wrap">
         <div className="flex gap-5 flex-wrap">
           <DashboardCards month={month} year={year} />
-          <DashboardDivisions month={month} year={year} />
-          <DashboardCategories month={month} year={year} />
+          <div className="flex gap-5 flex-wrap">
+            <DashboardDivisions month={month} year={year} />
+            <DashboardCategories month={month} year={year} />
+          </div>
         </div>
       </div>
 
