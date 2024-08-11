@@ -17,6 +17,7 @@ const Navigation = () => {
       <nav className="flex items-center gap-4 text-sm lg:gap-6">
         {docsConfig.mainNav.map((item) => (
           <Link
+            key={item.title}
             href={item.href}
             className={cn(
               "transition-colors hover:text-foreground/80",
