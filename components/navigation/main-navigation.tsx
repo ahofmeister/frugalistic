@@ -33,7 +33,7 @@ const MainNavigation = ({ items }: { items: NavItem[] }) => {
             dir="ltr"
           >
             {items.map((item) => (
-              <li className="text-sm font-medium">
+              <li key={item.href} className="text-sm font-medium">
                 <Link
                   href={item.href}
                   id="radix-:R2amda6:-trigger-radix-:R1eamda6:"

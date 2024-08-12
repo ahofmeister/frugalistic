@@ -1,5 +1,4 @@
 "use client";
-import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import Link, { LinkProps } from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
