@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
 
-import ResetQueryParam from "@/app/transactions/reset-query-param";
+import ResetQueryParam from "@/app/dashboard/transactions/reset-query-param";
 import TransactionFilter from "@/components/transactions/components/transaction-filter";
 import TransactionList from "@/components/transactions/components/transaction-list";
 import TransactionSearch from "@/components/transactions/transaction-search";

@@ -1,32 +1,30 @@
-"use client";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import React from "react";
 
-import { docsConfig } from "@/components/navigation/docs-config";
-import { cn } from "@/lib/utils";
+import AppButton from "@/components/auth/app-button";
+import MainNavigation from "@/components/navigation/main-navigation";
+import MobileNavigation from "@/components/navigation/mobile-navigation";
+import { NavItem } from "@/components/navigation/nav-config";
 
-const Navigation = () => {
-  const pathname = usePathname();
-
+const Navigation = ({
+  items,
+  showAppButton,
+}: {
+  items: NavItem[];
+  showAppButton?: boolean;
+}) => {
   return (
-    <div className="mr-4 hidden md:flex">
-      <Link href="/" className="mr-4 lg:mr-6">
-        <span className="hidden font-bold lg:inline-block">Frugalistic</span>
-      </Link>
-      <nav className="flex items-center gap-4 text-sm lg:gap-6">
-        {docsConfig.mainNav.map((item) => (
-          <Link
-            key={item.title}
-            href={item.href}
-            className={cn(
-              "transition-colors hover:text-foreground/80",
-              pathname === item.href ? "text-primary" : "text-foreground/60",
-            )}
-          >
-            {item.title}
-          </Link>
-        ))}
+    <div className="sticky top-0 z-40 transform">
+      <nav className="relative z-40 border-default border-b backdrop-blur-sm transition-opacity">
+        <div className="relative flex justify-between h-16 mx-auto lg:container lg:px-16 xl:px-20">
+          <div className="flex items-center px-6 lg:px-0 flex-1 sm:items-stretch justify-between">
+            <MainNavigation items={items} />
+            {showAppButton && <AppButton />}
+          </div>
+
+          <div className="inset-y-0 flex mr-2 items-center px-4 lg:hidden">
+            <MobileNavigation items={items} />
+          </div>
+        </div>
       </nav>
     </div>
   );

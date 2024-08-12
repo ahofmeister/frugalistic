@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import React from "react";
 
-import InvokeRecurringTransactions from "@/app/transactions/recurring/invoke-recurring-transactions";
+import InvokeRecurringTransactions from "@/app/dashboard/transactions/recurring/invoke-recurring-transactions";
 import TransactionAmount from "@/components/transactions/components/TransactionAmount";
 import {
   Table,

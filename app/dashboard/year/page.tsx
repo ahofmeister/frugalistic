@@ -1,13 +1,14 @@
 import { redirect } from "next/navigation";
 import React from "react";
 
-import TransactionByCategoryChart from "@/app/year/transaction-by-category-chart";
-import TransactionTypeChart from "@/app/year/transaction-type-chart";
+import TransactionTypeChart from "@/app/dashboard/year/transaction-type-chart";
 import {
   getTotalByCategory,
   getTransactionsTotal,
 } from "@/components/transactions/transactions-api";
 import { createClient } from "@/utils/supabase/server";
+
+import TransactionByCategoryChart from "./transaction-by-category-chart";
 
 export default async function Year() {
   const {

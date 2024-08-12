@@ -2,7 +2,7 @@
 import React from "react";
 import { Bar, BarChart, Cell, XAxis, YAxis } from "recharts";
 
-import { colors } from "@/app/year/transaction-type-chart";
+import { colors } from "@/app/dashboard/year/transaction-type-chart";
 import {
   ChartContainer,
   ChartTooltip,
