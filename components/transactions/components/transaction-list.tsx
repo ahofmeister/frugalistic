@@ -36,9 +36,9 @@ export default function TransactionList({
         <TableHeader>
           <TableRow>
             <TableHead className="text-left">Date</TableHead>
-            <TableHead className="text-center">Category</TableHead>
-            <TableHead className="text-center">Division</TableHead>
-            <TableHead className="text-center">Description</TableHead>
+            <TableHead className="text-left">Description</TableHead>
+            <TableHead className="text-left">Category</TableHead>
+            <TableHead className="text-left">Division</TableHead>
             <TableHead className="text-right">Amount</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
@@ -46,15 +46,29 @@ export default function TransactionList({
         <TableBody>
           {transactions.map((transaction) => (
             <TableRow key={transaction.id} className="text-center">
-              <TableCell className="text-left">
-                <div>
+              <TableCell className="text-left flex">
+                <div className="items-center justify-center text-center">
                   {formatDate(transaction.datetime, "EEE")},{" "}
                   {formatDate(transaction.datetime, "dd. MMM")}
                 </div>
               </TableCell>
-              <TableCell className="">{transaction.description}</TableCell>
-              <TableCell className="">{transaction.category?.name}</TableCell>
-              <TableCell className="">
+              <TableCell className="text-left">
+                {transaction.description}
+              </TableCell>
+              <TableCell className="text-left flex items-center">
+                <div
+                  className="flex w-1.5 mx-2"
+                  style={{
+                    backgroundColor: transaction.category
+                      ? transaction.category.color!
+                      : "",
+                  }}
+                >
+                  &nbsp;
+                </div>
+                {transaction.category?.name}
+              </TableCell>
+              <TableCell className="text-left">
                 {transaction.category?.division}
               </TableCell>
               <TableCell className="text-right">

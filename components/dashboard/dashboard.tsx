@@ -119,7 +119,7 @@ export default function Dashboard() {
             <ChevronRightIcon />
           </Button>
         </div>
-        <Link href="/transactions/new">
+        <Link href="/dashboard/transactions/new">
           <Button>New Transaction</Button>
         </Link>
       </div>

@@ -18,7 +18,7 @@ export default function DashboardTransactions({
     createClient()
       .from("transactions")
       .select(
-        "id, description, amount, datetime, type, category(name, division)",
+        "id, description, amount, datetime, type, category(name, division, color)",
       )
       .gte("datetime", format(new Date(year, month, 1), "yyyy-MM-01"))
       .lte(
