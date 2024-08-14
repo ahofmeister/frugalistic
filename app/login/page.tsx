@@ -24,10 +24,10 @@ export default function Login({
 
     if (error) {
       console.log(error);
-      return redirect("/login?message=Could not authenticate user");
+      return redirect("login?message=Could not authenticate user");
     }
 
-    return redirect("/");
+    return redirect("dashboard");
   };
 
   const signUp = async (formData: FormData) => {
@@ -42,7 +42,7 @@ export default function Login({
       email,
       password,
       options: {
-        emailRedirectTo: `${origin}/auth/callback`,
+        emailRedirectTo: `${origin}/dashboard/auth/callback`,
       },
     });
 
