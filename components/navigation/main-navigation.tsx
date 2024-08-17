@@ -3,7 +3,13 @@ import React from "react";
 
 import { NavItem } from "@/components/navigation/nav-config";
 
-const MainNavigation = ({ items }: { items: NavItem[] }) => {
+const MainNavigation = ({
+  items,
+  loggedIn,
+}: {
+  items: NavItem[];
+  loggedIn: boolean;
+}) => {
   return (
     <div className="flex items-center">
       <div className="flex items-center flex-shrink-0">
@@ -14,7 +20,7 @@ const MainNavigation = ({ items }: { items: NavItem[] }) => {
           aria-haspopup="menu"
           aria-expanded="false"
           data-state="closed"
-          href="/"
+          href={loggedIn ? "/dashboard" : "/"}
         >
           Frugalistic
         </Link>

@@ -23,7 +23,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className="text-black bg-white dark:bg-background dark:text-white">
-        <Navigation items={navConfig.dashboardNavigation} />
+        <Navigation
+          items={navConfig.dashboardNavigation}
+          loggedIn={true}
+          showAppButton={false}
+        />
         <main className="m-10">{children}</main>
       </body>
     </html>

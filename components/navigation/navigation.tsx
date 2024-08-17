@@ -7,17 +7,19 @@ import { NavItem } from "@/components/navigation/nav-config";
 
 const Navigation = ({
   items,
+  loggedIn,
   showAppButton,
 }: {
   items: NavItem[];
-  showAppButton?: boolean;
+  loggedIn: boolean;
+  showAppButton: boolean;
 }) => {
   return (
     <div className="sticky top-0 z-40 transform">
       <nav className="relative z-40 border-default border-b backdrop-blur-sm transition-opacity">
         <div className="relative flex justify-between h-16 mx-auto lg:container lg:px-16 xl:px-20">
           <div className="flex items-center px-6 lg:px-0 flex-1 sm:items-stretch justify-between">
-            <MainNavigation items={items} />
+            <MainNavigation items={items} loggedIn={loggedIn} />
             {showAppButton && <AppButton />}
           </div>
 
