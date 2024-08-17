@@ -29,8 +29,8 @@ export const navConfig: NavConfig = {
   ],
   publicNavigation: [
     {
-      title: "Updates",
-      href: "/updates",
+      title: "Blog",
+      href: "/blog",
     },
   ],
 };

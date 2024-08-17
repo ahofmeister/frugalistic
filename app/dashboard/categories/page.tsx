@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import React from "react";
 
-import { SubmitButton } from "@/app/login/submit-button";
+import { SubmitButton } from "@/components/auth/submit-button";
 import {
   createCategory,
   getCategories,

@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function AppButton() {
@@ -12,13 +11,11 @@ export default async function AppButton() {
 
   return user ? (
     <div className="flex items-center gap-4">
-      <Link href="/dashboard">
-        <Button size="sm">Dashboard</Button>
-      </Link>
+      <Link href="/dashboard">Dashboard</Link>
     </div>
   ) : (
-    <Link href="/login" className="py-2 px-3">
-      <Button size="sm">Login</Button>
-    </Link>
+    <div className="flex items-center gap-4">
+      <Link href="/login">Login</Link>
+    </div>
   );
 }
