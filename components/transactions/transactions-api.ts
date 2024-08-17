@@ -128,7 +128,7 @@ export const getTotalByCategory = async ({
   const supabase = createClient();
 
   const { data } = await supabase
-    .rpc("transaction_categories_total6", { year: year })
+    .rpc("transaction_categories_total", { year: year })
     .select("*")
     .returns<TransactionTotalByMonth[]>()
     .order("month")
@@ -145,7 +145,7 @@ export const getTransactionsTotal = async ({
   const supabase = createClient();
 
   const query = supabase
-    .rpc("transaction_type_total5", { year: year! })
+    .rpc("transaction_type_total", { year: year! })
     .select();
 
   const { data } = await query.returns<TransactionTotal[]>().order("month");

@@ -44,25 +44,25 @@ export type Database = {
           },
         ];
       };
-      profiles: {
+      onboarding: {
         Row: {
-          firstName: string | null;
+          categories: boolean | null;
+          created_at: string;
           id: string;
-          lastName: string | null;
         };
         Insert: {
-          firstName?: string | null;
+          categories?: boolean | null;
+          created_at?: string;
           id: string;
-          lastName?: string | null;
         };
         Update: {
-          firstName?: string | null;
+          categories?: boolean | null;
+          created_at?: string;
           id?: string;
-          lastName?: string | null;
         };
         Relationships: [
           {
-            foreignKeyName: "profiles_id_fkey";
+            foreignKeyName: "onboarding_id_fkey";
             columns: ["id"];
             isOneToOne: true;
             referencedRelation: "users";
@@ -182,6 +182,32 @@ export type Database = {
           },
         ];
       };
+      user: {
+        Row: {
+          firstName: string | null;
+          id: string;
+          lastName: string | null;
+        };
+        Insert: {
+          firstName?: string | null;
+          id: string;
+          lastName?: string | null;
+        };
+        Update: {
+          firstName?: string | null;
+          id?: string;
+          lastName?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "profiles_id_fkey";
+            columns: ["id"];
+            isOneToOne: true;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: {
       distinct_year_month: {
@@ -215,18 +241,7 @@ export type Database = {
         Args: Record<PropertyKey, never>;
         Returns: undefined;
       };
-      summary2: {
-        Args: {
-          p_year: number;
-        };
-        Returns: {
-          month: number;
-          year: number;
-          income: number;
-          expense: number;
-        }[];
-      };
-      transaction_categories_total6: {
+      transaction_categories_total: {
         Args: {
           year: number;
         };
@@ -237,7 +252,7 @@ export type Database = {
           total: number;
         }[];
       };
-      transaction_type_total5: {
+      transaction_type_total: {
         Args: {
           year: number;
         };

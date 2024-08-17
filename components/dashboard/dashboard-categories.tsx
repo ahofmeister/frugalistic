@@ -16,7 +16,7 @@ const DashboardCategories = ({
 }) => {
   const { data: transactionsByCategory, isLoading } = useQuery(
     createClient()
-      .rpc("transaction_categories_total6", { year: year })
+      .rpc("transaction_categories_total", { year: year })
       .select("*")
       .returns<TransactionTotalByMonth[]>()
       .order("month")

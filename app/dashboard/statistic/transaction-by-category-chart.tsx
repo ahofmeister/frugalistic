@@ -39,11 +39,9 @@ interface MonthCategoryTotals {
 const transformData = (
   data: TransactionTotalByMonth2[],
 ): MonthCategoryTotals[] => {
-  // Object to hold the aggregation of totals by month
   const monthlyTotals: Record<number, MonthCategoryTotals> = {};
 
   data.forEach(({ month, name, total }) => {
-    // Initialize the month if it does not exist
     if (!monthlyTotals[month]) {
       monthlyTotals[month] = { month, total: 0 };
     }
@@ -56,7 +54,6 @@ const transformData = (
     }
   });
 
-  // Convert the record to an array of MonthCategoryTotals
   return Object.values(monthlyTotals);
 };
 
