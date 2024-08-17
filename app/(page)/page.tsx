@@ -113,8 +113,8 @@ export default function HomePage() {
                 <h3 className="text-lg font-bold">Income and Savings Trends</h3>
                 <p className="text-sm text-muted-foreground">
                   Track your income and savings progress over time to ensure
-                  you're on the right financial path and making the most of your
-                  resources.
+                  you&apos;re on the right financial path and making the most of
+                  your resources.
                 </p>
               </div>
             </div>
