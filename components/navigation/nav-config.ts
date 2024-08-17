@@ -23,8 +23,8 @@ export const navConfig: NavConfig = {
       href: "/dashboard/transactions",
     },
     {
-      title: "Year",
-      href: "/dashboard/year",
+      title: "Statistic",
+      href: "/dashboard/statistic",
     },
   ],
   publicNavigation: [

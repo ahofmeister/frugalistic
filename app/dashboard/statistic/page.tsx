@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import React from "react";
 
-import TransactionTypeChart from "@/app/dashboard/year/transaction-type-chart";
+import TransactionTypeChart from "@/app/dashboard/statistic/transaction-type-chart";
 import {
   getTotalByCategory,
   getTransactionsTotal,
