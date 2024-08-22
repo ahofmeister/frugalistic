@@ -167,7 +167,13 @@ const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
                           key={category.id}
                           value={category.id.toString()}
                         >
-                          {category.name}
+                          <div className="flex gap-x-5 items-center">
+                            <div
+                              className="w-3 h-3"
+                              style={{ background: category.color ?? "" }}
+                            />
+                            {category.name}
+                          </div>
                         </SelectItem>
                       ))}
                     </SelectContent>
