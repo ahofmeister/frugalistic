@@ -82,7 +82,7 @@ export const searchTransactions = async ({
   const query = supabase
     .from("transactions")
     .select(
-      "id, description, amount, datetime, type, category(name, division)",
+      "id, description, amount, datetime, type, category(name, division, color)",
     );
 
   if (dateFrom) {
