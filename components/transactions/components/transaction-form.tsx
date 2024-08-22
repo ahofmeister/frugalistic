@@ -1,6 +1,5 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CalendarIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@supabase-cache-helpers/postgrest-swr";
 import { format } from "date-fns";
 import { useState } from "react";
@@ -19,6 +18,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
@@ -52,7 +52,7 @@ const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
       description: transaction ? transaction.description : "",
       type: transaction ? transaction.type : "expense",
       amount: transaction ? transaction.amount : undefined,
-      datetime: transaction ? new Date(transaction.datetime) : undefined,
+      datetime: transaction ? new Date(transaction.datetime) : new Date(),
       category:
         transaction && transaction.category ? transaction.category : undefined,
     },
@@ -145,7 +145,7 @@ const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
             )}
           />
 
-          <div className="w-32">
+          <div className="w-fit">
             <FormField
               control={form.control}
               name="category"
@@ -188,24 +188,21 @@ const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
             control={form.control}
             name="datetime"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
+              <FormItem>
+                <Label>Date</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
-                      <Button
-                        variant="outline"
+                      <Input
+                        placeholder="Pick a date"
+                        value={
+                          field.value ? format(field.value, "PPP") : undefined
+                        }
                         className={cn(
                           "w-[240px] pl-3 text-left font-normal",
                           !field.value && "text-muted-foreground",
                         )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
+                      ></Input>
                     </FormControl>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
