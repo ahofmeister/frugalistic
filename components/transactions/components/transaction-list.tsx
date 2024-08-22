@@ -57,7 +57,7 @@ export default function TransactionList({
               </TableCell>
               <TableCell className="text-left flex items-center">
                 <div
-                  className="flex w-1.5 mx-2"
+                  className="flex w-4 h-4 mx-2"
                   style={{
                     backgroundColor: transaction.category
                       ? transaction.category.color!
