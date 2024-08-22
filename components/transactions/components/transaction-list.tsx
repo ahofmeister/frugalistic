@@ -78,7 +78,7 @@ export default function TransactionList({
                 />
               </TableCell>
               <TableCell className="flex justify-end gap-x-2">
-                <Link href={`transactions/edit/${transaction.id}`}>
+                <Link href={`dashboard/transactions/edit/${transaction.id}`}>
                   <Button variant="default" size="icon">
                     <Pencil1Icon />
                   </Button>
