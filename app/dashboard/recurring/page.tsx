@@ -1,7 +1,9 @@
+import { Pencil1Icon } from "@radix-ui/react-icons";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
 
-import InvokeRecurringTransactions from "@/app/dashboard/transactions/recurring/invoke-recurring-transactions";
+import InvokeRecurringTransactions from "@/app/dashboard/recurring/invoke-recurring-transactions";
 import TransactionAmount from "@/components/transactions/components/TransactionAmount";
 import {
   Table,
@@ -36,24 +38,30 @@ export default async function TransactionsPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="">Description</TableHead>
-              <TableHead className="">Amount</TableHead>
-              <TableHead className="">Interval</TableHead>
-              <TableHead className="">Next Run</TableHead>
+              <TableHead>Description</TableHead>
+              <TableHead>Amount</TableHead>
+              <TableHead>Interval</TableHead>
+              <TableHead>Next Run</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {transactions?.map((transaction) => (
-              <TableRow key={transaction.id} className="">
-                <TableCell className="">{transaction.description}</TableCell>
-                <TableCell className="">
+              <TableRow key={transaction.id}>
+                <TableCell>{transaction.description}</TableCell>
+                <TableCell>
                   <TransactionAmount
                     amount={transaction.amount}
                     type={transaction.type}
                   />
                 </TableCell>
-                <TableCell className="">{transaction.interval}</TableCell>
-                <TableCell className="">{transaction.next_run}</TableCell>
+                <TableCell>{transaction.interval}</TableCell>
+                <TableCell>{transaction.next_run}</TableCell>
+
+                <TableCell>
+                  <Link href={`/dashboard/recurring/${transaction.id}`}>
+                    <Pencil1Icon />
+                  </Link>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

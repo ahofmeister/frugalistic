@@ -23,6 +23,10 @@ export const navConfig: NavConfig = {
       href: "/dashboard/transactions",
     },
     {
+      title: "Recurring",
+      href: "/dashboard/recurring",
+    },
+    {
       title: "Statistic",
       href: "/dashboard/statistic",
     },

@@ -5,6 +5,7 @@ import {
   NewRecurringTransaction,
   NewTransaction,
   RecurringInterval,
+  RecurringTransaction,
   TransactionWithCategory,
 } from "@/types";
 import { createClient } from "@/utils/supabase/server";
@@ -161,3 +162,18 @@ export const deleteTransaction = async (id: string) => {
 export const invokeRecurringTransactions = async () => {
   await createClient().rpc("insert_recurring_transaction");
 };
+
+export async function upsertRecurringTransaction(
+  newTransaction: RecurringTransaction,
+) {
+  const supabase = createClient();
+
+  const { error, data } = await supabase.from("transactions_recurring").upsert({
+    ...newTransaction,
+  });
+  console.log(data);
+
+  if (error) {
+    console.log(error);
+  }
+}

@@ -39,7 +39,6 @@ export default async function TransactionsPage({
         <TransactionSearch />
         <TransactionFilter />
         <ResetQueryParam />
-        <Link href="transactions/recurring">Recurring transactions</Link>
       </div>
 
       <div className="mt-4">
