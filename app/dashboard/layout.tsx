@@ -4,30 +4,22 @@ import React from "react";
 
 import { navConfig } from "@/components/navigation/nav-config";
 import Navigation from "@/components/navigation/navigation";
+import { createClient } from "@/utils/supabase/server";
 
-const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : "http://localhost:3000";
-
-export const metadata = {
-  metadataBase: new URL(defaultUrl),
-  title: "Frugalistic",
-  description: "Financial overview",
-};
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
     <html lang="en" className="dark">
-      <body className="text-black bg-white dark:bg-background dark:text-white">
-        <Navigation
-          items={navConfig.dashboardNavigation}
-          loggedIn={true}
-          showAppButton={false}
-        />
+      <body className="bg-background text-white">
+        <Navigation items={navConfig.dashboardNavigation} publicArea={false} />
         <main className="m-10">{children}</main>
       </body>
     </html>
