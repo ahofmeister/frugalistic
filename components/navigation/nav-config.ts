@@ -36,5 +36,10 @@ export const navConfig: NavConfig = {
       title: "Blog",
       href: "/blog",
     },
+
+    {
+      title: "Roadmap",
+      href: "/roadmap",
+    },
   ],
 };
