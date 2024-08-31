@@ -38,8 +38,8 @@ export const navConfig: NavConfig = {
     },
 
     {
-      title: "Roadmap",
-      href: "/roadmap",
+      title: "Change Log",
+      href: "/change-log",
     },
   ],
 };

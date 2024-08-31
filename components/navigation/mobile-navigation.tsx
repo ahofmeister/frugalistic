@@ -53,7 +53,7 @@ const MobileNavigation = ({ items }: { items: NavItem[] }) => {
             </svg>
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="pr-0">
+        <SheetContent side="left" className="pr-0 min-w-full">
           <MobileLink
             href="/"
             className="flex items-center"
@@ -90,13 +90,13 @@ interface MobileLinkProps extends LinkProps {
   className?: string;
 }
 
-function MobileLink({
+const MobileLink = ({
   href,
   onOpenChange,
   className,
   children,
   ...props
-}: MobileLinkProps) {
+}: MobileLinkProps) => {
   const router = useRouter();
   return (
     <Link
@@ -111,6 +111,6 @@ function MobileLink({
       {children}
     </Link>
   );
-}
+};
 
 export default MobileNavigation;

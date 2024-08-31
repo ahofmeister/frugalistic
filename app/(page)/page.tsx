@@ -3,7 +3,7 @@ import React from "react";
 
 import { Button } from "@/components/ui/button";
 
-export default function HomePage() {
+export default function LandingPage() {
   return (
     <div className="text-2xl text-center">
       <main className="flex-1">
@@ -13,7 +13,8 @@ export default function HomePage() {
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-2">
                   <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
-                    Embrace a Frugal Lifestyle with Frugalistic
+                    Embrace your lifestyle with{" "}
+                    <span className="text-primary">Frugalistic</span>
                   </h1>
                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
                     Frugalistic is a personal finance app that helps you adopt a
@@ -24,14 +25,14 @@ export default function HomePage() {
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <Link
-                    href="#"
-                    className="inline-flex h-10 items-center justify-center rounded-md bg-[#9570c] px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-[#9570c]/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+                    href="/login"
+                    className="text-primary inline-flex h-10 items-center justify-center rounded-md border border-primary bg-background px-8 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
                     prefetch={false}
                   >
-                    Get Started
+                    Get started
                   </Link>
                   <Link
-                    href="#"
+                    href="/about"
                     className="text-primary inline-flex h-10 items-center justify-center rounded-md border border-primary bg-background px-8 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
                     prefetch={false}
                   >
