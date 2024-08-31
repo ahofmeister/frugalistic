@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
 
@@ -12,7 +11,7 @@ import { createClient } from "@/utils/supabase/server";
 export default async function TransactionsPage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | undefined };
+  searchParams: { dateFrom: string; dateTo: string; description: string };
 }) {
   const {
     data: { user },
@@ -22,15 +21,10 @@ export default async function TransactionsPage({
     return redirect("/login");
   }
 
-  const description =
-    typeof searchParams.description === "string"
-      ? searchParams.description
-      : "";
-
   const data = await searchTransactions({
     dateFrom: searchParams.dateFrom,
     dateTo: searchParams.dateTo,
-    description,
+    description: searchParams.description,
   });
 
   return (
