@@ -1,5 +1,6 @@
 import "../globals.css";
 
+import { redirect } from "next/navigation";
 import React from "react";
 
 import { navConfig } from "@/components/navigation/nav-config";
@@ -15,6 +16,10 @@ export default async function RootLayout({
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
 
   return (
     <html lang="en" className="dark">
