@@ -1,7 +1,6 @@
 import Link from "next/link";
 import React from "react";
 
-import AuthButton from "@/components/auth/auth-button";
 import { NavItem } from "@/components/navigation/nav-config";
 
 const MainNavigation = ({
