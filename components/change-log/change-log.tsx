@@ -3,31 +3,12 @@ import React from "react";
 
 const events = [
   {
-    date: new Date(2024, 7, 30),
-    heading:
-      "Congratulations to Ronaldo Playing Chess for winning the Streamers Battle August 2024!",
+    date: new Date(2024, 8, 1),
+    heading: "Frugalistic Goes Public!",
     details:
-      "Congrats also to runners-up IM YOSEPH AND FRIENDS, Zhigalko_Sergei & Friends for taking 3rd place and IM Manitodeplomo Fan Club for 4th place. Thanks to all participating streamers and 1,852 registered players!",
-  },
-  {
-    date: new Date(2024, 8, 31),
-    heading:
-      "Hovering over player names in broadcast games will now display additional information.",
-    details:
-      "This information is also available in the new Players tab, which you can sort by clicking on one of the column titles.",
-  },
-  {
-    date: new Date(2024, 8, 31),
-    heading:
-      "The first of six FIDE Women’s Grand Prix 2024-25 tournaments started in Tbilisi, Georgia!",
-    details:
-      "Some of the strongest women, including former World Champions Alexandra Kosteniuk and Mariya Muzychuk, GMs R Vaishali, Anna Muzychuk and IM Sara Khadem, will try to earn points for the WGP Series.",
-  },
-  {
-    date: new Date(2024, 8, 31),
-    heading:
-      "Congrats to @Schmobi on winning the Lichess Game of the Month July 2024!",
-    details: "Thank you for all your countless submissions!",
+      "We're thrilled to announce that Frugalistic is now live and open to everyone! After months of preparation and development, we are excited to invite all individuals to sign up and become part of the Frugalistic community. Whether you're looking to save more, spend smarter, or manage your finances better, Frugalistic is here to help you achieve your goals. Join us today and take control of your financial future—it's free, it's easy, and it's for everyone!\n" +
+      "\n\n" +
+      "Sign up now and start your journey towards smarter living with Frugalistic!",
   },
 ];
 
