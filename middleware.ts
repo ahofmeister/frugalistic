@@ -29,7 +29,7 @@ export async function middleware(request: NextRequest) {
     !hasIncompleteStep &&
     request.nextUrl.pathname == "/dashboard/onboarding"
   ) {
-    let url = new URL("/dashboard", request.url);
+    const url = new URL("/dashboard", request.url);
     return NextResponse.redirect(url);
   }
 

@@ -49,13 +49,15 @@ export async function deleteCategory(id: string) {
 export const insertCategoriesFromDefaultCategories = async (
   categories: DefaultCategory[],
 ) => {
-  const categoriesWithoutId = categories.map(
-    ({ id, created_at, ...rest }) => rest,
-  );
+  const categoriesForInsert = categories.map(({ name, color, division }) => ({
+    name,
+    color,
+    division,
+  }));
 
   const { error } = await createClient()
     .from("categories")
-    .insert(categoriesWithoutId);
+    .insert(categoriesForInsert);
 
   if (error) {
     console.log(error);

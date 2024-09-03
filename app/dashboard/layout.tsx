@@ -1,10 +1,11 @@
 import "../globals.css";
+
 import React from "react";
 
 import { navConfig } from "@/components/navigation/nav-config";
 import Navigation from "@/components/navigation/navigation";
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;

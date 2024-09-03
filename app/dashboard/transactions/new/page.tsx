@@ -1,6 +1,6 @@
 import TransactionForm from "@/components/transactions/components/transaction-form";
 
-export default async function NewTransactionPage() {
+export default function NewTransactionPage() {
   return (
     <div>
       <TransactionForm />

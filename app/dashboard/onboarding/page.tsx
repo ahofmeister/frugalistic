@@ -1,5 +1,5 @@
-import { createClient } from "@/utils/supabase/server";
 import { OnboardingFlow } from "@/components/onboarding/onboarding-flow";
+import { createClient } from "@/utils/supabase/server";
 
 export default async function OnboardingPage() {
   const supabase = createClient();

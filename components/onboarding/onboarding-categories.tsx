@@ -1,8 +1,9 @@
 "use client";
+import { useQuery } from "@supabase-cache-helpers/postgrest-swr";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { DefaultCategory } from "@/types";
 import { createClient } from "@/utils/supabase/client";
-import { useQuery } from "@supabase-cache-helpers/postgrest-swr";
 
 const OnboardingCategories = ({
   selectedCategories,
@@ -46,7 +47,7 @@ const OnboardingCategories = ({
       <div className="grid grid-cols-4 md:grid-cols-4 gap-4 mb-8">
         {categories?.map((category) => (
           <Card
-            style={{ backgroundColor: category.color! }}
+            style={{ backgroundColor: category.color }}
             key={category.id}
             className={`cursor-pointer transition-all  ${
               selectedCategories.includes(category) ? "ring-2 ring-primary" : ""

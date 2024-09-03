@@ -1,12 +1,13 @@
 "use client";
+import { CheckIcon } from "@radix-ui/react-icons";
 import * as React from "react";
 import { useState } from "react";
-import { CheckIcon } from "@radix-ui/react-icons";
-import OnboardingCategories from "@/components/onboarding/onboarding-categories";
-import { DefaultCategory, OnboardingStep } from "@/types";
-import { Button } from "@/components/ui/button";
+
 import { insertCategoriesFromDefaultCategories } from "@/components/categories/categories-api";
 import { nextStep } from "@/components/onboarding/onboarding-actions";
+import OnboardingCategories from "@/components/onboarding/onboarding-categories";
+import { Button } from "@/components/ui/button";
+import { DefaultCategory, OnboardingStep } from "@/types";
 
 export const OnboardingFlow = ({ steps }: { steps: OnboardingStep[] }) => {
   const [selectedCategories, setSelectedCategories] = useState<
@@ -29,7 +30,7 @@ export const OnboardingFlow = ({ steps }: { steps: OnboardingStep[] }) => {
   };
 
   return (
-    <div className={""}>
+    <div className="">
       <ol role="list" className="flex">
         {steps.map((step, stepIdx) => (
           <li key={step.id} className="flex-1 relative">
@@ -76,11 +77,11 @@ export const OnboardingFlow = ({ steps }: { steps: OnboardingStep[] }) => {
         ))}
       </ol>
 
-      <div className={"flex flex-col"}>
+      <div className="flex flex-col">
         {steps
           .filter((step) => step.status === "current")
           .map((step) => (
-            <div className={"flex justify-between w-full"}>
+            <div key={step.id} className="flex justify-between w-full">
               <div>
                 {step.status === "current" &&
                   step.step_name === "categories" && (
@@ -95,7 +96,7 @@ export const OnboardingFlow = ({ steps }: { steps: OnboardingStep[] }) => {
                   <div>Welcome to Frugalistic!</div>
                 )}
 
-                <div className={"flex justify-end"}>
+                <div className="flex justify-end">
                   {step.status === "current" && (
                     <Button
                       onClick={() => {
