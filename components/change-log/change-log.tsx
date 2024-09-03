@@ -3,6 +3,13 @@ import React from "react";
 
 const events = [
   {
+    date: new Date(2024, 8, 3),
+    heading: "Onboarding Is Live!",
+    details:
+      "We are proud to present an onboarding flow. If you sign up, you will land on the onboarding page and you can choose your own categories to start with if you like.",
+  },
+
+  {
     date: new Date(2024, 8, 1),
     heading: "Frugalistic Goes Public!",
     details:

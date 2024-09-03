@@ -24,7 +24,7 @@ export type Database = {
           division?: Database["public"]["Enums"]["division"] | null
           id?: string
           name?: string | null
-          user_id: string
+          user_id?: string
         }
         Update: {
           color?: string | null
@@ -44,27 +44,60 @@ export type Database = {
           },
         ]
       }
-      onboarding: {
+      default_categories: {
         Row: {
-          categories: boolean | null
-          created_at: string
+          color: string
+          created_at: string | null
+          division: Database["public"]["Enums"]["division"]
           id: string
+          name: string
         }
         Insert: {
-          categories?: boolean | null
-          created_at?: string
-          id: string
+          color: string
+          created_at?: string | null
+          division: Database["public"]["Enums"]["division"]
+          id?: string
+          name: string
         }
         Update: {
-          categories?: boolean | null
-          created_at?: string
+          color?: string
+          created_at?: string | null
+          division?: Database["public"]["Enums"]["division"]
           id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      onboarding_steps: {
+        Row: {
+          completed_at: string | null
+          id: string
+          status: Database["public"]["Enums"]["onboarding_status"]
+          step_name: Database["public"]["Enums"]["onboarding_step"]
+          step_order: number
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          id?: string
+          status?: Database["public"]["Enums"]["onboarding_status"]
+          step_name: Database["public"]["Enums"]["onboarding_step"]
+          step_order: number
+          user_id?: string
+        }
+        Update: {
+          completed_at?: string | null
+          id?: string
+          status?: Database["public"]["Enums"]["onboarding_status"]
+          step_name?: Database["public"]["Enums"]["onboarding_step"]
+          step_order?: number
+          user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "onboarding_id_fkey"
-            columns: ["id"]
-            isOneToOne: true
+            foreignKeyName: "onboarding_steps_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
@@ -91,7 +124,7 @@ export type Database = {
           id?: string
           recurring_transaction?: string | null
           type: Database["public"]["Enums"]["transaction_type"]
-          user_id: string
+          user_id?: string
         }
         Update: {
           amount?: number
@@ -263,9 +296,22 @@ export type Database = {
           savings: number
         }[]
       }
+      transaction_type_total5: {
+        Args: {
+          year: number
+        }
+        Returns: {
+          month: number
+          income: number
+          expense: number
+          savings: number
+        }[]
+      }
     }
     Enums: {
       division: "essentials" | "leisure" | "savings"
+      onboarding_status: "current" | "complete" | "skip" | "open"
+      onboarding_step: "categories" | "welcome"
       recurring_interval: "monthly" | "annually"
       transaction_type: "income" | "expense" | "savings"
     }

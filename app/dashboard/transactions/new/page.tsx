@@ -4,14 +4,6 @@ import TransactionForm from "@/components/transactions/components/transaction-fo
 import { createClient } from "@/utils/supabase/server";
 
 export default async function NewTransactionPage() {
-  const {
-    data: { user },
-  } = await createClient().auth.getUser();
-
-  if (!user) {
-    return redirect("/login");
-  }
-
   return (
     <div>
       <TransactionForm />

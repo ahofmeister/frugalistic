@@ -1,9 +1,46 @@
-import { type NextRequest } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 import { updateSession } from "@/utils/supabase/middleware";
+import { createClient } from "@/utils/supabase/server";
 
 export async function middleware(request: NextRequest) {
-  return await updateSession(request);
+  await updateSession(request);
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  const { data: steps } = await supabase.from("onboarding_steps").select();
+
+  if (!request.url.startsWith("/dashboard")) {
+    return NextResponse.next();
+  }
+
+  const hasIncompleteStep = steps?.some(
+    (step) =>
+      !step.status.includes("complete") && !step.status.includes("skipped"),
+  );
+
+  if (
+    !hasIncompleteStep &&
+    request.nextUrl.pathname == "/dashboard/onboarding"
+  ) {
+    let url = new URL("/dashboard", request.url);
+    return NextResponse.redirect(url);
+  }
+
+  if (
+    hasIncompleteStep &&
+    request.nextUrl.pathname !== "/dashboard/onboarding"
+  ) {
+    return NextResponse.redirect(new URL("/dashboard/onboarding", request.url));
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {

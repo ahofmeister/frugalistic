@@ -22,3 +22,10 @@ export type TransactionWithCategory = Transaction & {
 };
 
 export type Division = Database["public"]["Enums"]["division"];
+
+// Onboarding
+export type DefaultCategory =
+  Database["public"]["Tables"]["default_categories"]["Row"];
+
+export type OnboardingStep =
+  Database["public"]["Tables"]["onboarding_steps"]["Row"];

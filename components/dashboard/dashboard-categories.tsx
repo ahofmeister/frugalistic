@@ -40,7 +40,7 @@ const DashboardCategories = ({
 
   return (
     <Card className="p-4 min-w-[400px]">
-      <CardHeader>Categories</CardHeader>
+      <CardHeader>Transactions by Category</CardHeader>
       <CardContent>
         {isLoading && <div>Loading</div>}
         <DashboardCategoriesChart data={data ?? []} />

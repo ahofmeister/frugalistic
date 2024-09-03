@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { Category, Division } from "@/types";
+import { Category, DefaultCategory, Division } from "@/types";
 import { TablesInsert } from "@/types/supabase";
 import { createClient } from "@/utils/supabase/server";
 
@@ -45,3 +45,19 @@ export async function deleteCategory(id: string) {
   await createClient().from("categories").delete().eq("id", id);
   revalidatePath("categories");
 }
+
+export const insertCategoriesFromDefaultCategories = async (
+  categories: DefaultCategory[],
+) => {
+  const categoriesWithoutId = categories.map(
+    ({ id, created_at, ...rest }) => rest,
+  );
+
+  const { error } = await createClient()
+    .from("categories")
+    .insert(categoriesWithoutId);
+
+  if (error) {
+    console.log(error);
+  }
+};

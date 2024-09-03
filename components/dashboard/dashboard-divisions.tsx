@@ -29,7 +29,7 @@ const DashboardDivisions = ({
 
   return (
     <Card className="p-4 min-w-[400px]">
-      <CardHeader>Divisions</CardHeader>
+      <CardHeader>Transactions by Division</CardHeader>
       <CardContent>
         <DashboardDivisionsChart
           divisions={

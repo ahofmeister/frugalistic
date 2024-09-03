@@ -55,10 +55,7 @@ export async function upsertTransaction(newTransaction: NewTransaction) {
   const supabase = createClient();
   const { data: response } = await supabase.auth.getUser();
 
-  const { error } = await supabase.from("transactions").upsert({
-    ...newTransaction,
-    user_id: response.user?.id,
-  });
+  const { error } = await supabase.from("transactions").upsert(newTransaction);
 
   if (error) {
     console.log(error);

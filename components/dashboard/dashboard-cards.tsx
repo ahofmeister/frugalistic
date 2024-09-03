@@ -2,7 +2,7 @@
 import { useQuery } from "@supabase-cache-helpers/postgrest-swr";
 import React from "react";
 
-import DashboardCard from "@/components/dashboard-card";
+import DashboardCard from "@/components/dashboard/dashboard-card";
 import { TransactionTotal } from "@/components/transactions/transactions-api";
 import { createClient } from "@/utils/supabase/client";
 

@@ -44,6 +44,14 @@ export default function TransactionList({
           </TableRow>
         </TableHeader>
         <TableBody>
+          {transactions.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={6} className="text-center">
+                No Transaction available
+              </TableCell>
+            </TableRow>
+          )}
+
           {transactions.map((transaction) => (
             <TableRow key={transaction.id} className="text-center">
               <TableCell className="text-left flex">
