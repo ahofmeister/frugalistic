@@ -164,7 +164,7 @@ export async function upsertRecurringTransaction(
 ) {
   const supabase = createClient();
 
-  const { error, data } = await supabase.from("transactions_recurring").upsert({
+  const { error } = await supabase.from("transactions_recurring").upsert({
     ...newTransaction,
   });
 

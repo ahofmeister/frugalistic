@@ -24,7 +24,6 @@ const DashboardCategoriesChart = ({
           tickMargin={5}
           tickLine={false}
         />
-        n
         <XAxis
           dataKey="name"
           tickLine={false}
