@@ -1,5 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CalendarIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@supabase-cache-helpers/postgrest-swr";
 import { format } from "date-fns";
 import React, { useState } from "react";
@@ -33,7 +34,6 @@ import {
 import { cn } from "@/lib/utils";
 import { Category, NewTransaction, Transaction } from "@/types";
 import { createClient } from "@/utils/supabase/client";
-import { CalendarIcon } from "@radix-ui/react-icons";
 
 const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
   const formSchema = z.object({
