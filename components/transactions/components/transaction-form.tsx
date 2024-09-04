@@ -2,7 +2,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@supabase-cache-helpers/postgrest-swr";
 import { format } from "date-fns";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -18,7 +18,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
@@ -34,11 +33,12 @@ import {
 import { cn } from "@/lib/utils";
 import { Category, NewTransaction, Transaction } from "@/types";
 import { createClient } from "@/utils/supabase/client";
+import { CalendarIcon } from "@radix-ui/react-icons";
 
 const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
   const formSchema = z.object({
-    description: z.string(),
-    amount: z.coerce.number().min(0),
+    description: z.string().min(1),
+    amount: z.coerce.number({ message: "Required" }).min(1),
     type: z.enum(["income", "expense", "savings"]),
     category: z.string(),
     datetime: z.date(),
@@ -51,7 +51,7 @@ const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
     defaultValues: {
       description: transaction ? transaction.description : "",
       type: transaction ? transaction.type : "expense",
-      amount: transaction ? transaction.amount : undefined,
+      amount: transaction ? transaction.amount : 0,
       datetime: transaction ? new Date(transaction.datetime) : new Date(),
       category:
         transaction && transaction.category ? transaction.category : undefined,
@@ -80,72 +80,76 @@ const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
   );
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit((transaction) =>
-          handleSubmit({
-            ...transaction,
-            datetime: format(transaction.datetime, "yyyy-MM-dd"),
-          }),
-        )}
-        className="space-y-6"
-      >
-        <div className="flex flex-wrap w-2/3 gap-10">
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Description</FormLabel>
-                <FormControl>
-                  <Input placeholder="description" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="amount"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Amount</FormLabel>
-                <FormControl>
-                  <Input placeholder="amount" type="number" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="type"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Type</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+    <div className="max-w-2xl mx-auto p-6 bg-card rounded-lg shadow-md">
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit((transaction) =>
+            handleSubmit({
+              ...transaction,
+              datetime: format(transaction.datetime, "yyyy-MM-dd"),
+            }),
+          )}
+          className="space-y-6"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
+                    <Input placeholder="Enter description" {...field} />
                   </FormControl>
-                  <SelectContent>
-                    <SelectItem value="income">Income</SelectItem>
-                    <SelectItem value="expense">Expense</SelectItem>
-                    <SelectItem value="savings">Savings</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <div className="w-fit">
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="amount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Amount</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Enter amount"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(parseFloat(e.target.value))
+                      }
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Type</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="income">Income</SelectItem>
+                      <SelectItem value="expense">Expense</SelectItem>
+                      <SelectItem value="savings">Savings</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="category"
@@ -158,21 +162,18 @@ const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue />
+                        <SelectValue placeholder="Select category" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       {categories?.map((category) => (
-                        <SelectItem
-                          key={category.id}
-                          value={category.id.toString()}
-                        >
-                          <div className="flex gap-x-5 items-center">
+                        <SelectItem key={category.id} value={category.id}>
+                          <div className="flex items-center gap-2">
                             <div
-                              className="w-3 h-3"
-                              style={{ background: category.color ?? "" }}
+                              className="w-3 h-3 rounded-full"
+                              style={{ backgroundColor: category.color! }}
                             />
-                            {category.name}
+                            <span>{category.name}</span>
                           </div>
                         </SelectItem>
                       ))}
@@ -183,26 +184,29 @@ const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
               )}
             />
           </div>
-
           <FormField
             control={form.control}
             name="datetime"
             render={({ field }) => (
-              <FormItem>
-                <Label>Date</Label>
+              <FormItem className="flex flex-col">
+                <FormLabel>Date</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
-                      <Input
-                        placeholder="Pick a date"
-                        value={
-                          field.value ? format(field.value, "PPP") : undefined
-                        }
+                      <Button
+                        variant={"outline"}
                         className={cn(
-                          "w-[240px] pl-3 text-left font-normal",
+                          "w-full pl-3 text-left font-normal",
                           !field.value && "text-muted-foreground",
                         )}
-                      ></Input>
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
                     </FormControl>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
@@ -210,6 +214,9 @@ const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
                       mode="single"
                       selected={field.value}
                       onSelect={field.onChange}
+                      disabled={(date) =>
+                        date > new Date() || date < new Date("1900-01-01")
+                      }
                       initialFocus
                     />
                   </PopoverContent>
@@ -218,11 +225,12 @@ const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
               </FormItem>
             )}
           />
-
-          <Button type="submit">{submitting ? "Saving" : "Add"}</Button>
-        </div>
-      </form>
-    </Form>
+          <Button type="submit" className="w-full" disabled={submitting}>
+            {submitting ? "Saving..." : "Add Transaction"}
+          </Button>
+        </form>
+      </Form>
+    </div>
   );
 };
 
