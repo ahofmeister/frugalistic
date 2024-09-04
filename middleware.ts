@@ -17,9 +17,7 @@ export async function middleware(request: NextRequest) {
 
   const { data: steps } = await supabase.from("onboarding_steps").select();
 
-  console.log("0");
   if (pathName.startsWith("/dashboard")) {
-    console.log("1");
     const hasIncompleteStep = steps?.some(
       (step) =>
         !step.status.includes("complete") && !step.status.includes("skipped"),
