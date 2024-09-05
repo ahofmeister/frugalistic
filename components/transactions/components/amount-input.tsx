@@ -65,7 +65,7 @@ const PayPalLikeInput: React.FC<PayPalLikeInputProps> = ({ name, control }) => {
 
                 if (e.key === "Backspace") {
                   e.preventDefault();
-                  numericValue = numericValue.slice(0, -1);
+                  numericValue = numericValue?.slice(0, -1);
                   if (numericValue.length === 0) {
                     field.onChange("0,00");
                   } else {
