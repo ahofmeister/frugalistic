@@ -3,10 +3,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@supabase-cache-helpers/postgrest-swr";
 import { format } from "date-fns";
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import PayPalLikeInput from "@/components/transactions/components/amount-input";
 import { upsertTransaction } from "@/components/transactions/transactions-api";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -38,32 +39,29 @@ import { createClient } from "@/utils/supabase/client";
 const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
   const formSchema = z.object({
     description: z.string().min(1),
-    amount: z.coerce.number({ message: "Required" }).min(1),
+    amount: z.coerce.string(),
     type: z.enum(["income", "expense", "savings"]),
     category: z.string(),
     datetime: z.date(),
   });
-
-  const [submitting, setSubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       description: transaction ? transaction.description : "",
       type: transaction ? transaction.type : "expense",
-      amount: transaction ? transaction.amount : 0,
       datetime: transaction ? new Date(transaction.datetime) : new Date(),
       category:
         transaction && transaction.category ? transaction.category : undefined,
     },
+    mode: "onChange",
   });
 
   async function handleSubmit(newTransaction: NewTransaction) {
-    setSubmitting(true);
     await upsertTransaction({
       ...newTransaction,
       id: transaction ? transaction.id : undefined,
-    }).then(() => setSubmitting(false));
+    });
   }
 
   const { data: categories } = useQuery(
@@ -86,6 +84,7 @@ const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
           onSubmit={form.handleSubmit((transaction) =>
             handleSubmit({
               ...transaction,
+              amount: Number(transaction.amount.replace(/\D/g, "")),
               datetime: format(transaction.datetime, "yyyy-MM-dd"),
             }),
           )}
@@ -105,26 +104,7 @@ const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="amount"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Amount</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="Enter amount"
-                      {...field}
-                      onChange={(e) =>
-                        field.onChange(parseFloat(e.target.value))
-                      }
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <PayPalLikeInput name="amount" control={form.control} />
             <FormField
               control={form.control}
               name="type"
@@ -225,8 +205,12 @@ const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full" disabled={submitting}>
-            {submitting ? "Saving..." : "Add Transaction"}
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={form.formState.isSubmitting || !form.formState.isValid}
+          >
+            {form.formState.isSubmitting ? "Saving..." : "Add Transaction"}
           </Button>
         </form>
       </Form>

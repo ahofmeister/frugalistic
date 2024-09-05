@@ -17,12 +17,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { TransactionWithCategory } from "@/types";
 
 export default function TransactionList({
@@ -100,24 +94,15 @@ export default function TransactionList({
                   <TrashIcon />
                 </Button>
 
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <Button
-                        variant="default"
-                        size="icon"
-                        onClick={() =>
-                          makeTransactionRecurring(transaction, "monthly")
-                        }
-                      >
-                        <ReloadIcon />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Monthly</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                <Button
+                  variant="default"
+                  size="icon"
+                  onClick={() =>
+                    makeTransactionRecurring(transaction, "monthly")
+                  }
+                >
+                  <ReloadIcon />
+                </Button>
               </TableCell>
             </TableRow>
           ))}
