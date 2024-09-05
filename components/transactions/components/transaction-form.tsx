@@ -4,10 +4,10 @@ import { CalendarIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@supabase-cache-helpers/postgrest-swr";
 import { format } from "date-fns";
 import React from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import PayPalLikeInput from "@/components/transactions/components/amount-input";
+import AmountInput from "@/components/transactions/components/amount-input";
 import { upsertTransaction } from "@/components/transactions/transactions-api";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -50,6 +50,7 @@ const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
     defaultValues: {
       description: transaction ? transaction.description : "",
       type: transaction ? transaction.type : "expense",
+      amount: "0,00",
       datetime: transaction ? new Date(transaction.datetime) : new Date(),
       category:
         transaction && transaction.category ? transaction.category : undefined,
@@ -104,7 +105,24 @@ const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
                 </FormItem>
               )}
             />
-            <PayPalLikeInput name="amount" control={form.control} />
+
+            <Controller
+              name="amount"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Amount</FormLabel>
+                  <FormControl>
+                    <AmountInput
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <FormField
               control={form.control}
               name="type"
