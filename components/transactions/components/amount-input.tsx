@@ -8,10 +8,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Control, FieldValues } from "react-hook-form";
 
 interface PayPalLikeInputProps {
   name: string;
-  control: any;
+  control: Control;
 }
 
 const PayPalLikeInput: React.FC<PayPalLikeInputProps> = ({ name, control }) => {
@@ -78,7 +79,7 @@ const PayPalLikeInput: React.FC<PayPalLikeInputProps> = ({ name, control }) => {
                   e.preventDefault();
                 }
               }}
-              onClick={(e) => e.preventDefault()} // Disable cursor click
+              onClick={(e) => e.preventDefault()}
             />
           </FormControl>
           <FormMessage />
