@@ -8,6 +8,7 @@ import { createClient } from "@/utils/supabase/server";
 
 export async function createCategory(formData: FormData) {
   const { data: response } = await createClient().auth.getUser();
+  // TODO user id should not be necessary
 
   const rawFormData = {
     name: formData.get("name") as string,

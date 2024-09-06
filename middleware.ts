@@ -4,18 +4,13 @@ import { updateSession } from "@/utils/supabase/middleware";
 import { createClient } from "@/utils/supabase/server";
 
 export async function middleware(request: NextRequest) {
-  await updateSession(request);
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const response = await updateSession(request);
 
   const pathName = request.nextUrl.pathname;
-  if (!user && pathName.startsWith("/dashboard")) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
 
-  const { data: steps } = await supabase.from("onboarding_steps").select();
+  const { data: steps } = await createClient()
+    .from("onboarding_steps")
+    .select();
 
   if (pathName.startsWith("/dashboard")) {
     const hasIncompleteStep = steps?.some(
@@ -35,19 +30,12 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - images - .svg, .png, .jpg, .jpeg, .gif, .webp
-     * Feel free to modify this pattern to include more paths.
-     */
+    "/dashboard",
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import React from "react";
 
 import { SubmitButton } from "@/components/auth/submit-button";
@@ -24,17 +23,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { createClient } from "@/utils/supabase/server";
 
 export default async function CategoriesPage() {
-  const {
-    data: { user },
-  } = await createClient().auth.getUser();
-
-  if (!user) {
-    return redirect("/login");
-  }
-
   const categories = await getCategories();
 
   return (

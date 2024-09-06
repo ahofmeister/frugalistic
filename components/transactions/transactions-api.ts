@@ -31,7 +31,7 @@ export async function makeTransactionRecurring(
   interval: RecurringInterval,
 ) {
   const { data: response } = await createClient().auth.getUser();
-
+  // TODO user id should be necessary
   if (!response) {
     return;
   }

@@ -1,6 +1,5 @@
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import React from "react";
 
 import InvokeRecurringTransactions from "@/app/dashboard/recurring/invoke-recurring-transactions";
@@ -18,13 +17,6 @@ import { createClient } from "@/utils/supabase/server";
 
 export default async function TransactionsPage() {
   const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return redirect("/login");
-  }
 
   const { data: transactions } = await supabase
     .from("transactions_recurring")
