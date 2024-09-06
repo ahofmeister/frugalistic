@@ -1,6 +1,7 @@
 import React from "react";
-import { searchTransactions } from "@/components/transactions/transactions-api";
+
 import TransactionList from "@/components/transactions/components/transaction-list";
+import { searchTransactions } from "@/components/transactions/transactions-api";
 
 const TransactionsPage2 = async ({
   dateFrom,
