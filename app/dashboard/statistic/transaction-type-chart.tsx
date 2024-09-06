@@ -17,7 +17,7 @@ import {
 
 import TransactionAmount, {
   formatAmount,
-} from "@/components/transactions/components/TransactionAmount";
+} from "@/components/transactions/components/transaction-amount";
 import { TransactionTotal } from "@/components/transactions/transactions-api";
 import { TransactionType } from "@/types";
 

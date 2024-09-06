@@ -3,7 +3,7 @@ import { Pencil1Icon, ReloadIcon, TrashIcon } from "@radix-ui/react-icons";
 import { formatDate } from "date-fns";
 import Link from "next/link";
 
-import TransactionAmount from "@/components/transactions/components/TransactionAmount";
+import TransactionAmount from "@/components/transactions/components/transaction-amount";
 import {
   deleteTransaction,
   makeTransactionRecurring,

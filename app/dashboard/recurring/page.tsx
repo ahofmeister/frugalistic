@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import React from "react";
 
 import InvokeRecurringTransactions from "@/app/dashboard/recurring/invoke-recurring-transactions";
-import TransactionAmount from "@/components/transactions/components/TransactionAmount";
+import TransactionAmount from "@/components/transactions/components/transaction-amount";
 import {
   Table,
   TableBody,

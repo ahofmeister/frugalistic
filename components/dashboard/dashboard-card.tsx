@@ -1,6 +1,6 @@
 import React from "react";
 
-import TransactionAmount from "@/components/transactions/components/TransactionAmount";
+import TransactionAmount from "@/components/transactions/components/transaction-amount";
 import { Card, CardHeader } from "@/components/ui/card";
 import { TransactionType } from "@/types";
 

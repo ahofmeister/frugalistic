@@ -97,7 +97,7 @@ export const searchTransactions = async ({
   await query.order("datetime", { ascending: false });
 
   if (!dateFrom && !dateTo && !description) {
-    await query.limit(100);
+    await query.limit(50);
   }
   const { data } = await query.returns<TransactionWithCategory[]>();
   return data ?? [];

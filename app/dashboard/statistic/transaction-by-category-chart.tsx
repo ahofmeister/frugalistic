@@ -19,7 +19,7 @@ import {
 
 import TransactionAmount, {
   formatAmount,
-} from "@/components/transactions/components/TransactionAmount";
+} from "@/components/transactions/components/transaction-amount";
 import { TransactionTotalByMonth } from "@/components/transactions/transactions-api";
 
 interface TransactionTotalByMonth2 {
