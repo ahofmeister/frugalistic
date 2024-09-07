@@ -8,8 +8,9 @@ export async function middleware(request: NextRequest) {
 
   const pathName = request.nextUrl.pathname;
 
-  const { data: hasIncompleteOnboardingSteps, error } =
-    await createClient().rpc("has_incomplete_onboarding_steps");
+  const { data: hasIncompleteOnboardingSteps } = await createClient().rpc(
+    "has_incomplete_onboarding_steps",
+  );
 
   if (pathName.startsWith("/dashboard")) {
     if (!hasIncompleteOnboardingSteps && pathName == "/dashboard/onboarding") {

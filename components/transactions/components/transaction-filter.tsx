@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import useQueryParams from "@/app/useQueryParams";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -11,7 +12,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
 import {
   Select,
   SelectContent,
@@ -19,8 +19,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 import { Category } from "@/types";
-import useQueryParams from "@/app/useQueryParams";
 
 const DATE_FROM_QUERY_PARAM = "dateFrom";
 const DATE_TO_QUERY_PARAM = "dateTo";
@@ -75,13 +75,8 @@ const TransactionFilter = ({ categories }: { categories: Category[] }) => {
   }, [searchParams, dateTo]);
 
   useEffect(() => {
-    const categoryQueryParam = queryParams.get(CATEGORY_QUERY_PARAM);
-    if (categoryQueryParam) {
-      setCategory(categoryQueryParam);
-    } else {
-      setCategory("");
-    }
-  }, [searchParams, category]);
+    setCategory(queryParam.toLowerCase());
+  }, [queryParam]);
 
   return (
     <div className="flex gap-10">
@@ -169,7 +164,7 @@ const TransactionFilter = ({ categories }: { categories: Category[] }) => {
         </SelectTrigger>
         <SelectContent>
           {categories?.map((cat) => (
-            <SelectItem key={cat.id} value={cat.name}>
+            <SelectItem key={cat.id} value={cat.name.toLowerCase()}>
               {cat.name}
             </SelectItem>
           ))}

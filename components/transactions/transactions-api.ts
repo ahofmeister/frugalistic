@@ -105,9 +105,7 @@ export const searchTransactions = async ({
   if (!dateFrom && !dateTo && !description) {
     await query.limit(50);
   }
-  console.log(query);
-  const { data, error } = await query.returns<TransactionWithCategory[]>();
-  console.log(error);
+  const { data } = await query.returns<TransactionWithCategory[]>();
   return data ?? [];
 };
 
