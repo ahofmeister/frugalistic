@@ -7,24 +7,16 @@ import { TablesInsert } from "@/types/supabase";
 import { createClient } from "@/utils/supabase/server";
 
 export async function createCategory(formData: FormData) {
-  const { data: response } = await createClient().auth.getUser();
-  // TODO user id should not be necessary
-
   const rawFormData = {
     name: formData.get("name") as string,
     color: formData.get("color") as string,
     division: formData.get("division") as Division,
   };
 
-  if (!response) {
-    return;
-  }
-
   const categoryInsert: TablesInsert<"categories"> = {
     name: rawFormData.name,
     color: rawFormData.color,
     division: rawFormData.division,
-    user_id: response.user!.id,
   };
 
   await createClient().from("categories").insert(categoryInsert);
