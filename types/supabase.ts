@@ -15,7 +15,7 @@ export type Database = {
           created_at: string | null
           division: Database["public"]["Enums"]["division"] | null
           id: string
-          name: string | null
+          name: string
           user_id: string
         }
         Insert: {
@@ -23,7 +23,7 @@ export type Database = {
           created_at?: string | null
           division?: Database["public"]["Enums"]["division"] | null
           id?: string
-          name?: string | null
+          name: string
           user_id?: string
         }
         Update: {
@@ -31,7 +31,7 @@ export type Database = {
           created_at?: string | null
           division?: Database["public"]["Enums"]["division"] | null
           id?: string
-          name?: string | null
+          name?: string
           user_id?: string
         }
         Relationships: [

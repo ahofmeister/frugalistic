@@ -12,9 +12,19 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Category } from "@/types";
+import useQueryParams from "@/app/useQueryParams";
 
 const DATE_FROM_QUERY_PARAM = "dateFrom";
 const DATE_TO_QUERY_PARAM = "dateTo";
+const CATEGORY_QUERY_PARAM = "category";
 
 const setSearchParam = (
   queryParams: URLSearchParams,
@@ -28,7 +38,7 @@ const setSearchParam = (
   }
 };
 
-const TransactionFilter = () => {
+const TransactionFilter = ({ categories }: { categories: Category[] }) => {
   const searchParams = useSearchParams();
   const queryParams = new URLSearchParams(searchParams);
   const path = usePathname();
@@ -36,6 +46,9 @@ const TransactionFilter = () => {
 
   const [dateFrom, setDateFrom] = useState<Date>();
   const [dateTo, setDateTo] = useState<Date>();
+  const [category, setCategory] = useState<string>("");
+
+  const { queryParam, setQueryParam } = useQueryParams(CATEGORY_QUERY_PARAM);
 
   useEffect(() => {
     const dateFromQueryParam = queryParams.get(DATE_FROM_QUERY_PARAM);
@@ -60,6 +73,15 @@ const TransactionFilter = () => {
       setDateTo(undefined);
     }
   }, [searchParams, dateTo]);
+
+  useEffect(() => {
+    const categoryQueryParam = queryParams.get(CATEGORY_QUERY_PARAM);
+    if (categoryQueryParam) {
+      setCategory(categoryQueryParam);
+    } else {
+      setCategory("");
+    }
+  }, [searchParams, category]);
 
   return (
     <div className="flex gap-10">
@@ -134,6 +156,25 @@ const TransactionFilter = () => {
           />
         </PopoverContent>
       </Popover>
+
+      <Select
+        value={category}
+        onValueChange={(value) => {
+          setCategory(value);
+          setQueryParam(value);
+        }}
+      >
+        <SelectTrigger className="w-[280px]">
+          <SelectValue placeholder="Select a category" />
+        </SelectTrigger>
+        <SelectContent>
+          {categories?.map((cat) => (
+            <SelectItem key={cat.id} value={cat.name}>
+              {cat.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   );
 };

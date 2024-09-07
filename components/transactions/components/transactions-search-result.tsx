@@ -7,15 +7,18 @@ const TransactionsPage2 = async ({
   dateFrom,
   dateTo,
   description,
+  category,
 }: {
   dateFrom: string;
   dateTo: string;
   description: string;
+  category: string;
 }) => {
   const data = await searchTransactions({
     dateFrom,
     dateTo,
     description,
+    category,
   });
 
   return (

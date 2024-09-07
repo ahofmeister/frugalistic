@@ -69,18 +69,24 @@ export const searchTransactions = async ({
   dateFrom,
   dateTo,
   description,
+  category,
 }: {
   dateFrom: string | undefined;
   dateTo: string | undefined;
   description: string | undefined;
+  category: string | undefined;
 }): Promise<TransactionWithCategory[]> => {
   const supabase = createClient();
 
   const query = supabase
     .from("transactions")
     .select(
-      "id, description, amount, datetime, type, category(name, division, color)",
+      "id, description, amount, datetime, type, category!inner(name, division, color)",
     );
+
+  if (category) {
+    await query.eq("category.name", category);
+  }
 
   if (dateFrom) {
     await query.gte("datetime", dateFrom);
@@ -99,7 +105,9 @@ export const searchTransactions = async ({
   if (!dateFrom && !dateTo && !description) {
     await query.limit(50);
   }
-  const { data } = await query.returns<TransactionWithCategory[]>();
+  console.log(query);
+  const { data, error } = await query.returns<TransactionWithCategory[]>();
+  console.log(error);
   return data ?? [];
 };
 

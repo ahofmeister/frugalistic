@@ -3,7 +3,7 @@ import React, { Suspense } from "react";
 import ResetQueryParam from "@/app/dashboard/transactions/reset-query-param";
 import TransactionFilter from "@/components/transactions/components/transaction-filter";
 import TransactionSearchInput from "@/components/transactions/components/transaction-search-input";
-import TransactionsPage2 from "@/components/transactions/components/transactions-search-result";
+import TransactionsResult from "@/components/transactions/components/transactions-search-result";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -13,17 +13,27 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { createClient } from "@/utils/supabase/server";
 
-export default function TransactionsPage({
+export default async function TransactionsPage({
   searchParams,
 }: {
-  searchParams: { dateFrom: string; dateTo: string; description: string };
+  searchParams: {
+    dateFrom: string;
+    dateTo: string;
+    description: string;
+    category: string;
+  };
 }) {
+  const { data: categories } = await createClient()
+    .from("categories")
+    .select("*");
+
   return (
     <>
       <div className="flex gap-10">
         <TransactionSearchInput />
-        <TransactionFilter />
+        <TransactionFilter categories={categories ?? []} />
         <ResetQueryParam />
       </div>
 
@@ -77,7 +87,8 @@ export default function TransactionsPage({
             </div>
           }
         >
-          <TransactionsPage2
+          <TransactionsResult
+            category={searchParams.category}
             description={searchParams.description}
             dateFrom={searchParams.dateFrom}
             dateTo={searchParams.dateTo}
