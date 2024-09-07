@@ -8,22 +8,15 @@ export async function middleware(request: NextRequest) {
 
   const pathName = request.nextUrl.pathname;
 
-  const { data: steps } = await createClient()
-    .from("onboarding_steps")
-    .select();
+  const { data: hasIncompleteOnboardingSteps, error } =
+    await createClient().rpc("has_incomplete_onboarding_steps");
 
   if (pathName.startsWith("/dashboard")) {
-    const hasIncompleteStep = steps?.some(
-      (step) =>
-        !step.status.includes("complete") && !step.status.includes("skipped"),
-    );
-
-    if (!hasIncompleteStep && pathName == "/dashboard/onboarding") {
-      const url = new URL("/dashboard", request.url);
-      return NextResponse.redirect(url);
+    if (!hasIncompleteOnboardingSteps && pathName == "/dashboard/onboarding") {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
     }
 
-    if (hasIncompleteStep && pathName !== "/dashboard/onboarding") {
+    if (hasIncompleteOnboardingSteps && pathName !== "/dashboard/onboarding") {
       return NextResponse.redirect(
         new URL("/dashboard/onboarding", request.url),
       );

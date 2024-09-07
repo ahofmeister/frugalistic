@@ -270,6 +270,10 @@ export type Database = {
           total: number
         }[]
       }
+      has_incomplete_onboarding_steps: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       insert_recurring_transaction: {
         Args: Record<PropertyKey, never>
         Returns: undefined
