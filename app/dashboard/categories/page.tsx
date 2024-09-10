@@ -1,20 +1,6 @@
 import React from "react";
-
-import { SubmitButton } from "@/components/auth/submit-button";
-import {
-  createCategory,
-  getCategories,
-} from "@/components/categories/categories-api";
-import DeleteCategory from "@/components/categories/DeleteCategory";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { getCategories } from "@/components/categories/categories-api";
+import DeleteCategory from "@/components/categories/delete-category";
 import {
   Table,
   TableBody,
@@ -23,64 +9,61 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import CategoryForm from "@/components/categories/category-form";
 
 export default async function CategoriesPage() {
   const categories = await getCategories();
 
   return (
     <>
-      <form>
-        <div className="flex gap-10 max-w-fit mb-10">
-          <Input name="name" placeholder="Name" />
+      <div className="min-h-screen p-4">
+        <div className="max-w-2xl space-y-6">
+          <div className="text-2xl font-bold text-gray-100">
+            Create Category
+          </div>
+          <div className="max-w-md">
+            <CategoryForm />
+          </div>
 
-          <Select name="division">
-            <SelectTrigger>
-              <SelectValue placeholder="Select a division" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="essentials">essentials</SelectItem>
-                <SelectItem value="leisure">leisure</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-
-          <Input
-            name="color"
-            placeholder="Color"
-            pattern="^#(?:[0-9a-fA-F]{6})$"
-          />
-
-          <SubmitButton formAction={createCategory} pendingText="Creating...">
-            Create
-          </SubmitButton>
+          <div className="text-2xl font-semibold text-gray-100">Categories</div>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Color</TableHead>
+                  <TableHead>Division</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {categories.map((category) => {
+                  return (
+                    <TableRow key={category.id}>
+                      <TableCell className="flex-1">{category.name}</TableCell>
+                      <TableCell className="text-gray-300">
+                        <div className="flex items-center gap-3">
+                          <div
+                            className="w-6 h-6 rounded-full border"
+                            style={{ backgroundColor: category.color! }}
+                          />
+                          {category.color}
+                        </div>
+                      </TableCell>
+                      <TableCell className="flex-1">
+                        {category.division}
+                      </TableCell>
+                      <TableCell>
+                        <DeleteCategory category={category} />
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </div>
         </div>
-      </form>
-
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Color</TableHead>
-            <TableHead>Division</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {categories.map((category) => {
-            return (
-              <TableRow key={category.id}>
-                <TableCell className="flex-1">{category.name}</TableCell>
-                <TableCell className="flex-1">{category.color}</TableCell>
-                <TableCell className="flex-1">{category.division}</TableCell>
-                <TableCell>
-                  <DeleteCategory category={category} />
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
+      </div>
     </>
   );
 }

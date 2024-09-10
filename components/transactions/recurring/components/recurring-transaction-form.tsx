@@ -60,8 +60,8 @@ const RecurringTransactionForm = ({
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit((newT) =>
-          handleSubmit({ ...transaction, ...newT }),
+        onSubmit={form.handleSubmit((newTransaction) =>
+          handleSubmit({ ...transaction, ...newTransaction }),
         )}
         className="space-y-6"
       >

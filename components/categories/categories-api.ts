@@ -2,24 +2,12 @@
 
 import { revalidatePath } from "next/cache";
 
-import { Category, DefaultCategory, Division } from "@/types";
+import { Category, DefaultCategory, Division, NewCategory } from "@/types";
 import { TablesInsert } from "@/types/supabase";
 import { createClient } from "@/utils/supabase/server";
 
-export async function createCategory(formData: FormData) {
-  const rawFormData = {
-    name: formData.get("name") as string,
-    color: formData.get("color") as string,
-    division: formData.get("division") as Division,
-  };
-
-  const categoryInsert: TablesInsert<"categories"> = {
-    name: rawFormData.name,
-    color: rawFormData.color,
-    division: rawFormData.division,
-  };
-
-  await createClient().from("categories").insert(categoryInsert);
+export async function createCategory(newCategory: NewCategory) {
+  await createClient().from("categories").insert(newCategory);
 
   revalidatePath("/categories");
 }
