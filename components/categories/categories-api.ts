@@ -2,8 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { Category, DefaultCategory, Division, NewCategory } from "@/types";
-import { TablesInsert } from "@/types/supabase";
+import { Category, DefaultCategory, NewCategory } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
 export async function createCategory(newCategory: NewCategory) {

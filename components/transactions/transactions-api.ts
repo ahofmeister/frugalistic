@@ -10,10 +10,10 @@ import {
 } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
-function calcNextRun(
+const calcNextRun = (
   date: string,
   recurringInterval: "monthly" | "annually",
-): Date {
+): Date => {
   const currentRun = new Date(date);
 
   switch (recurringInterval) {
@@ -22,9 +22,7 @@ function calcNextRun(
     case "annually":
       return addYears(currentRun, 1);
   }
-
-  return currentRun;
-}
+};
 
 export async function makeTransactionRecurring(
   transaction: TransactionWithCategory,

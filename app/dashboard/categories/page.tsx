@@ -1,5 +1,7 @@
 import React from "react";
+
 import { getCategories } from "@/components/categories/categories-api";
+import CategoryForm from "@/components/categories/category-form";
 import DeleteCategory from "@/components/categories/delete-category";
 import {
   Table,
@@ -9,7 +11,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import CategoryForm from "@/components/categories/category-form";
 
 export default async function CategoriesPage() {
   const categories = await getCategories();

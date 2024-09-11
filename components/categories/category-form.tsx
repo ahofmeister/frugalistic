@@ -1,17 +1,12 @@
 "use client";
 
+import React from "react";
 import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { z } from "zod";
-import { NewCategory } from "@/types";
+
 import { createCategory } from "@/components/categories/categories-api";
+import { Button } from "@/components/ui/button";
+import { ColorPicker } from "@/components/ui/color-picker";
 import {
   Form,
   FormControl,
@@ -20,9 +15,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import React from "react";
 import { Input } from "@/components/ui/input";
-import { ColorPicker } from "@/components/ui/color-picker";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { NewCategory } from "@/types";
 
 const CategoryForm = () => {
   const formSchema = z.object({
@@ -51,8 +52,8 @@ const CategoryForm = () => {
           handleSubmit({ ...newCategory }),
         )}
       >
-        <div className={"flex flex-col gap-y-10"}>
-          <div className={"flex gap-x-10 "}>
+        <div className="flex flex-col gap-y-10">
+          <div className="flex gap-x-10 ">
             <FormField
               control={form.control}
               name="name"
@@ -108,7 +109,7 @@ const CategoryForm = () => {
             />
           </div>
 
-          <Button className={"w-full"}>Create Category</Button>
+          <Button className="w-full">Create Category</Button>
         </div>
       </form>
     </Form>
