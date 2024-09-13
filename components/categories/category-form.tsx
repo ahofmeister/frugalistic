@@ -24,17 +24,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { NewCategory } from "@/types";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const CategoryForm = () => {
   const formSchema = z.object({
-    name: z.string(),
+    name: z.string().min(2),
     color: z.string(),
     division: z.enum(["essentials", "leisure"]),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
       division: "essentials",
       color: "#FF00FF",
     },
@@ -42,15 +43,16 @@ const CategoryForm = () => {
   });
 
   async function handleSubmit(newTransaction: NewCategory) {
-    await createCategory(newTransaction).then((x) => console.log(x));
+    await createCategory(newTransaction);
   }
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit((newCategory) =>
-          handleSubmit({ ...newCategory }),
-        )}
+        onSubmit={form.handleSubmit((newCategory) => {
+          console.log(newCategory);
+          return handleSubmit({ ...newCategory });
+        })}
       >
         <div className="flex flex-col gap-y-10">
           <div className="flex gap-x-10 ">
@@ -109,7 +111,13 @@ const CategoryForm = () => {
             />
           </div>
 
-          <Button className="w-full">Create Category</Button>
+          <Button
+            type={"submit"}
+            disabled={form.formState.isSubmitting || !form.formState.isValid}
+            className="w-full"
+          >
+            Create Category
+          </Button>
         </div>
       </form>
     </Form>
