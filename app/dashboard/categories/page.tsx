@@ -46,7 +46,7 @@ export default async function CategoriesPage() {
                         <div className="flex items-center gap-3">
                           <div
                             className="w-6 h-6 rounded-full border"
-                            style={{ backgroundColor: category.color! }}
+                            style={{ backgroundColor: category.color }}
                           />
                           {category.color}
                         </div>

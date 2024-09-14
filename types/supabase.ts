@@ -270,6 +270,105 @@ export type Database = {
           total: number
         }[]
       }
+      get_monthly_expenses_by_category:
+        | {
+            Args: {
+              year: number
+            }
+            Returns: {
+              category_name: string
+              category_color: string
+              month: number
+              total: number
+            }[]
+          }
+        | {
+            Args: {
+              year: number
+            }
+            Returns: {
+              category_name: string
+              category_color: string
+              month: number
+              total: number
+            }[]
+          }
+      get_monthly_expenses_by_category2: {
+        Args: {
+          year: number
+        }
+        Returns: {
+          category_name: string
+          category_color: string
+          month: number
+          total: number
+        }[]
+      }
+      get_monthly_expenses_by_category3: {
+        Args: {
+          year: number
+        }
+        Returns: {
+          category_name: string
+          category_color: string
+          month: number
+          total: number
+        }[]
+      }
+      get_monthly_expenses_by_category4: {
+        Args: {
+          year: number
+        }
+        Returns: {
+          category_name: string
+          category_color: string
+          month: number
+          total: number
+        }[]
+      }
+      get_monthly_expenses_by_category5: {
+        Args: {
+          year: number
+        }
+        Returns: {
+          category_name: string
+          category_color: string
+          month: number
+          total: number
+        }[]
+      }
+      get_total_amount_by_category: {
+        Args: {
+          p_year: number
+          p_month: number
+        }
+        Returns: {
+          category_name: string
+          total_amount: number
+        }[]
+      }
+      get_total_amount_by_category2: {
+        Args: {
+          p_year: number
+          p_month: number
+        }
+        Returns: {
+          category_name: string
+          category_color: string
+          total_amount: number
+        }[]
+      }
+      get_total_amount_by_category3: {
+        Args: {
+          p_year: number
+          p_month: number
+        }
+        Returns: {
+          category_name: string
+          category_color: string
+          total: number
+        }[]
+      }
       has_incomplete_onboarding_steps: {
         Args: Record<PropertyKey, never>
         Returns: boolean

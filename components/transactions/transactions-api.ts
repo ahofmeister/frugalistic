@@ -116,8 +116,8 @@ export type TransactionTotal = {
 
 export type TransactionTotalByMonth = {
   total: number;
-  name: string;
-  color: string;
+  category_name: string;
+  category_color: string;
   month: number;
 };
 

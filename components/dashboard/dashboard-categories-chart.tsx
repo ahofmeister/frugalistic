@@ -35,7 +35,7 @@ const DashboardCategoriesChart = ({
           {data.map((entry, index) => (
             <Cell
               cursor="pointer"
-              fill={data[index].color}
+              fill={data[index].category_color}
               key={`cell-${index}`}
             />
           ))}

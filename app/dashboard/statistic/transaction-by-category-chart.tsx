@@ -23,8 +23,8 @@ import TransactionAmount, {
 import { TransactionTotalByMonth } from "@/components/transactions/transactions-api";
 
 interface TransactionTotalByMonth2 {
-  name: string | null;
-  color: string | null;
+  category_color: string;
+  category_name: string;
   month: number;
   total: number;
 }
@@ -41,16 +41,16 @@ const transformData = (
 ): MonthCategoryTotals[] => {
   const monthlyTotals: Record<number, MonthCategoryTotals> = {};
 
-  data.forEach(({ month, name, total }) => {
+  data.forEach(({ month, category_name, total }) => {
     if (!monthlyTotals[month]) {
       monthlyTotals[month] = { month, total: 0 };
     }
 
     if (name !== null) {
-      if (!monthlyTotals[month][name]) {
-        monthlyTotals[month][name] = 0;
+      if (!monthlyTotals[month][category_name]) {
+        monthlyTotals[month][category_name] = 0;
       }
-      monthlyTotals[month][name] += total;
+      monthlyTotals[month][category_name] += total;
     }
   });
 
@@ -66,9 +66,11 @@ const TransactionByCategoryChart = ({
 }: {
   data: TransactionTotalByMonth[];
 }) => {
-  const names = data.map((transaction) => transaction.name).filter(onlyUnique);
+  const names = data
+    .map((transaction) => transaction.category_name)
+    .filter(onlyUnique);
   const colors = data
-    .map((transaction) => transaction.color)
+    .map((transaction) => transaction.category_color)
     .filter(onlyUnique);
 
   let tooltip: string;
@@ -143,7 +145,7 @@ function calculateMonthlyTotal(data: TransactionTotalByMonth[], month: number) {
   let total = 0;
 
   data.forEach((item) => {
-    if (item.name === null || item.color === null) {
+    if (item.category_name === null || item.category_color === null) {
       return;
     }
 

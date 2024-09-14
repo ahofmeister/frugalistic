@@ -3,6 +3,7 @@ import { Pencil1Icon, ReloadIcon, TrashIcon } from "@radix-ui/react-icons";
 import { formatDate } from "date-fns";
 import Link from "next/link";
 
+import CategoryColor from "@/components/categories/category-color";
 import TransactionAmount from "@/components/transactions/components/transaction-amount";
 import {
   deleteTransaction,
@@ -57,17 +58,8 @@ export default function TransactionList({
               <TableCell className="text-left">
                 {transaction.description}
               </TableCell>
-              <TableCell className="text-left flex items-center">
-                <div
-                  className="flex w-4 h-4 mx-2"
-                  style={{
-                    backgroundColor: transaction.category
-                      ? transaction.category.color!
-                      : "",
-                  }}
-                >
-                  &nbsp;
-                </div>
+              <TableCell className="text-left flex items-center gap-x-2">
+                <CategoryColor color={transaction.category?.color} />
                 {transaction.category?.name}
               </TableCell>
               <TableCell className="text-left">
