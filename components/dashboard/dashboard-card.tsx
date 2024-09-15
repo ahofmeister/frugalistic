@@ -16,8 +16,8 @@ const DashboardCard = ({
   total?: number;
 }) => {
   return (
-    <Card>
-      <CardHeader className="w-48">
+    <Card className="w-36 h-36">
+      <CardHeader className="">
         {label}
         <div className="text-2xl">
           <TransactionAmount amount={amount} type={type} />

@@ -2,8 +2,7 @@ import "../globals.css";
 
 import React from "react";
 
-import { navConfig } from "@/components/navigation/nav-config";
-import Navigation from "@/components/navigation/navigation";
+import DashboardNavigation from "@/components/dashboard/dashboard-navigation";
 
 export default function RootLayout({
   children,
@@ -13,8 +12,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className="bg-background text-white">
-        <Navigation items={navConfig.dashboardNavigation} publicArea={false} />
-        <main className="m-10">{children}</main>
+        <div className="flex h-screen">
+          <DashboardNavigation />
+          <main className="mx-10 my-5 flex-1 overflow-y-auto">{children}</main>
+        </div>
       </body>
     </html>
   );

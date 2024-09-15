@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { signOut } from "@/components/auth/auth-actions";
+import { Button } from "@/components/ui/button";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function AuthButton() {
@@ -13,7 +14,7 @@ export default async function AuthButton() {
   return user ? (
     <div className="flex items-center gap-4">
       <form action={signOut}>
-        <button>Logout</button>
+        <Button variant="ghost">Logout</Button>
       </form>
     </div>
   ) : (

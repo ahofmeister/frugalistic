@@ -1,7 +1,6 @@
 import React from "react";
 
 import MainNavigation from "@/components/navigation/main-navigation";
-import MobileNavigation from "@/components/navigation/mobile-navigation";
 import { NavItem } from "@/components/navigation/nav-config";
 
 const Navigation = ({
@@ -17,10 +16,6 @@ const Navigation = ({
         <div className="relative flex justify-between h-16 mx-auto lg:container lg:px-16 xl:px-20">
           <div className="px-6 lg:px-0 flex-1 sm:items-stretch">
             <MainNavigation items={items} loggedIn={!publicArea} />
-          </div>
-
-          <div className="inset-y-5 flex mr-2 items-center px-4 lg:hidden">
-            <MobileNavigation items={items} />
           </div>
         </div>
       </nav>

@@ -1,7 +1,6 @@
 "use client";
-import { useQuery } from "@supabase-cache-helpers/postgrest-swr";
 import React from "react";
-import { Cell, Label, Pie, PieChart } from "recharts";
+import { Cell, Pie, PieChart } from "recharts";
 
 import CategoryColor from "@/components/categories/category-color";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,7 +10,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { cn } from "@/components/ui/utils";
-import { createClient } from "@/utils/supabase/client";
+import { TransactionWithCategory } from "@/types";
 
 export type CategoryTotal = {
   total: number;
@@ -20,32 +19,13 @@ export type CategoryTotal = {
 };
 
 const DashboardCategories = ({
-  month,
-  year,
+  transactions,
 }: {
-  month: number;
-  year: number;
+  transactions: TransactionWithCategory[];
 }) => {
-  const { data: transactionsByCategory } = useQuery(
-    createClient()
-      .rpc("get_total_amount_by_category3", {
-        p_year: year,
-        p_month: month + 1,
-      })
-      .select("*")
-      .returns<CategoryTotal[]>()
-      .order("total", { ascending: false }),
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      revalidateIfStale: false,
-    },
+  const data = groupTransactionsByCategory(
+    transactions.filter((transaction) => transaction.type === "expense"),
   );
-
-  const data = transactionsByCategory?.map((transaction) => ({
-    ...transaction,
-    total: transaction.total / 100,
-  }));
 
   const totalExpense =
     React.useMemo(() => {
@@ -54,7 +34,7 @@ const DashboardCategories = ({
 
   return (
     <Card className="flex flex-col">
-      <CardHeader className="items-center pb-0">
+      <CardHeader className="pb-0">
         <CardTitle>Expenses by Category</CardTitle>
       </CardHeader>
       <CardContent className="flex items-center">
@@ -81,35 +61,6 @@ const DashboardCategories = ({
                     key={`cell-${index}`}
                   />
                 ))}
-                <Label
-                  content={({ viewBox }) => {
-                    if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                      return (
-                        <text
-                          x={viewBox.cx}
-                          y={viewBox.cy}
-                          textAnchor="middle"
-                          dominantBaseline="middle"
-                        >
-                          <tspan
-                            x={viewBox.cx}
-                            y={viewBox.cy}
-                            className="fill-foreground text-3xl font-bold"
-                          >
-                            {totalExpense?.toFixed(0)}
-                          </tspan>
-                          <tspan
-                            x={viewBox.cx}
-                            y={(viewBox.cy || 0) + 24}
-                            className="fill-muted-foreground"
-                          >
-                            Total
-                          </tspan>
-                        </text>
-                      );
-                    }
-                  }}
-                />
               </Pie>
             </PieChart>
           </ChartContainer>
@@ -138,3 +89,27 @@ const DashboardCategories = ({
   );
 };
 export default DashboardCategories;
+
+export function groupTransactionsByCategory(
+  transactions: TransactionWithCategory[],
+): CategoryTotal[] {
+  const categoryTotals: Record<string, CategoryTotal> = {};
+
+  transactions.forEach((transaction) => {
+    if (!transaction.category) return;
+
+    const { name, color } = transaction.category;
+
+    if (!categoryTotals[name]) {
+      categoryTotals[name] = {
+        total: 0,
+        category_name: name,
+        category_color: color,
+      };
+    }
+
+    categoryTotals[name].total += transaction.amount / 100;
+  });
+
+  return Object.values(categoryTotals).sort((b, a) => a.total - b.total);
+}

@@ -1,51 +1,51 @@
 "use client";
-import { useQuery } from "@supabase-cache-helpers/postgrest-swr";
 import React from "react";
 
 import DashboardCard from "@/components/dashboard/dashboard-card";
-import { TransactionTotal } from "@/components/transactions/transactions-api";
-import { createClient } from "@/utils/supabase/client";
+import { TransactionWithCategory } from "@/types";
 
-const DashboardCards = ({ month, year }: { month: number; year: number }) => {
-  const { data: transactionTotal } = useQuery(
-    createClient()
-      .rpc("transaction_type_total", { year: year })
-      .select()
-      .returns<TransactionTotal[]>()
-      .order("month"),
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      revalidateIfStale: false,
-    },
-  );
+const DashboardCards = ({
+  transactions,
+}: {
+  transactions: TransactionWithCategory[];
+}) => {
+  let income = 0;
+  let expense = 0;
+  let savings = 0;
 
-  const income = transactionTotal ? transactionTotal[month]?.income : 0;
-  const expense = transactionTotal ? transactionTotal[month]?.expense : 0;
-  const savings = transactionTotal ? transactionTotal[month]?.savings : 0;
+  transactions.forEach((transaction) => {
+    const amount = transaction.amount;
+    switch (transaction.type) {
+      case "income":
+        income += amount;
+        break;
+      case "expense":
+        expense += amount;
+        break;
+      case "savings":
+        savings += amount;
+        break;
+    }
+  });
+
   const leftover = income - expense - savings;
 
   return (
-    <div className="h-80 flex  gap-y-5 flex-col justify-between">
-      <div className=" flex gap-5">
-        <DashboardCard amount={leftover} label="Leftover" total={income} />
-        <DashboardCard amount={income} type="income" label="Income" />
-      </div>
-
-      <div className="flex gap-5">
-        <DashboardCard
-          amount={savings}
-          type="savings"
-          label="Savings"
-          total={income}
-        />
-        <DashboardCard
-          amount={expense}
-          type="expense"
-          label="Expenses"
-          total={income}
-        />
-      </div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-5 gap-y-5">
+      <DashboardCard amount={income} type="income" label="Income" />
+      <DashboardCard
+        amount={savings}
+        type="savings"
+        label="Savings"
+        total={income}
+      />
+      <DashboardCard
+        amount={expense}
+        type="expense"
+        label="Expenses"
+        total={income}
+      />
+      <DashboardCard amount={leftover} label="Leftover" total={income} />
     </div>
   );
 };
