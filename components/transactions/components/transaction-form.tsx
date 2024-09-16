@@ -50,7 +50,7 @@ const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
     defaultValues: {
       description: transaction ? transaction.description : "",
       type: transaction ? transaction.type : "expense",
-      amount: "0,00",
+      amount: transaction ? transaction.amount.toString() : "0",
       datetime: transaction ? new Date(transaction.datetime) : new Date(),
       category:
         transaction && transaction.category ? transaction.category : undefined,

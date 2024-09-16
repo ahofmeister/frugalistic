@@ -7,17 +7,17 @@ interface AmountInputProps {
   onChange: (value: string) => void;
 }
 
-const AmountInput: React.FC<AmountInputProps> = ({ value, onChange }) => {
-  const [inputValue, setInputValue] = useState(value);
+const formatInput = (numericValue: string): string => {
+  numericValue = numericValue.padStart(3, "0");
+  const cents = numericValue.slice(-2);
+  let integerPart = numericValue.slice(0, -2);
+  integerPart = integerPart.replace(/^0+(?!$)/, "");
+  integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return `${integerPart},${cents}`;
+};
 
-  const formatInput = (numericValue: string): string => {
-    numericValue = numericValue.padStart(3, "0");
-    const cents = numericValue.slice(-2);
-    let integerPart = numericValue.slice(0, -2);
-    integerPart = integerPart.replace(/^0+(?!$)/, "");
-    integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    return `${integerPart},${cents}`;
-  };
+const AmountInput: React.FC<AmountInputProps> = ({ value, onChange }) => {
+  const [inputValue, setInputValue] = useState(formatInput(value.toString()));
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value.replace(/\D/g, "");
