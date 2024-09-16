@@ -10,7 +10,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { cn } from "@/components/ui/utils";
+import { cn } from "@/lib/utils";
 import { TransactionWithCategory } from "@/types";
 
 export type DivisionTotal = {
