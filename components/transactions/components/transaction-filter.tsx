@@ -38,6 +38,8 @@ const setSearchParam = (
   }
 };
 
+const CATEGORY_ALL_VALUE = "all";
+
 const TransactionFilter = ({ categories }: { categories: Category[] }) => {
   const searchParams = useSearchParams();
   const queryParams = new URLSearchParams(searchParams);
@@ -46,9 +48,10 @@ const TransactionFilter = ({ categories }: { categories: Category[] }) => {
 
   const [dateFrom, setDateFrom] = useState<Date>();
   const [dateTo, setDateTo] = useState<Date>();
-  const [category, setCategory] = useState<string>("");
+  const [category, setCategory] = useState<string>("all");
 
-  const { queryParam, setQueryParam } = useQueryParams(CATEGORY_QUERY_PARAM);
+  const { queryParam, setQueryParam, reset } =
+    useQueryParams(CATEGORY_QUERY_PARAM);
 
   useEffect(() => {
     const dateFromQueryParam = queryParams.get(DATE_FROM_QUERY_PARAM);
@@ -75,7 +78,7 @@ const TransactionFilter = ({ categories }: { categories: Category[] }) => {
   }, [searchParams, dateTo]);
 
   useEffect(() => {
-    setCategory(queryParam);
+    setCategory(queryParam ? queryParam : CATEGORY_ALL_VALUE);
   }, [queryParam]);
 
   return (
@@ -155,14 +158,21 @@ const TransactionFilter = ({ categories }: { categories: Category[] }) => {
       <Select
         value={category}
         onValueChange={(value) => {
-          setCategory(value);
-          setQueryParam(value);
+          setCategory(
+            value === CATEGORY_ALL_VALUE ? CATEGORY_ALL_VALUE : value,
+          );
+          if (value == CATEGORY_ALL_VALUE) {
+            reset();
+          } else {
+            setQueryParam(value);
+          }
         }}
       >
         <SelectTrigger className="w-[280px]">
           <SelectValue placeholder="Select a category" />
         </SelectTrigger>
         <SelectContent>
+          <SelectItem value={CATEGORY_ALL_VALUE}>All</SelectItem>
           {categories?.map((cat) => (
             <SelectItem key={cat.id} value={cat.name}>
               {cat.name}
