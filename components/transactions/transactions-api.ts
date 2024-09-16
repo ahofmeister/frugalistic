@@ -120,12 +120,6 @@ export type TransactionTotalByMonth = {
   category_color: string;
   month: number;
 };
-export type TransactionTotalByMonthLegacy = {
-  total: number;
-  name: string;
-  color: string;
-  month: number;
-};
 
 export const getTotalByCategory = async ({
   year,
