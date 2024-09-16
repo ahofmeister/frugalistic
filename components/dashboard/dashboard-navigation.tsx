@@ -8,7 +8,7 @@ import { siteConfig } from "@/components/site-config";
 import { Button } from "@/components/ui/button";
 const DashboardNavigation = () => {
   return (
-    <div className="flex flex-col w-72 h-screen text-center border-r border-r-gray-800">
+    <div className="flex flex-col w-60 h-screen text-center border-r border-r-gray-800">
       <div className="text-2xl text-primary font-semibold p-8 text-left border-b border-gray-800">
         {siteConfig.name}
       </div>

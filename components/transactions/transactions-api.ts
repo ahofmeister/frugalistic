@@ -120,6 +120,12 @@ export type TransactionTotalByMonth = {
   category_color: string;
   month: number;
 };
+export type TransactionTotalByMonthLegacy = {
+  total: number;
+  name: string;
+  color: string;
+  month: number;
+};
 
 export const getTotalByCategory = async ({
   year,
@@ -128,13 +134,15 @@ export const getTotalByCategory = async ({
 }): Promise<TransactionTotalByMonth[]> => {
   const supabase = createClient();
 
-  const { data } = await supabase
-    .rpc("transaction_categories_total", { year: year })
+  const { data, error } = await supabase
+    .rpc("get_expenses_total_by_category", { year: year })
     .select("*")
     .returns<TransactionTotalByMonth[]>()
     .order("month")
     .order("total", { ascending: false });
-
+  if (error) {
+    console.log(error);
+  }
   return data ?? [];
 };
 

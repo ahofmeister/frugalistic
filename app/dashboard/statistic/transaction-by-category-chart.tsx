@@ -46,7 +46,7 @@ const transformData = (
       monthlyTotals[month] = { month, total: 0 };
     }
 
-    if (name !== null) {
+    if (category_name !== null) {
       if (!monthlyTotals[month][category_name]) {
         monthlyTotals[month][category_name] = 0;
       }
@@ -57,9 +57,8 @@ const transformData = (
   return Object.values(monthlyTotals);
 };
 
-function onlyUnique(value: string, index: number, array: string[]) {
-  return array.indexOf(value) === index;
-}
+const onlyUnique = (value: string, index: number, array: string[]) =>
+  array.indexOf(value) === index;
 
 const TransactionByCategoryChart = ({
   data,

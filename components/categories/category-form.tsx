@@ -50,7 +50,6 @@ const CategoryForm = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit((newCategory) => {
-          console.log(newCategory);
           return handleSubmit({ ...newCategory });
         })}
       >

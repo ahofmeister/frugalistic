@@ -252,48 +252,7 @@ export type Database = {
       }
     }
     Functions: {
-      available_months_and_years: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          month: number
-          year: number
-        }[]
-      }
-      division_total4: {
-        Args: {
-          p_year: number
-        }
-        Returns: {
-          month: number
-          year: number
-          division: Database["public"]["Enums"]["division"]
-          total: number
-        }[]
-      }
-      get_monthly_expenses_by_category:
-        | {
-            Args: {
-              year: number
-            }
-            Returns: {
-              category_name: string
-              category_color: string
-              month: number
-              total: number
-            }[]
-          }
-        | {
-            Args: {
-              year: number
-            }
-            Returns: {
-              category_name: string
-              category_color: string
-              month: number
-              total: number
-            }[]
-          }
-      get_monthly_expenses_by_category2: {
+      get_expenses_total_by_category: {
         Args: {
           year: number
         }
@@ -301,71 +260,6 @@ export type Database = {
           category_name: string
           category_color: string
           month: number
-          total: number
-        }[]
-      }
-      get_monthly_expenses_by_category3: {
-        Args: {
-          year: number
-        }
-        Returns: {
-          category_name: string
-          category_color: string
-          month: number
-          total: number
-        }[]
-      }
-      get_monthly_expenses_by_category4: {
-        Args: {
-          year: number
-        }
-        Returns: {
-          category_name: string
-          category_color: string
-          month: number
-          total: number
-        }[]
-      }
-      get_monthly_expenses_by_category5: {
-        Args: {
-          year: number
-        }
-        Returns: {
-          category_name: string
-          category_color: string
-          month: number
-          total: number
-        }[]
-      }
-      get_total_amount_by_category: {
-        Args: {
-          p_year: number
-          p_month: number
-        }
-        Returns: {
-          category_name: string
-          total_amount: number
-        }[]
-      }
-      get_total_amount_by_category2: {
-        Args: {
-          p_year: number
-          p_month: number
-        }
-        Returns: {
-          category_name: string
-          category_color: string
-          total_amount: number
-        }[]
-      }
-      get_total_amount_by_category3: {
-        Args: {
-          p_year: number
-          p_month: number
-        }
-        Returns: {
-          category_name: string
-          category_color: string
           total: number
         }[]
       }
@@ -377,29 +271,7 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
-      transaction_categories_total: {
-        Args: {
-          year: number
-        }
-        Returns: {
-          name: string
-          color: string
-          month: number
-          total: number
-        }[]
-      }
       transaction_type_total: {
-        Args: {
-          year: number
-        }
-        Returns: {
-          month: number
-          income: number
-          expense: number
-          savings: number
-        }[]
-      }
-      transaction_type_total5: {
         Args: {
           year: number
         }
