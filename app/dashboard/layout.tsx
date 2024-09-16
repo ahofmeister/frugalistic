@@ -14,7 +14,7 @@ export default function RootLayout({
       <body className="bg-background text-white">
         <div className="flex h-screen">
           <DashboardNavigation />
-          <main className="mx-10 my-5 flex-1 overflow-y-auto">{children}</main>
+          <main className="m-10 flex-1 overflow-y-auto">{children}</main>
         </div>
       </body>
     </html>
