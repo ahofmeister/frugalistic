@@ -75,7 +75,7 @@ const TransactionFilter = ({ categories }: { categories: Category[] }) => {
   }, [searchParams, dateTo]);
 
   useEffect(() => {
-    setCategory(queryParam.toLowerCase());
+    setCategory(queryParam);
   }, [queryParam]);
 
   return (
@@ -164,7 +164,7 @@ const TransactionFilter = ({ categories }: { categories: Category[] }) => {
         </SelectTrigger>
         <SelectContent>
           {categories?.map((cat) => (
-            <SelectItem key={cat.id} value={cat.name.toLowerCase()}>
+            <SelectItem key={cat.id} value={cat.name}>
               {cat.name}
             </SelectItem>
           ))}
