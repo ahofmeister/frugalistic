@@ -4,15 +4,25 @@ import React from "react";
 
 import { navConfig } from "@/components/navigation/nav-config";
 import Navigation from "@/components/navigation/navigation";
+import { Metadata } from "next";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : "http://localhost:3000";
 
-export const metadata = {
+export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
   title: "Frugalistic",
   description: "The best way to stay on top of your finances",
+  keywords: [
+    "frugal",
+    "expense tracker",
+    "income tracker",
+    "savings",
+    "finance management",
+    "transactions",
+    "recurring payments",
+  ],
 };
 
 export default function PageLayout({
