@@ -14,7 +14,7 @@ const NavigationItem = ({ item }: { item: NavItem }) => {
       key={item.href}
       href={item.href}
       className={cn(
-        "flex px-6 py-4 gap-x-3 rounded text-gray-400 hover:bg-gray-800 hover:text-white items-center text-left hover:text-primary",
+        " text-sm flex px-6 py-4 gap-x-3 rounded text-gray-400 hover:bg-gray-800 hover:text-white items-center text-left hover:text-primary",
         {
           ["text-primary"]: pathname === item.href,
         },

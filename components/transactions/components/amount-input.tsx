@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Input } from "@/components/ui/input";
 
@@ -18,6 +18,10 @@ const formatInput = (numericValue: string): string => {
 
 const AmountInput: React.FC<AmountInputProps> = ({ value, onChange }) => {
   const [inputValue, setInputValue] = useState(formatInput(value.toString()));
+
+  useEffect(() => {
+    setInputValue(value.toString());
+  }, [value]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value.replace(/\D/g, "");
@@ -65,12 +69,14 @@ const AmountInput: React.FC<AmountInputProps> = ({ value, onChange }) => {
   };
 
   return (
-    <Input
-      value={inputValue}
-      onChange={handleChange}
-      onKeyDown={handleKeyDown}
-      onClick={(e) => e.preventDefault()} // Disable cursor click
-    />
+    <div>
+      <Input
+        value={inputValue}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        onClick={(e) => e.preventDefault()} // Disable cursor click
+      />
+    </div>
   );
 };
 

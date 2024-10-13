@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 const DashboardNavigation = () => {
   return (
     <div className="flex flex-col w-60 h-screen text-center border-r border-r-gray-800">
-      <div className="text-2xl text-primary font-semibold p-8 text-left border-b border-gray-800">
+      <div className="text-xl text-primary font-semibold p-4 text-left border-b border-gray-800">
         <Link href="/">{siteConfig.name}</Link>
       </div>
       <div className="flex-1 overflow-y-auto pb-16">
