@@ -1,7 +1,6 @@
 import React, { Suspense } from "react";
 
 import ResetQueryParam from "@/app/dashboard/transactions/reset-query-param";
-import TransactionFilter from "@/components/transactions/components/transaction-filter";
 import TransactionSearchInput from "@/components/transactions/components/transaction-search-input";
 import TransactionsResult from "@/components/transactions/components/transactions-search-result";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -14,6 +13,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { createClient } from "@/utils/supabase/server";
+import CategorySearchFilter from "@/components/transactions/components/category-search-filter";
+import DateSearchFilter from "@/components/transactions/components/date-search-filter";
 
 export default async function TransactionsPage({
   searchParams,
@@ -31,9 +32,28 @@ export default async function TransactionsPage({
 
   return (
     <>
-      <div className="flex gap-10">
-        <TransactionSearchInput />
-        <TransactionFilter categories={categories ?? []} />
+      <div className="flex gap-10 mt-2 ml-1">
+        <TransactionSearchInput
+          key={searchParams.description}
+          value={searchParams.description}
+        />
+        <DateSearchFilter
+          key={searchParams.dateFrom}
+          paramName={"dateFrom"}
+          label={"Filter from"}
+          value={searchParams.dateFrom}
+        />
+        <DateSearchFilter
+          key={searchParams.dateTo}
+          paramName={"dateTo"}
+          label={"Filter to"}
+          value={searchParams.dateTo}
+        />
+        <CategorySearchFilter
+          key={searchParams.category}
+          categories={categories ?? []}
+          value={searchParams.category}
+        />
         <ResetQueryParam />
       </div>
 

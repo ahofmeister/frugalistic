@@ -1,24 +1,25 @@
 "use client";
 import { useEffect, useState } from "react";
-
-import useQueryParams from "@/app/useQueryParams";
 import { Input } from "@/components/ui/input";
+import useUpdateQueryParams from "@/app/useUpdateQueryParams";
+import { useRouter } from "next/navigation";
+import { router } from "next/client";
 
-const TransactionSearchInput = () => {
-  const { queryParam, setQueryParam } = useQueryParams("description");
-  const [, setDescription] = useState(queryParam);
+const TransactionSearchInput = (props: { value?: string }) => {
+  const [value, setValue] = useState(props.value);
+  const updateQueryParams = useUpdateQueryParams();
 
   useEffect(() => {
-    setDescription(queryParam);
-  }, [queryParam]);
+    updateQueryParams("description", value ?? "");
+  }, [value, updateQueryParams]);
 
   return (
-    <div className="max-w-sm ">
+    <div className="max-w-sm">
       <Input
         onChange={(event) => {
-          setQueryParam(event.target.value);
-          setDescription(event.target.value);
+          setValue(event.target.value);
         }}
+        value={value}
         placeholder="Search transactions"
       />
     </div>

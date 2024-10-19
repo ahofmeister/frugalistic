@@ -3,8 +3,6 @@ import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-
-import useQueryParams from "@/app/useQueryParams";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -12,15 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { Category } from "@/types";
 
 const DATE_FROM_QUERY_PARAM = "dateFrom";
 const DATE_TO_QUERY_PARAM = "dateTo";
@@ -38,32 +28,13 @@ const setSearchParam = (
   }
 };
 
-const CATEGORY_ALL_VALUE = "all";
-
-const TransactionFilter = ({ categories }: { categories: Category[] }) => {
+const TransactionFilter = () => {
   const searchParams = useSearchParams();
   const queryParams = new URLSearchParams(searchParams);
   const path = usePathname();
   const router = useRouter();
 
-  const [dateFrom, setDateFrom] = useState<Date>();
   const [dateTo, setDateTo] = useState<Date>();
-  const [category, setCategory] = useState<string>("all");
-
-  const { queryParam, setQueryParam, reset } =
-    useQueryParams(CATEGORY_QUERY_PARAM);
-
-  useEffect(() => {
-    const dateFromQueryParam = queryParams.get(DATE_FROM_QUERY_PARAM);
-    if (dateFromQueryParam) {
-      const date = new Date(dateFromQueryParam);
-      if (date.getTime() !== dateFrom?.getTime()) {
-        setDateFrom(date);
-      }
-    } else {
-      setDateFrom(undefined);
-    }
-  }, [searchParams, dateFrom, queryParams]);
 
   useEffect(() => {
     const dateToQueryParam = queryParams.get(DATE_TO_QUERY_PARAM);
@@ -77,50 +48,8 @@ const TransactionFilter = ({ categories }: { categories: Category[] }) => {
     }
   }, [searchParams, dateTo]);
 
-  useEffect(() => {
-    setCategory(queryParam ? queryParam : CATEGORY_ALL_VALUE);
-  }, [queryParam]);
-
   return (
     <div className="flex gap-10">
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            className={cn(
-              "w-[280px] justify-start text-left font-normal",
-              !dateFrom && "text-muted-foreground",
-            )}
-          >
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {dateFrom ? (
-              format(dateFrom, "yyyy-MM-dd")
-            ) : (
-              <span>Filter from</span>
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0">
-          <Calendar
-            mode="single"
-            selected={dateFrom}
-            onSelect={(value) => {
-              setDateFrom(value);
-              if (value) {
-                setSearchParam(
-                  queryParams,
-                  DATE_FROM_QUERY_PARAM,
-                  format(value, "yyyy-MM-dd"),
-                );
-                const href = `${path}?${queryParams.toString()}`;
-                router.push(href);
-              }
-            }}
-            initialFocus
-          />
-        </PopoverContent>
-      </Popover>
-
       <Popover>
         <PopoverTrigger asChild>
           <Button
@@ -154,32 +83,6 @@ const TransactionFilter = ({ categories }: { categories: Category[] }) => {
           />
         </PopoverContent>
       </Popover>
-
-      <Select
-        value={category}
-        onValueChange={(value) => {
-          setCategory(
-            value === CATEGORY_ALL_VALUE ? CATEGORY_ALL_VALUE : value,
-          );
-          if (value == CATEGORY_ALL_VALUE) {
-            reset();
-          } else {
-            setQueryParam(value);
-          }
-        }}
-      >
-        <SelectTrigger className="w-[280px]">
-          <SelectValue placeholder="Select a category" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value={CATEGORY_ALL_VALUE}>All</SelectItem>
-          {categories?.map((cat) => (
-            <SelectItem key={cat.id} value={cat.name}>
-              {cat.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
     </div>
   );
 };

@@ -1,12 +1,15 @@
 "use client";
 import { ResetIcon } from "@radix-ui/react-icons";
-
-import useQueryParams from "@/app/useQueryParams";
+import { useRouter } from "next/navigation";
 
 const ResetQueryParam = () => {
-  const { reset } = useQueryParams("");
+  const router = useRouter();
   return (
-    <button onClick={() => reset()}>
+    <button
+      onClick={() => {
+        router.push("/dashboard/transactions");
+      }}
+    >
       <ResetIcon />
     </button>
   );
