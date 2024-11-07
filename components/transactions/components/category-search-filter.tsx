@@ -1,5 +1,7 @@
 "use client";
 import React, { useState } from "react";
+
+import useUpdateQueryParams from "@/app/useUpdateQueryParams";
 import {
   Select,
   SelectContent,
@@ -8,7 +10,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Category } from "@/types";
-import useUpdateQueryParams from "@/app/useUpdateQueryParams";
 
 const CATEGORY_ALL_VALUE = "all";
 
