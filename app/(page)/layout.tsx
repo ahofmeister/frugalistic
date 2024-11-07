@@ -1,10 +1,10 @@
 import "../globals.css";
 
+import { Metadata } from "next";
 import React from "react";
 
 import { navConfig } from "@/components/navigation/nav-config";
 import Navigation from "@/components/navigation/navigation";
-import { Metadata } from "next";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`

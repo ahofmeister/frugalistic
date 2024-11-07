@@ -14,7 +14,6 @@ export interface NavItem {
   disabled?: boolean;
   external?: boolean;
   icon?: ForwardRefExoticComponent<Omit<LucideProps, "ref">>;
-  label?: string;
 }
 
 export interface NavConfig {

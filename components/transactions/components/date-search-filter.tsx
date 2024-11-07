@@ -1,18 +1,17 @@
 "use client";
+import { CalendarIcon } from "@radix-ui/react-icons";
+import { format } from "date-fns";
 import React, { useEffect, useState } from "react";
+
 import useUpdateQueryParams from "@/app/useUpdateQueryParams";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { CalendarIcon } from "@radix-ui/react-icons";
-import { format } from "date-fns";
-import { Calendar } from "@/components/ui/calendar";
-import { useRouter, useSearchParams } from "next/navigation";
-import { router } from "next/client";
 
 const DateSearchFilter = (props: {
   paramName: string;

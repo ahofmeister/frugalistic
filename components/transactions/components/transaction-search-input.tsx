@@ -1,9 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
+
 import useUpdateQueryParams from "@/app/useUpdateQueryParams";
-import { useRouter } from "next/navigation";
-import { router } from "next/client";
+import { Input } from "@/components/ui/input";
 
 const TransactionSearchInput = (props: { value?: string }) => {
   const [value, setValue] = useState(props.value);
