@@ -3,6 +3,7 @@ import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -12,9 +13,7 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
-const DATE_FROM_QUERY_PARAM = "dateFrom";
 const DATE_TO_QUERY_PARAM = "dateTo";
-const CATEGORY_QUERY_PARAM = "category";
 
 const setSearchParam = (
   queryParams: URLSearchParams,

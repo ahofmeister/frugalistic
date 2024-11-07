@@ -8,6 +8,7 @@ import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import AmountInput from "@/components/transactions/components/amount-input";
+import { upsertTransaction } from "@/components/transactions/transactions-api";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -34,7 +35,6 @@ import {
 import { cn } from "@/lib/utils";
 import { Category, NewTransaction, Transaction } from "@/types";
 import { createClient } from "@/utils/supabase/client";
-import { upsertTransaction } from "@/components/transactions/transactions-api";
 
 const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
   const formSchema = z.object({
@@ -45,7 +45,7 @@ const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
     datetime: z.date(),
   });
 
-  let defaultValues = {
+  const defaultValues = {
     description: transaction ? transaction.description : "",
     type: transaction ? transaction.type : "expense",
     amount: transaction ? transaction.amount.toString() : "0",
