@@ -6,6 +6,7 @@ import {
   NewTransaction,
   RecurringInterval,
   RecurringTransaction,
+  TransactionType,
   TransactionWithCategory,
 } from "@/types";
 import { createClient } from "@/utils/supabase/server";
@@ -68,20 +69,27 @@ export const searchTransactions = async ({
   dateTo,
   description,
   category,
+  type,
 }: {
   dateFrom: string | undefined;
   dateTo: string | undefined;
   description: string | undefined;
   category: string | undefined;
+  type: TransactionType | undefined;
 }): Promise<TransactionWithCategory[]> => {
   const supabase = createClient();
 
-  const query = supabase
-    .from("transactions")
-    .select(
-      "id, description, amount, datetime, type, category!inner(name, division, color)",
-    );
-
+  const query = category
+    ? supabase
+        .from("transactions")
+        .select(
+          "id, description, amount, datetime, type, category!inner(name, division, color)",
+        )
+    : supabase
+        .from("transactions")
+        .select(
+          "id, description, amount, datetime, type, category(name, division, color)",
+        );
   if (category) {
     await query.eq("category.name", category);
   }
@@ -98,9 +106,13 @@ export const searchTransactions = async ({
     await query.ilike("description", `%${description}%`);
   }
 
+  if (type) {
+    await query.eq("type", type);
+  }
+
   await query.order("datetime", { ascending: false });
 
-  if (!dateFrom && !dateTo && !description) {
+  if (!dateFrom && !dateTo && !description && !type && !category && !type) {
     await query.limit(50);
   }
   const { data } = await query.returns<TransactionWithCategory[]>();
