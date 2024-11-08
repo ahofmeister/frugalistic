@@ -4,7 +4,8 @@ import ResetQueryParam from "@/app/dashboard/transactions/reset-query-param";
 import CategorySearchFilter from "@/components/transactions/components/category-search-filter";
 import DateSearchFilter from "@/components/transactions/components/date-search-filter";
 import TransactionSearchInput from "@/components/transactions/components/transaction-search-input";
-import TransactionsResult from "@/components/transactions/components/transactions-search-result";
+import TransactionsResult from "@/components/transactions/components/transactions-search";
+import TypeSearchFilter from "@/components/transactions/components/type-search-filter";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -14,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { TransactionType } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function TransactionsPage({
@@ -24,6 +26,7 @@ export default async function TransactionsPage({
     dateTo: string;
     description: string;
     category: string;
+    type: TransactionType;
   };
 }) {
   const { data: categories } = await createClient()
@@ -32,7 +35,7 @@ export default async function TransactionsPage({
 
   return (
     <>
-      <div className="flex gap-10 mt-2 ml-1">
+      <div className="flex gap-10">
         <TransactionSearchInput
           key={searchParams.description}
           value={searchParams.description}
@@ -49,11 +52,16 @@ export default async function TransactionsPage({
           label="Filter to"
           value={searchParams.dateTo}
         />
+      </div>
+      <div className="flex gap-10 mt-4">
         <CategorySearchFilter
           key={searchParams.category}
           categories={categories ?? []}
           value={searchParams.category}
         />
+
+        <TypeSearchFilter key={searchParams.type} value={searchParams.type} />
+
         <ResetQueryParam />
       </div>
 
@@ -112,6 +120,7 @@ export default async function TransactionsPage({
             description={searchParams.description}
             dateFrom={searchParams.dateFrom}
             dateTo={searchParams.dateTo}
+            type={searchParams.type}
           />
         </Suspense>
       </div>
