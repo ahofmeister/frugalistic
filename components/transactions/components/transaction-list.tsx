@@ -1,6 +1,7 @@
 "use client";
 import { Pencil1Icon, ReloadIcon, TrashIcon } from "@radix-ui/react-icons";
 import { formatDate } from "date-fns";
+import { RefreshCw } from "lucide-react";
 import Link from "next/link";
 
 import CategoryColor from "@/components/categories/category-color";
@@ -56,7 +57,15 @@ export default function TransactionList({
                 </div>
               </TableCell>
               <TableCell className="text-left">
-                {transaction.description}
+                <div className="flex gap-x-2">
+                  {transaction.description}
+                  {transaction.recurring_transaction && (
+                    <RefreshCw
+                      className="h-4 w-4 text-muted-foreground"
+                      aria-label="Recurring transaction"
+                    />
+                  )}
+                </div>
               </TableCell>
               <TableCell className="text-left flex items-center gap-x-2">
                 <CategoryColor color={transaction.category?.color} />
