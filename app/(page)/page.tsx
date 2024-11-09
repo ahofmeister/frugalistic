@@ -7,13 +7,13 @@ export default function LandingPage() {
   return (
     <div className="text-2xl text-center">
       <main className="flex-1">
-        <section className="w-full py-10 md:py-5 lg:py-10 xl:py-20">
+        <section className="w-full  md:py-5 lg:py-10 xl:py-10">
           <div className="container px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-2 lg:gap-12">
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-2">
-                  <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
-                    Embrace your lifestyle with{" "}
+                  <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none whitespace-nowrap">
+                    <span>Embrace your lifestyle with </span>
                     <span className="text-primary">Frugalistic</span>
                   </h1>
                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
@@ -45,7 +45,7 @@ export default function LandingPage() {
         </section>
         <section className="w-full py-10 md:py-20 lg:py-28 bg-muted">
           <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+            <div className="flex flex-col items-center justify-center space-y-2 text-center">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
                   Embrace a Frugal Lifestyle with Ease
