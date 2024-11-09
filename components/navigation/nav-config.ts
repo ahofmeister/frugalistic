@@ -59,5 +59,10 @@ export const navConfig: NavConfig = {
       title: "Change Log",
       href: "/change-log",
     },
+    {
+      title: "Roadmap",
+      external: true,
+      href: "https://alexander-hofmeister.notion.site/Frugalistic-Roadmap-787863f18f044b68ba716d9a439f06c6?pvs=74",
+    },
   ],
 };
