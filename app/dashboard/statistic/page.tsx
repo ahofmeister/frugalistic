@@ -6,7 +6,7 @@ import {
   getTransactionsTotal,
 } from "@/components/transactions/transactions-api";
 
-import TransactionByCategoryChart from "./transaction-by-category-chart";
+import TransactionCategoryChart from "./transaction-category-chart";
 
 export default async function Year() {
   const transactionTotals = await getTransactionsTotal({
@@ -20,7 +20,7 @@ export default async function Year() {
         transactionTotals={transactionTotals}
         year={new Date().getFullYear()}
       />
-      <TransactionByCategoryChart data={transactionsByCategory} />
+      <TransactionCategoryChart data={transactionsByCategory} />
     </div>
   );
 }
