@@ -22,7 +22,7 @@ import TransactionAmount, {
 } from "@/components/transactions/components/transaction-amount";
 import { TransactionTotalByMonth } from "@/components/transactions/transactions-api";
 
-interface TransactionTotalByMonth2 {
+interface TransactionTotal {
   category_color: string;
   category_name: string;
   month: number;
@@ -36,9 +36,7 @@ interface MonthCategoryTotals {
   [category: string]: number;
 }
 
-const transformData = (
-  data: TransactionTotalByMonth2[],
-): MonthCategoryTotals[] => {
+const transformData = (data: TransactionTotal[]): MonthCategoryTotals[] => {
   const monthlyTotals: Record<number, MonthCategoryTotals> = {};
 
   data.forEach(({ month, category_name, total }) => {
@@ -60,7 +58,7 @@ const transformData = (
 const onlyUnique = (value: string, index: number, array: string[]) =>
   array.indexOf(value) === index;
 
-const TransactionByCategoryChart = ({
+const TransactionCategoryChart = ({
   data,
 }: {
   data: TransactionTotalByMonth[];
@@ -156,4 +154,4 @@ function calculateMonthlyTotal(data: TransactionTotalByMonth[], month: number) {
   return total;
 }
 
-export default TransactionByCategoryChart;
+export default TransactionCategoryChart;
