@@ -63,12 +63,7 @@ const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
     if (form.formState.isSubmitSuccessful || transaction) {
       form.reset(defaultValues);
     }
-  }, [
-    form.formState.isSubmitSuccessful,
-    transaction,
-    form.reset,
-    form.watch(),
-  ]);
+  }, [form.formState.isSubmitSuccessful, transaction, form.reset]);
 
   async function handleSubmit(newTransaction: NewTransaction) {
     await upsertTransaction({

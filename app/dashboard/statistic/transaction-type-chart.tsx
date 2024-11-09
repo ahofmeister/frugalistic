@@ -20,14 +20,7 @@ import TransactionAmount, {
 } from "@/components/transactions/components/transaction-amount";
 import { TransactionTotal } from "@/components/transactions/transactions-api";
 import { TransactionType } from "@/types";
-
-export const colors: { [index: string]: string } = {
-  income: "#84F5F5",
-  savings: "#e9c46a",
-  expense: "#F58484",
-  leisure: "#6FCF97",
-  essentials: "#BEBEBE",
-};
+import { transactionColors } from "@/utils/transaction/colors";
 
 export default function TransactionTypeChart({
   transactionTotals,
@@ -62,7 +55,7 @@ export default function TransactionTypeChart({
           }}
         />
         <Legend />
-        {Object.entries(colors).map(([key, value]) => (
+        {Object.entries(transactionColors).map(([key, value]) => (
           <Line key={key} type="monotone" dataKey={key} stroke={value} />
         ))}
       </LineChart>

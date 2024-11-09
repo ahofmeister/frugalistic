@@ -2,7 +2,6 @@
 import React from "react";
 import { Cell, Pie, PieChart } from "recharts";
 
-import { colors } from "@/app/dashboard/statistic/transaction-type-chart";
 import CategoryColor from "@/components/categories/category-color";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -12,6 +11,7 @@ import {
 } from "@/components/ui/chart";
 import { cn } from "@/lib/utils";
 import { TransactionWithCategory } from "@/types";
+import { divisionColors } from "@/utils/transaction/colors";
 
 export type DivisionTotal = {
   division: string;
@@ -68,7 +68,7 @@ const DashboardDivisions = ({
                 {data?.map((_, index) => (
                   <Cell
                     cursor="pointer"
-                    fill={colors[data[index].division]}
+                    fill={divisionColors[data[index].division]}
                     key={`cell-${index}`}
                   />
                 ))}
@@ -86,7 +86,7 @@ const DashboardDivisions = ({
               })}
             >
               <div className="flex items-center space-x-2">
-                <CategoryColor color={colors[data[index].division]} />
+                <CategoryColor color={divisionColors[data[index].division]} />
                 <div className="py-2">{category.division}</div>
               </div>
               <div className="py-2 w-16 text-right">
