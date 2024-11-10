@@ -1,7 +1,12 @@
 "use client";
 import { useQuery } from "@supabase-cache-helpers/postgrest-swr";
 
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+} from "@/components/ui/card";
 import { DefaultCategory } from "@/types";
 import { createClient } from "@/utils/supabase/client";
 
@@ -41,10 +46,29 @@ const OnboardingCategories = ({
 
   return (
     <div className="px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6 text-center">
-        Choose Your Categories
-      </h1>
-      <div className="grid grid-cols-4 md:grid-cols-4 gap-4 mb-8">
+      <div className="flex flex-col items-center justify-center space-y-2">
+        <Card>
+          <CardContent>
+            <CardHeader>
+              <h1 className="text-3xl font-bold text-center">
+                Choose initial categories
+              </h1>
+            </CardHeader>
+            <CardDescription>
+              <b>
+                These categories will be automatically generated for you, saving
+                you time and effort in getting started.{" "}
+              </b>
+              You’ll have the flexibility to easily delete, edit, or adjust them
+              later as your needs evolve. Plus, you can create new categories to
+              fit your specific requirements, ensuring that the system grows
+              alongside your business and helps you stay organized and
+              efficient.
+            </CardDescription>
+          </CardContent>
+        </Card>
+      </div>
+      <div className="grid  md:grid-cols-4 gap-4 mb-8 mt-4">
         {categories?.map((category) => (
           <Card
             style={{ backgroundColor: category.color }}

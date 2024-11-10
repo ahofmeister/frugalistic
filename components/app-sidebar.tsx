@@ -3,6 +3,7 @@ import Link from "next/link";
 import * as React from "react";
 
 import { AppSidebarHeader } from "@/components/app-sidebar-header";
+import NavUser from "@/components/nav-user";
 import { navConfig } from "@/components/navigation/nav-config";
 import { NewTransactionLink } from "@/components/new-transaction-link";
 import {
@@ -25,8 +26,6 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { createClient } from "@/utils/supabase/server";
-
-import NavUser from "./nav-user";
 
 export async function AppSidebar({
   ...props
