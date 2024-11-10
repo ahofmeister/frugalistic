@@ -1,7 +1,15 @@
 "use client";
 import { format } from "date-fns";
 import React, { useState } from "react";
-import { Line, LineChart, Tooltip, TooltipProps, XAxis, YAxis } from "recharts";
+import {
+  Legend,
+  Line,
+  LineChart,
+  Tooltip,
+  TooltipProps,
+  XAxis,
+  YAxis,
+} from "recharts";
 import {
   NameType,
   ValueType,
@@ -11,7 +19,7 @@ import TransactionAmount, {
   formatAmount,
 } from "@/components/transactions/components/transaction-amount";
 import { TransactionTotal } from "@/components/transactions/transactions-api";
-import { Switch } from "@/components/ui/switch"; // Adjust import path accordingly
+import { Switch } from "@/components/ui/switch";
 import { transactionColors } from "@/utils/transaction/colors";
 
 export default function TransactionTypeChart({
@@ -60,7 +68,7 @@ export default function TransactionTypeChart({
       <LineChart
         width={1200}
         height={400}
-        data={filteredTotals} // Use the filtered data for the chart
+        data={filteredTotals}
         margin={{
           top: 20,
           right: 30,
@@ -73,6 +81,8 @@ export default function TransactionTypeChart({
           tickFormatter={(value) => format(new Date(year, value - 1, 1), "LLL")}
         />
         <YAxis tickFormatter={(value: number) => formatAmount(value)} />
+
+        <Legend iconType="plainline" />
 
         <Tooltip
           cursor={{ fill: "" }}
