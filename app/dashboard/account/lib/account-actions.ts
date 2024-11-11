@@ -1,10 +1,10 @@
 "use server";
 import { revalidatePath } from "next/cache";
 
-import { UserAccountUpdate } from "@/types";
+import { ProfileUpdate } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
-export async function updateAccount(account: UserAccountUpdate) {
+export async function updateAccount(account: ProfileUpdate) {
   const supabase = createClient();
 
   const {
@@ -13,7 +13,7 @@ export async function updateAccount(account: UserAccountUpdate) {
 
   if (user) {
     const { error } = await supabase
-      .from("user")
+      .from("profile")
       .upsert({
         id: user.id,
         email: user.email,

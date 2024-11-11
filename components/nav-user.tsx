@@ -18,9 +18,9 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { UserAccount } from "@/types";
+import { Profile } from "@/types";
 
-const NavUser = ({ user }: { user: UserAccount | null }) => {
+const NavUser = ({ user }: { user: Profile | null }) => {
   const { isMobile } = useSidebar();
 
   const router = useRouter();

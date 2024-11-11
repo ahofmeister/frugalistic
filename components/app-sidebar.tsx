@@ -32,7 +32,7 @@ export async function AppSidebar({
 }: React.ComponentProps<typeof Sidebar>) {
   const supabase = createClient();
 
-  const { data: user } = await supabase.from("user").select("*").single();
+  const { data: user } = await supabase.from("profile").select("*").single();
 
   return (
     <Sidebar collapsible="icon" {...props}>

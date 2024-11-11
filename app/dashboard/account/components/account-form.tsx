@@ -16,9 +16,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { UserAccount, UserAccountUpdate } from "@/types";
+import { Profile, ProfileUpdate } from "@/types";
 
-const AccountForm = (props: { user?: UserAccount | null }) => {
+const AccountForm = (props: { user?: Profile | null }) => {
   const formSchema = z.object({
     firstName: z.string().optional(),
     lastName: z.string().optional(),
@@ -35,7 +35,7 @@ const AccountForm = (props: { user?: UserAccount | null }) => {
     mode: "onChange",
   });
 
-  function handleSubmit(user: UserAccountUpdate) {
+  function handleSubmit(user: ProfileUpdate) {
     return updateAccount(user);
   }
 

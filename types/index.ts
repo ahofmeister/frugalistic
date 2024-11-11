@@ -33,5 +33,5 @@ export type OnboardingStep =
   Database["public"]["Tables"]["onboarding_steps"]["Row"];
 
 // User
-export type UserAccountUpdate = Database["public"]["Tables"]["user"]["Update"];
-export type UserAccount = Database["public"]["Tables"]["user"]["Row"];
+export type Profile = Database["public"]["Tables"]["profile"]["Row"];
+export type ProfileUpdate = Database["public"]["Tables"]["profile"]["Update"];

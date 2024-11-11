@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 
 export default async function AccountPage() {
   const supabase = createClient();
-  const { data: user } = await supabase.from("user").select("*").single();
+  const { data: user } = await supabase.from("profile").select("*").single();
 
   return (
     <div>

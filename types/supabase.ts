@@ -87,6 +87,27 @@ export type Database = {
         }
         Relationships: []
       }
+      profile: {
+        Row: {
+          email: string | null
+          firstName: string | null
+          id: string
+          lastName: string | null
+        }
+        Insert: {
+          email?: string | null
+          firstName?: string | null
+          id?: string
+          lastName?: string | null
+        }
+        Update: {
+          email?: string | null
+          firstName?: string | null
+          id?: string
+          lastName?: string | null
+        }
+        Relationships: []
+      }
       transactions: {
         Row: {
           amount: number
@@ -184,27 +205,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      user: {
-        Row: {
-          email: string | null
-          firstName: string | null
-          id: string
-          lastName: string | null
-        }
-        Insert: {
-          email?: string | null
-          firstName?: string | null
-          id?: string
-          lastName?: string | null
-        }
-        Update: {
-          email?: string | null
-          firstName?: string | null
-          id?: string
-          lastName?: string | null
-        }
-        Relationships: []
       }
     }
     Views: {
