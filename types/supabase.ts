@@ -34,15 +34,7 @@ export type Database = {
           name?: string
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "categories_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       default_categories: {
         Row: {
@@ -93,15 +85,28 @@ export type Database = {
           step_order?: number
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "onboarding_steps_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
+      }
+      profile: {
+        Row: {
+          email: string | null
+          firstName: string | null
+          id: string
+          lastName: string | null
+        }
+        Insert: {
+          email?: string | null
+          firstName?: string | null
+          id?: string
+          lastName?: string | null
+        }
+        Update: {
+          email?: string | null
+          firstName?: string | null
+          id?: string
+          lastName?: string | null
+        }
+        Relationships: []
       }
       transactions: {
         Row: {
@@ -152,13 +157,6 @@ export type Database = {
             referencedRelation: "transactions_recurring"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "transactions_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
         ]
       }
       transactions_recurring: {
@@ -204,39 +202,6 @@ export type Database = {
             columns: ["category"]
             isOneToOne: false
             referencedRelation: "categories"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "transactions_recurring_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      user: {
-        Row: {
-          firstName: string | null
-          id: string
-          lastName: string | null
-        }
-        Insert: {
-          firstName?: string | null
-          id: string
-          lastName?: string | null
-        }
-        Update: {
-          firstName?: string | null
-          id?: string
-          lastName?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "profiles_id_fkey"
-            columns: ["id"]
-            isOneToOne: true
-            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -376,4 +341,19 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema["CompositeTypes"]
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
+    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never

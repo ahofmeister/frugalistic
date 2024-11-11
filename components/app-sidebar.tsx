@@ -32,7 +32,7 @@ export async function AppSidebar({
 }: React.ComponentProps<typeof Sidebar>) {
   const supabase = createClient();
 
-  const { data } = await supabase.auth.getUser();
+  const { data: user } = await supabase.from("profile").select("*").single();
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -84,7 +84,7 @@ export async function AppSidebar({
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

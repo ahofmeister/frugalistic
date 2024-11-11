@@ -1,7 +1,7 @@
 "use client";
 
-import { User } from "@supabase/auth-js";
 import { ChevronsUpDown, User2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import { signOut } from "@/components/auth/auth-actions";
 import {
@@ -18,13 +18,12 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { Profile } from "@/types";
 
-interface NavUserProps {
-  user: Pick<User, "email"> | null;
-}
-
-const NavUser = ({ user }: NavUserProps) => {
+const NavUser = ({ user }: { user: Profile | null }) => {
   const { isMobile } = useSidebar();
+
+  const router = useRouter();
 
   return (
     <SidebarMenu>
@@ -32,12 +31,14 @@ const NavUser = ({ user }: NavUserProps) => {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
-              <User2 />
+              <User2 size="1" />
               <div className="grid flex-1 text-left text-sm leading-tight">
-                {/*<span className="truncate font-semibold">{user.name}</span>*/}
+                <span className="truncate font-semibold">
+                  {user?.firstName} {user?.lastName}
+                </span>
                 <span className="truncate text-xs">{user?.email}</span>
               </div>
-              <ChevronsUpDown className="ml-auto size-4" />
+              <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -48,14 +49,26 @@ const NavUser = ({ user }: NavUserProps) => {
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <User2 />
+                {/*<Avatar className="h-8 w-8 rounded-lg">*/}
+                {/*  <AvatarImage src={user.avatar} alt={user.name} />*/}
+                {/*  <AvatarFallback className="rounded-lg">CN</AvatarFallback>*/}
+                {/*</Avatar>*/}
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  {/*<span className="truncate font-semibold">{user.name}</span>*/}
+                  <span className="truncate font-semibold">
+                    {user?.firstName} {user?.lastName}
+                  </span>
                   <span className="truncate text-xs">{user?.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
+
+            <DropdownMenuItem
+              onClick={() => router.push("/dashboard/account")}
+              className="flex items-center gap-4 cursor-pointer"
+            >
+              Account
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => signOut()}
               className="flex items-center gap-4 cursor-pointer"
