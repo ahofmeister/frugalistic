@@ -1,12 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
-import { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
+import { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies"; // Import for proper typing
 import { type NextRequest, NextResponse } from "next/server";
 
 export async function updateSession(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({
-    request,
-  });
-
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -16,20 +12,18 @@ export async function updateSession(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(
-          cookiesToSet: Array<{
+          cookiesToSet: {
             name: string;
             value: string;
-            options?: Partial<ResponseCookie>;
-          }>,
+            options?: ResponseCookie;
+          }[],
         ) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value),
-          );
-          supabaseResponse = NextResponse.next({ request });
-
           cookiesToSet.forEach(({ name, value, options }) => {
-            const cookieOptions = options ?? {}; // Ensure that options is at least an empty object
-            supabaseResponse.cookies.set(name, value, cookieOptions);
+            const cookieOptions = options ?? {};
+            request.cookies.set(name, value);
+
+            const response = NextResponse.next();
+            response.cookies.set(name, value, cookieOptions);
           });
         },
       },
@@ -40,11 +34,16 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user && !request.nextUrl.pathname.startsWith("/login")) {
+  if (user) {
+    return NextResponse.next();
+  }
+
+  const nextPath = request.nextUrl.pathname;
+  if (nextPath.startsWith("/dashboard")) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
   }
 
-  return supabaseResponse;
+  return NextResponse.next();
 }
