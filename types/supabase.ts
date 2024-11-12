@@ -217,6 +217,10 @@ export type Database = {
       }
     }
     Functions: {
+      delete_user: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       get_expenses_total_by_category: {
         Args: {
           year: number
