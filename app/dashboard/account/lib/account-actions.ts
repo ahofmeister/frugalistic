@@ -27,3 +27,13 @@ export async function updateAccount(account: ProfileUpdate) {
     revalidatePath("/page");
   }
 }
+
+export async function deleteAccount() {
+  const supabase = createClient();
+
+  const { error } = await supabase.rpc("delete_user");
+
+  if (error) {
+    console.log(error);
+  }
+}
