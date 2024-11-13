@@ -2,6 +2,7 @@ import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import * as React from "react";
 
+import FeedbackButton from "@/app/dashboard/feedback-button";
 import { AppSidebarHeader } from "@/components/app-sidebar-header";
 import NavUser from "@/components/nav-user";
 import { navConfig } from "@/components/navigation/nav-config";
@@ -84,6 +85,7 @@ export async function AppSidebar({
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter>
+        <FeedbackButton />
         <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
