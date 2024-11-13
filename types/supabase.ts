@@ -60,6 +60,33 @@ export type Database = {
         }
         Relationships: []
       }
+      feedback: {
+        Row: {
+          created_at: string | null
+          id: string
+          response: string | null
+          status: string | null
+          text: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          response?: string | null
+          status?: string | null
+          text: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          response?: string | null
+          status?: string | null
+          text?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       onboarding_steps: {
         Row: {
           completed_at: string | null
@@ -254,6 +281,7 @@ export type Database = {
     }
     Enums: {
       division: "essentials" | "leisure" | "savings"
+      feedback_status: "new" | "resolved" | "closed"
       onboarding_status: "current" | "complete" | "skip" | "open"
       onboarding_step: "categories" | "welcome"
       recurring_interval: "monthly" | "annually"
