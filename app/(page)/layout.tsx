@@ -1,5 +1,6 @@
 import "../globals.css";
 
+import { Analytics } from "@vercel/analytics/next";
 import { Metadata } from "next";
 import React from "react";
 
@@ -36,6 +37,7 @@ export default function PageLayout({
         <Navigation items={navConfig.publicNavigation} publicArea={true} />
 
         <main className="m-10">{children}</main>
+        <Analytics />
       </body>
     </html>
   );

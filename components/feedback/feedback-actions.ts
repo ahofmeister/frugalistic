@@ -12,7 +12,5 @@ export async function addFeedback(feedback: string) {
   if (error) {
     console.log(error);
   }
-  console.log(data);
-  console.log(error);
   return data;
 }
