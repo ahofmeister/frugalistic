@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { navConfig } from "@/components/navigation/nav-config";
 import {
@@ -15,30 +16,37 @@ import {
 
 export function NavMain() {
   const items = navConfig.dashboardNavigation;
+  const pathname = usePathname();
+
   return (
     <SidebarGroup>
       <SidebarMenu>
-        {items.map((item) => (
-          <SidebarMenuItem key={item.href}>
-            <Link href={item.href} className="flex">
-              <SidebarMenuButton tooltip={item.title}>
-                {item.icon && <item.icon />}
-                {item.title}
-              </SidebarMenuButton>
-            </Link>
-            <SidebarMenuSub>
-              {item.items?.map((subItem) => (
-                <SidebarMenuSubItem key={subItem.title}>
-                  <SidebarMenuSubButton asChild>
-                    <Link href={subItem.href}>
-                      <span>{subItem.title}</span>
-                    </Link>
-                  </SidebarMenuSubButton>
-                </SidebarMenuSubItem>
-              ))}
-            </SidebarMenuSub>
-          </SidebarMenuItem>
-        ))}
+        {items.map((item) => {
+          const isActive = pathname === item.href;
+
+          return (
+            <SidebarMenuItem key={item.href}>
+              <Link href={item.href} className="flex">
+                <SidebarMenuButton tooltip={item.title} isActive={isActive}>
+                  {item.icon && <item.icon />}
+                  {item.title}
+                </SidebarMenuButton>
+              </Link>
+              <SidebarMenuSub>
+                {item.items?.map((subItem) => {
+                  const isActive = pathname === subItem.href;
+                  return (
+                    <SidebarMenuSubItem key={subItem.title}>
+                      <SidebarMenuSubButton asChild isActive={isActive}>
+                        <Link href={subItem.href}>{subItem.title}</Link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  );
+                })}
+              </SidebarMenuSub>
+            </SidebarMenuItem>
+          );
+        })}
       </SidebarMenu>
     </SidebarGroup>
   );

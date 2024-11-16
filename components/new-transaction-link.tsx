@@ -1,6 +1,7 @@
 "use client";
 import { PlusIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React from "react";
 
 import { Button } from "@/components/ui/button";
@@ -8,10 +9,12 @@ import { SidebarMenuButton, useSidebar } from "@/components/ui/sidebar";
 
 export function NewTransactionLink() {
   const { state } = useSidebar();
+  const pathname = usePathname();
+  const isActive = pathname.startsWith("/dashboard/transactions/new");
 
   return (
     <Link href="/dashboard/transactions/new">
-      <SidebarMenuButton asChild tooltip="New Transaction">
+      <SidebarMenuButton asChild isActive={isActive} tooltip="New Transaction">
         {state === "expanded" ? (
           <Button variant="outline">
             <div className="flex">New Transaction</div>
