@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { MessageSquarePlus } from "lucide-react";
+import React, { useState } from "react";
 
 import { addFeedback } from "@/components/feedback/feedback-actions";
 import LoadingSpinner from "@/components/loading/loading";
@@ -13,6 +14,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
+} from "@/components/ui/sidebar";
 import { Textarea } from "@/components/ui/textarea";
 
 export default function Component() {
@@ -20,6 +26,8 @@ export default function Component() {
   const [feedback, setFeedback] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { state } = useSidebar();
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
@@ -42,7 +50,19 @@ export default function Component() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Feedback</Button>
+        <SidebarMenuItem>
+          <SidebarMenuButton asChild tooltip="Feedback">
+            {state === "expanded" ? (
+              <Button variant="outline">
+                <div className="flex">Feedback</div>
+              </Button>
+            ) : (
+              <Button variant="outline" asChild>
+                <MessageSquarePlus />
+              </Button>
+            )}
+          </SidebarMenuButton>
+        </SidebarMenuItem>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader className="flex-row justify-between items-start">
