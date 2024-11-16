@@ -21,7 +21,7 @@ export default function RootLayout({
           <SidebarProvider defaultOpen={defaultOpen}>
             <SidebarTrigger />
             <AppSidebar />
-            <main className="m-6 flex-1 overflow-y-auto">{children}</main>
+            <main className="mx-2 mt-6 flex-1 overflow-y-auto">{children}</main>
           </SidebarProvider>
         </div>
       </body>
