@@ -98,11 +98,10 @@ const TransactionCategoryTable = ({
         </TableHeader>
         <TableBody>
           {names.map((name) => {
-            // Find the expenses-category color for this name
             const categoryData = data.find(
               (transaction) => transaction.category_name === name,
             );
-            const categoryColor = categoryData?.category_color || "#000"; // Default to black if not found
+            const categoryColor = categoryData?.category_color;
             return (
               <TableRow key={name} style={{ color: categoryColor }}>
                 <TableCell>{name}</TableCell>

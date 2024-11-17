@@ -83,15 +83,15 @@ export const searchTransactions = async ({
     ? supabase
         .from("transactions")
         .select(
-          "id, description, amount, datetime, type, expenses-category!inner(name, division, color)",
+          "id, description, amount, datetime, type, category!inner(name, division, color)",
         )
     : supabase
         .from("transactions")
         .select(
-          "id, description, amount, datetime, type, expenses-category(name, division, color)",
+          "id, description, amount, datetime, type, category(name, division, color)",
         );
   if (category) {
-    await query.eq("expenses-category.name", category);
+    await query.eq("category.name", category);
   }
 
   if (dateFrom) {
