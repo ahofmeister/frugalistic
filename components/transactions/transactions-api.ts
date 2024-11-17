@@ -144,11 +144,12 @@ export const getTotalByCategory = async ({
     .rpc("get_expenses_total_by_category", { year: year })
     .select("*")
     .returns<TransactionTotalByMonth[]>()
-    .order("month")
-    .order("total", { ascending: false });
+    .order("category_name", { ascending: true });
+
   if (error) {
     console.log(error);
   }
+  console.log(data);
   return data ?? [];
 };
 
