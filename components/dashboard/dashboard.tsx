@@ -53,7 +53,7 @@ export default function Dashboard() {
   const { data: allTransactions } = useQuery(
     createClient()
       .from("transactions")
-      .select("*, expenses-category(*)")
+      .select("*, category(*)")
       .gte("datetime", format(dateRange.from, "yyyy-MM-dd"))
       .lte("datetime", format(dateRange.to, "yyyy-MM-dd"))
       .order("datetime", { ascending: false })
