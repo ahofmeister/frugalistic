@@ -80,6 +80,8 @@ const TransactionCategoryTable = ({
     dataTransformed.reduce((sum, row) => sum + row.total, 0) /
     dataTransformed.length;
 
+  const currentMonth = new Date().getMonth() + 1;
+
   return (
     <div>
       <Table>
@@ -88,7 +90,10 @@ const TransactionCategoryTable = ({
             <TableCell className="font-semibold">Category</TableCell>
             <TableCell className="font-semibold">Average</TableCell>
             {dataTransformed.map((row) => (
-              <TableCell key={row.month}>
+              <TableCell
+                key={row.month}
+                className={row.month === currentMonth ? "bg-gray-600/20" : ""}
+              >
                 <div className="font-semibold">
                   {format(new Date(2024, row.month - 1, 1), "LLLL")}
                 </div>
@@ -109,7 +114,12 @@ const TransactionCategoryTable = ({
                   <TransactionAmount amount={categoryAverages[name]} />
                 </TableCell>
                 {dataTransformed.map((row) => (
-                  <TableCell key={`${row.month}-${name}`}>
+                  <TableCell
+                    key={`${row.month}-${name}`}
+                    className={
+                      row.month === currentMonth ? "bg-gray-600/20" : ""
+                    }
+                  >
                     {row[name] ? formatAmount(row[name]) : "-"}
                   </TableCell>
                 ))}
