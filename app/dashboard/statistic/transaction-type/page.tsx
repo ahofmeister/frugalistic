@@ -1,6 +1,6 @@
 import React from "react";
 
-import TransactionTypeChart from "@/app/dashboard/statistic/expenses-category/transaction-type-chart";
+import TransactionTypeTable from "@/app/dashboard/statistic/expenses-category/transaction-type-table";
 import { getTransactionsTotal } from "@/components/transactions/transactions-api";
 
 export default async function TypeStatistic() {
@@ -10,6 +10,6 @@ export default async function TypeStatistic() {
   });
 
   return (
-    <TransactionTypeChart transactionTotals={transactionTotals} year={year} />
+    <TransactionTypeTable transactionTotals={transactionTotals} year={year} />
   );
 }
