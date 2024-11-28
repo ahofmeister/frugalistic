@@ -20,22 +20,22 @@ const TransactionAmount = ({
   amount: number;
   type?: TransactionType;
 }) => {
-  let typeClass;
-  switch (type) {
-    case "savings":
-      typeClass = "text-savings";
-      break;
-    case "expense":
-      typeClass = "text-expense";
-      break;
-    case "income":
-      typeClass = "text-income";
-      break;
-    default:
-      typeClass = "";
-  }
+  const typeClass = extracted(type);
 
   return <div className={typeClass}>{formatAmount(amount)}</div>;
 };
 
 export default TransactionAmount;
+
+export function extracted(type: TransactionType | undefined) {
+  switch (type) {
+    case "savings":
+      return "text-savings";
+    case "expense":
+      return "text-expense";
+    case "income":
+      return "text-income";
+    default:
+      return "";
+  }
+}

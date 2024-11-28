@@ -9,6 +9,7 @@ import { z } from "zod";
 
 import AmountInput from "@/components/transactions/components/amount-input";
 import { upsertTransaction } from "@/components/transactions/transactions-api";
+import { AutoComplete } from "@/components/ui/auto-suggest-input";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -19,7 +20,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
@@ -33,10 +33,21 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { Category, NewTransaction, Transaction } from "@/types";
+import {
+  Category,
+  NewTransaction,
+  Transaction,
+  TransactionAutoSuggest,
+} from "@/types";
 import { createClient } from "@/utils/supabase/client";
 
-const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
+const TransactionForm = ({
+  transaction,
+  autoSuggests,
+}: {
+  transaction?: Transaction;
+  autoSuggests?: TransactionAutoSuggest[];
+}) => {
   const formSchema = z.object({
     description: z.string().min(1),
     amount: z.coerce.string(),
@@ -64,6 +75,9 @@ const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
       form.reset(defaultValues);
     }
   }, [form.formState.isSubmitSuccessful, transaction, form.reset]);
+
+  const typeValue = form.watch("type");
+  const categoryValue = form.watch("category");
 
   async function handleSubmit(newTransaction: NewTransaction) {
     await upsertTransaction({
@@ -99,19 +113,39 @@ const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
           className="space-y-6"
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter description" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="col-span-2">
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <AutoComplete
+                        value={autoSuggests?.find(
+                          (l) =>
+                            l.type === transaction?.type &&
+                            l.description === transaction?.description &&
+                            l.category === transaction.category,
+                        )}
+                        placeholder="Enter or choose description"
+                        onValueChange={(e: TransactionAutoSuggest) => {
+                          field.onChange(e.description);
+                          if (e.type) {
+                            form.setValue("type", e.type);
+                          }
+                          if (e.category) {
+                            form.setValue("category", e.category);
+                          }
+                        }}
+                        options={autoSuggests ?? []}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <Controller
               name="amount"
@@ -133,10 +167,12 @@ const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
             <FormField
               control={form.control}
               name="type"
+              defaultValue="expense"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Type</FormLabel>
                   <Select
+                    value={typeValue}
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
@@ -161,10 +197,7 @@ const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Category</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value || ""}
-                  >
+                  <Select onValueChange={field.onChange} value={categoryValue}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select category" />
@@ -234,7 +267,7 @@ const TransactionForm = ({ transaction }: { transaction?: Transaction }) => {
           <Button
             type="submit"
             className="w-full"
-            disabled={form.formState.isSubmitting || !form.formState.isValid}
+            // disabled={form.formState.isSubmitting || !form.formState.isValid}
           >
             {form.formState.isSubmitting
               ? "Saving..."
