@@ -1,3 +1,3 @@
-export default function Login() {
+export default function BlogPage() {
   return <div className="">Coming soon</div>;
 }

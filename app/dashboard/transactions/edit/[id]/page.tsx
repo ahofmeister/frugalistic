@@ -7,16 +7,24 @@ export default async function TransactionEditPage({
 }: {
   params: { id: string };
 }) {
-  const { data: transaction } = await createClient()
+  const supabase = createClient();
+  const { data: transaction } = await supabase
     .from("transactions")
     .select("*")
     .eq("id", params.id)
     .returns<Transaction>()
     .single();
 
-  if (transaction) {
-    return <TransactionForm transaction={transaction} />;
-  }
+  const { data: autoSuggests } = await supabase
+    .from("transaction_auto_suggest2")
+    .select("*")
+    .order("frequency", { ascending: false })
+    .order("description", { ascending: true });
 
-  return <TransactionForm />;
+  return (
+    <TransactionForm
+      transaction={transaction ?? undefined}
+      autoSuggests={autoSuggests ?? []}
+    />
+  );
 }

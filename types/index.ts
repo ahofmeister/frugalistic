@@ -13,6 +13,9 @@ export type TransactionType =
   | Database["public"]["Enums"]["transaction_type"]
   | null;
 
+export type TransactionAutoSuggest =
+  Database["public"]["Views"]["transaction_auto_suggest2"]["Row"];
+
 // Recurring Transactions
 export type RecurringInterval =
   Database["public"]["Enums"]["recurring_interval"];
