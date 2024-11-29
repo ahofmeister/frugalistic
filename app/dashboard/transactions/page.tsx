@@ -36,10 +36,7 @@ export default async function TransactionsPage({
   return (
     <>
       <div className="flex gap-10">
-        <TransactionSearchInput
-          key={searchParams.description}
-          value={searchParams.description}
-        />
+        <TransactionSearchInput value={searchParams.description ?? ""} />
         <DateSearchFilter
           key={searchParams.dateFrom}
           paramName="dateFrom"
