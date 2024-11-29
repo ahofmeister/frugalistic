@@ -61,7 +61,9 @@ const TransactionCategoryTable = ({
     .map((transaction) => transaction.category_name)
     .filter(onlyUnique);
 
-  const dataTransformed = transformData(data.filter((x) => x.total > 0));
+  const dataTransformed = transformData(
+    data.filter((transactionTotal) => transactionTotal.total > 0),
+  );
 
   const categoryAverages: Record<string, number> = names.reduce(
     (acc, name) => {
@@ -76,9 +78,22 @@ const TransactionCategoryTable = ({
     {} as Record<string, number>,
   );
 
+  const categoryTotals: Record<string, number> = names.reduce(
+    (acc, name) => {
+      acc[name] = dataTransformed.reduce(
+        (sum, row) => sum + (row[name] || 0),
+        0,
+      );
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
+
   const totalAverage =
     dataTransformed.reduce((sum, row) => sum + row.total, 0) /
     dataTransformed.length;
+
+  const totalAmount = dataTransformed.reduce((sum, row) => sum + row.total, 0);
 
   return (
     <div>
@@ -86,6 +101,7 @@ const TransactionCategoryTable = ({
         <TableHeader>
           <TableRow>
             <TableCell className="font-semibold">Category</TableCell>
+            <TableCell className="font-semibold">Total</TableCell>
             <TableCell className="font-semibold">Average</TableCell>
             {dataTransformed.map((row) => (
               <TableCell key={row.month}>
@@ -106,8 +122,12 @@ const TransactionCategoryTable = ({
               <TableRow key={name} style={{ color: categoryColor }}>
                 <TableCell>{name}</TableCell>
                 <TableCell>
+                  <TransactionAmount amount={categoryTotals[name]} />
+                </TableCell>
+                <TableCell>
                   <TransactionAmount amount={categoryAverages[name]} />
                 </TableCell>
+
                 {dataTransformed.map((row) => (
                   <TableCell key={`${row.month}-${name}`}>
                     {row[name] ? formatAmount(row[name]) : "-"}
@@ -118,6 +138,10 @@ const TransactionCategoryTable = ({
           })}
           <TableRow>
             <TableCell>Total</TableCell>
+            <TableCell>
+              <TransactionAmount amount={totalAmount} />
+            </TableCell>
+
             <TableCell>
               <TransactionAmount amount={totalAverage} />
             </TableCell>

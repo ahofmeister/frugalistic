@@ -22,7 +22,7 @@ export default function TransactionTypeTable({
   year: number;
 }) {
   const filteredTotals = transactionTotals.filter(
-    ({ expense, income, savings }) => expense > 0 && income > 0 && savings > 0,
+    ({ expense, income, savings }) => expense > 0 || income > 0 || savings > 0,
   );
 
   const totals = filteredTotals.reduce(
