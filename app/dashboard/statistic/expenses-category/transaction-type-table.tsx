@@ -25,21 +25,44 @@ export default function TransactionTypeTable({
     ({ expense, income, savings }) => expense > 0 && income > 0 && savings > 0,
   );
 
-  const averageExpense =
-    filteredTotals.reduce((sum, { expense }) => sum + expense, 0) /
-    filteredTotals.length;
-  const averageIncome =
-    filteredTotals.reduce((sum, { income }) => sum + income, 0) /
-    filteredTotals.length;
-  const averageSavings =
-    filteredTotals.reduce((sum, { savings }) => sum + savings, 0) /
-    filteredTotals.length;
+  const totals = filteredTotals.reduce(
+    (acc, { expense, income, savings }) => ({
+      expense: acc.expense + expense,
+      income: acc.income + income,
+      savings: acc.savings + savings,
+    }),
+    { expense: 0, income: 0, savings: 0 },
+  );
+
+  const averages = {
+    expense: totals.expense / filteredTotals.length,
+    income: totals.income / filteredTotals.length,
+    savings: totals.savings / filteredTotals.length,
+  };
+
+  const calculateLeftOver = (
+    income: number,
+    expense: number,
+    savings: number,
+  ) => income - expense - savings;
+
+  const totalLeftOver = calculateLeftOver(
+    totals.income,
+    totals.expense,
+    totals.savings,
+  );
+  const averageLeftOver = calculateLeftOver(
+    averages.income,
+    averages.expense,
+    averages.savings,
+  );
 
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Category</TableHead>
+          <TableHead>Type</TableHead>
+          <TableHead>Total</TableHead>
           <TableHead>Average</TableHead>
           {filteredTotals.map(({ month }) => (
             <TableHead key={month}>
@@ -51,8 +74,11 @@ export default function TransactionTypeTable({
       <TableBody>
         <TableRow style={{ color: transactionColors.income }}>
           <TableCell>Income</TableCell>
-          <TableCell style={{ color: transactionColors.income }}>
-            <TransactionAmount amount={averageIncome} />
+          <TableCell>
+            <TransactionAmount amount={totals.income} />
+          </TableCell>
+          <TableCell>
+            <TransactionAmount amount={averages.income} />
           </TableCell>
           {filteredTotals.map(({ month, income }) => (
             <TableCell key={month}>
@@ -63,11 +89,12 @@ export default function TransactionTypeTable({
 
         <TableRow style={{ color: transactionColors.expense }}>
           <TableCell>Expense</TableCell>
-
-          <TableCell style={{ color: transactionColors.expense }}>
-            <TransactionAmount amount={averageExpense} />
+          <TableCell>
+            <TransactionAmount amount={totals.expense} />
           </TableCell>
-
+          <TableCell>
+            <TransactionAmount amount={averages.expense} />
+          </TableCell>
           {filteredTotals.map(({ month, expense }) => (
             <TableCell key={month}>
               <TransactionAmount amount={expense} />
@@ -77,8 +104,11 @@ export default function TransactionTypeTable({
 
         <TableRow style={{ color: transactionColors.savings }}>
           <TableCell>Savings</TableCell>
-          <TableCell style={{ color: transactionColors.savings }}>
-            <TransactionAmount amount={averageSavings} />
+          <TableCell>
+            <TransactionAmount amount={totals.savings} />
+          </TableCell>
+          <TableCell>
+            <TransactionAmount amount={averages.savings} />
           </TableCell>
           {filteredTotals.map(({ month, savings }) => (
             <TableCell key={month}>
@@ -86,22 +116,22 @@ export default function TransactionTypeTable({
             </TableCell>
           ))}
         </TableRow>
-        <TableRow>
-          <TableCell>Left Over</TableCell>
-          <TableCell style={{ color: transactionColors.leftOver }}>
-            <TransactionAmount
-              amount={averageIncome - averageExpense - averageSavings}
-            />
-          </TableCell>
 
-          {filteredTotals.map(({ month, income, expense, savings }) => {
-            const leftOver = income - expense - savings;
-            return (
-              <TableCell key={month}>
-                <TransactionAmount amount={leftOver} />
-              </TableCell>
-            );
-          })}
+        <TableRow style={{ color: transactionColors.leftOver }}>
+          <TableCell>Left Over</TableCell>
+          <TableCell>
+            <TransactionAmount amount={totalLeftOver} />
+          </TableCell>
+          <TableCell>
+            <TransactionAmount amount={averageLeftOver} />
+          </TableCell>
+          {filteredTotals.map(({ month, income, expense, savings }) => (
+            <TableCell key={month}>
+              <TransactionAmount
+                amount={calculateLeftOver(income, expense, savings)}
+              />
+            </TableCell>
+          ))}
         </TableRow>
       </TableBody>
     </Table>
