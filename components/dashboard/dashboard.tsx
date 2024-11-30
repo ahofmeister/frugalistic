@@ -1,4 +1,5 @@
 "use client";
+
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@supabase-cache-helpers/postgrest-swr";
 import {
@@ -15,8 +16,8 @@ import {
   startOfYear,
   subMonths,
   subWeeks,
+  subYears,
 } from "date-fns";
-import { subYears } from "date-fns/subYears";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import React, { useState } from "react";
 
@@ -43,6 +44,7 @@ import { TransactionWithCategory } from "@/types";
 import { createClient } from "@/utils/supabase/client";
 
 type DateRange = { from: Date; to: Date };
+type FilterType = "week" | "month" | "year";
 
 type Preset = {
   type: FilterType;
@@ -50,8 +52,6 @@ type Preset = {
   from: Date;
   to: Date;
 };
-
-type FilterType = "week" | "month" | "year";
 
 export default function Dashboard() {
   const [filterType, setFilterType] = useState<FilterType>("month");
@@ -78,7 +78,7 @@ export default function Dashboard() {
     },
   );
 
-  const updateDateRange = (type: string, amount: number) => {
+  const updateDateRange = (type: FilterType, amount: number) => {
     let from: Date, to: Date;
 
     switch (type) {
@@ -94,8 +94,6 @@ export default function Dashboard() {
         from = startOfYear(addYears(dateRange.from, amount));
         to = endOfYear(from);
         break;
-      default:
-        return;
     }
 
     setDateRange({ from, to });
@@ -153,105 +151,105 @@ export default function Dashboard() {
   );
 
   return (
-    <div className="flex-col p-2">
-      <div className="flex gap-x-10 mb-5">
-        <div className="flex gap-x-5">
+    <div className="flex flex-col p-4 space-y-4 bg-background text-foreground min-h-screen">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="flex gap-2">
+          {/* Date Pickers */}
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
                 className={cn(
-                  "justify-start text-left font-normal w-fit",
+                  "w-full md:w-[180px] justify-start text-left font-normal",
                   !dateRange.from && "text-muted-foreground",
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {dateRange.from ? (
-                  format(dateRange.from, "yyyy-MM-dd")
+                  format(dateRange.from, "LLL dd, y")
                 ) : (
-                  <span>Filter from</span>
+                  <span>Start date</span>
                 )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
+            <PopoverContent className="w-auto p-0" align="start">
               <Calendar
                 mode="single"
                 selected={dateRange.from}
-                onSelect={(value) => {
-                  if (value) {
-                    setDateRange({ from: value, to: dateRange.to });
-                  }
-                }}
+                onSelect={(date) =>
+                  date && setDateRange({ ...dateRange, from: date })
+                }
                 initialFocus
               />
             </PopoverContent>
           </Popover>
-
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
                 className={cn(
-                  "justify-start text-left font-normal w-fit",
+                  "w-full md:w-[180px] justify-start text-left font-normal",
                   !dateRange.to && "text-muted-foreground",
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {dateRange.to ? (
-                  format(dateRange.to, "yyyy-MM-dd")
+                  format(dateRange.to, "LLL dd, y")
                 ) : (
-                  <span>Filter to</span>
+                  <span>End date</span>
                 )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
+            <PopoverContent className="w-auto p-0" align="start">
               <Calendar
                 mode="single"
                 selected={dateRange.to}
-                onSelect={(value) => {
-                  if (value) {
-                    setDateRange({ to: value, from: dateRange.from });
-                  }
-                }}
+                onSelect={(date) =>
+                  date && setDateRange({ ...dateRange, to: date })
+                }
                 initialFocus
               />
             </PopoverContent>
           </Popover>
         </div>
+
+        {/* Navigation Controls */}
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => updateDateRange(filterType, -1)}
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <Select
+            value={filterType}
+            onValueChange={(type) => setFilterType(type as FilterType)}
+          >
+            <SelectTrigger className="w-[120px]">
+              <SelectValue placeholder="Select view" />
+            </SelectTrigger>
+            <SelectContent>
+              {uniqueDateRangePresets.map(({ type }) => (
+                <SelectItem key={type} value={type}>
+                  {type.charAt(0).toUpperCase() + type.slice(1)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => updateDateRange(filterType, 1)}
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
-      <div className="flex items-center gap-2 mt-2">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => updateDateRange(filterType, -1)}
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
-        <Select
-          value={filterType}
-          onValueChange={(type) => setFilterType(type as FilterType)}
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select filter type" />
-          </SelectTrigger>
-          <SelectContent>
-            {uniqueDateRangePresets.map(({ type }) => (
-              <SelectItem key={type} value={type}>
-                {type}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => updateDateRange(filterType, 1)}
-        >
-          <ChevronRight className="h-4 w-4" />
-        </Button>
-      </div>
-      <div className="grid grid-cols-3 mb-8 gap-5 mt-2">
+      {/* Presets */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {dateRangePresets.map((preset) => (
           <Button
             key={preset.label}
@@ -261,26 +259,25 @@ export default function Dashboard() {
                 ? "secondary"
                 : "outline"
             }
-            onClick={() => {
-              handlePresetClick(preset);
-            }}
+            className="h-auto py-4 justify-start"
+            onClick={() => handlePresetClick(preset)}
           >
-            {preset.label}
-            {dateRange.from === preset.from ? "AAAAA" : ""}
+            <span className="text-left">
+              <div className="font-semibold">{preset.label}</div>
+              <div className="text-xs text-muted-foreground mt-1">
+                {format(preset.from, "MMM d, y")} -{" "}
+                {format(preset.to, "MMM d, y")}
+              </div>
+            </span>
           </Button>
         ))}
       </div>
 
-      <div className="flex mb-10">
-        <DashboardCards transactions={allTransactions ?? []} />
-      </div>
-      <div className="flex gap-10">
-        <div className="w-1/2">
-          <DashboardCategories transactions={allTransactions ?? []} />
-        </div>
-        <div className="w-1/2">
-          <DashboardDivisions transactions={allTransactions ?? []} />
-        </div>
+      {/* Dashboard Content */}
+      <DashboardCards transactions={allTransactions ?? []} />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <DashboardCategories transactions={allTransactions ?? []} />
+        <DashboardDivisions transactions={allTransactions ?? []} />
       </div>
       <TransactionList transactions={allTransactions ?? []} />
     </div>

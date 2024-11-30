@@ -31,21 +31,26 @@ const DashboardCards = ({
   const leftover = income - expense - savings;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-5 gap-y-5">
-      <DashboardCard amount={income} type="income" label="Income" />
+    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-y-5 sm:gap-x-5">
+      <DashboardCard
+        amount={income}
+        type="income"
+        headline="Income"
+        label="Net income this period"
+      />
       <DashboardCard
         amount={savings}
         type="savings"
-        label="Savings"
+        headline="Savings"
         total={income}
       />
       <DashboardCard
         amount={expense}
         type="expense"
-        label="Expenses"
+        headline="Expenses"
         total={income}
       />
-      <DashboardCard amount={leftover} label="Leftover" total={income} />
+      <DashboardCard amount={leftover} headline="Leftover" total={income} />
     </div>
   );
 };
