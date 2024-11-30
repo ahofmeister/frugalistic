@@ -11,7 +11,7 @@ type Cookie = {
   };
 };
 
-export const createClient = () => {
+export const createClient = (tag?: string, caching: boolean = true) => {
   const cookieStore = cookies();
 
   return createServerClient<Database>(
@@ -34,6 +34,25 @@ export const createClient = () => {
           }
         },
       },
+      global: {
+        fetch: createFetch({
+          next: caching
+            ? {
+                revalidate: false,
+                tags: tag ? [tag] : undefined,
+              }
+            : undefined,
+        }),
+      },
     },
   );
 };
+
+export const createFetch =
+  (options: Pick<RequestInit, "next" | "cache"> | undefined) =>
+  (url: RequestInfo | URL, init?: RequestInit) => {
+    return fetch(url, {
+      ...init,
+      ...options,
+    });
+  };

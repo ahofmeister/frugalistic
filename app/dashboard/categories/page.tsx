@@ -1,6 +1,5 @@
 import React from "react";
 
-import { getCategories } from "@/components/categories/categories-api";
 import CategoryForm from "@/components/categories/category-form";
 import DeleteCategory from "@/components/categories/delete-category";
 import {
@@ -11,9 +10,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { createClient } from "@/utils/supabase/server";
 
 export default async function CategoriesPage() {
-  const categories = await getCategories();
+  const supabase = createClient("categories");
+  const { data: categories } = await supabase
+    .from("categories")
+    .select("*")
+    .order("name", { ascending: true });
 
   return (
     <>
@@ -38,7 +42,7 @@ export default async function CategoriesPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {categories.map((category) => {
+                {categories?.map((category) => {
                   return (
                     <TableRow key={category.id}>
                       <TableCell className="flex-1">{category.name}</TableCell>
