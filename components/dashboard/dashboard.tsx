@@ -9,10 +9,14 @@ import {
   endOfWeek,
   endOfYear,
   format,
+  isEqual,
   startOfMonth,
   startOfWeek,
   startOfYear,
+  subMonths,
+  subWeeks,
 } from "date-fns";
+import { subYears } from "date-fns/subYears";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import React, { useState } from "react";
 
@@ -40,8 +44,17 @@ import { createClient } from "@/utils/supabase/client";
 
 type DateRange = { from: Date; to: Date };
 
+type Preset = {
+  type: FilterType;
+  label: string;
+  from: Date;
+  to: Date;
+};
+
+type FilterType = "week" | "month" | "year";
+
 export default function Dashboard() {
-  const [filterType, setFilterType] = useState("month");
+  const [filterType, setFilterType] = useState<FilterType>("month");
   const [dateRange, setDateRange] = useState<DateRange>(() => {
     const now = new Date();
     return {
@@ -87,6 +100,57 @@ export default function Dashboard() {
 
     setDateRange({ from, to });
   };
+
+  const dateRangePresets: Preset[] = [
+    {
+      type: "year",
+      label: "This Year",
+      from: startOfYear(new Date()),
+      to: endOfYear(new Date()),
+    },
+    {
+      type: "month",
+      label: "This Month",
+      from: startOfMonth(new Date()),
+      to: endOfMonth(new Date()),
+    },
+    {
+      type: "week",
+      label: "This Week",
+      from: startOfWeek(new Date()),
+      to: endOfWeek(new Date()),
+    },
+    {
+      type: "year",
+      label: "Last Year",
+      from: startOfYear(subYears(new Date(), 1)),
+      to: endOfYear(subYears(new Date(), 1)),
+    },
+    {
+      type: "month",
+      label: "Last Month",
+      from: startOfMonth(subMonths(new Date(), 1)),
+      to: endOfMonth(subMonths(new Date(), 1)),
+    },
+    {
+      type: "week",
+      label: "Last Week",
+      from: startOfWeek(subWeeks(new Date(), 1)),
+      to: endOfWeek(subWeeks(new Date(), 1)),
+    },
+  ];
+
+  const handlePresetClick = (preset: Preset) => {
+    if (preset) {
+      setFilterType(preset.type);
+      setDateRange({ from: preset.from, to: preset.to });
+    }
+  };
+
+  const uniqueDateRangePresets = dateRangePresets.filter(
+    (preset, index, self) =>
+      self.findIndex((p) => p.type === preset.type) === index,
+  );
 
   return (
     <div className="flex-col p-2">
@@ -154,81 +218,57 @@ export default function Dashboard() {
             </PopoverContent>
           </Popover>
         </div>
-
-        <div className="flex items-center gap-x-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => updateDateRange(filterType, -1)}
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <Select
-            value={filterType}
-            onValueChange={(type) => {
-              setFilterType(type);
-            }}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select filter type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="week">Week</SelectItem>
-              <SelectItem value="month">Month</SelectItem>
-              <SelectItem value="year">Year</SelectItem>
-            </SelectContent>
-          </Select>
-          <div className="flex items-center space-x-2">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => updateDateRange(filterType, 1)}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
       </div>
 
-      <div className="flex mb-8 gap-x-5">
+      <div className="flex items-center gap-2 mt-2">
         <Button
           variant="outline"
-          onClick={() => {
-            setFilterType("year");
-            setDateRange({
-              from: startOfYear(new Date()),
-              to: endOfYear(new Date()),
-            });
-          }}
+          size="icon"
+          onClick={() => updateDateRange(filterType, -1)}
         >
-          This year
+          <ChevronLeft className="h-4 w-4" />
         </Button>
-
+        <Select
+          value={filterType}
+          onValueChange={(type) => setFilterType(type as FilterType)}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Select filter type" />
+          </SelectTrigger>
+          <SelectContent>
+            {uniqueDateRangePresets.map(({ type }) => (
+              <SelectItem key={type} value={type}>
+                {type}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         <Button
           variant="outline"
-          onClick={() => {
-            setFilterType("month");
-            setDateRange({
-              from: startOfMonth(new Date()),
-              to: endOfMonth(new Date()),
-            });
-          }}
+          size="icon"
+          onClick={() => updateDateRange(filterType, 1)}
         >
-          This month
+          <ChevronRight className="h-4 w-4" />
         </Button>
-
-        <Button
-          variant="outline"
-          onClick={() => {
-            setFilterType("week");
-            setDateRange({
-              from: startOfWeek(new Date()),
-              to: endOfWeek(new Date()),
-            });
-          }}
-        >
-          This week
-        </Button>
+      </div>
+      <div className="grid grid-cols-3 mb-8 gap-5 mt-2">
+        {dateRangePresets.map((preset) => (
+          <Button
+            key={preset.label}
+            variant={
+              isEqual(preset.from, dateRange.from) &&
+              isEqual(preset.to, dateRange.to)
+                ? "secondary"
+                : "outline"
+            }
+            onClick={() => {
+              handlePresetClick(preset);
+            }}
+          >
+            {preset.label}
+            {dateRange.from === preset.from ? "AAAAA" : ""}
+          </Button>
+        ))}
       </div>
 
       <div className="flex mb-10">
