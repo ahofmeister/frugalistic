@@ -10,12 +10,12 @@ export async function createCategory(newCategory: NewCategory) {
 
   await supabase.from("categories").insert(newCategory);
 
-  revalidateTag("categories");
+  revalidateTag("category");
 }
 
 export async function deleteCategory(id: string) {
   await createClient("category").from("categories").delete().eq("id", id);
-  revalidateTag("categories");
+  revalidateTag("category");
 }
 
 export const insertCategoriesFromDefaultCategories = async (
