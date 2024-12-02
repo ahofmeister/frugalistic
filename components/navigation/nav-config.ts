@@ -30,11 +30,6 @@ export const navConfig: NavConfig = {
       icon: LayoutDashboard,
     },
     {
-      title: "Dashboard V2",
-      href: "/dashboard/v2",
-      icon: LayoutDashboard,
-    },
-    {
       title: "Categories",
       href: "/dashboard/categories",
       icon: Table,

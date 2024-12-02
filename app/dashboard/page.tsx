@@ -1,5 +1,9 @@
+import React from "react";
+
 import Dashboard from "@/components/dashboard/dashboard";
 
-export default function DashboardPage() {
+const V2Page = () => {
   return <Dashboard />;
-}
+};
+
+export default V2Page;
