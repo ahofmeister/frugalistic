@@ -29,7 +29,7 @@ export default async function TransactionsPage({
     type: TransactionType;
   };
 }) {
-  const { data: categories } = await createClient()
+  const { data: categories } = await createClient("category")
     .from("categories")
     .select("*");
 

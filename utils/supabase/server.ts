@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
+import { CacheTag } from "@/app/caching";
 import { Database } from "@/types/supabase";
 
 type Cookie = {
@@ -11,7 +12,7 @@ type Cookie = {
   };
 };
 
-export const createClient = (tag?: string, caching: boolean = true) => {
+export const createClient = (tag?: CacheTag, caching: boolean = true) => {
   const cookieStore = cookies();
 
   return createServerClient<Database>(

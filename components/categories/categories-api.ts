@@ -6,13 +6,15 @@ import { DefaultCategory, NewCategory } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
 export async function createCategory(newCategory: NewCategory) {
-  await createClient().from("categories").insert(newCategory);
+  const supabase = createClient("category");
+
+  await supabase.from("categories").insert(newCategory);
 
   revalidateTag("categories");
 }
 
 export async function deleteCategory(id: string) {
-  await createClient().from("categories").delete().eq("id", id);
+  await createClient("category").from("categories").delete().eq("id", id);
   revalidateTag("categories");
 }
 
@@ -25,11 +27,12 @@ export const insertCategoriesFromDefaultCategories = async (
     division,
   }));
 
-  const { error } = await createClient()
+  const { error } = await createClient("category")
     .from("categories")
     .insert(categoriesForInsert);
 
   if (error) {
     console.log(error);
   }
+  revalidateTag("categories");
 };

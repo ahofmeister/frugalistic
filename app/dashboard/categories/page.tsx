@@ -13,7 +13,7 @@ import {
 import { createClient } from "@/utils/supabase/server";
 
 export default async function CategoriesPage() {
-  const supabase = createClient("categories");
+  const supabase = createClient("category");
   const { data: categories } = await supabase
     .from("categories")
     .select("*")
