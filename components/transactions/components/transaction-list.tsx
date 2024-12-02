@@ -81,21 +81,22 @@ export default function TransactionList({
               </TableCell>
               <TableCell className="flex justify-end gap-x-2">
                 <Link href={`/dashboard/transactions/edit/${transaction.id}`}>
-                  <Button variant="default" size="icon">
+                  <Button variant="ghost" size="icon">
                     <Pencil1Icon />
                   </Button>
                 </Link>
 
                 <Button
-                  variant="destructive"
+                  variant="ghost"
                   size="icon"
+                  className="text-warning"
                   onClick={() => deleteTransaction(transaction.id)}
                 >
                   <TrashIcon />
                 </Button>
 
                 <Button
-                  variant="default"
+                  variant="ghost"
                   size="icon"
                   onClick={() =>
                     makeTransactionRecurring(transaction, "monthly")
