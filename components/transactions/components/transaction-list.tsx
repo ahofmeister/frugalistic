@@ -37,7 +37,6 @@ export default function TransactionList({
             <TableHead className="text-left">Date</TableHead>
             <TableHead className="text-left">Description</TableHead>
             <TableHead className="text-left">Category</TableHead>
-            <TableHead className="text-left">Division</TableHead>
             <TableHead className="text-right">Amount</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
@@ -73,9 +72,6 @@ export default function TransactionList({
               <TableCell className="text-left flex items-center gap-x-2">
                 <CategoryColor color={transaction.category?.color} />
                 {transaction.category?.name}
-              </TableCell>
-              <TableCell className="text-left">
-                {transaction.category?.division}
               </TableCell>
               <TableCell className="text-right">
                 <TransactionAmount
