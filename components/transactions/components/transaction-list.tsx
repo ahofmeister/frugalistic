@@ -28,7 +28,7 @@ export default function TransactionList({
 }) {
   return (
     <div className="w-full ">
-      <div className="text-muted-foreground flex justify-end pt-1 pb-2">
+      <div className="text-muted-foreground">
         {transactions.length} transactions
       </div>
       <Table>

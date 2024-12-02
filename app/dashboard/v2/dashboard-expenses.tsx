@@ -1,16 +1,7 @@
 "use client";
 
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  LabelList,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Bar, BarChart, LabelList, XAxis, YAxis } from "recharts";
 
-import HorizontalBarChart from "@/app/dashboard/v2/chart";
-import RealChart from "@/app/dashboard/v2/real-chart";
 import {
   ChartConfig,
   ChartContainer,
@@ -56,24 +47,21 @@ export function DashboardExpenses(props: {
 
   return (
     <div className="w-full">
-      <HorizontalBarChart groupedCategories={groupedCategories} />
-
-      <RealChart groupedCategories={groupedCategories} />
-
-      <ChartContainer config={chartConfig} className="max-h-[400px] w-full">
-        <BarChart accessibilityLayer data={groupedCategories}>
-          <CartesianGrid vertical={false} />
+      <ChartContainer config={chartConfig} className="max-h-[200px] w-full">
+        <BarChart
+          barCategoryGap={5}
+          accessibilityLayer
+          data={groupedCategories}
+          margin={{ top: 15, right: 0, left: 0, bottom: 0 }}
+        >
           <ChartTooltip content={<ChartTooltipContent />} cursor={false} />
-          <XAxis
-            dataKey="category"
-            tickLine={false}
-            tickMargin={10}
-            axisLine={false}
-          />
+          <XAxis dataKey="category" tickLine={false} axisLine={false} />
           <YAxis
+            axisLine={false}
+            tickLine={false}
             tickFormatter={(value: string) => formatAmount(Number(value))}
           />
-          <Bar dataKey="total" fill="var(--color-total)" radius={4}>
+          <Bar dataKey="total" fill="var(--color-total)" radius={3}>
             <LabelList
               formatter={(value: string) => formatAmount(Number(value))}
               position="top"

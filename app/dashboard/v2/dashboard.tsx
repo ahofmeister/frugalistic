@@ -11,7 +11,6 @@ import {
   format,
   startOfMonth,
   startOfYear,
-  subMonths,
 } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -30,7 +29,7 @@ type DateRange = { from: Date; to: Date };
 export default function Dashboard() {
   const [timeFrame, setTimeFrame] = useState<TimeFrame>("month");
   const [dateRange, setDateRange] = useState<DateRange>(() => {
-    const now = subMonths(new Date(), 1);
+    const now = new Date();
     return {
       from: startOfMonth(now),
       to: endOfMonth(now),
@@ -61,6 +60,7 @@ export default function Dashboard() {
       .gte("datetime", format(dateRange.from, "yyyy-MM-dd"))
       .lte("datetime", format(dateRange.to, "yyyy-MM-dd"))
       .order("datetime", { ascending: false })
+      .order("created_at", { ascending: false })
       .returns<TransactionWithCategory[]>(),
     {
       revalidateOnFocus: false,
@@ -145,7 +145,9 @@ export default function Dashboard() {
             <DashboardExpenses transactions={allTransactions ?? []} />
           </div>
         </div>
-        <TransactionList transactions={allTransactions ?? []} />
+        <div className="mt-4">
+          <TransactionList transactions={allTransactions ?? []} />
+        </div>
       </div>
     </div>
   );

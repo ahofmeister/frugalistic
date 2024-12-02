@@ -44,33 +44,42 @@ const DashboardCards = ({
         amount={income}
         type="income"
         headline="Income"
-        label="Net income this period"
+        label="Income this period"
       />
       <DashboardCard
         amount={savings}
         type="savings"
         headline="Savings"
         total={income}
+        ofLabel="income"
       />
       <DashboardCard
         amount={expense}
         type="expense"
         headline="Expenses"
         total={income}
+        ofLabel="income"
       />
       <DashboardCard
         amount={leisureExpense}
         type="leisure"
         headline="Leisure"
         total={expense}
+        ofLabel="expense"
       />
       <DashboardCard
         amount={essentialsExpense}
         type="essentials"
         headline="Essentials"
         total={expense}
+        ofLabel="expense"
       />
-      <DashboardCard amount={leftover} headline="Leftover" total={income} />
+      <DashboardCard
+        amount={leftover}
+        headline="Leftover"
+        total={income}
+        ofLabel="income"
+      />
     </div>
   );
 };

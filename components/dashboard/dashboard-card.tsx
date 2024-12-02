@@ -10,15 +10,17 @@ const DashboardCard = ({
   type,
   total,
   label,
+  ofLabel,
 }: {
   headline: string;
   amount: number;
   type?: TransactionType | Division | undefined;
   total?: number;
   label?: string;
+  ofLabel?: string;
 }) => {
   return (
-    <Card className="lg:w-52 w-36 h-36">
+    <Card className="lg:w-[180px] w-36 h-36">
       <CardHeader className="text-xl">
         {headline}
         <div className="text-2xl">
@@ -26,7 +28,7 @@ const DashboardCard = ({
         </div>
         <div className="text-sm text-gray-400">
           {total && (
-            <>{`${((amount / total) * 100).toFixed(0)}% of net income`}</>
+            <>{`${((amount / total) * 100).toFixed(0)}% of ${ofLabel}`}</>
           )}
           {label}
         </div>
