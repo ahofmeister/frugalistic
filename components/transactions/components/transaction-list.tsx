@@ -1,5 +1,5 @@
 "use client";
-import { Pencil1Icon, ReloadIcon, TrashIcon } from "@radix-ui/react-icons";
+import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import { formatDate } from "date-fns";
 import { RefreshCw } from "lucide-react";
 import Link from "next/link";
@@ -105,7 +105,7 @@ export default function TransactionList({
                     makeTransactionRecurring(transaction, "monthly")
                   }
                 >
-                  <ReloadIcon />
+                  <RefreshCw />
                 </Button>
               </TableCell>
             </TableRow>
