@@ -17,7 +17,7 @@ interface CategoryData {
   fill: string;
 }
 
-export function DashboardExpenses(props: {
+export function DashboardCategories(props: {
   transactions: TransactionWithCategory[];
 }) {
   const expenses = props.transactions.filter(

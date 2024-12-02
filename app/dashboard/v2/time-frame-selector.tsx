@@ -1,5 +1,6 @@
-import { TimeFrame } from "@/app/dashboard/v2/time-frame";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+
+export type TimeFrame = "month" | "year";
 
 export function TimeFrameSelector(props: {
   timeFrame: TimeFrame;

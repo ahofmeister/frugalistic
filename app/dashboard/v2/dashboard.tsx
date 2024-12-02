@@ -15,9 +15,11 @@ import {
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
-import { DashboardExpenses } from "@/app/dashboard/v2/dashboard-expenses";
-import { TimeFrame } from "@/app/dashboard/v2/time-frame";
-import { TimeFrameSelector } from "@/app/dashboard/v2/time-frame-selector";
+import { DashboardCategories } from "@/app/dashboard/v2/dashboard-categories";
+import {
+  TimeFrame,
+  TimeFrameSelector,
+} from "@/app/dashboard/v2/time-frame-selector";
 import DashboardCards from "@/components/dashboard/dashboard-cards";
 import TransactionList from "@/components/transactions/components/transaction-list";
 import { Button } from "@/components/ui/button";
@@ -92,7 +94,7 @@ export default function Dashboard() {
     });
   }
 
-  function dateRangeTOCurrent() {
+  function adjustDateRangeToCurrent() {
     switch (timeFrame) {
       case "month":
         setDateRange({
@@ -124,7 +126,10 @@ export default function Dashboard() {
                 <Button variant="outline" onClick={() => adjustDateRange(-1)}>
                   <ChevronLeft />
                 </Button>
-                <Button variant="outline" onClick={() => dateRangeTOCurrent()}>
+                <Button
+                  variant="outline"
+                  onClick={() => adjustDateRangeToCurrent()}
+                >
                   Today
                 </Button>
                 <Button variant="outline" onClick={() => adjustDateRange(1)}>
@@ -142,7 +147,7 @@ export default function Dashboard() {
             <DashboardCards transactions={allTransactions ?? []} />
           </div>
           <div className="flex">
-            <DashboardExpenses transactions={allTransactions ?? []} />
+            <DashboardCategories transactions={allTransactions ?? []} />
           </div>
         </div>
         <div className="mt-4">
