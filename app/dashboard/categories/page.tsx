@@ -36,8 +36,8 @@ export default async function CategoriesPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Name</TableHead>
-                  <TableHead>Color</TableHead>
                   <TableHead>Division</TableHead>
+                  <TableHead>Color</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -46,17 +46,16 @@ export default async function CategoriesPage() {
                   return (
                     <TableRow key={category.id}>
                       <TableCell className="flex-1">{category.name}</TableCell>
+                      <TableCell className="flex-1">
+                        {category.division}
+                      </TableCell>
                       <TableCell className="text-gray-300">
                         <div className="flex items-center gap-3">
                           <div
                             className="w-6 h-6 rounded-full border"
                             style={{ backgroundColor: category.color }}
                           />
-                          {category.color}
                         </div>
-                      </TableCell>
-                      <TableCell className="flex-1">
-                        {category.division}
                       </TableCell>
                       <TableCell>
                         <DeleteCategory category={category} />
