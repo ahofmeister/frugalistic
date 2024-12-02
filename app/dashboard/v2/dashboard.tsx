@@ -11,6 +11,7 @@ import {
   format,
   startOfMonth,
   startOfYear,
+  subMonths,
 } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -29,7 +30,7 @@ type DateRange = { from: Date; to: Date };
 export default function Dashboard() {
   const [timeFrame, setTimeFrame] = useState<TimeFrame>("month");
   const [dateRange, setDateRange] = useState<DateRange>(() => {
-    const now = new Date();
+    const now = subMonths(new Date(), 1);
     return {
       from: startOfMonth(now),
       to: endOfMonth(now),

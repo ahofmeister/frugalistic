@@ -9,6 +9,8 @@ import {
   YAxis,
 } from "recharts";
 
+import HorizontalBarChart from "@/app/dashboard/v2/chart";
+import RealChart from "@/app/dashboard/v2/real-chart";
 import {
   ChartConfig,
   ChartContainer,
@@ -54,6 +56,10 @@ export function DashboardExpenses(props: {
 
   return (
     <div className="w-full">
+      <HorizontalBarChart groupedCategories={groupedCategories} />
+
+      <RealChart groupedCategories={groupedCategories} />
+
       <ChartContainer config={chartConfig} className="max-h-[400px] w-full">
         <BarChart accessibilityLayer data={groupedCategories}>
           <CartesianGrid vertical={false} />
