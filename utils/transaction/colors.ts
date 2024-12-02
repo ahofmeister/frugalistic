@@ -8,8 +8,3 @@ export const divisionColors: { [index: string]: string } = {
   leisure: "#6FCF97",
   essentials: "#BEBEBE",
 };
-
-export const allColors: { [index: string]: string } = {
-  ...transactionColors,
-  ...divisionColors,
-};
