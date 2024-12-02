@@ -12,15 +12,23 @@ const DashboardCards = ({
   let income = 0;
   let expense = 0;
   let savings = 0;
+  let leisureExpense = 0;
+  let essentialsExpense = 0;
 
   transactions.forEach((transaction) => {
     const amount = transaction.amount;
+    const division = transaction.category?.division; // Handle category being null
     switch (transaction.type) {
       case "income":
         income += amount;
         break;
       case "expense":
         expense += amount;
+        if (division === "leisure") {
+          leisureExpense += amount;
+        } else if (division === "essentials") {
+          essentialsExpense += amount;
+        }
         break;
       case "savings":
         savings += amount;
@@ -31,7 +39,7 @@ const DashboardCards = ({
   const leftover = income - expense - savings;
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-y-5 sm:gap-x-5">
+    <div className="grid grid-cols-2 lg:grid-cols-6 gap-2">
       <DashboardCard
         amount={income}
         type="income"
@@ -49,6 +57,18 @@ const DashboardCards = ({
         type="expense"
         headline="Expenses"
         total={income}
+      />
+      <DashboardCard
+        amount={leisureExpense}
+        type="leisure"
+        headline="Leisure"
+        total={expense}
+      />
+      <DashboardCard
+        amount={essentialsExpense}
+        type="essentials"
+        headline="Essentials"
+        total={expense}
       />
       <DashboardCard amount={leftover} headline="Leftover" total={income} />
     </div>
