@@ -28,7 +28,7 @@ export default function TransactionList({
 }) {
   return (
     <div className="w-full ">
-      <div className="text-muted-foreground flex justify-end pt-1 pb-2">
+      <div className="text-muted-foreground">
         {transactions.length} transactions
       </div>
       <Table>
@@ -37,7 +37,6 @@ export default function TransactionList({
             <TableHead className="text-left">Date</TableHead>
             <TableHead className="text-left">Description</TableHead>
             <TableHead className="text-left">Category</TableHead>
-            <TableHead className="text-left">Division</TableHead>
             <TableHead className="text-right">Amount</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
@@ -74,9 +73,6 @@ export default function TransactionList({
                 <CategoryColor color={transaction.category?.color} />
                 {transaction.category?.name}
               </TableCell>
-              <TableCell className="text-left">
-                {transaction.category?.division}
-              </TableCell>
               <TableCell className="text-right">
                 <TransactionAmount
                   amount={transaction.amount}
@@ -85,21 +81,22 @@ export default function TransactionList({
               </TableCell>
               <TableCell className="flex justify-end gap-x-2">
                 <Link href={`/dashboard/transactions/edit/${transaction.id}`}>
-                  <Button variant="default" size="icon">
+                  <Button variant="ghost" size="icon">
                     <Pencil1Icon />
                   </Button>
                 </Link>
 
                 <Button
-                  variant="destructive"
+                  variant="ghost"
                   size="icon"
+                  className="text-warning"
                   onClick={() => deleteTransaction(transaction.id)}
                 >
                   <TrashIcon />
                 </Button>
 
                 <Button
-                  variant="default"
+                  variant="ghost"
                   size="icon"
                   onClick={() =>
                     makeTransactionRecurring(transaction, "monthly")

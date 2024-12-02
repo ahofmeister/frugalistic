@@ -9,9 +9,9 @@ export type NewTransaction = Omit<
 export type TransactionWithCategory = Transaction & {
   category: Category;
 };
-export type TransactionType =
-  | Database["public"]["Enums"]["transaction_type"]
-  | null;
+export type TransactionType = Database["public"]["Enums"]["transaction_type"];
+
+export type Division = Database["public"]["Enums"]["division"];
 
 export type TransactionAutoSuggest =
   Database["public"]["Views"]["transaction_auto_suggest2"]["Row"];

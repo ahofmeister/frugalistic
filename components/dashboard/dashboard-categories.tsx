@@ -1,115 +1,74 @@
 "use client";
-import React from "react";
-import { Cell, Pie, PieChart } from "recharts";
 
-import CategoryColor from "@/components/categories/category-color";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Bar, BarChart, LabelList, XAxis, YAxis } from "recharts";
+
 import {
+  ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { cn } from "@/lib/utils";
+import { formatAmount } from "@/lib/utils";
 import { TransactionWithCategory } from "@/types";
 
-export type CategoryTotal = {
+interface CategoryData {
+  category: string;
   total: number;
-  category_name: string;
-  category_color: string;
-};
+  fill: string;
+}
 
-const DashboardCategories = ({
-  transactions,
-}: {
+export function DashboardCategories(props: {
   transactions: TransactionWithCategory[];
-}) => {
-  const data = groupTransactionsByCategory(
-    transactions.filter((transaction) => transaction.type === "expense"),
+}) {
+  const expenses = props.transactions.filter(
+    (transaction) => transaction.type === "expense",
   );
 
-  const totalExpense =
-    React.useMemo(() => {
-      return data?.reduce((acc, curr) => acc + curr.total, 0);
-    }, [data]) ?? 0;
+  const categories = expenses
+    .filter((transaction) => transaction.category)
+    .reduce<Record<string, CategoryData>>((acc, transaction) => {
+      const { name, color } = transaction.category;
+      const amount = transaction.amount;
+
+      if (!acc[name]) {
+        acc[name] = { category: name, total: 0, fill: color };
+      }
+
+      acc[name].total += amount / 100;
+
+      return acc;
+    }, {});
+
+  const groupedCategories = Object.values(categories).sort(
+    (a, b) => b.total - a.total,
+  );
+
+  const chartConfig: ChartConfig = {} as ChartConfig;
 
   return (
-    <Card className="flex flex-col">
-      <CardHeader className="pb-0">
-        <CardTitle>Expenses by Category</CardTitle>
-      </CardHeader>
-      <CardContent className="flex items-center">
-        <div className="flex-1 pb-0">
-          <ChartContainer
-            config={{}}
-            className="mx-auto aspect-square max-h-[250px] min-w-[250px]"
-          >
-            <PieChart>
-              <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent hideLabel />}
-              />
-              <Pie
-                data={data}
-                dataKey="total"
-                nameKey="category_name"
-                innerRadius={91}
-              >
-                {data?.map((_, index) => (
-                  <Cell
-                    cursor="pointer"
-                    fill={data[index].category_color}
-                    key={`cell-${index}`}
-                  />
-                ))}
-              </Pie>
-            </PieChart>
-          </ChartContainer>
-        </div>
-        <div className="h-60 overflow-auto">
-          {data?.map((category, index) => (
-            <div
-              key={category.category_name}
-              className={cn({
-                ["flex items-center justify-between"]: true,
-                ["border-b"]: index + 1 !== data.length,
-              })}
-            >
-              <div className="flex items-center space-x-2">
-                <CategoryColor color={category.category_color} />
-                <div className="py-2">{category.category_name}</div>
-              </div>
-              <div className="py-2 w-16 text-right">
-                {((category.total / totalExpense) * 100).toFixed(1)}%
-              </div>
-            </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+    <div className="w-full">
+      <ChartContainer config={chartConfig} className="max-h-[200px] w-full">
+        <BarChart
+          barCategoryGap={5}
+          accessibilityLayer
+          data={groupedCategories}
+          margin={{ top: 15, right: 0, left: 0, bottom: 0 }}
+        >
+          <ChartTooltip content={<ChartTooltipContent />} cursor={false} />
+          <XAxis dataKey="category" tickLine={false} axisLine={false} />
+          <YAxis
+            axisLine={false}
+            tickLine={false}
+            tickFormatter={(value: string) => formatAmount(Number(value))}
+          />
+          <Bar dataKey="total" fill="var(--color-total)" radius={3}>
+            <LabelList
+              formatter={(value: string) => formatAmount(Number(value))}
+              position="top"
+            />
+          </Bar>
+        </BarChart>
+      </ChartContainer>
+    </div>
   );
-};
-export default DashboardCategories;
-
-export function groupTransactionsByCategory(
-  transactions: TransactionWithCategory[],
-): CategoryTotal[] {
-  const categoryTotals: Record<string, CategoryTotal> = {};
-
-  transactions.forEach((transaction) => {
-    if (!transaction.category) return;
-
-    const { name, color } = transaction.category;
-
-    if (!categoryTotals[name]) {
-      categoryTotals[name] = {
-        total: 0,
-        category_name: name,
-        category_color: color,
-      };
-    }
-
-    categoryTotals[name].total += transaction.amount / 100;
-  });
-
-  return Object.values(categoryTotals).sort((b, a) => a.total - b.total);
 }
