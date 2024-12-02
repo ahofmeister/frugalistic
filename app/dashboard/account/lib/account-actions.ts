@@ -1,11 +1,11 @@
 "use server";
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 
 import { ProfileUpdate } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
 export async function updateAccount(account: ProfileUpdate) {
-  const supabase = createClient();
+  const supabase = createClient("profile");
 
   const {
     data: { user },
@@ -24,12 +24,12 @@ export async function updateAccount(account: ProfileUpdate) {
     if (error) {
       console.log(error);
     }
-    revalidatePath("/page");
+    revalidateTag("profile");
   }
 }
 
 export async function deleteAccount() {
-  const supabase = createClient();
+  const supabase = createClient("profile");
 
   const { error } = await supabase.rpc("delete_user");
 
