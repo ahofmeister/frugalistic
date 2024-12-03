@@ -12,7 +12,7 @@ type Cookie = {
   };
 };
 
-export const createClient = (tag?: CacheTag, caching: boolean = true) => {
+export const createClient = (tag?: CacheTag, caching: boolean = false) => {
   const cookieStore = cookies();
 
   return createServerClient<Database>(
