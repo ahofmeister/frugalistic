@@ -1,9 +1,9 @@
 import {
-  ArrowRightLeft,
   ChartColumnDecreasing,
   History,
   LayoutDashboard,
   LucideProps,
+  Search,
   Table,
 } from "lucide-react";
 import { ForwardRefExoticComponent } from "react";
@@ -35,9 +35,9 @@ export const navConfig: NavConfig = {
       icon: Table,
     },
     {
-      title: "Transactions",
-      href: "/dashboard/transactions",
-      icon: ArrowRightLeft,
+      title: "Search",
+      href: "/dashboard/search",
+      icon: Search,
     },
     {
       title: "Recurring",

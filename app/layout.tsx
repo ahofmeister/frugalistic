@@ -1,4 +1,5 @@
-// app/layout.tsx
+import "./globals.css";
+
 import { Metadata } from "next";
 import React from "react";
 
@@ -28,8 +29,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
-      <>{children}</>
-    </>
+    <html lang="en" className="dark">
+      <body className="text-black bg-white dark:bg-background dark:text-white">
+        {children}
+      </body>
+    </html>
   );
 }
