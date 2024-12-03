@@ -33,7 +33,9 @@ export async function makeTransactionRecurring(
   const { data, error } = await createClient()
     .from("transactions_recurring")
     .upsert({
-      id: transaction.recurring_transaction.id || undefined,
+      id: transaction.recurring_transaction
+        ? transaction.recurring_transaction.id
+        : undefined,
       amount: transaction.amount,
       description: transaction.description,
       category: transaction.category ? transaction.category : undefined,
