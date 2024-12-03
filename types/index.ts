@@ -13,6 +13,10 @@ export type TransactionType = Database["public"]["Enums"]["transaction_type"];
 
 export type Division = Database["public"]["Enums"]["division"];
 
+export type TransactionWithRecurring = Transaction & {
+  recurring_transaction: RecurringTransaction;
+};
+
 export type TransactionAutoSuggest =
   Database["public"]["Views"]["transaction_auto_suggest2"]["Row"];
 

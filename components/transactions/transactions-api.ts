@@ -1,17 +1,18 @@
 "use server";
 import { addMonths, addYears, format } from "date-fns";
+import { revalidateTag } from "next/cache";
 
 import {
-  NewRecurringTransaction,
   NewTransaction,
   RecurringInterval,
   RecurringTransaction,
   TransactionType,
   TransactionWithCategory,
+  TransactionWithRecurring,
 } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
-const calcNextRun = (
+const calculateNextRun = (
   date: string,
   recurringInterval: "monthly" | "annually",
 ): Date => {
@@ -26,28 +27,45 @@ const calcNextRun = (
 };
 
 export async function makeTransactionRecurring(
-  transaction: TransactionWithCategory,
+  transaction: TransactionWithRecurring,
   interval: RecurringInterval,
 ) {
-  const { data: response } = await createClient().auth.getUser();
-  // TODO user id should be necessary
-  if (!response) {
-    return;
-  }
+  const { data, error } = await createClient()
+    .from("transactions_recurring")
+    .upsert({
+      id: transaction.recurring_transaction
+        ? transaction.recurring_transaction.id
+        : undefined,
+      amount: transaction.amount,
+      description: transaction.description,
+      category: transaction.category ? transaction.category : undefined,
+      next_run: format(
+        calculateNextRun(transaction.datetime, interval),
+        "yyyy-MM-dd",
+      ),
+      type: transaction.type,
+      interval: interval,
+      user_id: transaction.user_id,
+    })
+    .select("id")
+    .single();
 
-  const { error } = await createRecurring({
-    amount: transaction.amount,
-    description: transaction.description,
-    category: transaction.category ? transaction.category.id : undefined,
-    next_run: format(calcNextRun(transaction.datetime, interval), "yyyy-MM-dd"),
-    type: transaction.type,
-    interval: interval,
-    user_id: response.user!.id,
-  });
+  if (data) {
+    const { error } = await createClient()
+      .from("transactions")
+      .update({
+        recurring_transaction: data.id,
+      })
+      .eq("id", transaction.id);
+    if (error) {
+      console.log(error);
+    }
+  }
 
   if (error) {
     console.log(error);
   }
+  revalidateTag("transactions");
 }
 
 export async function upsertTransaction(newTransaction: NewTransaction) {
@@ -59,10 +77,6 @@ export async function upsertTransaction(newTransaction: NewTransaction) {
     console.log(error);
   }
 }
-
-const createRecurring = async (t: NewRecurringTransaction) => {
-  return createClient().from("transactions_recurring").insert(t);
-};
 
 export const searchTransactions = async ({
   dateFrom,

@@ -7,8 +7,13 @@ import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
+import DeleteTransaction from "@/app/dashboard/transactions/edit/[id]/delete-transaction";
+import LoadingSpinner from "@/components/loading/loading";
 import AmountInput from "@/components/transactions/components/amount-input";
-import { upsertTransaction } from "@/components/transactions/transactions-api";
+import {
+  makeTransactionRecurring,
+  upsertTransaction,
+} from "@/components/transactions/transactions-api";
 import { AutoComplete } from "@/components/ui/auto-suggest-input";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -36,8 +41,8 @@ import { cn } from "@/lib/utils";
 import {
   Category,
   NewTransaction,
-  Transaction,
   TransactionAutoSuggest,
+  TransactionWithRecurring,
 } from "@/types";
 import { createClient } from "@/utils/supabase/client";
 
@@ -45,7 +50,7 @@ const TransactionForm = ({
   transaction,
   autoSuggests,
 }: {
-  transaction?: Transaction;
+  transaction?: TransactionWithRecurring;
   autoSuggests?: TransactionAutoSuggest[];
 }) => {
   const formSchema = z.object({
@@ -100,7 +105,7 @@ const TransactionForm = ({
   );
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-card rounded-lg shadow-md">
+    <div className="max-w-2xl mx-auto px-2 py-4">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit((transaction) =>
@@ -265,16 +270,47 @@ const TransactionForm = ({
           <Button
             type="submit"
             className="w-full"
-            // disabled={form.formState.isSubmitting || !form.formState.isValid}
+            disabled={form.formState.isSubmitting || !form.formState.isValid}
           >
-            {form.formState.isSubmitting
-              ? "Saving..."
-              : transaction
-                ? "Save"
-                : "Add Transaction"}
+            {form.formState.isSubmitting ? (
+              <LoadingSpinner />
+            ) : transaction ? (
+              "Save"
+            ) : (
+              "Add Transaction"
+            )}
           </Button>
         </form>
       </Form>
+
+      {transaction && (
+        <div className="flex flex-col gap-y-2 mt-2">
+          <DeleteTransaction id={transaction.id} />
+          <div className="flex gap-x-2">
+            <Button
+              variant="outline"
+              disabled={
+                transaction.recurring_transaction &&
+                transaction.recurring_transaction.interval === "monthly"
+              }
+              onClick={() => makeTransactionRecurring(transaction, "monthly")}
+            >
+              Monthly Recurring
+            </Button>
+
+            <Button
+              variant="outline"
+              disabled={
+                transaction.recurring_transaction &&
+                transaction.recurring_transaction.interval === "annually"
+              }
+              onClick={() => makeTransactionRecurring(transaction, "annually")}
+            >
+              Annually Recurring
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

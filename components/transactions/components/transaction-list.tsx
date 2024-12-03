@@ -1,24 +1,11 @@
 "use client";
-import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import { formatDate } from "date-fns";
 import { RefreshCw } from "lucide-react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import CategoryColor from "@/components/categories/category-color";
 import TransactionAmount from "@/components/transactions/components/transaction-amount";
-import {
-  deleteTransaction,
-  makeTransactionRecurring,
-} from "@/components/transactions/transactions-api";
-import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { TransactionWithCategory } from "@/types";
 
 export default function TransactionList({
@@ -26,21 +13,13 @@ export default function TransactionList({
 }: {
   transactions: TransactionWithCategory[];
 }) {
+  const router = useRouter();
   return (
-    <div className="w-full ">
-      <div className="text-muted-foreground">
+    <div className="w-full p-2">
+      <div className="text-muted-foreground mb-2">
         {transactions.length} transactions
       </div>
       <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="text-left">Date</TableHead>
-            <TableHead className="text-left">Description</TableHead>
-            <TableHead className="text-left">Category</TableHead>
-            <TableHead className="text-right">Amount</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
         <TableBody>
           {transactions.length === 0 && (
             <TableRow>
@@ -51,7 +30,13 @@ export default function TransactionList({
           )}
 
           {transactions.map((transaction) => (
-            <TableRow key={transaction.id} className="text-center">
+            <TableRow
+              key={transaction.id}
+              className="cursor-pointer"
+              onClick={() =>
+                router.push(`/dashboard/transactions/edit/${transaction.id}`)
+              }
+            >
               <TableCell className="text-left flex">
                 <div className="items-center justify-center text-center">
                   {formatDate(transaction.datetime, "EEE")},{" "}
@@ -78,32 +63,6 @@ export default function TransactionList({
                   amount={transaction.amount}
                   type={transaction.type}
                 />
-              </TableCell>
-              <TableCell className="flex justify-end gap-x-2">
-                <Link href={`/dashboard/transactions/edit/${transaction.id}`}>
-                  <Button variant="ghost" size="icon">
-                    <Pencil1Icon />
-                  </Button>
-                </Link>
-
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-warning"
-                  onClick={() => deleteTransaction(transaction.id)}
-                >
-                  <TrashIcon />
-                </Button>
-
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() =>
-                    makeTransactionRecurring(transaction, "monthly")
-                  }
-                >
-                  <RefreshCw />
-                </Button>
               </TableCell>
             </TableRow>
           ))}
