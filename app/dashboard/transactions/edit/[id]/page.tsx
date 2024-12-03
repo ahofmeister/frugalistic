@@ -1,5 +1,5 @@
 import TransactionForm from "@/components/transactions/components/transaction-form";
-import { Transaction } from "@/types";
+import { TransactionWithRecurring } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function TransactionEditPage({
@@ -7,15 +7,16 @@ export default async function TransactionEditPage({
 }: {
   params: { id: string };
 }) {
-  const supabase = createClient();
-  const { data: transaction } = await supabase
+  const transactionClient = createClient("transactions");
+  const { data: transaction } = await transactionClient
     .from("transactions")
-    .select("*")
+    .select("*, recurring_transaction(interval)")
     .eq("id", params.id)
-    .returns<Transaction>()
+    .returns<TransactionWithRecurring>()
     .single();
 
-  const { data: autoSuggests } = await supabase
+  const autoSuggestClient = createClient();
+  const { data: autoSuggests } = await autoSuggestClient
     .from("transaction_auto_suggest2")
     .select("*")
     .order("frequency", { ascending: false })
