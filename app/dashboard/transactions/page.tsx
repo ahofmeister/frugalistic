@@ -4,7 +4,7 @@ import ResetQueryParam from "@/app/dashboard/transactions/reset-query-param";
 import CategorySearchFilter from "@/components/transactions/components/category-search-filter";
 import DateSearchFilter from "@/components/transactions/components/date-search-filter";
 import TransactionSearchInput from "@/components/transactions/components/transaction-search-input";
-import TransactionsResult from "@/components/transactions/components/transactions-search";
+import TransactionsResult from "@/components/transactions/components/transactions-result";
 import TypeSearchFilter from "@/components/transactions/components/type-search-filter";
 import { Skeleton } from "@/components/ui/skeleton";
 import {

@@ -4,7 +4,7 @@ import TransactionList from "@/components/transactions/components/transaction-li
 import { searchTransactions } from "@/components/transactions/transactions-api";
 import { TransactionType } from "@/types";
 
-const TransactionsSearch = async ({
+const TransactionsResult = async ({
   dateFrom,
   dateTo,
   description,
@@ -28,4 +28,4 @@ const TransactionsSearch = async ({
   return <TransactionList transactions={data} />;
 };
 
-export default TransactionsSearch;
+export default TransactionsResult;

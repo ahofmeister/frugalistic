@@ -43,3 +43,20 @@ export function getColor(type: TransactionType | Division | undefined) {
       return "";
   }
 }
+
+export function getBgColor(type: TransactionType | Division | undefined) {
+  switch (type) {
+    case "savings":
+      return "bg-savings";
+    case "expense":
+      return "bg-expense";
+    case "income":
+      return "bg-income";
+    case "leisure":
+      return "bg-leisure";
+    case "essentials":
+      return "bg-essential";
+    default:
+      return "";
+  }
+}
