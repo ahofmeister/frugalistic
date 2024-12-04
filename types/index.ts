@@ -17,6 +17,9 @@ export type TransactionWithRecurring = Transaction & {
   recurring_transaction: RecurringTransaction;
 };
 
+export type MinMaxYear =
+  Database["public"]["Functions"]["get_min_and_max_year"]["Returns"];
+
 export type TransactionAutoSuggest =
   Database["public"]["Views"]["transaction_auto_suggest2"]["Row"];
 

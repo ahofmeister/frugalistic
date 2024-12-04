@@ -54,6 +54,8 @@ export function TransactionsChart(props: { transactions: Transaction[] }) {
   return (
     <>
       <ToggleGroup
+        className="justify-start"
+        size="sm"
         defaultValue={activeTypes}
         type="multiple"
         onValueChange={(value) => setActiveTypes(value as TransactionType[])}
@@ -63,7 +65,7 @@ export function TransactionsChart(props: { transactions: Transaction[] }) {
         <ToggleGroupItem value="savings">Savings</ToggleGroupItem>
       </ToggleGroup>
 
-      <div className="overflow-x-scroll mt-4">
+      <div className="overflow-x-scroll mt-3">
         <ChartContainer config={{}} className="max-h-[200px] w-full">
           <AreaChart data={chartData}>
             <XAxis dataKey="name" stroke="transparent" />
