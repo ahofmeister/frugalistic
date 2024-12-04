@@ -64,13 +64,11 @@ export function TransactionsChart(props: { transactions: Transaction[] }) {
       </ToggleGroup>
 
       <div className="overflow-x-scroll mt-4">
-        <ChartContainer
-          config={{}}
-          className="overflow-x-scroll max-h-[200px] w-full"
-        >
+        <ChartContainer config={{}} className="max-h-[200px] w-full">
           <AreaChart data={chartData}>
-            <XAxis dataKey="name" />
+            <XAxis dataKey="name" stroke="transparent" />
             <YAxis
+              stroke="transparent"
               tickFormatter={(value: string) => formatAmount(Number(value))}
             />
             <ChartTooltip
