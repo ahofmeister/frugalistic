@@ -7,7 +7,7 @@ const ResetQueryParam = () => {
   return (
     <button
       onClick={() => {
-        router.push("/dashboard/transactions");
+        router.push("/dashboard/search");
       }}
     >
       <ResetIcon />
