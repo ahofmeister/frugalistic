@@ -4,14 +4,6 @@ import { cookies } from "next/headers";
 import { CacheTag } from "@/app/caching";
 import { Database } from "@/types/supabase";
 
-type Cookie = {
-  name: string;
-  value: string;
-  options?: {
-    [key: string]: string;
-  };
-};
-
 export const createClient = (tag?: CacheTag, caching: boolean = false) => {
   const cookieStore = cookies();
 
@@ -20,10 +12,10 @@ export const createClient = (tag?: CacheTag, caching: boolean = false) => {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll(): { name: string; value: string }[] {
+        getAll() {
           return cookieStore.getAll();
         },
-        setAll(cookiesToSet: Cookie[]): void {
+        setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) => {
               cookieStore.set(name, value, options);
