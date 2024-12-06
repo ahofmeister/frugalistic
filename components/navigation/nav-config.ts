@@ -45,19 +45,19 @@ export const navConfig: NavConfig = {
       icon: History,
     },
     {
-      title: "Statistic",
-      href: "/dashboard/statistic",
+      title: "Insights",
+      href: "/dashboard/insights",
       icon: ChartColumnDecreasing,
       items: [
         {
           title: "Transaction Table",
-          href: "/dashboard/statistic/transaction-type",
+          href: "/dashboard/insights/transaction-type",
           icon: ChartColumnDecreasing,
         },
 
         {
           title: "Expenses / Category Table",
-          href: "/dashboard/statistic/expenses-category",
+          href: "/dashboard/insights/expenses-category",
           icon: ChartColumnDecreasing,
         },
       ],

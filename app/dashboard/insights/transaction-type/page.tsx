@@ -1,6 +1,6 @@
 import React from "react";
 
-import TransactionTypeTable from "@/app/dashboard/statistic/expenses-category/transaction-type-table";
+import TransactionTypeTable from "@/app/dashboard/insights/expenses-category/transaction-type-table";
 import { getTransactionsTotal } from "@/components/transactions/transactions-api";
 
 export default async function TypeStatistic() {

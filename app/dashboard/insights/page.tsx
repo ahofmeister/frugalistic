@@ -2,21 +2,21 @@ import { format } from "date-fns";
 import Link from "next/link";
 import React from "react";
 
-import SelectYear from "@/app/dashboard/statistic/select-year";
-import TransactionCategoryDistribution from "@/app/dashboard/statistic/transaction-category-distribution";
-import { TransactionsChart } from "@/app/dashboard/statistic/transactions-chart";
+import SelectYear from "@/app/dashboard/insights/select-year";
+import TransactionCategoryDistribution from "@/app/dashboard/insights/transaction-category-distribution";
+import { TransactionsChart } from "@/app/dashboard/insights/transactions-chart";
 import { navConfig } from "@/components/navigation/nav-config";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { TransactionWithCategory } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
-const StatisticIntroPage = async ({
+const InsightsPage = async ({
   searchParams,
 }: {
   searchParams: { year: number };
 }) => {
-  const statisticNavItem = navConfig.dashboardNavigation.find(
-    (item) => item.title === "Statistic",
+  const insightsNavItem = navConfig.dashboardNavigation.find(
+    (item) => item.title === "Insights",
   );
 
   const supabase = createClient();
@@ -44,7 +44,7 @@ const StatisticIntroPage = async ({
     .returns<TransactionWithCategory[]>();
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-y-6">
       <div className="flex mb-4">
         <SelectYear
           value={searchParams.year}
@@ -62,7 +62,7 @@ const StatisticIntroPage = async ({
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-4xl mt-4">
-        {statisticNavItem?.items?.map((item) => (
+        {insightsNavItem?.items?.map((item) => (
           <Link key={item.href} href={item.href} className="hover:no-underline">
             <Card>
               <CardHeader>
@@ -78,4 +78,4 @@ const StatisticIntroPage = async ({
   );
 };
 
-export default StatisticIntroPage;
+export default InsightsPage;

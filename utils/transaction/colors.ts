@@ -4,7 +4,7 @@ export const transactionColors: { [index: string]: string } = {
   expense: "#F58484",
 };
 
-export const divisionColors: { [index: string]: string } = {
-  leisure: "#6FCF97",
-  essentials: "#BEBEBE",
+export const transactionWithLeftover: { [index: string]: string } = {
+  ...transactionColors,
+  leftover: "#FFFFFF",
 };

@@ -88,65 +88,70 @@ const TransactionCategoryDistribution = ({
   };
 
   return (
-    <ChartContainer config={{}} className="max-h-[400px] w-full">
-      <BarChart
-        data={dataTransformed}
-        margin={{
-          top: 20,
-          right: 30,
-          left: 20,
-          bottom: 5,
-        }}
-      >
-        <XAxis
-          stroke="transparent"
-          dataKey="month"
-          tickFormatter={(value) =>
-            format(new Date(2024, value as number, 1), "LLL")
-          }
-        />
-        <YAxis
-          stroke="transparent"
-          tickFormatter={(value: number) => formatAmount(value)}
-        />
-        <ChartLegend content={renderLegend} />
-        <ChartTooltip
-          content={
-            <ChartTooltipContent
-              hideLabel
-              formatter={(value, name) => (
-                <div className="flex min-w-[130px] items-center text-xs text-muted-foreground">
-                  <span>{name}</span>
-                  <div className="ml-auto flex items-baseline gap-0.5 font-mono font-medium tabular-nums text-foreground">
-                    <TransactionAmount amount={Number(value) * 100} />
+    <>
+      <div className="flex justify-center font-bold text-xl">
+        Category Insights
+      </div>
+      <ChartContainer config={{}} className="max-h-[400px] w-full">
+        <BarChart
+          data={dataTransformed}
+          margin={{
+            top: 20,
+            right: 30,
+            left: 20,
+            bottom: 5,
+          }}
+        >
+          <XAxis
+            stroke="transparent"
+            dataKey="month"
+            tickFormatter={(value) =>
+              format(new Date(2024, value as number, 1), "LLL")
+            }
+          />
+          <YAxis
+            stroke="transparent"
+            tickFormatter={(value: number) => formatAmount(value)}
+          />
+          <ChartLegend content={renderLegend} />
+          <ChartTooltip
+            content={
+              <ChartTooltipContent
+                hideLabel
+                formatter={(value, name) => (
+                  <div className="flex min-w-[130px] items-center text-xs text-muted-foreground">
+                    <span>{name}</span>
+                    <div className="ml-auto flex items-baseline gap-0.5 font-mono font-medium tabular-nums text-foreground">
+                      <TransactionAmount amount={Number(value) * 100} />
+                    </div>
                   </div>
-                </div>
-              )}
-            />
-          }
-          cursor={false}
-        />
-
-        {names.map((name, index) => (
-          <Bar
-            key={index}
-            dataKey={name}
-            stackId="a"
-            stroke={colors[index]}
-            fill={colors[index] + "30"}
-          >
-            {index === names.length - 1 && (
-              <LabelList
-                position="top"
-                valueAccessor={(entry: MonthCategoryTotals) => {
-                  return formatAmount(entry.total);
-                }}
+                )}
               />
-            )}
-          </Bar>
-        ))}
-      </BarChart>
-    </ChartContainer>
+            }
+            cursor={false}
+          />
+
+          {names.map((name, index) => (
+            <Bar
+              key={index}
+              dataKey={name}
+              stackId="a"
+              stroke={colors[index]}
+              fill={colors[index] + "30"}
+            >
+              {index === names.length - 1 && (
+                <LabelList
+                  position="top"
+                  valueAccessor={(entry: MonthCategoryTotals) => {
+                    return formatAmount(entry.total);
+                  }}
+                />
+              )}
+            </Bar>
+          ))}
+        </BarChart>
+      </ChartContainer>
+    </>
   );
 };
 

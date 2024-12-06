@@ -10,22 +10,23 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { formatAmount } from "@/lib/utils";
+import { capitalize, formatAmount } from "@/lib/utils";
 import { Transaction, TransactionType } from "@/types";
-import { transactionColors } from "@/utils/transaction/colors";
+import { transactionWithLeftover } from "@/utils/transaction/colors";
+
+type TransactionTypeWithLeftOver = TransactionType | "leftover";
 
 export function TransactionsChart(props: { transactions: Transaction[] }) {
-  const [activeTypes, setActiveTypes] = useState<TransactionType[]>([
+  const allTypes: TransactionTypeWithLeftOver[] = [
     "income",
     "expense",
     "savings",
-  ]);
+    "leftover",
+  ];
+  const [activeTypes, setActiveTypes] =
+    useState<TransactionTypeWithLeftOver[]>(allTypes);
 
-  const filteredTransactions = props.transactions.filter((t) =>
-    activeTypes.includes(t.type),
-  );
-
-  const groupedByMonth = filteredTransactions.reduce(
+  const groupedByMonth = props.transactions.reduce(
     (acc: Record<string, Record<TransactionType, number>>, transaction) => {
       const month = new Date(transaction.datetime).getMonth().toString();
       if (!acc[month]) {
@@ -43,36 +44,43 @@ export function TransactionsChart(props: { transactions: Transaction[] }) {
       expense: 0,
       savings: 0,
     };
+    const leftover = monthData.income - (monthData.expense + monthData.savings);
     return {
       name: format(new Date(2024, index), "MMM"),
       income: monthData.income / 100,
       expense: monthData.expense / 100,
       savings: monthData.savings / 100,
+      leftover: leftover / 100,
     };
   });
 
   return (
     <>
+      <div className="flex text-xl justify-center font-bold">Type Insights</div>
       <ToggleGroup
         className="justify-start"
         size="sm"
         defaultValue={activeTypes}
         type="multiple"
-        onValueChange={(value) => setActiveTypes(value as TransactionType[])}
+        onValueChange={(value) =>
+          setActiveTypes(value as TransactionTypeWithLeftOver[])
+        }
       >
-        <ToggleGroupItem value="income">Income</ToggleGroupItem>
-        <ToggleGroupItem value="expense">Expense</ToggleGroupItem>
-        <ToggleGroupItem value="savings">Savings</ToggleGroupItem>
+        {allTypes.map((type) => (
+          <ToggleGroupItem key={type} value={type}>
+            {capitalize(type)}
+          </ToggleGroupItem>
+        ))}
       </ToggleGroup>
-
       <div className="overflow-x-scroll mt-3">
-        <ChartContainer config={{}} className="max-h-[200px] w-full">
+        <ChartContainer config={{}} className="max-h-[250px] w-full">
           <AreaChart data={chartData}>
             <XAxis dataKey="name" stroke="transparent" />
             <YAxis
               stroke="transparent"
               tickFormatter={(value: string) => formatAmount(Number(value))}
             />
+
             <ChartTooltip
               content={
                 <ChartTooltipContent
@@ -89,13 +97,15 @@ export function TransactionsChart(props: { transactions: Transaction[] }) {
               }
               cursor={false}
             />
-            {activeTypes.map((type) => (
+
+            {allTypes.map((type) => (
               <Area
+                hide={!activeTypes.includes(type)}
                 key={type}
                 type="monotone"
                 dataKey={type}
-                stroke={transactionColors[type]}
-                fill={transactionColors[type] + "30"}
+                stroke={transactionWithLeftover[type]}
+                fill={transactionWithLeftover[type] + "30"}
                 isAnimationActive={false}
               />
             ))}

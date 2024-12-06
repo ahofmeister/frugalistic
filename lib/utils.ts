@@ -6,5 +6,15 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const formatAmount = (amount: number) => {
-  return amount < 1e3 ? amount.toFixed(2) : (amount / 1e3).toFixed(1) + "K";
+  const isNegative = amount < 0;
+  const absAmount = Math.abs(amount);
+
+  const formatted =
+    absAmount < 1e3 ? absAmount.toFixed(2) : (absAmount / 1e3).toFixed(1) + "K";
+
+  return isNegative ? `-${formatted}` : formatted;
 };
+
+export function capitalize(value: string) {
+  return String(value).charAt(0).toUpperCase() + String(value).slice(1);
+}
