@@ -32,13 +32,11 @@ export default function PageLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className="text-black bg-white dark:bg-background dark:text-white">
-        <Navigation items={navConfig.publicNavigation} publicArea={true} />
+    <>
+      <Navigation items={navConfig.publicNavigation} publicArea={true} />
 
-        <main className="m-10">{children}</main>
-        <Analytics />
-      </body>
-    </html>
+      <main className="m-10">{children}</main>
+      <Analytics />
+    </>
   );
 }
