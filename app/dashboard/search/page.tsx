@@ -18,17 +18,16 @@ import {
 import { TransactionType } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
-export default async function TransactionsPage({
-  searchParams,
-}: {
-  searchParams: {
+export default async function TransactionsPage(props: {
+  searchParams: Promise<{
     dateFrom: string;
     dateTo: string;
     description: string;
     category: string;
     type: TransactionType;
-  };
+  }>;
 }) {
+  const searchParams = await props.searchParams;
   const supabase = await createClient("category");
   const { data: categories } = await supabase.from("categories").select("*");
 

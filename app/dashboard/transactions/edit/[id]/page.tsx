@@ -2,11 +2,10 @@ import TransactionForm from "@/components/transactions/components/transaction-fo
 import { TransactionWithRecurring } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
-export default async function TransactionEditPage({
-  params,
-}: {
-  params: { id: string };
+export default async function TransactionEditPage(props: {
+  params: Promise<{ id: string }>;
 }) {
+  const params = await props.params;
   const transactionClient = await createClient("transactions");
   const { data: transaction } = await transactionClient
     .from("transactions")
