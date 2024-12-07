@@ -2,7 +2,7 @@ import { OnboardingFlow } from "@/components/onboarding/onboarding-flow";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function OnboardingPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: steps, error } = await supabase
     .from("onboarding_steps")
     .select("*")

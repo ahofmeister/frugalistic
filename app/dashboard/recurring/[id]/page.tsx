@@ -9,7 +9,8 @@ export default async function TransactionEditPage({
 }: {
   params: { id: string };
 }) {
-  const { data: transaction } = await createClient()
+  const supabase = await createClient();
+  const { data: transaction } = await supabase
     .from("transactions_recurring")
     .select("*")
     .eq("id", params.id)

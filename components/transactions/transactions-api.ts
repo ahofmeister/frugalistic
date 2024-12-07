@@ -30,7 +30,8 @@ export async function makeTransactionRecurring(
   transaction: TransactionWithRecurring,
   interval: RecurringInterval,
 ) {
-  const { data, error } = await createClient()
+  const supabase = await createClient();
+  const { data, error } = await supabase
     .from("transactions_recurring")
     .upsert({
       id: transaction.recurring_transaction
@@ -51,7 +52,8 @@ export async function makeTransactionRecurring(
     .single();
 
   if (data) {
-    const { error } = await createClient()
+    const supabase = await createClient();
+    const { error } = await supabase
       .from("transactions")
       .update({
         recurring_transaction: data.id,
@@ -69,7 +71,7 @@ export async function makeTransactionRecurring(
 }
 
 export async function upsertTransaction(newTransaction: NewTransaction) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { error } = await supabase.from("transactions").upsert(newTransaction);
 
@@ -91,7 +93,7 @@ export const searchTransactions = async ({
   category: string | undefined;
   type: TransactionType | undefined;
 }): Promise<TransactionWithCategory[]> => {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const query = category
     ? supabase
@@ -152,7 +154,7 @@ export const getTotalByCategory = async ({
 }: {
   year: number;
 }): Promise<TransactionTotalByMonth[]> => {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data, error } = await supabase
     .rpc("get_expenses_total_by_category", { year: year })
@@ -171,7 +173,7 @@ export const getTransactionsTotal = async ({
 }: {
   year?: number;
 }): Promise<TransactionTotal[]> => {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const query = supabase
     .rpc("transaction_type_total", { year: year! })
@@ -183,18 +185,19 @@ export const getTransactionsTotal = async ({
 };
 
 export const deleteTransaction = async (id: string) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   await supabase.from("transactions").delete().eq("id", id);
 };
 
 export const invokeRecurringTransactions = async () => {
-  await createClient().rpc("insert_recurring_transaction");
+  const supabase = await createClient();
+  await supabase.rpc("insert_recurring_transaction");
 };
 
 export async function upsertRecurringTransaction(
   newTransaction: RecurringTransaction,
 ) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { error } = await supabase.from("transactions_recurring").upsert({
     ...newTransaction,

@@ -7,8 +7,8 @@ export async function middleware(request: NextRequest) {
   const response = await updateSession(request);
 
   const pathName = request.nextUrl.pathname;
-
-  const { data: hasIncompleteOnboardingSteps } = await createClient().rpc(
+  const supabase = await createClient();
+  const { data: hasIncompleteOnboardingSteps } = await supabase.rpc(
     "has_incomplete_onboarding_steps",
   );
 

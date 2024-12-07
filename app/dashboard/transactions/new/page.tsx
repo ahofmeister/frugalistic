@@ -2,7 +2,7 @@ import TransactionForm from "@/components/transactions/components/transaction-fo
 import { createClient } from "@/utils/supabase/server";
 
 export default async function NewTransactionPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data: list } = await supabase
     .from("transaction_auto_suggest2")

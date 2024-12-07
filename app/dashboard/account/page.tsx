@@ -5,7 +5,7 @@ import DeleteAccount from "@/app/dashboard/account/components/delete-account";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function AccountPage() {
-  const supabase = createClient("profile");
+  const supabase = await createClient("profile");
   const { data: user } = await supabase.from("profile").select("*").single();
 
   return (

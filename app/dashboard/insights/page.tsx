@@ -19,7 +19,7 @@ const InsightsPage = async ({
     (item) => item.title === "Insights",
   );
 
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const possibleYear = Number(searchParams.year);
 

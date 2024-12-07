@@ -7,7 +7,7 @@ export default async function TransactionEditPage({
 }: {
   params: { id: string };
 }) {
-  const transactionClient = createClient("transactions");
+  const transactionClient = await createClient("transactions");
   const { data: transaction } = await transactionClient
     .from("transactions")
     .select("*, recurring_transaction(interval)")
@@ -15,7 +15,7 @@ export default async function TransactionEditPage({
     .returns<TransactionWithRecurring>()
     .single();
 
-  const autoSuggestClient = createClient();
+  const autoSuggestClient = await createClient();
   const { data: autoSuggests } = await autoSuggestClient
     .from("transaction_auto_suggest2")
     .select("*")

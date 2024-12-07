@@ -29,9 +29,8 @@ export default async function TransactionsPage({
     type: TransactionType;
   };
 }) {
-  const { data: categories } = await createClient("category")
-    .from("categories")
-    .select("*");
+  const supabase = await createClient("category");
+  const { data: categories } = await supabase.from("categories").select("*");
 
   return (
     <>
