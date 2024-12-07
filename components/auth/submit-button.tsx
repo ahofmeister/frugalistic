@@ -2,20 +2,17 @@
 
 import { useFormStatus } from "react-dom";
 
+import LoadingSpinner from "@/components/loading/loading";
 import { Button, ButtonProps } from "@/components/ui/button";
 
-type Props = ButtonProps & {
-  pendingText?: string;
-};
-
-export function SubmitButton({ children, pendingText, ...props }: Props) {
+export function SubmitButton({ children, ...props }: ButtonProps) {
   const { pending, action } = useFormStatus();
 
   const isPending = pending && action === props.formAction;
 
   return (
     <Button {...props} type="submit" aria-disabled={pending}>
-      {isPending ? pendingText : children}
+      {isPending ? <LoadingSpinner /> : children}
     </Button>
   );
 }
