@@ -1,5 +1,6 @@
 "use client";
-import { useQuery } from "@supabase-cache-helpers/postgrest-swr";
+
+import { useEffect, useState } from "react";
 
 import {
   Card,
@@ -17,6 +18,8 @@ const OnboardingCategories = ({
   selectedCategories: DefaultCategory[];
   onSelectCategory: (categories: DefaultCategory[]) => void;
 }) => {
+  const [categories, setCategories] = useState<DefaultCategory[]>([]);
+
   const toggleCategory = (toggledCategory: DefaultCategory) => {
     const isSelected = selectedCategories.some(
       (category) => category.id === toggledCategory.id,
@@ -31,18 +34,27 @@ const OnboardingCategories = ({
     onSelectCategory(updatedCategories);
   };
 
-  const { data: categories } = useQuery(
-    createClient()
-      .from("default_categories")
-      .select()
-      .order("name", { ascending: false })
-      .returns<DefaultCategory[]>(),
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      revalidateIfStale: false,
-    },
-  );
+  useEffect(() => {
+    const fetchCategories = () => {
+      const supabase = createClient();
+      supabase
+        .from("default_categories")
+        .select()
+        .order("name", { ascending: false })
+        .returns<DefaultCategory[]>()
+        .then((r) => {
+          if (r.data) {
+            setCategories(r.data);
+          }
+
+          if (r.error) {
+            console.log(r.error);
+          }
+        });
+    };
+
+    fetchCategories();
+  }, []);
 
   return (
     <div className="px-4 py-8">
