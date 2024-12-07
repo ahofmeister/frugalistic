@@ -1,6 +1,5 @@
 "use client";
 
-import { useQuery } from "@supabase-cache-helpers/postgrest-swr";
 import {
   addDays,
   addMonths,
@@ -30,6 +29,9 @@ type DateRange = { from: Date; to: Date };
 
 export default function Dashboard() {
   const [timeFrame, setTimeFrame] = useState<TimeFrame>("month");
+  const [allTransactions, setAllTransactions] = useState<
+    TransactionWithCategory[]
+  >([]);
   const [dateRange, setDateRange] = useState<DateRange>(() => {
     const now = new Date();
     return {
@@ -55,21 +57,28 @@ export default function Dashboard() {
     }
   }, [timeFrame]);
 
-  const { data: allTransactions } = useQuery(
-    createClient()
-      .from("transactions")
-      .select("*, category(*)")
-      .gte("datetime", format(dateRange.from, "yyyy-MM-dd"))
-      .lte("datetime", format(dateRange.to, "yyyy-MM-dd"))
-      .order("datetime", { ascending: false })
-      .order("created_at", { ascending: false })
-      .returns<TransactionWithCategory[]>(),
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      revalidateIfStale: false,
-    },
-  );
+  useEffect(() => {
+    const fetchData = async () => {
+      const client = createClient(); // Ensure this is initialized properly
+      const { data, error } = await client
+        .from("transactions")
+        .select("*, category(*)")
+        .gte("datetime", format(dateRange.from, "yyyy-MM-dd"))
+        .lte("datetime", format(dateRange.to, "yyyy-MM-dd"))
+        .order("datetime", { ascending: false })
+        .order("created_at", { ascending: false })
+        .returns<TransactionWithCategory[]>();
+
+      if (error) {
+        console.error("Error fetching transactions:", error);
+        return;
+      }
+
+      return data;
+    };
+
+    void fetchData().then((r) => setAllTransactions(r ?? []));
+  }, [dateRange.from, dateRange.to]); // Add dependencies to avoid unnecessary reruns
 
   function adjustDateRange(number: number) {
     const from = new Date(dateRange.from);

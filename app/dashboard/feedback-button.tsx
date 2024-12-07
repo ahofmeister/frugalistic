@@ -14,11 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from "@/components/ui/sidebar";
+import { SidebarMenuButton, useSidebar } from "@/components/ui/sidebar";
 import { Textarea } from "@/components/ui/textarea";
 
 export default function Component() {
@@ -42,6 +38,7 @@ export default function Component() {
       }
     } catch (error) {
       setError("Failed to send feedback. Please try again.");
+      console.log(error);
     } finally {
       setIsSubmitting(false);
     }
@@ -50,19 +47,17 @@ export default function Component() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <SidebarMenuItem>
-          <SidebarMenuButton asChild tooltip="Feedback">
-            {state === "expanded" ? (
-              <Button variant="outline">
-                <div className="flex">Feedback</div>
-              </Button>
-            ) : (
-              <Button variant="outline" asChild>
-                <MessageSquarePlus />
-              </Button>
-            )}
-          </SidebarMenuButton>
-        </SidebarMenuItem>
+        <SidebarMenuButton asChild tooltip="Feedback">
+          {state === "expanded" ? (
+            <Button variant="outline">
+              <div className="flex">Feedback</div>
+            </Button>
+          ) : (
+            <Button variant="outline" asChild>
+              <MessageSquarePlus />
+            </Button>
+          )}
+        </SidebarMenuButton>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader className="flex-row justify-between items-start">
