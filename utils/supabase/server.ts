@@ -30,6 +30,7 @@ export const createClient = async (
       },
       global: {
         fetch: createFetch({
+          cache: caching ? "force-cache" : "no-cache",
           next: caching
             ? {
                 revalidate: false,

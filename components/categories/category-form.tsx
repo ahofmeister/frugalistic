@@ -36,6 +36,7 @@ const CategoryForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      name: "",
       division: "essentials",
       color: "#FF00FF",
     },

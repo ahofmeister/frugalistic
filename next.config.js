@@ -5,7 +5,9 @@ const nextConfig = {
             fullUrl: true,
         },
     },
-    reactStrictMode: true
+    reactStrictMode: true, experimental: {
+        // dynamicIO: true,
+    },
 };
 
 module.exports = nextConfig;
