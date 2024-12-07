@@ -29,7 +29,7 @@ const DateSearchFilter = (props: {
       props.paramName,
       value ? format(value, "yyyy-MM-dd") : "",
     );
-  }, [value, updateQueryParams]);
+  }, [value]);
 
   return (
     <div>

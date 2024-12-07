@@ -10,7 +10,7 @@ const TransactionSearchInput = (props: { value?: string }) => {
 
   useEffect(() => {
     updateQueryParams("description", value ?? "");
-  }, [value, updateQueryParams]);
+  }, [value]);
 
   return (
     <div className="max-w-sm">

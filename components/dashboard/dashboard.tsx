@@ -78,7 +78,7 @@ export default function Dashboard() {
     };
 
     void fetchData().then((r) => setAllTransactions(r ?? []));
-  }, [dateRange.from, dateRange.to]); // Add dependencies to avoid unnecessary reruns
+  }, [dateRange.from, dateRange.to]);
 
   function adjustDateRange(number: number) {
     const from = new Date(dateRange.from);
