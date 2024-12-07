@@ -31,7 +31,7 @@ module.exports = {
         "ts-nocheck": "allow-with-description",
       },
     ],
-    "filenames/match-regex": ["error", "^[a-z-.0-9]+$", true],
+    "filenames/match-regex": [2, "^[a-z-.0-9]+$", true],
   },
   ignorePatterns: [
     "types/supabase.ts",
