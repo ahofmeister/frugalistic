@@ -1,4 +1,6 @@
 "use client";
+import { JSX } from "react";
+
 import { navConfig } from "@/components/navigation/nav-config";
 import {
   Sidebar,

@@ -10,16 +10,15 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { TransactionWithCategory } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
-const InsightsPage = async ({
-  searchParams,
-}: {
-  searchParams: { year: number };
+const InsightsPage = async (props: {
+  searchParams: Promise<{ year: number }>;
 }) => {
+  const searchParams = await props.searchParams;
   const insightsNavItem = navConfig.dashboardNavigation.find(
     (item) => item.title === "Insights",
   );
 
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const possibleYear = Number(searchParams.year);
 

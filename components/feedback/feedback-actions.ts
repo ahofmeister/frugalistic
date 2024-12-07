@@ -2,7 +2,7 @@
 import { createClient } from "@/utils/supabase/server";
 
 export async function addFeedback(feedback: string) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("feedback")

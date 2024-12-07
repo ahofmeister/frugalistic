@@ -1,7 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon } from "@radix-ui/react-icons";
-import { useQuery } from "@supabase-cache-helpers/postgrest-swr";
 import { format } from "date-fns";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -44,14 +43,15 @@ import {
   TransactionAutoSuggest,
   TransactionWithRecurring,
 } from "@/types";
-import { createClient } from "@/utils/supabase/client";
 
 const TransactionForm = ({
   transaction,
   autoSuggests,
+  categories,
 }: {
   transaction?: TransactionWithRecurring;
   autoSuggests?: TransactionAutoSuggest[];
+  categories?: Category[];
 }) => {
   const formSchema = z.object({
     description: z.string().min(1),
@@ -90,19 +90,6 @@ const TransactionForm = ({
       id: transaction ? transaction.id : undefined,
     });
   }
-
-  const { data: categories } = useQuery(
-    createClient()
-      .from("categories")
-      .select("*")
-      .order("name")
-      .returns<Category[]>(),
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      revalidateIfStale: false,
-    },
-  );
 
   return (
     <div className="max-w-2xl mx-auto px-2 py-4">
@@ -258,7 +245,7 @@ const TransactionForm = ({
                       selected={field.value}
                       onSelect={field.onChange}
                       disabled={(date) => date < new Date("1900-01-01")}
-                      initialFocus
+                      autoFocus
                     />
                   </PopoverContent>
                 </Popover>

@@ -2,7 +2,6 @@ import { Pencil1Icon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import React from "react";
 
-import InvokeRecurringTransactions from "@/app/dashboard/recurring/invoke-recurring-transactions";
 import TransactionAmount from "@/components/transactions/components/transaction-amount";
 import {
   Table,
@@ -16,7 +15,7 @@ import { RecurringTransaction } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function TransactionsPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data: transactions } = await supabase
     .from("transactions_recurring")
@@ -25,7 +24,6 @@ export default async function TransactionsPage() {
 
   return (
     <>
-      <InvokeRecurringTransactions />
       <div className="flex gap-10">
         <Table>
           <TableHeader>

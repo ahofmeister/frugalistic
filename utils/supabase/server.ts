@@ -4,8 +4,11 @@ import { cookies } from "next/headers";
 import { CacheTag } from "@/app/caching";
 import { Database } from "@/types/supabase";
 
-export const createClient = (tag?: CacheTag, caching: boolean = false) => {
-  const cookieStore = cookies();
+export const createClient = async (
+  tag?: CacheTag,
+  caching: boolean = false,
+) => {
+  const cookieStore = await cookies();
 
   return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -21,9 +24,7 @@ export const createClient = (tag?: CacheTag, caching: boolean = false) => {
               cookieStore.set(name, value, options);
             });
           } catch (error) {
-            // The `set` method was called from a Server Component.
-            // This can be ignored if you have middleware refreshing
-            // user sessions.
+            console.error(error);
           }
         },
       },

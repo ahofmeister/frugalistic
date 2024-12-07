@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
 
 export const nextStep = async (stepId: string) => {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data: updatedStep, error } = await supabase
     .from("onboarding_steps")

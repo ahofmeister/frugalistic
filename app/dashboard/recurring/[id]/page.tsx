@@ -4,12 +4,12 @@ import RecurringTransactionForm from "@/components/transactions/recurring/compon
 import { Transaction } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
-export default async function TransactionEditPage({
-  params,
-}: {
-  params: { id: string };
+export default async function TransactionEditPage(props: {
+  params: Promise<{ id: string }>;
 }) {
-  const { data: transaction } = await createClient()
+  const params = await props.params;
+  const supabase = await createClient();
+  const { data: transaction } = await supabase
     .from("transactions_recurring")
     .select("*")
     .eq("id", params.id)
