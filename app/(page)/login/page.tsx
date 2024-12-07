@@ -32,9 +32,7 @@ export default function Login({
   const signUp = async (formData: FormData) => {
     "use server";
 
-    const headersList = await headers();
-
-    const origin = headersList.get("origin");
+    const origin = headers().get("origin");
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
     const supabase = await createClient();
