@@ -1,1 +1,1 @@
-export type CacheTag = "profile" | "category" | "transactions";
+export type CacheTag = "profile" | "category" | "transactions" | "onboarding";

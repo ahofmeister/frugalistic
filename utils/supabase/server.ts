@@ -1,13 +1,9 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-import { CacheTag } from "@/app/caching";
 import { Database } from "@/types/supabase";
 
-export const createClient = async (
-  tag?: CacheTag,
-  caching: boolean = false,
-) => {
+export const createClient = async () => {
   const cookieStore = await cookies();
 
   return createServerClient<Database>(
@@ -28,26 +24,6 @@ export const createClient = async (
           }
         },
       },
-      global: {
-        fetch: createFetch({
-          cache: caching ? "force-cache" : "no-cache",
-          next: caching
-            ? {
-                revalidate: false,
-                tags: tag ? [tag] : undefined,
-              }
-            : undefined,
-        }),
-      },
     },
   );
 };
-
-export const createFetch =
-  (options: Pick<RequestInit, "next" | "cache"> | undefined) =>
-  (url: RequestInfo | URL, init?: RequestInit) => {
-    return fetch(url, {
-      ...init,
-      ...options,
-    });
-  };

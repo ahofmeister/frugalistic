@@ -17,7 +17,7 @@ import { createClient } from "@/utils/supabase/server";
 export async function AppSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
-  const supabase = await createClient("profile", true);
+  const supabase = await createClient();
   const { data: user } = await supabase.from("profile").select("*").single();
 
   return (

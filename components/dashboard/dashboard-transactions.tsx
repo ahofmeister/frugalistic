@@ -8,7 +8,7 @@ export default async function DashboardTransactions(props: {
   startDate: string;
   endDate: string;
 }) {
-  const supabase = await createClient("transactions", true);
+  const supabase = await createClient();
 
   const { data: transactions } = await supabase
     .from("transactions")

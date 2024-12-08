@@ -14,7 +14,7 @@ const DashboardCards = async (props: {
   let leisureExpense = 0;
   let essentialsExpense = 0;
 
-  const supabase = await createClient("transactions", true);
+  const supabase = await createClient();
   const { data: transactions } = await supabase
     .from("transactions")
     .select("*, category(*)")

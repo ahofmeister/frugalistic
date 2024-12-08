@@ -8,11 +8,17 @@ export async function middleware(request: NextRequest) {
 
   const pathName = request.nextUrl.pathname;
   const supabase = await createClient();
-  const { data: hasIncompleteOnboardingSteps } = await supabase.rpc(
-    "has_incomplete_onboarding_steps",
-  );
 
   if (pathName.startsWith("/dashboard")) {
+    const { data: onboardingSteps } = await supabase
+      .from("onboarding_steps")
+      .select("*")
+      .neq("status", "complete")
+      .neq("status", "skip");
+
+    const hasIncompleteOnboardingSteps =
+      onboardingSteps && onboardingSteps?.length > 0;
+
     if (!hasIncompleteOnboardingSteps && pathName == "/dashboard/onboarding") {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }

@@ -5,7 +5,7 @@ import { ProfileUpdate } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
 export async function updateAccount(account: ProfileUpdate) {
-  const supabase = await createClient("profile");
+  const supabase = await createClient();
 
   const {
     data: { user },
@@ -29,7 +29,7 @@ export async function updateAccount(account: ProfileUpdate) {
 }
 
 export async function deleteAccount() {
-  const supabase = await createClient("profile");
+  const supabase = await createClient();
 
   const { error } = await supabase.rpc("delete_user");
 

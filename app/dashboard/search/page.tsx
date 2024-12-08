@@ -21,7 +21,7 @@ export default async function TransactionsPage(props: {
   }>;
 }) {
   const searchParams = await props.searchParams;
-  const supabase = await createClient("category");
+  const supabase = await createClient();
   const { data: categories } = await supabase.from("categories").select("*");
 
   return (

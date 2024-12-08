@@ -6,23 +6,21 @@ export default async function TransactionEditPage(props: {
   params: Promise<{ id: string }>;
 }) {
   const params = await props.params;
-  const transactionClient = await createClient("transactions");
-  const { data: transaction } = await transactionClient
+  const supabase = await createClient();
+  const { data: transaction } = await supabase
     .from("transactions")
     .select("*, recurring_transaction(interval)")
     .eq("id", params.id)
     .returns<TransactionWithRecurring>()
     .single();
 
-  const autoSuggestClient = await createClient();
-  const { data: autoSuggests } = await autoSuggestClient
+  const { data: autoSuggests } = await supabase
     .from("transaction_auto_suggest2")
     .select("*")
     .order("frequency", { ascending: false })
     .order("description", { ascending: true });
 
-  const categoriesClient = await createClient("category");
-  const { data: categories } = await categoriesClient
+  const { data: categories } = await supabase
     .from("categories")
     .select("*")
     .order("name")

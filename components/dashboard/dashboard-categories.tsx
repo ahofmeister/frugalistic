@@ -8,7 +8,7 @@ export async function DashboardCategories(props: {
   startDate: string;
   endDate: string;
 }) {
-  const supabase = await createClient("transactions", true);
+  const supabase = await createClient();
   const { data: expenses } = await supabase
     .from("transactions")
     .select("*, category(*)")
