@@ -15,16 +15,12 @@ export default async function RootLayout({
   const defaultOpen = cookieStore.get("sidebar:state")?.value === "true";
 
   return (
-    <html lang="en" className="dark">
-      <body className="bg-background text-white">
-        <div className="flex h-screen">
-          <SidebarProvider defaultOpen={defaultOpen}>
-            <SidebarTrigger />
-            <AppSidebar />
-            <main className="mx-2 mt-6 flex-1 overflow-y-auto">{children}</main>
-          </SidebarProvider>
-        </div>
-      </body>
-    </html>
+    <div className="flex h-screen">
+      <SidebarProvider defaultOpen={defaultOpen}>
+        <SidebarTrigger />
+        <AppSidebar />
+        <main className="mx-2 mt-6 flex-1 overflow-y-auto">{children}</main>
+      </SidebarProvider>
+    </div>
   );
 }
