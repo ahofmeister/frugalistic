@@ -6,33 +6,29 @@ import { MonthYearStepper } from "@/app/dashboard/month-year-stepper";
 import DashboardCards from "@/components/dashboard/dashboard-cards";
 import { DashboardCategories } from "@/components/dashboard/dashboard-categories";
 import { DashboardSelectToday } from "@/components/dashboard/dashboard-select-today";
+import DashboardTransactions from "@/components/dashboard/dashboard-transactions";
 import { Period, PeriodSelector } from "@/components/dashboard/period-selector";
-import TransactionList from "@/components/transactions/components/transaction-list";
-import { TransactionWithCategory } from "@/types";
-import { createClient } from "@/utils/supabase/server";
 
 export default async function DashboardPage(props: {
   searchParams: Promise<{ year: number; month: number; period: Period }>;
 }) {
   const searchParams = await props.searchParams;
+  const period = searchParams.period ?? "month";
   const year = Number(searchParams?.year ?? new Date().getFullYear());
   const month = Number(searchParams?.month ?? new Date().getMonth());
   const isYear = searchParams.period === "year";
 
-  const supabase = await createClient();
-  const startDate = isYear ? new Date(year, 0, 1) : new Date(year, month, 1);
-  const endDate = isYear
-    ? endOfYear(new Date(year, 1, 1))
-    : endOfMonth(new Date(year, month, 30));
+  const startDate = format(
+    isYear ? new Date(year, 0, 1) : new Date(year, month, 1),
+    "yyyy-MM-dd",
+  );
 
-  const { data: allTransactions } = await supabase
-    .from("transactions")
-    .select("*, category(*)")
-    .gte("datetime", format(startDate, "yyyy-MM-dd"))
-    .lte("datetime", format(endDate, "yyyy-MM-dd"))
-    .order("datetime", { ascending: false })
-    .order("created_at", { ascending: false })
-    .returns<TransactionWithCategory[]>();
+  const endDate = format(
+    isYear
+      ? endOfYear(new Date(year, 1, 1))
+      : endOfMonth(new Date(year, month, 1)),
+    "yyyy-MM-dd",
+  );
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -45,7 +41,7 @@ export default async function DashboardPage(props: {
             <div className="flex space-x-10">
               <div className="flex space-x-2">
                 <MonthYearStepper
-                  period={searchParams.period}
+                  period={period}
                   amount={-1}
                   icon={<ChevronLeft />}
                   year={year}
@@ -53,7 +49,7 @@ export default async function DashboardPage(props: {
                 />
                 <DashboardSelectToday />
                 <MonthYearStepper
-                  period={searchParams.period}
+                  period={period}
                   amount={1}
                   icon={<ChevronRight />}
                   year={year}
@@ -65,14 +61,14 @@ export default async function DashboardPage(props: {
             <PeriodSelector value={searchParams.period} year={year} />
           </div>
           <div className="mb-6">
-            <DashboardCards transactions={allTransactions ?? []} />
+            <DashboardCards startDate={startDate} endDate={endDate} />
           </div>
           <div className="flex">
-            <DashboardCategories transactions={allTransactions ?? []} />
+            <DashboardCategories startDate={startDate} endDate={endDate} />
           </div>
         </div>
         <div className="mt-4">
-          <TransactionList transactions={allTransactions ?? []} />
+          <DashboardTransactions startDate={startDate} endDate={endDate} />
         </div>
       </div>
     </div>
