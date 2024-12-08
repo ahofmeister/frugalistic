@@ -1,13 +1,12 @@
-"use client";
 import React from "react";
 
 import DashboardCard from "@/components/dashboard/dashboard-card";
 import { TransactionWithCategory } from "@/types";
+import { createClient } from "@/utils/supabase/server";
 
-const DashboardCards = ({
-  transactions,
-}: {
-  transactions: TransactionWithCategory[];
+const DashboardCards = async (props: {
+  startDate: string;
+  endDate: string;
 }) => {
   let income = 0;
   let expense = 0;
@@ -15,7 +14,17 @@ const DashboardCards = ({
   let leisureExpense = 0;
   let essentialsExpense = 0;
 
-  transactions.forEach((transaction) => {
+  const supabase = await createClient("transactions", true);
+  const { data: transactions } = await supabase
+    .from("transactions")
+    .select("*, category(*)")
+    .gte("datetime", props.startDate)
+    .lte("datetime", props.endDate)
+    .order("datetime", { ascending: false })
+    .order("created_at", { ascending: false })
+    .returns<TransactionWithCategory[]>();
+
+  transactions?.forEach((transaction) => {
     const amount = transaction.amount;
     const division = transaction.category?.division; // Handle category being null
     switch (transaction.type) {

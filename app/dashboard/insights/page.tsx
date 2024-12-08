@@ -2,8 +2,8 @@ import { format } from "date-fns";
 import Link from "next/link";
 import React from "react";
 
-import SelectYear from "@/app/dashboard/insights/select-year";
 import TransactionCategoryDistribution from "@/app/dashboard/insights/transaction-category-distribution";
+import SelectYear from "@/app/dashboard/insights/transaction-type-select";
 import { TransactionsChart } from "@/app/dashboard/insights/transactions-chart";
 import { navConfig } from "@/components/navigation/nav-config";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";

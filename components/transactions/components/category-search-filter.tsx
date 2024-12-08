@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 
-import useUpdateQueryParams from "@/app/useUpdateQueryParams";
+import useUpdateQueryParam from "@/app/useUpdateQueryParam";
 import {
   Select,
   SelectContent,
@@ -19,7 +19,7 @@ const CategorySearchFilter = (props: {
 }) => {
   const [category, setCategory] = useState<string>(props.value ?? "all");
 
-  const updateQueryParams = useUpdateQueryParams();
+  const updateQueryParams = useUpdateQueryParam();
 
   return (
     <div>
@@ -27,9 +27,9 @@ const CategorySearchFilter = (props: {
         value={category}
         onValueChange={(value) => {
           if (value == CATEGORY_ALL_VALUE) {
-            updateQueryParams("category", null);
+            updateQueryParams({ key: "category", value: undefined });
           } else {
-            updateQueryParams("category", value);
+            updateQueryParams({ key: "category", value });
           }
 
           setCategory(value);

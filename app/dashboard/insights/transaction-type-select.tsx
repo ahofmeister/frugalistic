@@ -2,10 +2,10 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import React, { useState } from "react";
 
-import useUpdateQueryParams from "@/app/useUpdateQueryParams";
+import useUpdateQueryParam from "@/app/useUpdateQueryParam";
 import { Button } from "@/components/ui/button";
 
-const TypeSearchFilter = (props: {
+const TransactionTypeSelect = (props: {
   value?: number;
   min?: number;
   max?: number;
@@ -15,13 +15,13 @@ const TypeSearchFilter = (props: {
     return isNaN(parsedValue) ? new Date().getFullYear() : parsedValue;
   });
 
-  const updateQueryParams = useUpdateQueryParams();
+  const updateQueryParams = useUpdateQueryParam();
 
   function handleYearSet(value: number) {
     if (value === new Date().getFullYear()) {
-      updateQueryParams("year", null);
+      updateQueryParams({ key: "year", value: undefined });
     } else {
-      updateQueryParams("year", value.toString());
+      updateQueryParams({ key: "year", value: value.toString() });
     }
 
     setYear(value);
@@ -50,4 +50,4 @@ const TypeSearchFilter = (props: {
   );
 };
 
-export default TypeSearchFilter;
+export default TransactionTypeSelect;
