@@ -27,7 +27,7 @@ const CategorySearchFilter = (props: {
         value={category}
         onValueChange={(value) => {
           if (value == CATEGORY_ALL_VALUE) {
-            updateQueryParams({ key: "category", value: null });
+            updateQueryParams({ key: "category", value: undefined });
           } else {
             updateQueryParams({ key: "category", value });
           }
