@@ -1,15 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
 
-import useUpdateQueryParams from "@/app/useUpdateQueryParams";
+import useUpdateQueryParam from "@/app/useUpdateQueryParam";
 import { Input } from "@/components/ui/input";
 
 const TransactionSearchInput = (props: { value?: string }) => {
   const [value, setValue] = useState(props.value);
-  const updateQueryParams = useUpdateQueryParams();
+  const updateQueryParams = useUpdateQueryParam();
 
   useEffect(() => {
-    updateQueryParams("description", value ?? "");
+    updateQueryParams({ key: "description", value: value ?? "" });
   }, [value]);
 
   return (

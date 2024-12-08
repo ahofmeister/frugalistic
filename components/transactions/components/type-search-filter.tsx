@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 
-import useUpdateQueryParams from "@/app/useUpdateQueryParams";
+import useUpdateQueryParam from "@/app/useUpdateQueryParam";
 import {
   Select,
   SelectContent,
@@ -16,7 +16,7 @@ const TYPE_ALL_VALUE = "all";
 const TypeSearchFilter = (props: { value?: TransactionType }) => {
   const [type, setType] = useState<string>(props.value ?? "all");
 
-  const updateQueryParams = useUpdateQueryParams();
+  const updateQueryParams = useUpdateQueryParam();
 
   return (
     <div>
@@ -24,9 +24,9 @@ const TypeSearchFilter = (props: { value?: TransactionType }) => {
         value={type}
         onValueChange={(value) => {
           if (value == TYPE_ALL_VALUE) {
-            updateQueryParams("type", null);
+            updateQueryParams({ key: "type", value: undefined });
           } else {
-            updateQueryParams("type", value);
+            updateQueryParams({ key: "type", value });
           }
 
           setType(value);

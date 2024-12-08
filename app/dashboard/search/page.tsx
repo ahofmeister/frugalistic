@@ -7,14 +7,7 @@ import TransactionSearchInput from "@/components/transactions/components/transac
 import TransactionsResult from "@/components/transactions/components/transactions-result";
 import TypeSearchFilter from "@/components/transactions/components/type-search-filter";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { TransactionType } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
@@ -63,18 +56,8 @@ export default async function TransactionsPage(props: {
       <div className="mt-4">
         <Suspense
           fallback={
-            <div className="w-full p-4 space-y-4 bg-gray-950 text-gray-200">
+            <div className="w-full p-4 space-y-4 text-gray-200">
               <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[100px]">Date</TableHead>
-                    <TableHead>Description</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Division</TableHead>
-                    <TableHead className="text-right">Amount</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
                 <TableBody>
                   {Array.from({ length: 20 }).map((_, i) => (
                     <TableRow key={i}>
@@ -90,18 +73,8 @@ export default async function TransactionsPage(props: {
                           <Skeleton className="h-4 w-[80px] bg-gray-700" />
                         </div>
                       </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-4 w-[80px] bg-gray-700" />
-                      </TableCell>
                       <TableCell className="text-right">
                         <Skeleton className="h-4 w-[60px] ml-auto bg-gray-700" />
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end space-x-2">
-                          <Skeleton className="h-8 w-8 rounded-md bg-gray-700" />
-                          <Skeleton className="h-8 w-8 rounded-md bg-gray-700" />
-                          <Skeleton className="h-8 w-8 rounded-md bg-gray-700" />
-                        </div>
                       </TableCell>
                     </TableRow>
                   ))}

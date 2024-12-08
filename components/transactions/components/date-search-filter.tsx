@@ -3,7 +3,7 @@ import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import React, { useEffect, useState } from "react";
 
-import useUpdateQueryParams from "@/app/useUpdateQueryParams";
+import useUpdateQueryParam from "@/app/useUpdateQueryParam";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -22,13 +22,13 @@ const DateSearchFilter = (props: {
     props.value ? new Date(props.value) : undefined,
   );
 
-  const updateQueryParams = useUpdateQueryParams();
+  const updateQueryParams = useUpdateQueryParam();
 
   useEffect(() => {
-    updateQueryParams(
-      props.paramName,
-      value ? format(value, "yyyy-MM-dd") : "",
-    );
+    updateQueryParams({
+      key: props.paramName,
+      value: value ? format(value, "yyyy-MM-dd") : "",
+    });
   }, [value]);
 
   return (
@@ -53,7 +53,10 @@ const DateSearchFilter = (props: {
             onSelect={(value) => {
               setValue(value);
               if (value) {
-                updateQueryParams(props.paramName, format(value, "yyyy-MM-dd"));
+                updateQueryParams({
+                  key: props.paramName,
+                  value: format(value, "yyyy-MM-dd"),
+                });
               }
             }}
             initialFocus
