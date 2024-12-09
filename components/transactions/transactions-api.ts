@@ -186,7 +186,7 @@ export const getTransactionsTotal = async ({
 
 export const deleteTransaction = async (id: string) => {
   const supabase = await createClient();
-  await supabase.from("transactions").delete().eq("id", id);
+  return await supabase.from("transactions").delete().eq("id", id);
 };
 
 export const invokeRecurringTransactions = async () => {

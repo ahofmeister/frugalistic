@@ -3,6 +3,8 @@ import "./globals.css";
 import { Metadata } from "next";
 import React from "react";
 
+import { Toaster } from "@/components/ui/toaster";
+
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : "http://localhost:3000";
@@ -30,7 +32,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className="bg-background text-white">{children}</body>
+      <body className="bg-background text-white">
+        {children}
+        <Toaster />
+      </body>
     </html>
   );
 }
