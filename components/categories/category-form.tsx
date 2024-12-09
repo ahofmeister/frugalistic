@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { createCategory } from "@/components/categories/categories-api";
+import LoadingSpinner from "@/components/loading/loading";
 import { Button } from "@/components/ui/button";
 import { ColorPicker } from "@/components/ui/color-picker";
 import {
@@ -119,7 +120,11 @@ const CategoryForm = () => {
             disabled={form.formState.isSubmitting || !form.formState.isValid}
             className="w-full"
           >
-            Create Category
+            {form.formState.isSubmitting ? (
+              <LoadingSpinner />
+            ) : (
+              "Create Category"
+            )}
           </Button>
         </div>
       </form>
