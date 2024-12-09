@@ -15,6 +15,7 @@ export default async function DashboardTransactions(props: {
     .select("*, category(*)")
     .gte("datetime", props.startDate)
     .lte("datetime", props.endDate)
+    .order("datetime", { ascending: false })
     .returns<TransactionWithCategory[]>();
 
   return <TransactionList transactions={transactions ?? []} />;
