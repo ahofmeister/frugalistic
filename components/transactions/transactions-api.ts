@@ -206,4 +206,5 @@ export async function upsertRecurringTransaction(
   if (error) {
     console.log(error);
   }
+  revalidateTag("transactions");
 }
