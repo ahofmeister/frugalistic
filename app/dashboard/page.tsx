@@ -31,51 +31,43 @@ export default async function DashboardPage(props: {
   );
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <div className="min-h-screen">
-        <div className="container mx-auto p-0.5">
-          <div className="flex font-semibold text-2xl justify-center">
-            {isYear ? year : format(new Date(year, month, 1), "MMMM yyyy")}
-          </div>
-          <div className="flex sm:flex-row justify-between items-start sm:items-center mt-2 mb-6 space-y-4 sm:space-y-0">
-            <div className="flex space-x-10">
-              <div className="flex space-x-2">
-                <MonthYearStepper
-                  period={period}
-                  amount={-1}
-                  icon={<ChevronLeft />}
-                  year={year}
-                  month={month}
-                />
-                <DashboardSelectToday />
-                <MonthYearStepper
-                  period={period}
-                  amount={1}
-                  icon={<ChevronRight />}
-                  year={year}
-                  month={month}
-                />
-              </div>
-            </div>
+    <div className="flex flex-col space-y-4 p-0.5">
+      <div className="flex font-semibold text-2xl justify-center">
+        {isYear ? year : format(new Date(year, month, 1), "MMMM yyyy")}
+      </div>
+      <div className="flex justify-between">
+        <div className="flex space-x-2">
+          <MonthYearStepper
+            period={period}
+            amount={-1}
+            icon={<ChevronLeft />}
+            year={year}
+            month={month}
+          />
+          <DashboardSelectToday />
+          <MonthYearStepper
+            period={period}
+            amount={1}
+            icon={<ChevronRight />}
+            year={year}
+            month={month}
+          />
+        </div>
 
-            <PeriodSelector value={searchParams.period} year={year} />
-          </div>
-          <div className="mb-6">
-            <Suspense fallback="loading">
-              <DashboardCards startDate={startDate} endDate={endDate} />
-            </Suspense>
-          </div>
-          <div className="flex">
-            <Suspense fallback="loading">
-              <DashboardCategories startDate={startDate} endDate={endDate} />
-            </Suspense>
-          </div>
-        </div>
-        <div className="mt-4">
-          <Suspense fallback="loading">
-            <DashboardTransactions startDate={startDate} endDate={endDate} />
-          </Suspense>
-        </div>
+        <PeriodSelector value={searchParams.period} year={year} />
+      </div>
+
+      <Suspense fallback="loading">
+        <DashboardCards startDate={startDate} endDate={endDate} />
+      </Suspense>
+      <Suspense fallback="loading">
+        <DashboardCategories startDate={startDate} endDate={endDate} />
+      </Suspense>
+
+      <div className="mt-4">
+        <Suspense fallback="loading">
+          <DashboardTransactions startDate={startDate} endDate={endDate} />
+        </Suspense>
       </div>
     </div>
   );

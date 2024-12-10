@@ -34,7 +34,6 @@ export function PeriodSelector(props: { value: Period; year: number }) {
 
         updateQueryParam(newVar);
       }}
-      className="p-1 rounded-md"
     >
       <ToggleGroupItem value="month">Month</ToggleGroupItem>
       <ToggleGroupItem value="year">Year</ToggleGroupItem>

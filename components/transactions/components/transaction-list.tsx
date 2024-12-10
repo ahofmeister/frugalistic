@@ -15,8 +15,8 @@ export default function TransactionList({
 }) {
   const router = useRouter();
   return (
-    <div className="w-full p-2">
-      <div className="text-muted-foreground mb-2">
+    <div className="w-full">
+      <div className="text-muted-foreground">
         {transactions.length} transactions
       </div>
       <Table>
@@ -37,14 +37,12 @@ export default function TransactionList({
                 router.push(`/dashboard/transactions/edit/${transaction.id}`)
               }
             >
-              <TableCell className="text-left flex">
-                <div className="items-center justify-center text-center">
-                  {formatDate(transaction.datetime, "EEE")},{" "}
-                  {formatDate(transaction.datetime, "dd. MMM")}
-                </div>
+              <TableCell className="flex text-left">
+                {formatDate(transaction.datetime, "EEE dd. MMM")}
               </TableCell>
+
               <TableCell className="text-left">
-                <div className="flex gap-x-2">
+                <div className="flex gap-x-1">
                   {transaction.description}
                   {transaction.recurring_transaction && (
                     <RefreshCw
@@ -54,10 +52,14 @@ export default function TransactionList({
                   )}
                 </div>
               </TableCell>
-              <TableCell className="text-left flex items-center gap-x-2">
-                <CategoryColor color={transaction.category?.color} />
-                {transaction.category?.name}
+
+              <TableCell className="text-left ">
+                <div className="flex gap-x-1 items-center">
+                  <CategoryColor color={transaction.category?.color} />
+                  {transaction.category?.name}
+                </div>
               </TableCell>
+
               <TableCell className="text-right">
                 <TransactionAmount
                   amount={transaction.amount}
