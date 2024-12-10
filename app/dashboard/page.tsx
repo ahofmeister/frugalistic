@@ -1,6 +1,6 @@
 import { endOfMonth, endOfYear, format } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import React from "react";
+import React, { Suspense } from "react";
 
 import { MonthYearStepper } from "@/app/dashboard/month-year-stepper";
 import DashboardCards from "@/components/dashboard/dashboard-cards";
@@ -61,14 +61,20 @@ export default async function DashboardPage(props: {
             <PeriodSelector value={searchParams.period} year={year} />
           </div>
           <div className="mb-6">
-            <DashboardCards startDate={startDate} endDate={endDate} />
+            <Suspense fallback="loading">
+              <DashboardCards startDate={startDate} endDate={endDate} />
+            </Suspense>
           </div>
           <div className="flex">
-            <DashboardCategories startDate={startDate} endDate={endDate} />
+            <Suspense fallback="loading">
+              <DashboardCategories startDate={startDate} endDate={endDate} />
+            </Suspense>
           </div>
         </div>
         <div className="mt-4">
-          <DashboardTransactions startDate={startDate} endDate={endDate} />
+          <Suspense fallback="loading">
+            <DashboardTransactions startDate={startDate} endDate={endDate} />
+          </Suspense>
         </div>
       </div>
     </div>
