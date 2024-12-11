@@ -6,7 +6,7 @@ import React from "react";
 
 import { Toaster } from "@/components/ui/toaster";
 
-const langer = Poppins({
+const poppinsFont = Poppins({
   subsets: ["latin"],
   weight: "400",
 });
@@ -37,7 +37,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`dark ${langer.className}`}>
+    <html lang="en" className={`dark ${poppinsFont.className}`}>
       <body className="bg-background">
         {children}
         <Toaster />
