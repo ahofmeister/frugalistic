@@ -2,11 +2,36 @@ import Link from "next/link";
 import React from "react";
 
 import { Button } from "@/components/ui/button";
+import { SparklesCore } from "@/components/ui/sparkles";
 
 export default function LandingPage() {
+  const features = [
+    {
+      title: "Transaction Tracking & Categorization",
+      description: "Easily track and categorize finances.",
+    },
+    {
+      title: "Personalized Insights",
+      description: "Get financial insights and reports to guide decisions.",
+    },
+    {
+      title: "Recurring Transactions",
+      description: "Automate monthly transactions.",
+    },
+  ];
+
   return (
     <div className="text-center text-sm lg:text-base">
       <main className="flex-1">
+        <SparklesCore
+          id="tsparticlesfullpage"
+          background="transparent"
+          minSize={0.6}
+          maxSize={1.4}
+          particleDensity={20}
+          className="w-full h-full absolute -z-50"
+          particleColor="#FFFFFF"
+        />
         <section className="py-6 px-4 lg:px-8">
           <h1 className="text-2xl font-bold tracking-tight lg:text-4xl">
             Take Control of Your Finances with{" "}
@@ -28,30 +53,18 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="py-6 bg-muted lg:py-10 lg:max-w-3xl mx-auto">
+        <section className="py-6 lg:py-10 lg:max-w-3xl mx-auto">
           <div className="max-w-md mx-auto space-y-4 lg:max-w-3xl">
             <h2 className="text-xl font-bold lg:text-2xl">Why Frugalistic?</h2>
             <div className="space-y-2 lg:space-y-4">
-              <div>
-                <h3 className="font-bold lg:text-lg">Expense Tracking</h3>
-                <p className="text-muted-foreground lg:text-base">
-                  Keep track of your spending and identify patterns to save
-                  more.
-                </p>
-              </div>
-              <div>
-                <h3 className="font-bold lg:text-lg">Savings Insights</h3>
-                <p className="text-muted-foreground lg:text-base">
-                  Analyze your savings trends with detailed charts and
-                  statistics.
-                </p>
-              </div>
-              <div>
-                <h3 className="font-bold lg:text-lg">Income Insights</h3>
-                <p className="text-muted-foreground lg:text-base">
-                  Understand your earnings and optimize your budgeting strategy.
-                </p>
-              </div>
+              {features.map((feature) => (
+                <div key={feature.title}>
+                  <h3 className="font-bold lg:text-lg">{feature.title}</h3>
+                  <p className="text-muted-foreground lg:text-base">
+                    {feature.description}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
