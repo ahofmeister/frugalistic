@@ -1,9 +1,15 @@
 import "./globals.css";
 
 import { Metadata } from "next";
+import { Poppins } from "next/font/google";
 import React from "react";
 
 import { Toaster } from "@/components/ui/toaster";
+
+const langer = Poppins({
+  subsets: ["latin"],
+  weight: "400",
+});
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -31,8 +37,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className="bg-background text-white">
+    <html lang="en" className={`dark ${langer.className}`}>
+      <body className="bg-background">
         {children}
         <Toaster />
       </body>
