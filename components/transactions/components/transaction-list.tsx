@@ -16,7 +16,7 @@ export default function TransactionList({
   const router = useRouter();
   return (
     <div className="w-full">
-      <div className="text-muted-foreground">
+      <div className="text-muted-foreground mb-2">
         {transactions.length} transactions
       </div>
       <Table>
@@ -54,7 +54,7 @@ export default function TransactionList({
               </TableCell>
 
               <TableCell className="text-left ">
-                <div className="flex gap-x-1 items-center">
+                <div className="flex gap-x-2 items-center">
                   <CategoryColor color={transaction.category?.color} />
                   {transaction.category?.name}
                 </div>

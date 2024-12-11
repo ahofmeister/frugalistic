@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 
 import useUpdateQueryParam from "@/app/useUpdateQueryParam";
+import CategoryColor from "@/components/categories/category-color";
 import {
   Select,
   SelectContent,
@@ -39,10 +40,13 @@ const CategorySearchFilter = (props: {
           <SelectValue placeholder="Select a category" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value={CATEGORY_ALL_VALUE}>All</SelectItem>
+          <SelectItem value={CATEGORY_ALL_VALUE}>Select Category</SelectItem>
           {props.categories?.map((category) => (
             <SelectItem key={category.id} value={category.name}>
-              {category.name}
+              <div className="flex gap-x-2 items-center">
+                <CategoryColor color={category.color} />
+                {category.name}
+              </div>
             </SelectItem>
           ))}
         </SelectContent>

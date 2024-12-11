@@ -5,18 +5,20 @@ import useUpdateQueryParam from "@/app/useUpdateQueryParam";
 import { Input } from "@/components/ui/input";
 
 const TransactionSearchInput = (props: { value?: string }) => {
-  const [value, setValue] = useState(props.value);
+  const [value, setValue] = useState<string | undefined>(props.value ?? "");
   const updateQueryParams = useUpdateQueryParam();
 
   useEffect(() => {
-    updateQueryParams({ key: "description", value: value ?? "" });
-  }, [value]);
+    setValue(props?.value ?? "");
+  }, [props.value]);
 
   return (
     <div className="max-w-sm">
       <Input
         onChange={(event) => {
-          setValue(event.target.value);
+          const newValue = event.target.value;
+          setValue(newValue);
+          updateQueryParams({ key: "description", value: newValue ?? "" });
         }}
         value={value}
         placeholder="Search transactions"

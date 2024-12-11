@@ -36,7 +36,7 @@ const TypeSearchFilter = (props: { value?: TransactionType }) => {
           <SelectValue placeholder="Select a type" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value={TYPE_ALL_VALUE}>All</SelectItem>
+          <SelectItem value={TYPE_ALL_VALUE}>Select Type</SelectItem>
           {["expense", "income", "savings"].map((type) => (
             <SelectItem key={type} value={type}>
               {type}

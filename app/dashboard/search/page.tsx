@@ -4,7 +4,7 @@ import ResetQueryParam from "@/app/dashboard/transactions/reset-query-param";
 import CategorySearchFilter from "@/components/transactions/components/category-search-filter";
 import DateSearchFilter from "@/components/transactions/components/date-search-filter";
 import TransactionSearchInput from "@/components/transactions/components/transaction-search-input";
-import TransactionsResult from "@/components/transactions/components/transactions-result";
+import TransactionsSearchResult from "@/components/transactions/components/transactions-search-result";
 import TypeSearchFilter from "@/components/transactions/components/type-search-filter";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
@@ -25,9 +25,9 @@ export default async function TransactionsPage(props: {
   const { data: categories } = await supabase.from("categories").select("*");
 
   return (
-    <>
+    <div className="ml-2 mt-2">
       <div className="flex gap-10">
-        <TransactionSearchInput value={searchParams.description ?? ""} />
+        <TransactionSearchInput value={searchParams.description} />
         <DateSearchFilter
           key={searchParams.dateFrom}
           paramName="dateFrom"
@@ -83,7 +83,7 @@ export default async function TransactionsPage(props: {
             </div>
           }
         >
-          <TransactionsResult
+          <TransactionsSearchResult
             category={searchParams.category}
             description={searchParams.description}
             dateFrom={searchParams.dateFrom}
@@ -92,6 +92,6 @@ export default async function TransactionsPage(props: {
           />
         </Suspense>
       </div>
-    </>
+    </div>
   );
 }
