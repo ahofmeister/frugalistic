@@ -39,7 +39,10 @@ export function CategoriesExpensesChart(props: {
   );
 
   return (
-    <ChartContainer config={{}} className="max-h-[200px] w-full">
+    <ChartContainer
+      config={{}}
+      className="max-h-[400px] w-full min-h-[200px] h-[240px]"
+    >
       <BarChart
         barCategoryGap={5}
         accessibilityLayer
