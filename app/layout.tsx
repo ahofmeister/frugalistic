@@ -3,7 +3,6 @@ import "./globals.css";
 import { Metadata } from "next";
 import React from "react";
 
-import { InstallPrompt } from "@/app/installation-prompt";
 import { Toaster } from "@/components/ui/toaster";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -36,7 +35,6 @@ export default function RootLayout({
       <body className="bg-background text-white">
         {children}
         <Toaster />
-        <InstallPrompt />
       </body>
     </html>
   );

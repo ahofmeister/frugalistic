@@ -4,8 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { Metadata } from "next";
 import React from "react";
 
-import { navConfig } from "@/components/navigation/nav-config";
-import Navigation from "@/components/navigation/navigation";
+import SiteHeader from "@/components/navigation/siteHeader";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -33,8 +32,7 @@ export default function PageLayout({
 }) {
   return (
     <>
-      <Navigation items={navConfig.publicNavigation} publicArea={true} />
-
+      <SiteHeader />
       <main className="m-10">{children}</main>
       <Analytics />
     </>

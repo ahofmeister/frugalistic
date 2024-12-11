@@ -1,8 +1,8 @@
 import * as React from "react";
 
 import FeedbackButton from "@/app/dashboard/feedback-button";
+import { AppNav } from "@/components/app-nav";
 import { AppSidebarHeader } from "@/components/app-sidebar-header";
-import { NavMain } from "@/components/nav-main";
 import NavUser from "@/components/nav-user";
 import { NewTransactionLink } from "@/components/new-transaction-link";
 import {
@@ -27,7 +27,7 @@ export async function AppSidebar({
         <NewTransactionLink />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain />
+        <AppNav />
       </SidebarContent>
       <SidebarFooter>
         <FeedbackButton />

@@ -1,7 +1,6 @@
 import { AlertCircle } from "lucide-react";
-import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
+import AppButton from "@/components/auth/app-button";
 import {
   Card,
   CardContent,
@@ -29,9 +28,7 @@ export default function NotFound() {
           </p>
         </CardContent>
         <CardFooter className="flex justify-center space-x-4">
-          <Button asChild>
-            <Link href="/dashboard/">Dashboard</Link>
-          </Button>
+          <AppButton />
         </CardFooter>
       </Card>
     </div>

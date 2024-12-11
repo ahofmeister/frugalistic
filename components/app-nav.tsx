@@ -14,7 +14,7 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 
-export function NavMain() {
+export function AppNav() {
   const items = navConfig.dashboardNavigation;
   const pathname = usePathname();
 

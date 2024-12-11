@@ -1,26 +1,42 @@
+"use client";
+
+import { User } from "@supabase/auth-js";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/utils/supabase/client";
 
-export default async function AppButton({ loggedIn }: { loggedIn: boolean }) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+export default function AppButton() {
+  const [user, setUser] = useState<User | undefined>();
+  const [loading, setLoading] = useState(true);
+  const supabase = createClient();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUser(data?.user || undefined);
+      setLoading(false);
+    };
+
+    void fetchUser();
+  }, [supabase]);
+
+  if (loading) {
+    return null;
+  }
 
   if (!user) {
-    return <></>;
-  }
-
-  if (!loggedIn) {
     return (
-      <div className="flex items-center gap-4">
-        <Link href="dashboard">
-          <Button>Dashboard</Button>
-        </Link>
-      </div>
+      <Button variant="default" size="sm">
+        <Link href="/login">Sign Up</Link>
+      </Button>
     );
   }
+
+  return (
+    <Button variant="default" size="sm">
+      <Link href="/dashboard">Dashboard</Link>
+    </Button>
+  );
 }

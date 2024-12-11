@@ -6,7 +6,7 @@ const nextConfig = {
         },
     },
     reactStrictMode: true, experimental: {
-        // dynamicIO: true,
+        staleTimes: {dynamic: 1000, static: 1000}
     },
 };
 
