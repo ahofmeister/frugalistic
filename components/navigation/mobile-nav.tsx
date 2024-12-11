@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowUpRight } from "lucide-react";
 import Link, { LinkProps } from "next/link";
 import { useRouter } from "next/navigation";
 import * as React from "react";
@@ -56,7 +57,10 @@ export function MobileNav() {
                       href={item.href}
                       onOpenChange={setOpen}
                     >
-                      {item.title}
+                      <div className="flex gap-x-1 items-center">
+                        {item.title}
+                        {item.external && <ArrowUpRight size="15" />}
+                      </div>
                     </MobileLink>
                   ),
               )}
