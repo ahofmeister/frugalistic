@@ -12,7 +12,7 @@ export default function LandingPage() {
             Take Control of Your Finances with{" "}
             <span className="text-primary">Frugalistic</span>
           </h1>
-          <p className="text-muted-foreground mt-2 lg:text-lg">
+          <p className="text-muted-foreground mt-5 lg:text-lg">
             Track your expenses, savings, and income effortlessly.
           </p>
           <p className="text-muted-foreground mt-2 lg:text-lg">
