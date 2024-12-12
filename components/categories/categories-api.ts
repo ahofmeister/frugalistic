@@ -9,7 +9,9 @@ export async function createCategory(newCategory: NewCategory) {
   const supabase = await createClient();
 
   const { error } = await supabase.from("categories").insert(newCategory);
-  console.log(error);
+  if (error) {
+    console.log(error);
+  }
 
   revalidateTag("category");
 }
