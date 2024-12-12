@@ -22,7 +22,7 @@ export default async function Login(props: {
 
     if (error) {
       console.log(error);
-      return redirect("login?message=Could not authenticate user");
+      return redirect("/login?message=Could not authenticate user");
     }
 
     return redirect("/dashboard");
