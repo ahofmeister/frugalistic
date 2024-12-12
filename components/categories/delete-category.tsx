@@ -6,7 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Category } from "@/types";
 
 const DeleteCategory = ({ category }: { category: Category }) => (
-  <Button variant="destructive" onClick={() => deleteCategory(category.id)}>
+  <Button
+    variant="outline"
+    className="text-destructive"
+    size="icon"
+    onClick={() => deleteCategory(category.id)}
+  >
     <TrashIcon />
   </Button>
 );

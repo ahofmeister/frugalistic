@@ -29,8 +29,9 @@ export default function AppButton() {
   if (!user) {
     return (
       <Link href="/login">
-        <Button variant="default" size="sm"></Button>
-        Sign Up
+        <Button variant="default" size="sm">
+          Sign Up
+        </Button>
       </Link>
     );
   }
