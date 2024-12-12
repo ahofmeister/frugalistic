@@ -56,7 +56,7 @@ export const navConfig: NavConfig = {
         },
 
         {
-          title: "Expenses / Category Table",
+          title: "Category Table",
           href: "/dashboard/insights/expenses-category",
           icon: ChartColumnDecreasing,
         },
