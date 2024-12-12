@@ -2,6 +2,7 @@ import { endOfMonth, endOfYear, format } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import React, { Suspense } from "react";
 
+import { CategoriesBanner } from "@/app/dashboard/categories/categories-banner";
 import { MonthYearStepper } from "@/app/dashboard/month-year-stepper";
 import DashboardCards from "@/components/dashboard/dashboard-cards";
 import { DashboardCategories } from "@/components/dashboard/dashboard-categories";
@@ -34,6 +35,9 @@ export default async function DashboardPage(props: {
     <div className="flex flex-col space-y-4 p-0.5">
       <div className="flex font-semibold text-2xl justify-center">
         {isYear ? year : format(new Date(year, month, 1), "MMMM yyyy")}
+      </div>
+      <div className="pr-6">
+        <CategoriesBanner />
       </div>
       <div className="flex justify-between">
         <div className="flex space-x-2">

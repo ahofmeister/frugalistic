@@ -17,9 +17,6 @@ export type TransactionWithRecurring = Transaction & {
   recurring_transaction: RecurringTransaction;
 };
 
-export type MinMaxYear =
-  Database["public"]["Functions"]["get_min_and_max_year"]["Returns"];
-
 export type TransactionAutoSuggest =
   Database["public"]["Views"]["transaction_auto_suggest2"]["Row"];
 
@@ -34,13 +31,6 @@ export type RecurringTransaction =
 // Category
 export type Category = Database["public"]["Tables"]["categories"]["Row"];
 export type NewCategory = Database["public"]["Tables"]["categories"]["Insert"];
-
-// Onboarding
-export type DefaultCategory =
-  Database["public"]["Tables"]["default_categories"]["Row"];
-
-export type OnboardingStep =
-  Database["public"]["Tables"]["onboarding_steps"]["Row"];
 
 // User
 export type Profile = Database["public"]["Tables"]["profile"]["Row"];

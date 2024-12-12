@@ -32,6 +32,7 @@ const CategoryForm = () => {
     name: z.string().min(2),
     color: z.string(),
     division: z.enum(["essentials", "leisure"]),
+    description: z.string().optional(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -39,7 +40,8 @@ const CategoryForm = () => {
     defaultValues: {
       name: "",
       division: "essentials",
-      color: "#FF00FF",
+      color: "#14121F",
+      description: "",
     },
     mode: "onChange",
   });
@@ -114,6 +116,22 @@ const CategoryForm = () => {
               )}
             />
           </div>
+
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Description</FormLabel>
+                <FormControl>
+                  <div>
+                    <Input {...field} onBlur={field.onBlur} />
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <Button
             type="submit"
