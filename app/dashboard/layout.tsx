@@ -12,7 +12,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const cookieStore = await cookies();
-  const defaultOpen = cookieStore.get("sidebar:state")?.value === "true";
+  const defaultOpen = cookieStore.get("sidebar:state")?.value !== "false";
 
   return (
     <div className="flex h-screen">
