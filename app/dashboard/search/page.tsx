@@ -56,10 +56,13 @@ export default async function TransactionsPage(props: {
       <div className="mt-4">
         <Suspense
           fallback={
-            <div className="w-full p-4 space-y-4 text-gray-200">
+            <div className="w-full space-y-4 text-gray-200">
+              <div className="text-muted-foreground mb-2">
+                <Skeleton className="h-4 w-[100px] bg-gray-700" />
+              </div>
               <Table>
                 <TableBody>
-                  {Array.from({ length: 20 }).map((_, i) => (
+                  {Array.from({ length: 50 }).map((_, i) => (
                     <TableRow key={i}>
                       <TableCell>
                         <Skeleton className="h-4 w-[80px] bg-gray-700" />
