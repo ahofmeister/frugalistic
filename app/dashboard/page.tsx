@@ -6,9 +6,9 @@ import { CategoriesBanner } from "@/app/dashboard/categories/categories-banner";
 import { MonthYearStepper } from "@/app/dashboard/month-year-stepper";
 import DashboardCards from "@/components/dashboard/dashboard-cards";
 import { DashboardCategories } from "@/components/dashboard/dashboard-categories";
-import { DashboardSelectToday } from "@/components/dashboard/dashboard-select-today";
 import DashboardTransactions from "@/components/dashboard/dashboard-transactions";
 import { Period, PeriodSelector } from "@/components/dashboard/period-selector";
+import { SelectToday } from "@/components/dashboard/select-today";
 
 export default async function DashboardPage(props: {
   searchParams: Promise<{ year: number; month: number; period: Period }>;
@@ -48,7 +48,7 @@ export default async function DashboardPage(props: {
             year={year}
             month={month}
           />
-          <DashboardSelectToday />
+          <SelectToday updateMode="both" />
           <MonthYearStepper
             period={period}
             amount={1}

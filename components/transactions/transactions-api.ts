@@ -149,11 +149,9 @@ export type TransactionTotalByMonth = {
   month: number;
 };
 
-export const getTotalByCategory = async ({
-  year,
-}: {
-  year: number;
-}): Promise<TransactionTotalByMonth[]> => {
+export const getTotalByCategory = async (
+  year: number,
+): Promise<TransactionTotalByMonth[]> => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -168,16 +166,12 @@ export const getTotalByCategory = async ({
   return data ?? [];
 };
 
-export const getTransactionsTotal = async ({
-  year,
-}: {
-  year?: number;
-}): Promise<TransactionTotal[]> => {
+export const getTransactionsTotal = async (
+  year: number,
+): Promise<TransactionTotal[]> => {
   const supabase = await createClient();
 
-  const query = supabase
-    .rpc("transaction_type_total", { year: year! })
-    .select();
+  const query = supabase.rpc("transaction_type_total", { year }).select();
 
   const { data } = await query.returns<TransactionTotal[]>().order("month");
 
@@ -187,11 +181,6 @@ export const getTransactionsTotal = async ({
 export const deleteTransaction = async (id: string) => {
   const supabase = await createClient();
   return await supabase.from("transactions").delete().eq("id", id);
-};
-
-export const invokeRecurringTransactions = async () => {
-  const supabase = await createClient();
-  await supabase.rpc("insert_recurring_transaction");
 };
 
 export async function upsertRecurringTransaction(

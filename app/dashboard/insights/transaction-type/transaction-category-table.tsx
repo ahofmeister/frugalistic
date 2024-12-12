@@ -30,6 +30,9 @@ interface MonthCategoryTotals {
 
 const transformData = (data: TransactionTotal[]): MonthCategoryTotals[] => {
   const monthlyTotals: Record<number, MonthCategoryTotals> = {};
+  for (let month = 1; month <= 12; month++) {
+    monthlyTotals[month] = { month, total: 0 };
+  }
 
   data.forEach(({ month, category_name, total }) => {
     if (!monthlyTotals[month]) {
@@ -96,64 +99,62 @@ const TransactionCategoryTable = ({
   const totalAmount = dataTransformed.reduce((sum, row) => sum + row.total, 0);
 
   return (
-    <div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableCell className="font-semibold">Category</TableCell>
-            <TableCell className="font-semibold">Total</TableCell>
-            <TableCell className="font-semibold">Average</TableCell>
-            {dataTransformed.map((row) => (
-              <TableCell key={row.month}>
-                <div className="font-semibold">
-                  {format(new Date(2024, row.month - 1, 1), "LLLL")}
-                </div>
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {names.map((name) => {
-            const categoryData = data.find(
-              (transaction) => transaction.category_name === name,
-            );
-            const categoryColor = categoryData?.category_color;
-            return (
-              <TableRow key={name} style={{ color: categoryColor }}>
-                <TableCell>{name}</TableCell>
-                <TableCell>
-                  <TransactionAmount amount={categoryTotals[name]} />
-                </TableCell>
-                <TableCell>
-                  <TransactionAmount amount={categoryAverages[name]} />
-                </TableCell>
-
-                {dataTransformed.map((row) => (
-                  <TableCell key={`${row.month}-${name}`}>
-                    {row[name] ? formatAmount(row[name]) : "-"}
-                  </TableCell>
-                ))}
-              </TableRow>
-            );
-          })}
-          <TableRow>
-            <TableCell>Total</TableCell>
-            <TableCell>
-              <TransactionAmount amount={totalAmount} />
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableCell></TableCell>
+          <TableCell className="font-semibold">Total</TableCell>
+          <TableCell className="font-semibold">Average</TableCell>
+          {dataTransformed.map((row) => (
+            <TableCell key={row.month}>
+              <div className="font-semibold">
+                {format(new Date(2024, row.month - 1, 1), "LLLL")}
+              </div>
             </TableCell>
-
-            <TableCell>
-              <TransactionAmount amount={totalAverage} />
-            </TableCell>
-            {dataTransformed.map((row) => (
-              <TableCell key={`total-${row.month}`}>
-                <TransactionAmount amount={row.total} />
+          ))}
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {names.map((name) => {
+          const categoryData = data.find(
+            (transaction) => transaction.category_name === name,
+          );
+          const categoryColor = categoryData?.category_color;
+          return (
+            <TableRow key={name} style={{ color: categoryColor }}>
+              <TableCell>{name}</TableCell>
+              <TableCell>
+                <TransactionAmount amount={categoryTotals[name]} />
               </TableCell>
-            ))}
-          </TableRow>
-        </TableBody>
-      </Table>
-    </div>
+              <TableCell>
+                <TransactionAmount amount={categoryAverages[name]} />
+              </TableCell>
+
+              {dataTransformed.map((row) => (
+                <TableCell key={`${row.month}-${name}`}>
+                  {row[name] ? formatAmount(row[name]) : "-"}
+                </TableCell>
+              ))}
+            </TableRow>
+          );
+        })}
+        <TableRow>
+          <TableCell>Total</TableCell>
+          <TableCell>
+            <TransactionAmount amount={totalAmount} />
+          </TableCell>
+
+          <TableCell>
+            <TransactionAmount amount={totalAverage} />
+          </TableCell>
+          {dataTransformed.map((row) => (
+            <TableCell key={`total-${row.month}`}>
+              <TransactionAmount amount={row.total} />
+            </TableCell>
+          ))}
+        </TableRow>
+      </TableBody>
+    </Table>
   );
 };
 
