@@ -10,7 +10,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { capitalize, formatAmount } from "@/lib/utils";
+import { capitalize, shortAmount } from "@/lib/utils";
 import { Transaction, TransactionType } from "@/types";
 import { transactionWithLeftover } from "@/utils/transaction/colors";
 
@@ -78,7 +78,7 @@ export function TransactionsChart(props: { transactions: Transaction[] }) {
             <XAxis dataKey="name" stroke="transparent" />
             <YAxis
               stroke="transparent"
-              tickFormatter={(value: string) => formatAmount(Number(value))}
+              tickFormatter={(value: string) => shortAmount(Number(value))}
             />
 
             <ChartTooltip
