@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
+import { RecurringTransactionHistory } from "@/app/dashboard/recurring/[id]/recurring-transaction-history";
 import RecurringTransactionForm from "@/components/transactions/recurring/components/recurring-transaction-form";
-import { Transaction } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function TransactionEditPage(props: {
@@ -13,12 +13,18 @@ export default async function TransactionEditPage(props: {
     .from("transactions_recurring")
     .select("*")
     .eq("id", params.id)
-    .returns<Transaction>()
     .single();
 
   if (!transaction) {
     notFound();
   }
 
-  return <RecurringTransactionForm transaction={transaction} />;
+  return (
+    <div>
+      <RecurringTransactionForm transaction={transaction} />
+      <div className="mt-6 mx-auto max-w-lg">
+        <RecurringTransactionHistory recurringTransactionId={transaction.id} />
+      </div>
+    </div>
+  );
 }

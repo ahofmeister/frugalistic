@@ -1,11 +1,10 @@
 "use server";
 import { addMonths, addYears, format } from "date-fns";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 import {
   NewTransaction,
   RecurringInterval,
-  RecurringTransaction,
   TransactionType,
   TransactionWithCategory,
   TransactionWithRecurring,
@@ -183,17 +182,26 @@ export const deleteTransaction = async (id: string) => {
   return await supabase.from("transactions").delete().eq("id", id);
 };
 
-export async function upsertRecurringTransaction(
-  newTransaction: RecurringTransaction,
-) {
+export const toggleEnabledRecurringTransaction = async (
+  id: string,
+  newStatus: boolean,
+) => {
   const supabase = await createClient();
+  const { error } = await supabase
+    .from("transactions_recurring")
+    .update({ enabled: newStatus })
+    .eq("id", id);
+  revalidatePath(`/`);
+  return error;
+};
 
-  const { error } = await supabase.from("transactions_recurring").upsert({
-    ...newTransaction,
-  });
-
-  if (error) {
-    console.log(error);
-  }
-  revalidateTag("transactions");
-}
+export const deleteRecurringTransaction = async (id: string) => {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("transactions_recurring")
+    .delete()
+    .eq("id", id)
+    .single();
+  revalidatePath(`/`);
+  return error;
+};

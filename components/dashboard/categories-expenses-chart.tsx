@@ -7,7 +7,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { formatAmount } from "@/lib/utils";
+import { shortAmount } from "@/lib/utils";
 import { TransactionWithCategory } from "@/types";
 
 interface CategoryData {
@@ -54,7 +54,7 @@ export function CategoriesExpensesChart(props: {
         <YAxis
           axisLine={false}
           tickLine={false}
-          tickFormatter={(value: string) => formatAmount(Number(value))}
+          tickFormatter={(value: string) => shortAmount(Number(value))}
         />
         <Bar
           dataKey="total"
@@ -63,7 +63,7 @@ export function CategoriesExpensesChart(props: {
           isAnimationActive={false}
         >
           <LabelList
-            formatter={(value: string) => formatAmount(Number(value))}
+            formatter={(value: string) => shortAmount(Number(value))}
             position="top"
           />
         </Bar>

@@ -11,7 +11,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { formatAmount } from "@/lib/utils";
+import { shortAmount } from "@/lib/utils";
 import { TransactionWithCategory } from "@/types";
 
 interface MonthCategoryTotals {
@@ -111,7 +111,7 @@ const TransactionCategoryDistribution = ({
           />
           <YAxis
             stroke="transparent"
-            tickFormatter={(value: number) => formatAmount(value)}
+            tickFormatter={(value: number) => shortAmount(value)}
           />
           <ChartLegend content={renderLegend} />
           <ChartTooltip
@@ -143,7 +143,7 @@ const TransactionCategoryDistribution = ({
                 <LabelList
                   position="top"
                   valueAccessor={(entry: MonthCategoryTotals) => {
-                    return formatAmount(entry.total);
+                    return shortAmount(entry.total);
                   }}
                 />
               )}

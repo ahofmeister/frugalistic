@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const formatAmount = (amount: number) => {
+export const shortAmount = (amount: number) => {
   const isNegative = amount < 0;
   const absAmount = Math.abs(amount);
 
