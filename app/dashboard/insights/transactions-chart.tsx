@@ -73,7 +73,10 @@ export function TransactionsChart(props: { transactions: Transaction[] }) {
         ))}
       </ToggleGroup>
       <div className="overflow-x-scroll mt-3">
-        <ChartContainer config={{}} className="max-h-[250px] w-full">
+        <ChartContainer
+          config={{}}
+          className="max-h-[400px] w-full min-h-[200px] h-[240px]"
+        >
           <AreaChart data={chartData}>
             <XAxis dataKey="name" stroke="transparent" />
             <YAxis

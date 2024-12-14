@@ -92,7 +92,10 @@ const TransactionCategoryDistribution = ({
       <div className="flex justify-center font-bold text-xl">
         Category Insights
       </div>
-      <ChartContainer config={{}} className="max-h-[400px] w-full">
+      <ChartContainer
+        config={{}}
+        className="max-h-[400px] w-full min-h-[200px] h-[240px]"
+      >
         <BarChart
           data={dataTransformed}
           margin={{
