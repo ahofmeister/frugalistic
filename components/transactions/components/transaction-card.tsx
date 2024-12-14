@@ -37,8 +37,8 @@ export function TransactionCard(props: {
         </CardTitle>
 
         <CardDescription className="flex justify-between ">
-          <div className="flex gap-x-2 items-center">
-            {!transaction.category && <div>? Uncategorized</div>}
+          <span>
+            {!transaction.category && <>? Uncategorized</>}
 
             {transaction.category && (
               <>
@@ -46,7 +46,7 @@ export function TransactionCard(props: {
                 {transaction.category?.name ?? "-"}
               </>
             )}
-          </div>
+          </span>
 
           {formatDate(transaction.datetime, "MMM dd, yyyy")}
         </CardDescription>
