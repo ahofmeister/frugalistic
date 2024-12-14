@@ -6,7 +6,6 @@ import {
   NewTransaction,
   RecurringInterval,
   TransactionType,
-  TransactionWithCategory,
   TransactionWithRecurring,
 } from "@/types";
 import { createClient } from "@/utils/supabase/server";
@@ -91,19 +90,19 @@ export const searchTransactions = async ({
   description: string | undefined;
   category: string | undefined;
   type: TransactionType | undefined;
-}): Promise<TransactionWithCategory[]> => {
+}): Promise<TransactionWithRecurring[]> => {
   const supabase = await createClient();
 
   const query = category
     ? supabase
         .from("transactions")
         .select(
-          "id, description, amount, datetime, type, category!inner(name, division, color)",
+          "id, description, amount, datetime, type, category!inner(name, division, color), recurring_transaction(*)",
         )
     : supabase
         .from("transactions")
         .select(
-          "id, description, amount, datetime, type, category(name, division, color)",
+          "id, description, amount, datetime, type, category(name, division, color), recurring_transaction(*)",
         );
   if (category) {
     await query.eq("category.name", category);
@@ -130,7 +129,7 @@ export const searchTransactions = async ({
   if (!dateFrom && !dateTo && !description && !type && !category && !type) {
     await query.limit(50);
   }
-  const { data } = await query.returns<TransactionWithCategory[]>();
+  const { data } = await query.returns<TransactionWithRecurring[]>();
   return data ?? [];
 };
 
