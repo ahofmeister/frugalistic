@@ -29,7 +29,7 @@ export default function AppButton() {
   if (!user) {
     return (
       <Link href="/login">
-        <Button variant="default" size="sm">
+        <Button variant="default" size="sm" className="w-full">
           Sign Up
         </Button>
       </Link>
@@ -38,7 +38,7 @@ export default function AppButton() {
 
   return (
     <Link href="/dashboard">
-      <Button variant="default" size="sm">
+      <Button variant="default" className="w-full" size="sm">
         Dashboard
       </Button>
     </Link>
