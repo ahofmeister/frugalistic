@@ -1,5 +1,6 @@
 import React from "react";
 
+import { cn } from "@/lib/utils";
 import { Division, TransactionType } from "@/types";
 
 export const formatAmount = (input: number) => {
@@ -16,18 +17,20 @@ export const formatAmount = (input: number) => {
 const TransactionAmount = ({
   amount,
   type,
+  className,
 }: {
   amount: number;
   type?: TransactionType | Division;
+  className?: string;
 }) => {
-  const typeClass = getColor(type);
+  const typeClass = getTextColor(type);
 
-  return <div className={typeClass}>{formatAmount(amount)}</div>;
+  return <div className={cn(typeClass, className)}>{formatAmount(amount)}</div>;
 };
 
 export default TransactionAmount;
 
-export function getColor(type: TransactionType | Division | undefined) {
+export function getTextColor(type: TransactionType | Division | undefined) {
   switch (type) {
     case "savings":
       return "text-savings";

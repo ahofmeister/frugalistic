@@ -15,6 +15,7 @@ export type Division = Database["public"]["Enums"]["division"];
 
 export type TransactionWithRecurring = Transaction & {
   recurring_transaction: RecurringTransaction;
+  category: Category;
 };
 
 export type TransactionAutoSuggest =
