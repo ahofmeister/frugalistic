@@ -1,6 +1,6 @@
 import "./globals.css";
 
-import { Metadata } from "next";
+import { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
 import React from "react";
 
@@ -29,6 +29,10 @@ export const metadata: Metadata = {
     "transactions",
     "recurring payments",
   ],
+};
+
+export const viewport: Viewport = {
+  userScalable: false,
 };
 
 export default function RootLayout({
