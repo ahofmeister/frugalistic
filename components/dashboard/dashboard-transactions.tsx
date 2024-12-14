@@ -1,7 +1,7 @@
 import React from "react";
 
 import TransactionList from "@/components/transactions/components/transaction-list";
-import { TransactionWithCategory } from "@/types";
+import { TransactionWithRecurring } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function DashboardTransactions(props: {
@@ -12,11 +12,11 @@ export default async function DashboardTransactions(props: {
 
   const { data: transactions } = await supabase
     .from("transactions")
-    .select("*, category(*)")
+    .select("*, category(*), recurring_transaction(*)")
     .gte("datetime", props.startDate)
     .lte("datetime", props.endDate)
     .order("datetime", { ascending: false })
-    .returns<TransactionWithCategory[]>();
+    .returns<TransactionWithRecurring[]>();
 
   return <TransactionList transactions={transactions ?? []} />;
 }

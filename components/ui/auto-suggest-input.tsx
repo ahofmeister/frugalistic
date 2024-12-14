@@ -4,7 +4,7 @@ import {cn} from "@/lib/utils";
 import {Skeleton} from "@/components/ui/skeleton";
 import {Command, CommandGroup, CommandInput, CommandItem, CommandList} from "@/components/ui/command";
 import {TransactionAutoSuggest} from "@/types";
-import {getColor} from "@/components/transactions/components/transaction-amount";
+import {getTextColor} from "@/components/transactions/components/transaction-amount";
 
 type AutoCompleteProps = {
     options: TransactionAutoSuggest[]
@@ -132,8 +132,8 @@ export const AutoComplete = ({
                                                 "flex w-full items-center gap-2",
                                             )}
                                         >
-                                            <span className={getColor((option.type!))}
-                                                  style={{color: getColor(option.type!)}}>{option.type}</span> {option.description} in <span
+                                            <span className={getTextColor((option.type!))}
+                                                  style={{color: getTextColor(option.type!)}}>{option.type}</span> {option.description} in <span
                                             style={{color: option.color ?? ''}}>{option.name}</span>
 
                                         </CommandItem>
