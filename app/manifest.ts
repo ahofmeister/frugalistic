@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Frugalistic",
     short_name: "Frugalistic",
     description: "The best way to stay on top of your finances",
-    start_url: "/",
+    start_url: "/dashboard",
     display: "standalone",
     background_color: "#14121F",
     theme_color: "#14121F",
@@ -19,6 +19,13 @@ export default function manifest(): MetadataRoute.Manifest {
         src: "/icon-512x512.png",
         sizes: "512x512",
         type: "image/png",
+      },
+    ],
+    shortcuts: [
+      {
+        icons: [],
+        name: "New Transaction",
+        url: "/dashboard/transactions/new",
       },
     ],
   };
