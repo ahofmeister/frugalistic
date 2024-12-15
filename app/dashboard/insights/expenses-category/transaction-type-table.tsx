@@ -1,9 +1,8 @@
-"use client";
 import { format } from "date-fns";
 import React from "react";
 
 import TransactionAmount from "@/components/transactions/components/transaction-amount";
-import { TransactionTotal } from "@/components/transactions/transactions-api";
+import { getTransactionsTotal } from "@/components/transactions/transactions-api";
 import {
   Table,
   TableBody,
@@ -14,13 +13,9 @@ import {
 } from "@/components/ui/table";
 import { transactionColors } from "@/utils/transaction/colors";
 
-export default function TransactionTypeTable({
-  transactionTotals,
-  year,
-}: {
-  transactionTotals: TransactionTotal[];
-  year: number;
-}) {
+export default async function TransactionTypeTable({ year }: { year: number }) {
+  const transactionTotals = await getTransactionsTotal(year);
+
   const filteredTotals = transactionTotals.filter(
     ({ expense, income, savings }) => expense > 0 || income > 0 || savings > 0,
   );

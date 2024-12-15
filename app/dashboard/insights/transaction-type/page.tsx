@@ -4,14 +4,11 @@ import React from "react";
 import TransactionTypeTable from "@/app/dashboard/insights/expenses-category/transaction-type-table";
 import { MonthYearStepper } from "@/app/dashboard/month-year-stepper";
 import { SelectToday } from "@/components/dashboard/select-today";
-import { getTransactionsTotal } from "@/components/transactions/transactions-api";
 
 export default async function TypeStatistic(props: {
   searchParams: Promise<{ year: number }>;
 }) {
   const searchParams = await props.searchParams;
-
-  const transactionTotals = await getTransactionsTotal(searchParams.year);
 
   const year = Number(searchParams?.year ?? new Date().getFullYear());
 
@@ -37,10 +34,7 @@ export default async function TypeStatistic(props: {
         />
       </div>
       <div className="mt-4">
-        <TransactionTypeTable
-          transactionTotals={transactionTotals}
-          year={year}
-        />
+        <TransactionTypeTable year={year} />
       </div>
     </div>
   );
