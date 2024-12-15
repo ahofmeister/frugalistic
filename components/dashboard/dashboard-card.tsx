@@ -1,8 +1,13 @@
 import React from "react";
 
 import TransactionAmount from "@/components/transactions/components/transaction-amount";
-import { Card, CardFooter, CardHeader } from "@/components/ui/card";
-import { Division, TransactionType } from "@/types";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { TransactionType } from "@/types";
 
 const DashboardCard = ({
   headline,
@@ -14,7 +19,7 @@ const DashboardCard = ({
 }: {
   headline: string;
   amount: number;
-  type?: TransactionType | Division | undefined;
+  type?: TransactionType | undefined;
   total?: number;
   label?: string;
   ofLabel?: string;
@@ -22,11 +27,11 @@ const DashboardCard = ({
   return (
     <Card className="lg:w-[180px] size-36">
       <CardHeader className="text-xl">
-        {headline}
         <div className="text-2xl">
           <TransactionAmount amount={amount} type={type} />
         </div>
       </CardHeader>
+      <CardContent>{headline}</CardContent>
       <CardFooter>
         <div className="text-sm text-gray-400">
           {total && (

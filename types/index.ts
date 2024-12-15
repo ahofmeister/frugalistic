@@ -11,8 +11,6 @@ export type TransactionWithCategory = Transaction & {
 };
 export type TransactionType = Database["public"]["Enums"]["transaction_type"];
 
-export type Division = Database["public"]["Enums"]["division"];
-
 export type TransactionWithRecurring = Transaction & {
   recurring_transaction: RecurringTransaction;
   category: Category;

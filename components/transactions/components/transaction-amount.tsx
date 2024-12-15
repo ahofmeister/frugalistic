@@ -1,7 +1,7 @@
 import React from "react";
 
 import { cn } from "@/lib/utils";
-import { Division, TransactionType } from "@/types";
+import { TransactionType } from "@/types";
 
 export const formatAmount = (input: number) => {
   if (input === 0) {
@@ -20,7 +20,7 @@ const TransactionAmount = ({
   className,
 }: {
   amount: number;
-  type?: TransactionType | Division;
+  type?: TransactionType;
   className?: string;
 }) => {
   const typeClass = getTextColor(type);
@@ -30,7 +30,7 @@ const TransactionAmount = ({
 
 export default TransactionAmount;
 
-export function getTextColor(type: TransactionType | Division | undefined) {
+export function getTextColor(type: TransactionType | undefined) {
   switch (type) {
     case "savings":
       return "text-savings";
@@ -38,27 +38,6 @@ export function getTextColor(type: TransactionType | Division | undefined) {
       return "text-expense";
     case "income":
       return "text-income";
-    case "leisure":
-      return "text-leisure";
-    case "essentials":
-      return "text-essential";
-    default:
-      return "";
-  }
-}
-
-export function getBgColor(type: TransactionType | Division | undefined) {
-  switch (type) {
-    case "savings":
-      return "bg-savings";
-    case "expense":
-      return "bg-expense";
-    case "income":
-      return "bg-income";
-    case "leisure":
-      return "bg-leisure";
-    case "essentials":
-      return "bg-essential";
     default:
       return "";
   }

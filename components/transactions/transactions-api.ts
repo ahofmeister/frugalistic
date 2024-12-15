@@ -97,12 +97,12 @@ export const searchTransactions = async ({
     ? supabase
         .from("transactions")
         .select(
-          "id, description, amount, datetime, type, category!inner(name, division, color), recurring_transaction(*)",
+          "id, description, amount, datetime, type, category!inner(name, color), recurring_transaction(*)",
         )
     : supabase
         .from("transactions")
         .select(
-          "id, description, amount, datetime, type, category(name, division, color), recurring_transaction(*)",
+          "id, description, amount, datetime, type, category(name, color), recurring_transaction(*)",
         );
   if (category) {
     await query.eq("category.name", category);

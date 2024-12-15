@@ -18,20 +18,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { NewCategory } from "@/types";
 
 const CategoryForm = () => {
   const formSchema = z.object({
     name: z.string().min(2),
     color: z.string(),
-    division: z.enum(["essentials", "leisure"]),
     description: z.string().optional(),
   });
 
@@ -39,7 +31,6 @@ const CategoryForm = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      division: "essentials",
       color: "#14121F",
       description: "",
     },
@@ -68,33 +59,6 @@ const CategoryForm = () => {
                   <FormControl>
                     <Input placeholder="Name" {...field} />
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="division"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Division</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue>
-                          {field.value
-                            ? field.value === "essentials"
-                              ? "Essentials"
-                              : "Leisure"
-                            : "Select division"}
-                        </SelectValue>
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="essentials">Essentials</SelectItem>
-                      <SelectItem value="leisure">Leisure</SelectItem>
-                    </SelectContent>
-                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

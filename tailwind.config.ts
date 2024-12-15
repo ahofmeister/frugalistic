@@ -22,8 +22,6 @@ const config = {
         income: "#84F5F5",
         savings: "#e9c46a",
         expense: "#F58484",
-        leisure: "#6FCF97",
-        essential: "#BEBEBE",
         success: "#008500",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
