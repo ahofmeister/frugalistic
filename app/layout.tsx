@@ -1,5 +1,6 @@
 import "./globals.css";
 
+import { Analytics } from "@vercel/analytics/next";
 import { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
 import React from "react";
@@ -45,6 +46,7 @@ export default function RootLayout({
       <body className="bg-background">
         {children}
         <Toaster />
+        <Analytics />
       </body>
     </html>
   );
