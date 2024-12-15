@@ -33,13 +33,11 @@ export default async function DashboardPage(props: {
 
   return (
     <div className="flex flex-col space-y-4 p-0.5">
-      <div className="flex font-semibold text-2xl justify-center">
-        {isYear ? year : format(new Date(year, month, 1), "MMMM yyyy")}
-      </div>
       <div className="pr-6">
         <CategoriesBanner />
       </div>
-      <div className="flex justify-between">
+
+      <div className="flex flex-col md:flex-row justify-between">
         <div className="flex space-x-2">
           <MonthYearStepper
             period={period}
@@ -56,6 +54,10 @@ export default async function DashboardPage(props: {
             year={year}
             month={month}
           />
+        </div>
+
+        <div className="flex font-semibold text-2xl justify-center">
+          {isYear ? year : format(new Date(year, month, 1), "MMMM yyyy")}
         </div>
 
         <PeriodSelector value={searchParams.period} year={year} />

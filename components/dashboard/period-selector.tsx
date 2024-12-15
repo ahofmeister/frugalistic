@@ -14,6 +14,7 @@ export function PeriodSelector(props: { value: Period; year: number }) {
     <ToggleGroup
       type="single"
       value={period}
+      className="justify-start"
       onValueChange={(newPeriod: Period) => {
         if (!newPeriod) {
           return;
