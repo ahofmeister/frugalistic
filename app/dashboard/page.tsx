@@ -37,30 +37,31 @@ export default async function DashboardPage(props: {
         <CategoriesBanner />
       </div>
 
-      <div className="flex flex-col md:flex-row justify-between">
-        <div className="flex space-x-2">
-          <MonthYearStepper
-            period={period}
-            amount={-1}
-            icon={<ChevronLeft />}
-            year={year}
-            month={month}
-          />
-          <SelectToday updateMode="both" />
-          <MonthYearStepper
-            period={period}
-            amount={1}
-            icon={<ChevronRight />}
-            year={year}
-            month={month}
-          />
-        </div>
-
-        <div className="flex font-semibold text-2xl justify-center">
+      <div className="flex flex-col sm:flex-row justify-between gap-y-4">
+        <div className="flex font-semibold text-2xl">
           {isYear ? year : format(new Date(year, month, 1), "MMMM yyyy")}
         </div>
 
-        <PeriodSelector value={searchParams.period} year={year} />
+        <div className="flex gap-4">
+          <div className="flex font-semibold text-xl justify-center">
+            <MonthYearStepper
+              period={period}
+              amount={-1}
+              icon={<ChevronLeft />}
+              year={year}
+              month={month}
+            />
+            <SelectToday updateMode="both" />
+            <MonthYearStepper
+              period={period}
+              amount={1}
+              icon={<ChevronRight />}
+              year={year}
+              month={month}
+            />
+          </div>
+          <PeriodSelector value={searchParams.period} year={year} />
+        </div>
       </div>
 
       <Suspense fallback="loading">
