@@ -8,11 +8,14 @@ import { Button } from "@/components/ui/button";
 import { SidebarMenuButton, useSidebar } from "@/components/ui/sidebar";
 
 export function NewTransactionLink() {
-  const { state, toggleSidebar } = useSidebar();
+  const { state, toggleSidebar, isMobile } = useSidebar();
   const pathname = usePathname();
   const isActive = pathname.startsWith("/dashboard/transactions/new");
   return (
-    <Link href="/dashboard/transactions/new" onClick={() => toggleSidebar()}>
+    <Link
+      href="/dashboard/transactions/new"
+      onClick={() => isMobile && toggleSidebar()}
+    >
       <SidebarMenuButton asChild isActive={isActive} tooltip="New Transaction">
         {state === "expanded" ? (
           <Button variant="outline">

@@ -18,7 +18,7 @@ import {
 export function AppNav() {
   const items = navConfig.dashboardNavigation;
   const pathname = usePathname();
-  const sidebar = useSidebar();
+  const { isMobile, toggleSidebar } = useSidebar();
 
   return (
     <SidebarGroup>
@@ -31,7 +31,7 @@ export function AppNav() {
               <Link
                 href={item.href}
                 className="flex"
-                onClick={() => sidebar.toggleSidebar()}
+                onClick={() => isMobile && toggleSidebar()}
               >
                 <SidebarMenuButton tooltip={item.title} isActive={isActive}>
                   {item.icon && <item.icon />}
