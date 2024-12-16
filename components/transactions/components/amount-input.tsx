@@ -69,14 +69,13 @@ const AmountInput: React.FC<AmountInputProps> = ({ value, onChange }) => {
   };
 
   return (
-    <div>
-      <Input
-        value={inputValue}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-        onClick={(e) => e.preventDefault()} // Disable cursor click
-      />
-    </div>
+    <Input
+      value={inputValue}
+      inputMode="numeric"
+      onChange={handleChange}
+      onKeyDown={handleKeyDown}
+      onClick={(e) => e.preventDefault()} // Disable cursor click
+    />
   );
 };
 
