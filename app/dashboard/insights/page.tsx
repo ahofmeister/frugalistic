@@ -2,6 +2,7 @@ import { format } from "date-fns";
 import Link from "next/link";
 import React, { Suspense } from "react";
 
+import { InsightCategories } from "@/app/dashboard/insights/insight-categories";
 import { TotalCard } from "@/app/dashboard/insights/total-card";
 import TransactionCategoryDistribution from "@/app/dashboard/insights/transaction-category-distribution";
 import SelectYear from "@/app/dashboard/insights/transaction-type-select";
@@ -54,7 +55,8 @@ const InsightsPage = async (props: {
 
   return (
     <div className="flex flex-col gap-y-6">
-      <div className="flex mb-4">
+      <div className="flex gap-x-4 justify-between items-center">
+        <div className="text-2xl">Insights of {year}</div>
         <SelectYear
           value={searchParams.year}
           min={yearRange?.minyear}
@@ -96,6 +98,10 @@ const InsightsPage = async (props: {
           </div>
         ))}
       </div>
+
+      <Suspense fallback="Loading categories...">
+        <InsightCategories year={year} />
+      </Suspense>
 
       <TransactionsChart transactions={transactions ?? []} />
       <TransactionCategoryDistribution

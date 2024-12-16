@@ -225,28 +225,26 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
-      get_average_by_type_and_year: {
+      get_category_totals: {
         Args: {
-          transaction_type: Database["public"]["Enums"]["transaction_type"]
-          transaction_year: number
+          from_date: string
+          to_date: string
         }
         Returns: {
-          average: number
+          name: string
+          color: string
+          total: number
         }[]
       }
-      get_average_per_month_by_type_and_year: {
+      get_category_totals2: {
         Args: {
-          transaction_type: Database["public"]["Enums"]["transaction_type"]
-          transaction_year: number
+          from_date: string
+          to_date: string
         }
-        Returns: number
-      }
-      get_average_sum_per_month_by_type_and_year: {
-        Args: {
-          transaction_type: Database["public"]["Enums"]["transaction_type"]
-          transaction_year: number
-        }
-        Returns: number
+        Returns: {
+          name: string
+          total: number
+        }[]
       }
       get_expenses_total_by_category: {
         Args: {
@@ -257,13 +255,6 @@ export type Database = {
           category_color: string
           month: number
           total: number
-        }[]
-      }
-      get_first_and_last_year: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          first_year: number
-          last_year: number
         }[]
       }
       get_min_and_max_year: {
@@ -281,10 +272,6 @@ export type Database = {
         Returns: {
           total: number
         }[]
-      }
-      has_incomplete_onboarding_steps: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
       }
       insert_recurring_transaction: {
         Args: Record<PropertyKey, never>

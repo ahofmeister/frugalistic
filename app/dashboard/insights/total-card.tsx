@@ -54,14 +54,6 @@ export async function TotalCard(props: {
     .select("*")
     .single();
 
-  const { data: avg } = await supabase
-    .rpc("get_average_per_month_by_type_and_year", {
-      transaction_year: props.year,
-      transaction_type: props.type,
-    })
-    .select("*")
-    .single();
-
   const percentageChange =
     previousYear?.total && currentYear?.total
       ? ((currentYear.total - previousYear?.total) / previousYear?.total) * 100
@@ -89,7 +81,10 @@ export async function TotalCard(props: {
       <CardFooter>
         <div className="flex gap-x-1">
           <div>Monthly Average</div>
-          <TransactionAmount amount={avg!} type={props.type} />
+          <TransactionAmount
+            amount={currentYear!.total / (new Date().getMonth() + 1)}
+            type={props.type}
+          />
         </div>
       </CardFooter>
     </Card>
