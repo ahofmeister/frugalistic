@@ -12,11 +12,13 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 export function AppNav() {
   const items = navConfig.dashboardNavigation;
   const pathname = usePathname();
+  const sidebar = useSidebar();
 
   return (
     <SidebarGroup>
@@ -26,7 +28,11 @@ export function AppNav() {
 
           return (
             <SidebarMenuItem key={item.href}>
-              <Link href={item.href} className="flex">
+              <Link
+                href={item.href}
+                className="flex"
+                onClick={() => sidebar.toggleSidebar()}
+              >
                 <SidebarMenuButton tooltip={item.title} isActive={isActive}>
                   {item.icon && <item.icon />}
                   {item.title}
