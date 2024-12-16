@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import useUpdateQueryParam from "@/app/useUpdateQueryParam";
 import CategoryColor from "@/components/categories/category-color";
@@ -11,16 +11,26 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Category } from "@/types";
+import { createClient } from "@/utils/supabase/client";
 
 const CATEGORY_ALL_VALUE = "all";
 
-const CategorySearchFilter = (props: {
-  categories: Category[];
-  value?: string;
-}) => {
+const CategorySearchFilter = (props: { value?: string }) => {
   const [category, setCategory] = useState<string>(props.value ?? "all");
-
+  const [categories, setCategories] = useState<Category[]>([]);
   const updateQueryParams = useUpdateQueryParam();
+
+  useEffect(() => {
+    async function fetchCategories() {
+      const supabase = createClient();
+      const { data: fetchedCategories } = await supabase
+        .from("categories")
+        .select("*");
+      setCategories(fetchedCategories ?? []);
+    }
+
+    void fetchCategories();
+  }, []);
 
   return (
     <div>
@@ -41,7 +51,7 @@ const CategorySearchFilter = (props: {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value={CATEGORY_ALL_VALUE}>Select Category</SelectItem>
-          {props.categories?.map((category) => (
+          {categories?.map((category) => (
             <SelectItem key={category.id} value={category.name}>
               <div className="flex gap-x-2 items-center">
                 <CategoryColor color={category.color} />

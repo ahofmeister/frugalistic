@@ -9,7 +9,6 @@ import TypeSearchFilter from "@/components/transactions/components/type-search-f
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { TransactionType } from "@/types";
-import { createClient } from "@/utils/supabase/server";
 
 export default async function TransactionsPage(props: {
   searchParams: Promise<{
@@ -21,8 +20,6 @@ export default async function TransactionsPage(props: {
   }>;
 }) {
   const searchParams = await props.searchParams;
-  const supabase = await createClient();
-  const { data: categories } = await supabase.from("categories").select("*");
 
   return (
     <div className="ml-2 mt-2">
@@ -44,7 +41,6 @@ export default async function TransactionsPage(props: {
       <div className="flex gap-10 mt-4">
         <CategorySearchFilter
           key={searchParams.category}
-          categories={categories ?? []}
           value={searchParams.category}
         />
 
