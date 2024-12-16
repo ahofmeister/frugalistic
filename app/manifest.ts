@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "The best way to stay on top of your finances",
     start_url: "/dashboard",
     display: "standalone",
-    background_color: "#14121F",
-    theme_color: "#14121F",
+    background_color: "#121117",
+    theme_color: "#121117",
     icons: [
       {
         src: "/icon-192x192.png",
