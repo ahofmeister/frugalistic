@@ -6,12 +6,16 @@ import DateSearchFilter from "@/components/transactions/components/date-search-f
 import TransactionSearchInput from "@/components/transactions/components/transaction-search-input";
 import TransactionsSearchResult from "@/components/transactions/components/transactions-search-result";
 import TypeSearchFilter from "@/components/transactions/components/type-search-filter";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { TransactionType } from "@/types";
-import { createClient } from "@/utils/supabase/server";
 
-export default async function TransactionsPage(props: {
+export default async function TransactionSearchPage(props: {
   searchParams: Promise<{
     dateFrom: string;
     dateTo: string;
@@ -21,13 +25,12 @@ export default async function TransactionsPage(props: {
   }>;
 }) {
   const searchParams = await props.searchParams;
-  const supabase = await createClient();
-  const { data: categories } = await supabase.from("categories").select("*");
 
   return (
-    <div className="ml-2 mt-2">
-      <div className="flex gap-10">
-        <TransactionSearchInput value={searchParams.description} />
+    <div className="flex flex-col ml-2 mt-2 gap-4">
+      <TransactionSearchInput value={searchParams.description} />
+
+      <div className="flex gap-x-4">
         <DateSearchFilter
           key={searchParams.dateFrom}
           paramName="dateFrom"
@@ -41,10 +44,10 @@ export default async function TransactionsPage(props: {
           value={searchParams.dateTo}
         />
       </div>
-      <div className="flex gap-10 mt-4">
+
+      <div className="flex gap-x-4">
         <CategorySearchFilter
           key={searchParams.category}
-          categories={categories ?? []}
           value={searchParams.category}
         />
 
@@ -56,34 +59,26 @@ export default async function TransactionsPage(props: {
       <div className="mt-4">
         <Suspense
           fallback={
-            <div className="w-full space-y-4 text-gray-200">
-              <div className="text-muted-foreground mb-2">
-                <Skeleton className="h-4 w-[100px] bg-gray-700" />
-              </div>
-              <Table>
-                <TableBody>
-                  {Array.from({ length: 50 }).map((_, i) => (
-                    <TableRow key={i}>
-                      <TableCell>
-                        <Skeleton className="h-4 w-[80px] bg-gray-700" />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-4 w-[120px] bg-gray-700" />
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-2">
-                          <Skeleton className="h-4 w-4 bg-gray-700" />
-                          <Skeleton className="h-4 w-[80px] bg-gray-700" />
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Skeleton className="h-4 w-[60px] ml-auto bg-gray-700" />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+            <>
+              {Array.from({ length: 25 }).map((_, i) => (
+                <Card key={i} className="mb-2">
+                  <CardHeader>
+                    <CardTitle>
+                      <span className="flex justify-between">
+                        <Skeleton className="w-20 h-4"></Skeleton>
+                        <Skeleton className="w-20 h-4"></Skeleton>
+                      </span>
+                    </CardTitle>
+                    <CardDescription>
+                      <span className="flex justify-between">
+                        <Skeleton className="w-20 h-4"></Skeleton>
+                        <Skeleton className="w-24 h-4"></Skeleton>
+                      </span>
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              ))}
+            </>
           }
         >
           <TransactionsSearchResult
@@ -94,6 +89,11 @@ export default async function TransactionsPage(props: {
             type={searchParams.type}
           />
         </Suspense>
+      </div>
+      <div className="w-full space-y-4 text-gray-200">
+        <div className="text-muted-foreground mb-2">
+          <Skeleton className="h-4 w-[100px]" />
+        </div>
       </div>
     </div>
   );

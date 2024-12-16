@@ -33,7 +33,7 @@ const TypeSearchFilter = (props: { value?: TransactionType }) => {
           setType(value);
         }}
       >
-        <SelectTrigger className="w-[280px]">
+        <SelectTrigger>
           <SelectValue placeholder="Select a type" />
         </SelectTrigger>
         <SelectContent>

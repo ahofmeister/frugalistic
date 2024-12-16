@@ -13,17 +13,15 @@ const TransactionSearchInput = (props: { value?: string }) => {
   }, [props.value]);
 
   return (
-    <div className="max-w-sm">
-      <Input
-        onChange={(event) => {
-          const newValue = event.target.value;
-          setValue(newValue);
-          updateQueryParams({ key: "description", value: newValue ?? "" });
-        }}
-        value={value}
-        placeholder="Search transactions"
-      />
-    </div>
+    <Input
+      onChange={(event) => {
+        const newValue = event.target.value;
+        setValue(newValue);
+        updateQueryParams({ key: "description", value: newValue ?? "" });
+      }}
+      value={value}
+      placeholder="Search transactions"
+    />
   );
 };
 
