@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { transactionTypes } from "@/lib/transaction-types";
 import { TransactionType } from "@/types";
 
 const TYPE_ALL_VALUE = "all";
@@ -37,7 +38,7 @@ const TypeSearchFilter = (props: { value?: TransactionType }) => {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value={TYPE_ALL_VALUE}>Select Type</SelectItem>
-          {["expense", "income", "savings"].map((type) => (
+          {transactionTypes.map((type) => (
             <SelectItem key={type} value={type}>
               {type}
             </SelectItem>

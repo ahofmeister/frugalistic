@@ -25,7 +25,9 @@ const TransactionAmount = ({
 }) => {
   const typeClass = getTextColor(type);
 
-  return <div className={cn(typeClass, className)}>{formatAmount(amount)}</div>;
+  return (
+    <span className={cn(typeClass, className)}>{formatAmount(amount)}</span>
+  );
 };
 
 export default TransactionAmount;
@@ -38,6 +40,19 @@ export function getTextColor(type: TransactionType | undefined) {
       return "text-expense";
     case "income":
       return "text-income";
+    default:
+      return "";
+  }
+}
+
+export function getBgColor(type: TransactionType | undefined) {
+  switch (type) {
+    case "savings":
+      return "bg-savings";
+    case "expense":
+      return "bg-expense";
+    case "income":
+      return "bg-income";
     default:
       return "";
   }

@@ -1,12 +1,22 @@
 import { format } from "date-fns";
 import Link from "next/link";
-import React from "react";
+import React, { Suspense } from "react";
 
+import { TotalCard } from "@/app/dashboard/insights/total-card";
 import TransactionCategoryDistribution from "@/app/dashboard/insights/transaction-category-distribution";
 import SelectYear from "@/app/dashboard/insights/transaction-type-select";
 import { TransactionsChart } from "@/app/dashboard/insights/transactions-chart";
 import { navConfig } from "@/components/navigation/nav-config";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { transactionTypes } from "@/lib/transaction-types";
 import { TransactionWithCategory } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
@@ -51,6 +61,42 @@ const InsightsPage = async (props: {
           max={yearRange?.maxyear}
         />
       </div>
+
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:auto-rows-min">
+        {transactionTypes.map((type) => (
+          <div key={type}>
+            <Suspense
+              fallback={
+                <Card>
+                  <CardHeader>
+                    <CardTitle>
+                      <Skeleton className="h-7 w-10" />
+                    </CardTitle>
+                    <CardDescription>
+                      <div className="flex gap-x-2 items-center">
+                        <Skeleton className="h-4 w-16" />
+                        <Skeleton className="h-4 w-20" />
+                      </div>
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Skeleton className="h-4 w-36" />
+                  </CardContent>
+                  <CardFooter>
+                    <div className="flex gap-x-1 items-center">
+                      <Skeleton className="h-4 w-32" />
+                      <Skeleton className="h-4 w-16" />
+                    </div>
+                  </CardFooter>
+                </Card>
+              }
+            >
+              <TotalCard year={year} type={type} />
+            </Suspense>
+          </div>
+        ))}
+      </div>
+
       <TransactionsChart transactions={transactions ?? []} />
       <TransactionCategoryDistribution
         transactions={
