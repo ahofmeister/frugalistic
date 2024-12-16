@@ -3,23 +3,16 @@ import React from "react";
 import TransactionAmount, {
   getBgColor,
 } from "@/components/transactions/components/transaction-amount";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardDescription, CardHeader } from "@/components/ui/card";
 import { TransactionType } from "@/types";
 
 const DashboardCard = ({
-  headline,
   amount,
   type,
   total,
   label,
   ofLabel,
 }: {
-  headline: string;
   amount: number;
   type?: TransactionType | undefined;
   total?: number;
@@ -28,7 +21,7 @@ const DashboardCard = ({
 }) => {
   return (
     <Card
-      className={`lg:w-[180px] size-36 ${getBgColor(type)}`}
+      className={`lg:w-[180px] size-30 ${getBgColor(type)}`}
       // @ts-expect-error CSS property exists
       style={{ "--tw-bg-opacity": 0.2 }}
     >
@@ -36,16 +29,15 @@ const DashboardCard = ({
         <div className="text-2xl">
           <TransactionAmount amount={amount} type={type} />
         </div>
+        <CardDescription>
+          <span className="text-sm text-gray-400">
+            {total && (
+              <>{`${((amount / total) * 100).toFixed(0)}% of ${ofLabel}`}</>
+            )}
+            {label}
+          </span>
+        </CardDescription>
       </CardHeader>
-      <CardContent>{headline}</CardContent>
-      <CardFooter>
-        <div className="text-sm text-gray-400">
-          {total && (
-            <>{`${((amount / total) * 100).toFixed(0)}% of ${ofLabel}`}</>
-          )}
-          {label}
-        </div>
-      </CardFooter>
     </Card>
   );
 };

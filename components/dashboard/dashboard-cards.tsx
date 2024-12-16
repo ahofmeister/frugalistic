@@ -40,34 +40,26 @@ const DashboardCards = async (props: {
   const leftover = income - expense - savings;
 
   return (
-    <div className="flex justify-center md:justify-start">
-      <div className="grid grid-cols-2 gap-2 justify-center">
+    <div className="flex justify-center">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-2 md:grid-cols-4 justify-center">
         <DashboardCard
           amount={income}
           type="income"
-          headline="Income"
           label="Income this period"
         />
         <DashboardCard
           amount={savings}
           type="savings"
-          headline="Savings"
           total={income}
           ofLabel="income"
         />
         <DashboardCard
           amount={expense}
           type="expense"
-          headline="Expenses"
           total={income}
           ofLabel="income"
         />
-        <DashboardCard
-          amount={leftover}
-          headline="Leftover"
-          total={income}
-          ofLabel="income"
-        />
+        <DashboardCard amount={leftover} total={income} ofLabel="income left" />
       </div>
     </div>
   );
