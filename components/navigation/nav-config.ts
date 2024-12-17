@@ -65,8 +65,8 @@ export const navConfig: NavConfig = {
   ],
   publicNavigation: [
     {
-      title: "Blog",
-      href: "/blog",
+      title: "About",
+      href: "/about",
     },
 
     {

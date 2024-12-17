@@ -29,7 +29,7 @@ export default function LandingPage() {
           minSize={0.6}
           maxSize={1.4}
           particleDensity={20}
-          className="w-full h-full absolute -z-50"
+          className="absolute -z-50"
           particleColor="#FFFFFF"
         />
         <section className="py-6 px-4 lg:px-8">
