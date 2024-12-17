@@ -48,7 +48,7 @@
     "postcss": "8.4.49",
     "react": "19.0.0",
     "react-colorful": "^5.6.1",
-    "react-day-picker": "^9.4.1",
+    "react-day-picker": "^8.10.1",
     "react-dom": "19.0.0",
     "react-hook-form": "^7.54.0",
     "recharts": "^2.14.1",
