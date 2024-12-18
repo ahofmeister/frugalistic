@@ -9,9 +9,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar";
 
@@ -38,18 +35,6 @@ export function AppNav() {
                   {item.title}
                 </SidebarMenuButton>
               </Link>
-              <SidebarMenuSub>
-                {item.items?.map((subItem) => {
-                  const isActive = pathname === subItem.href;
-                  return (
-                    <SidebarMenuSubItem key={subItem.title}>
-                      <SidebarMenuSubButton asChild isActive={isActive}>
-                        <Link href={subItem.href}>{subItem.title}</Link>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                  );
-                })}
-              </SidebarMenuSub>
             </SidebarMenuItem>
           );
         })}
