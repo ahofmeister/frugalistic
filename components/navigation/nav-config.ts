@@ -14,7 +14,6 @@ export interface NavItem {
   disabled?: boolean;
   external?: boolean;
   icon?: ForwardRefExoticComponent<Omit<LucideProps, "ref">>;
-  items?: NavItem[];
 }
 
 export interface NavConfig {
@@ -48,19 +47,6 @@ export const navConfig: NavConfig = {
       title: "Insights",
       href: "/dashboard/insights",
       icon: ChartColumnDecreasing,
-      items: [
-        {
-          title: "Transaction Table",
-          href: "/dashboard/insights/transaction-type",
-          icon: ChartColumnDecreasing,
-        },
-
-        {
-          title: "Category Table",
-          href: "/dashboard/insights/expenses-category",
-          icon: ChartColumnDecreasing,
-        },
-      ],
     },
   ],
   publicNavigation: [

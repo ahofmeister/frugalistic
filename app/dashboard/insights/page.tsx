@@ -1,5 +1,4 @@
 import { format } from "date-fns";
-import Link from "next/link";
 import React, { Suspense } from "react";
 
 import { InsightCategories } from "@/app/dashboard/insights/insight-categories";
@@ -7,7 +6,6 @@ import { TotalCard } from "@/app/dashboard/insights/total-card";
 import TransactionCategoryDistribution from "@/app/dashboard/insights/transaction-category-distribution";
 import SelectYear from "@/app/dashboard/insights/transaction-type-select";
 import { TransactionsChart } from "@/app/dashboard/insights/transactions-chart";
-import { navConfig } from "@/components/navigation/nav-config";
 import {
   Card,
   CardContent,
@@ -25,9 +23,6 @@ const InsightsPage = async (props: {
   searchParams: Promise<{ year: number }>;
 }) => {
   const searchParams = await props.searchParams;
-  const insightsNavItem = navConfig.dashboardNavigation.find(
-    (item) => item.title === "Insights",
-  );
 
   const supabase = await createClient();
 
@@ -111,20 +106,6 @@ const InsightsPage = async (props: {
           ) ?? []
         }
       />
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-4xl mt-4">
-        {insightsNavItem?.items?.map((item) => (
-          <Link key={item.href} href={item.href} className="hover:no-underline">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl font-semibold">
-                  {item.title}
-                </CardTitle>
-              </CardHeader>
-            </Card>
-          </Link>
-        ))}
-      </div>
     </div>
   );
 };
