@@ -1,4 +1,5 @@
 import {
+  Activity,
   ChartColumnDecreasing,
   History,
   LayoutDashboard,
@@ -46,6 +47,12 @@ export const navConfig: NavConfig = {
     {
       title: "Insights",
       href: "/dashboard/insights",
+      icon: Activity,
+    },
+
+    {
+      title: "Statistics",
+      href: "/dashboard/statistics",
       icon: ChartColumnDecreasing,
     },
   ],
