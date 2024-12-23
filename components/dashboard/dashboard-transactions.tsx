@@ -16,6 +16,7 @@ export default async function DashboardTransactions(props: {
     .gte("datetime", props.startDate)
     .lte("datetime", props.endDate)
     .order("datetime", { ascending: false })
+    .order("created_at", { ascending: false })
     .returns<TransactionWithRecurring[]>();
 
   return <TransactionList transactions={transactions ?? []} />;
