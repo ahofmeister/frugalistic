@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import * as React from "react";
 
 import { siteConfig } from "@/components/site-config";
@@ -22,7 +23,9 @@ export function AppSidebarHeader() {
             <Image src="/apple-icon.png" alt="Logo" width={50} height={50} />
           </div>
           <div className="grid flex-1 text-left font-bold">
-            <span className="truncate font-semibold">{siteConfig.name}</span>
+            <Link href="/" className="truncate font-semibold">
+              {siteConfig.name}
+            </Link>
           </div>
         </SidebarMenuButton>
       </SidebarMenuItem>

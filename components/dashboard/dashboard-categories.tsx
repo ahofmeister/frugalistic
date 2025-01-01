@@ -1,6 +1,7 @@
 import React from "react";
 
 import { CategoriesExpensesChart } from "@/components/dashboard/categories-expenses-chart";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TransactionWithCategory } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
@@ -21,7 +22,14 @@ export async function DashboardCategories(props: {
 
   return (
     <div className="w-full">
-      <CategoriesExpensesChart expenses={expenses ?? []} />
+      <Card>
+        <CardHeader>
+          <CardTitle>Expenses Breakdown</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <CategoriesExpensesChart expenses={expenses ?? []} />
+        </CardContent>
+      </Card>
     </div>
   );
 }
