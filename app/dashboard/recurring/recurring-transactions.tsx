@@ -1,17 +1,6 @@
-import { ArrowRight } from "lucide-react";
-import Link from "next/link";
 import React from "react";
 
-import { TableEmptyState } from "@/app/dashboard/recurring/table-empty-state";
-import TransactionAmount from "@/components/transactions/components/transaction-amount";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import RecurringTransactionCard from "@/app/dashboard/recurring/recurring-transaction-card";
 import { createClient } from "@/utils/supabase/server";
 
 const RecurringTransactions = async () => {
@@ -19,50 +8,21 @@ const RecurringTransactions = async () => {
 
   const { data: transactions } = await supabase
     .from("transactions_recurring")
-    .select();
+    .select()
+    .order("enabled", { ascending: false });
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Description</TableHead>
-          <TableHead>Amount</TableHead>
-          <TableHead>Interval</TableHead>
-          <TableHead>Next Run</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {transactions?.length === 0 ? (
-          <TableEmptyState
-            description="Recurring transactions simplify your finances."
-            title="No recurring transactions"
-            colSpan={4}
-            actionLabel="Dashboard"
-            link="/dashboard"
+    <div className="w-full">
+      <div className="text-2xl font-semibold mb-4">Recurring Transactions</div>
+      <div className="flex flex-col gap-y-2">
+        {transactions?.map((transaction) => (
+          <RecurringTransactionCard
+            key={transaction.id}
+            transaction={transaction}
           />
-        ) : (
-          transactions?.map((transaction) => (
-            <TableRow key={transaction.id}>
-              <TableCell>{transaction.description}</TableCell>
-              <TableCell>
-                <TransactionAmount
-                  amount={transaction.amount}
-                  type={transaction.type}
-                />
-              </TableCell>
-              <TableCell>{transaction.interval}</TableCell>
-              <TableCell>{transaction.next_run}</TableCell>
-
-              <TableCell>
-                <Link href={`/dashboard/recurring/${transaction.id}`}>
-                  <ArrowRight size="18" />
-                </Link>
-              </TableCell>
-            </TableRow>
-          ))
-        )}
-      </TableBody>
-    </Table>
+        ))}
+      </div>
+    </div>
   );
 };
 
