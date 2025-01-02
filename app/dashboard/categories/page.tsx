@@ -1,15 +1,18 @@
+import Link from "next/link";
 import React from "react";
 
 import CategoryList from "@/app/dashboard/categories/category-list";
-import CategoryForm from "@/components/categories/category-form";
+import { Button } from "@/components/ui/button";
 
 export default function CategoriesPage() {
   return (
     <div className="space-y-6 px-4">
-      <div className="text-2xl font-semibold text-gray-100">
-        Create Category
+      <div className="flex gap-x-4 justify-between">
+        <div className="text-2xl font-semibold">Categories</div>
+        <Link href="/dashboard/categories/new">
+          <Button>Create</Button>
+        </Link>
       </div>
-      <CategoryForm />
 
       <CategoryList />
     </div>

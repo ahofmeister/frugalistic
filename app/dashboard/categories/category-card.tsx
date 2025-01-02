@@ -1,4 +1,5 @@
 import { Edit2 } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 
 import AddCategory from "@/components/categories/add-category";
@@ -29,9 +30,11 @@ export function CategoryCard(props: {
       <CardFooter className="flex justify-between">
         {props.exists ? (
           <>
-            <Button variant="outline" size="icon" disabled={true}>
-              <Edit2 />
-            </Button>
+            <Link href={`/dashboard/categories/edit/${category.id}`}>
+              <Button variant="outline" size="icon">
+                <Edit2 />
+              </Button>
+            </Link>
             <DeleteCategory category={category as Category} />
           </>
         ) : (

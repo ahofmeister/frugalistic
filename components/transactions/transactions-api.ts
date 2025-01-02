@@ -133,54 +133,6 @@ export const searchTransactions = async ({
   return data ?? [];
 };
 
-export type TransactionTotal = {
-  month: number;
-  income: number;
-  expense: number;
-  savings: number;
-};
-
-export type TransactionTotalByMonth = {
-  total: number;
-  category_name: string;
-  category_color: string;
-  month: number;
-};
-
-export const getTotalByCategory = async (
-  year: number,
-): Promise<TransactionTotalByMonth[]> => {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase
-    .rpc("get_expenses_total_by_category", { year: year })
-    .select("*")
-    .returns<TransactionTotalByMonth[]>()
-    .order("category_name", { ascending: true });
-
-  if (error) {
-    console.log(error);
-  }
-  return data ?? [];
-};
-
-export const getTransactionsTotal = async (
-  year: number,
-): Promise<TransactionTotal[]> => {
-  const supabase = await createClient();
-
-  const query = supabase.rpc("transaction_type_total", { year }).select();
-
-  const { data } = await query.returns<TransactionTotal[]>().order("month");
-
-  return data ?? [];
-};
-
-export const deleteTransaction = async (id: string) => {
-  const supabase = await createClient();
-  return await supabase.from("transactions").delete().eq("id", id);
-};
-
 export const toggleEnabledRecurringTransaction = async (
   id: string,
   newStatus: boolean,

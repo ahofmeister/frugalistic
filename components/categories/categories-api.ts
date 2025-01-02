@@ -8,7 +8,7 @@ import { createClient } from "@/utils/supabase/server";
 export async function createCategory(newCategory: NewCategory) {
   const supabase = await createClient();
 
-  const { error } = await supabase.from("categories").insert(newCategory);
+  const { error } = await supabase.from("categories").upsert(newCategory);
   if (error) {
     console.log(error);
   }
