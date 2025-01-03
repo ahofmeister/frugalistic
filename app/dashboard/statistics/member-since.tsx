@@ -1,5 +1,4 @@
-import { formatDate } from "date-fns";
-
+import FormattedDate from "@/app/dashboard/formatted-date";
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/utils/supabase/server";
 
@@ -18,7 +17,7 @@ export const MemberSince = async () => {
         </CardTitle>
       </CardHeader>
       <CardFooter>
-        {user && user.created_at && formatDate(user?.created_at, "dd.MM.yyyy")}
+        {user && user.created_at && <FormattedDate date={user.created_at} />}
       </CardFooter>
     </Card>
   );

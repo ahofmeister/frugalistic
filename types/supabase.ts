@@ -87,15 +87,21 @@ export type Database = {
         }
         Relationships: []
       }
-      result: {
+      setting: {
         Row: {
-          avg: number | null
+          date_format: string
+          id: string
+          user_id: string
         }
         Insert: {
-          avg?: number | null
+          date_format?: string
+          id?: string
+          user_id?: string
         }
         Update: {
-          avg?: number | null
+          date_format?: string
+          id?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -295,6 +301,7 @@ export type Database = {
       onboarding_status: "current" | "complete" | "skip" | "open"
       onboarding_step: "categories" | "welcome"
       recurring_interval: "monthly" | "annually"
+      setting_key: "date_format"
       transaction_type: "income" | "expense" | "savings"
     }
     CompositeTypes: {

@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import React from "react";
 
+import FormattedDate from "@/app/dashboard/formatted-date";
 import TransactionAmount from "@/components/transactions/components/transaction-amount";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -35,7 +36,9 @@ const RecurringTransactionCard = (props: {
             />
           </div>
         </CardTitle>
-        <CardDescription>{transaction.next_run}</CardDescription>
+        <CardDescription>
+          <FormattedDate date={transaction.next_run ?? "-"} />
+        </CardDescription>
       </CardHeader>
       <CardContent className="flex justify-end"></CardContent>
       <CardFooter className="flex gap-x-4">

@@ -34,3 +34,7 @@ export type NewCategory = Database["public"]["Tables"]["categories"]["Insert"];
 // User
 export type Profile = Database["public"]["Tables"]["profile"]["Row"];
 export type ProfileUpdate = Database["public"]["Tables"]["profile"]["Update"];
+
+// Settings
+export type Setting = Database["public"]["Tables"]["setting"]["Row"];
+export type SettingUpdate = Database["public"]["Tables"]["setting"]["Update"];

@@ -63,17 +63,13 @@ export default async function TransactionSearchPage(props: {
               {Array.from({ length: 25 }).map((_, i) => (
                 <Card key={i} className="mb-2">
                   <CardHeader>
-                    <CardTitle>
-                      <span className="flex justify-between">
-                        <Skeleton className="w-20 h-4"></Skeleton>
-                        <Skeleton className="w-20 h-4"></Skeleton>
-                      </span>
+                    <CardTitle className="flex justify-between">
+                      <Skeleton className="w-20 h-4"></Skeleton>
+                      <Skeleton className="w-20 h-4"></Skeleton>
                     </CardTitle>
-                    <CardDescription>
-                      <span className="flex justify-between">
-                        <Skeleton className="w-20 h-4"></Skeleton>
-                        <Skeleton className="w-24 h-4"></Skeleton>
-                      </span>
+                    <CardDescription className="flex justify-between">
+                      <Skeleton className="w-20 h-4"></Skeleton>
+                      <Skeleton className="w-24 h-4"></Skeleton>
                     </CardDescription>
                   </CardHeader>
                 </Card>

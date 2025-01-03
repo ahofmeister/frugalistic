@@ -70,6 +70,12 @@ const NavUser = ({ user }: { user: Profile | null }) => {
               Account
             </DropdownMenuItem>
             <DropdownMenuItem
+              onClick={() => router.push("/dashboard/settings")}
+              className="flex items-center gap-4 cursor-pointer"
+            >
+              Settings
+            </DropdownMenuItem>
+            <DropdownMenuItem
               onClick={() => signOut()}
               className="flex items-center gap-4 cursor-pointer"
             >

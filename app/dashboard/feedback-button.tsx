@@ -78,7 +78,6 @@ export default function Component() {
         )}
         <div className="flex justify-end gap-3">
           <Button
-            className="bg-[#E85C33] hover:bg-[#E85C33]/90 text-base px-8"
             onClick={handleSubmit}
             disabled={isSubmitting || !feedback.trim()}
           >

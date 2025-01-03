@@ -1,7 +1,7 @@
 "use client";
-import { formatDate } from "date-fns";
 import { useRouter } from "next/navigation";
 
+import FormattedDate from "@/app/dashboard/formatted-date";
 import CategoryColor from "@/components/categories/category-color";
 import TransactionAmount from "@/components/transactions/components/transaction-amount";
 import { Badge } from "@/components/ui/badge";
@@ -48,7 +48,7 @@ export function TransactionCard(props: {
             )}
           </span>
 
-          {formatDate(transaction.datetime, "MMM dd, yyyy")}
+          <FormattedDate date={transaction.datetime} />
         </CardDescription>
       </CardHeader>
 
