@@ -12,7 +12,7 @@ export const NumberRecurringTransactions = async () => {
     <Card>
       <CardHeader>
         <CardTitle>
-          <div className="text-xl">Recurring Transactions</div>
+          <div className="text-xl">Recurring</div>
         </CardTitle>
       </CardHeader>
       <CardFooter>{count}</CardFooter>
