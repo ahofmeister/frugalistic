@@ -82,11 +82,15 @@ export async function TotalCard(props: {
         <div className="flex gap-x-1">
           <div>Monthly Average</div>
           <TransactionAmount
-            amount={currentYear!.total / (new Date().getMonth() + 1)}
+            amount={currentYear!.total / getMonthsInYear(props.year)}
             type={props.type}
           />
         </div>
       </CardFooter>
     </Card>
   );
+}
+
+function getMonthsInYear(year: number): number {
+  return year === new Date().getFullYear() ? new Date().getMonth() + 1 : 12;
 }
