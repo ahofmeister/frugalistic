@@ -146,6 +146,11 @@ export const toggleEnabledRecurringTransaction = async (
   return error;
 };
 
+export const deleteTransaction = async (id: string) => {
+  const supabase = await createClient();
+  return supabase.from("transactions").delete().eq("id", id);
+};
+
 export const deleteRecurringTransaction = async (id: string) => {
   const supabase = await createClient();
   const { error } = await supabase
