@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 
 interface AmountInputProps {
   value: string;
-  onChange: (value: string) => void;
+  onChange: (rawValue: string) => void;
 }
 
 const formatInput = (numericValue: string): string => {
@@ -17,17 +17,16 @@ const formatInput = (numericValue: string): string => {
 };
 
 const AmountInput: React.FC<AmountInputProps> = ({ value, onChange }) => {
-  const [inputValue, setInputValue] = useState(formatInput(value.toString()));
+  const [inputValue, setInputValue] = useState(formatInput(value));
 
   useEffect(() => {
-    setInputValue(value.toString());
+    setInputValue(formatInput(value));
   }, [value]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value.replace(/\D/g, "");
-    const formattedValue = formatInput(inputValue);
-    setInputValue(formattedValue);
-    onChange(formattedValue);
+    const rawValue = e.target.value.replace(/\D/g, "");
+    setInputValue(formatInput(rawValue));
+    onChange(rawValue);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -44,14 +43,14 @@ const AmountInput: React.FC<AmountInputProps> = ({ value, onChange }) => {
       return;
     }
 
-    let numericValue = (inputValue || "0,00").replace(/\D/g, "");
+    let numericValue = value;
 
     if (/^[0-9]$/.test(e.key)) {
       e.preventDefault();
       numericValue += e.key;
       const formattedValue = formatInput(numericValue);
       setInputValue(formattedValue);
-      onChange(formattedValue);
+      onChange(numericValue);
     }
 
     if (e.key === "Backspace") {
@@ -60,11 +59,7 @@ const AmountInput: React.FC<AmountInputProps> = ({ value, onChange }) => {
       setInputValue(
         numericValue.length === 0 ? "0,00" : formatInput(numericValue),
       );
-      onChange(numericValue.length === 0 ? "0,00" : formatInput(numericValue));
-    }
-
-    if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-      e.preventDefault();
+      onChange(numericValue);
     }
   };
 
@@ -74,7 +69,6 @@ const AmountInput: React.FC<AmountInputProps> = ({ value, onChange }) => {
       inputMode="numeric"
       onChange={handleChange}
       onKeyDown={handleKeyDown}
-      onClick={(e) => e.preventDefault()} // Disable cursor click
     />
   );
 };

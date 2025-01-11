@@ -81,11 +81,15 @@ export async function upsertTransaction(newTransaction: NewTransaction) {
 export const searchTransactions = async ({
   dateFrom,
   dateTo,
+  amountFrom,
+  amountTo,
   description,
   category,
   type,
 }: {
   dateFrom: string | undefined;
+  amountFrom: string | undefined;
+  amountTo: string | undefined;
   dateTo: string | undefined;
   description: string | undefined;
   category: string | undefined;
@@ -114,6 +118,14 @@ export const searchTransactions = async ({
 
   if (dateTo) {
     await query.lte("datetime", dateTo);
+  }
+
+  if (amountFrom) {
+    await query.gte("amount", amountFrom);
+  }
+
+  if (amountTo) {
+    await query.lte("amount", amountTo);
   }
 
   if (description) {
