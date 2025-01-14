@@ -80,13 +80,17 @@ const TransactionForm = ({
 
   const autoCompleteRef = useRef<AutoCompleteRef>(null);
 
+  function resetForm() {
+    form.reset(defaultValues);
+    if (autoCompleteRef && autoCompleteRef.current) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
+      autoCompleteRef.current.clearInput();
+    }
+  }
+
   useEffect(() => {
     if (form.formState.isSubmitSuccessful || transaction) {
-      form.reset(defaultValues);
-      if (autoCompleteRef && autoCompleteRef.current) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-        autoCompleteRef.current.clearInput();
-      }
+      resetForm();
     }
   }, [form.formState.isSubmitSuccessful, transaction, form.reset]);
 
