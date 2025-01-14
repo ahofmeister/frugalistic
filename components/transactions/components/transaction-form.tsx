@@ -2,7 +2,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -13,7 +13,10 @@ import {
   makeTransactionRecurring,
   upsertTransaction,
 } from "@/components/transactions/transactions-api";
-import { AutoComplete } from "@/components/ui/auto-suggest-input";
+import {
+  AutoComplete,
+  AutoCompleteRef,
+} from "@/components/ui/auto-suggest-input";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -75,9 +78,19 @@ const TransactionForm = ({
     mode: "onChange",
   });
 
+  const autoCompleteRef = useRef<AutoCompleteRef>(null);
+
+  function resetForm() {
+    form.reset(defaultValues);
+    if (autoCompleteRef && autoCompleteRef.current) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
+      autoCompleteRef.current.clearInput();
+    }
+  }
+
   useEffect(() => {
     if (form.formState.isSubmitSuccessful || transaction) {
-      form.reset(defaultValues);
+      resetForm();
     }
   }, [form.formState.isSubmitSuccessful, transaction, form.reset]);
 
@@ -114,6 +127,7 @@ const TransactionForm = ({
                     <FormLabel>Description</FormLabel>
                     <FormControl>
                       <AutoComplete
+                        ref={autoCompleteRef}
                         value={autoSuggests?.find(
                           (l) =>
                             l.type === transaction?.type &&
