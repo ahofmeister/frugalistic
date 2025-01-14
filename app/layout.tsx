@@ -5,7 +5,7 @@ import { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
 import React from "react";
 
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 
 const poppinsFont = Poppins({
   subsets: ["latin"],
@@ -45,7 +45,7 @@ export default function RootLayout({
     <html lang="en" className={`dark ${poppinsFont.className}`}>
       <body className="bg-background">
         {children}
-        <Toaster />
+        <Toaster richColors />
         <Analytics />
       </body>
     </html>

@@ -2,8 +2,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import DeleteTransaction from "@/app/dashboard/transactions/edit/[id]/delete-transaction";
@@ -88,20 +89,23 @@ const TransactionForm = ({
     }
   }
 
-  useEffect(() => {
-    if (form.formState.isSubmitSuccessful || transaction) {
-      resetForm();
-    }
-  }, [form.formState.isSubmitSuccessful, transaction, form.reset]);
-
   const typeValue = form.watch("type");
   const categoryValue = form.watch("category");
 
   async function handleSubmit(newTransaction: NewTransaction) {
-    await upsertTransaction({
+    const { error } = await upsertTransaction({
       ...newTransaction,
       id: transaction ? transaction.id : undefined,
     });
+
+    if (error) {
+      toast.error(`Failed to ${transaction ? "save" : "create"} transaction`);
+    } else if (!transaction) {
+      toast.success("Transaction created successfully!");
+      resetForm();
+    } else {
+      toast.success(`Transaction saved successfully`);
+    }
   }
 
   return (
