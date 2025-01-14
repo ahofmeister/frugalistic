@@ -3,9 +3,12 @@ import { addMonths, addYears, format } from "date-fns";
 import { revalidatePath, revalidateTag } from "next/cache";
 
 import {
+  isFilterEmpty,
+  SearchFilter,
+} from "@/app/dashboard/search/search-filter";
+import {
   NewTransaction,
   RecurringInterval,
-  TransactionType,
   TransactionWithRecurring,
 } from "@/types";
 import { createClient } from "@/utils/supabase/server";
@@ -78,22 +81,12 @@ export async function upsertTransaction(newTransaction: NewTransaction) {
   }
 }
 
-export const searchTransactions = async ({
-  dateFrom,
-  dateTo,
-  description,
-  category,
-  type,
-}: {
-  dateFrom: string | undefined;
-  dateTo: string | undefined;
-  description: string | undefined;
-  category: string | undefined;
-  type: TransactionType | undefined;
-}): Promise<TransactionWithRecurring[]> => {
+export const searchTransactions = async (
+  filter: SearchFilter,
+): Promise<TransactionWithRecurring[]> => {
   const supabase = await createClient();
 
-  const query = category
+  const query = filter.category
     ? supabase
         .from("transactions")
         .select(
@@ -104,29 +97,37 @@ export const searchTransactions = async ({
         .select(
           "id, description, amount, datetime, type, category(name, color), recurring_transaction(*)",
         );
-  if (category) {
-    await query.eq("category.name", category);
+  if (filter.category) {
+    await query.eq("category.name", filter.category);
   }
 
-  if (dateFrom) {
-    await query.gte("datetime", dateFrom);
+  if (filter.dateFrom) {
+    await query.gte("datetime", filter.dateFrom);
   }
 
-  if (dateTo) {
-    await query.lte("datetime", dateTo);
+  if (filter.dateTo) {
+    await query.lte("datetime", filter.dateTo);
   }
 
-  if (description) {
-    await query.ilike("description", `%${description}%`);
+  if (filter.amountMin) {
+    await query.gte("amount", filter.amountMin);
   }
 
-  if (type) {
-    await query.eq("type", type);
+  if (filter.amountMax) {
+    await query.lte("amount", filter.amountMax);
+  }
+
+  if (filter.description) {
+    await query.ilike("description", `%${filter.description}%`);
+  }
+
+  if (filter.type) {
+    await query.eq("type", filter.type);
   }
 
   await query.order("datetime", { ascending: false });
 
-  if (!dateFrom && !dateTo && !description && !type && !category && !type) {
+  if (isFilterEmpty(filter)) {
     await query.limit(50);
   }
   const { data } = await query.returns<TransactionWithRecurring[]>();

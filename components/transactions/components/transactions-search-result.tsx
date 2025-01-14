@@ -1,29 +1,11 @@
 import React from "react";
 
+import { SearchFilter } from "@/app/dashboard/search/search-filter";
 import TransactionList from "@/components/transactions/components/transaction-list";
 import { searchTransactions } from "@/components/transactions/transactions-api";
-import { TransactionType } from "@/types";
 
-const TransactionsSearchResult = async ({
-  dateFrom,
-  dateTo,
-  description,
-  category,
-  type,
-}: {
-  dateFrom: string;
-  dateTo: string;
-  description: string;
-  category: string;
-  type: TransactionType;
-}) => {
-  const data = await searchTransactions({
-    dateFrom,
-    dateTo,
-    description,
-    category,
-    type,
-  });
+const TransactionsSearchResult = async (props: { filter: SearchFilter }) => {
+  const data = await searchTransactions(props.filter);
 
   return <TransactionList transactions={data} />;
 };
