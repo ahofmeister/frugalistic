@@ -2,6 +2,10 @@ import React, { Suspense } from "react";
 
 import AmountSearchFilter from "@/app/dashboard/search/amount-search-filter";
 import DateSearchFilter from "@/app/dashboard/search/date-search-filter";
+import {
+  isFilterEmpty,
+  SearchFilter,
+} from "@/app/dashboard/search/search-filter";
 import ResetQueryParam from "@/app/dashboard/transactions/reset-query-param";
 import CategorySearchFilter from "@/components/transactions/components/category-search-filter";
 import TransactionSearchInput from "@/components/transactions/components/transaction-search-input";
@@ -9,25 +13,15 @@ import TransactionsSearchResult from "@/components/transactions/components/trans
 import TypeSearchFilter from "@/components/transactions/components/type-search-filter";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TransactionType } from "@/types";
 
 export default async function TransactionSearchPage(props: {
-  searchParams: Promise<{
-    dateFrom: string;
-    dateTo: string;
-    amountFrom: string;
-    amountTo: string;
-    description: string;
-    category: string;
-    type: TransactionType;
-  }>;
+  searchParams: Promise<SearchFilter>;
 }) {
   const searchParams = await props.searchParams;
 
   return (
     <div className="flex flex-col ml-2 mt-2 gap-4">
       <TransactionSearchInput value={searchParams.description} />
-
       <div className="flex gap-x-4">
         <CategorySearchFilter
           key={searchParams.category}
@@ -36,7 +30,6 @@ export default async function TransactionSearchPage(props: {
 
         <TypeSearchFilter key={searchParams.type} value={searchParams.type} />
       </div>
-
       <div className="flex gap-x-4">
         <DateSearchFilter
           key={searchParams.dateFrom}
@@ -51,22 +44,20 @@ export default async function TransactionSearchPage(props: {
           value={searchParams.dateTo}
         />
       </div>
-
+      Amount Range
       <div className="flex gap-x-4">
         <AmountSearchFilter
-          paramName="amountFrom"
+          paramName="amountMin"
           placeholder="Amount from"
-          value={searchParams.amountFrom}
+          value={searchParams.amountMin}
         />
         <AmountSearchFilter
-          paramName="amountTo"
+          paramName="amountMax"
           placeholder="Amount to"
-          value={searchParams.amountTo}
+          value={searchParams.amountMax}
         />
       </div>
-
-      <ResetQueryParam />
-
+      <ResetQueryParam disabled={isFilterEmpty(searchParams)} />
       <div className="mt-4">
         <Suspense
           fallback={
@@ -86,15 +77,7 @@ export default async function TransactionSearchPage(props: {
             </>
           }
         >
-          <TransactionsSearchResult
-            category={searchParams.category}
-            description={searchParams.description}
-            dateFrom={searchParams.dateFrom}
-            dateTo={searchParams.dateTo}
-            amountFrom={searchParams.amountFrom}
-            amountTo={searchParams.amountTo}
-            type={searchParams.type}
-          />
+          <TransactionsSearchResult filter={searchParams} />
         </Suspense>
       </div>
     </div>

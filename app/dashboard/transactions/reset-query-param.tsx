@@ -1,19 +1,19 @@
 "use client";
-import { ResetIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 
-const ResetQueryParam = () => {
+const ResetQueryParam = (props: { disabled?: boolean }) => {
   const router = useRouter();
   return (
     <Button
-      variant="outline"
+      disabled={props.disabled}
+      variant="secondary"
       onClick={() => {
         router.push("/dashboard/search");
       }}
     >
-      <ResetIcon />
+      Reset Filter
     </Button>
   );
 };
