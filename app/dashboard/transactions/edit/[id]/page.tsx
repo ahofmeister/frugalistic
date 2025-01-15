@@ -1,3 +1,5 @@
+import { notFound } from "next/navigation";
+
 import TransactionForm from "@/components/transactions/components/transaction-form";
 import { Category, TransactionWithRecurring } from "@/types";
 import { createClient } from "@/utils/supabase/server";
@@ -13,6 +15,10 @@ export default async function TransactionEditPage(props: {
     .eq("id", params.id)
     .returns<TransactionWithRecurring>()
     .single();
+
+  if (!transaction) {
+    notFound();
+  }
 
   const { data: autoSuggests } = await supabase
     .from("transaction_auto_suggest2")
