@@ -271,7 +271,39 @@ const TransactionForm = ({
               </FormItem>
             )}
           />
+          {transaction && (
+            <div className="flex flex-col gap-y-2 mt-2">
+              <div className="flex gap-x-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={
+                    transaction.recurring_transaction &&
+                    transaction.recurring_transaction.interval === "monthly"
+                  }
+                  onClick={() =>
+                    makeTransactionRecurring(transaction, "monthly")
+                  }
+                >
+                  Monthly Recurring
+                </Button>
 
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={
+                    transaction.recurring_transaction &&
+                    transaction.recurring_transaction.interval === "annually"
+                  }
+                  onClick={() =>
+                    makeTransactionRecurring(transaction, "annually")
+                  }
+                >
+                  Annually Recurring
+                </Button>
+              </div>
+            </div>
+          )}
           <Button
             type="submit"
             className="w-full"
@@ -285,37 +317,10 @@ const TransactionForm = ({
               "Add Transaction"
             )}
           </Button>
+
+          {transaction && <DeleteTransaction id={transaction.id} />}
         </form>
       </Form>
-
-      {transaction && (
-        <div className="flex flex-col gap-y-2 mt-2">
-          <DeleteTransaction id={transaction.id} />
-          <div className="flex gap-x-2">
-            <Button
-              variant="outline"
-              disabled={
-                transaction.recurring_transaction &&
-                transaction.recurring_transaction.interval === "monthly"
-              }
-              onClick={() => makeTransactionRecurring(transaction, "monthly")}
-            >
-              Monthly Recurring
-            </Button>
-
-            <Button
-              variant="outline"
-              disabled={
-                transaction.recurring_transaction &&
-                transaction.recurring_transaction.interval === "annually"
-              }
-              onClick={() => makeTransactionRecurring(transaction, "annually")}
-            >
-              Annually Recurring
-            </Button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
