@@ -1,55 +1,88 @@
 "use client";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { toast } from "sonner";
 
 import LoadingSpinner from "@/components/loading/loading";
 import { deleteTransaction } from "@/components/transactions/transactions-api";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const DeleteTransaction = (props: { id: string }) => {
-  const { toast } = useToast();
   const [isPending, setIsPending] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const router = useRouter();
 
   const handleDelete = async () => {
     setIsPending(true);
 
-    function showErrorToast() {
-      toast({
-        title: "Error",
-        description:
-          "Failed to delete the transaction. Please try again later.",
-        variant: "destructive",
-      });
-    }
-
     try {
       const { error } = await deleteTransaction(props.id);
       if (error) {
-        showErrorToast();
+        toast.error(
+          "Failed to delete the transaction. Please try again later.",
+        );
       } else {
-        toast({
-          title: "Transaction Deleted",
-          description: "The transaction has been successfully removed.",
-          variant: "success",
-        });
+        toast.success("The transaction has been successfully removed.");
+        router.replace("/dashboard");
       }
     } catch (error) {
       console.error("Error deleting transaction:", error);
-      showErrorToast();
+      toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setIsPending(false);
+      setIsDialogOpen(false);
     }
   };
 
   return (
-    <Button
-      className="w-full"
-      variant="destructive"
-      onClick={handleDelete}
-      disabled={isPending}
-    >
-      {isPending ? <LoadingSpinner /> : "Delete Transaction"}
-    </Button>
+    <>
+      <Button
+        type="button"
+        className="w-full"
+        variant="destructive"
+        onClick={() => setIsDialogOpen(true)}
+      >
+        Delete Transaction
+      </Button>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Are you sure?</DialogTitle>
+            <DialogDescription>
+              This action cannot be undone. This will permanently delete the
+              transaction.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="secondary"
+              onClick={() => setIsDialogOpen(false)}
+              disabled={isPending}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={handleDelete}
+              disabled={isPending}
+            >
+              {isPending ? <LoadingSpinner /> : "Delete"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
