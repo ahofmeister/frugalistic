@@ -70,12 +70,17 @@ export async function TotalCard(props: {
             type={props.type}
           />
         </CardTitle>
-        <CardDescription>
-          <span className="flex gap-x-2">
-            Previous:
-            <TransactionAmount amount={previousYear!.total} type={props.type} />
-          </span>
-        </CardDescription>
+        {previousYear && previousYear.total > 0 && (
+          <CardDescription>
+            <span className="flex gap-x-2">
+              Previous:
+              <TransactionAmount
+                amount={previousYear.total}
+                type={props.type}
+              />
+            </span>
+          </CardDescription>
+        )}
       </CardHeader>
       <CardContent>{getCardFooter(percentageChange)}</CardContent>
       <CardFooter>

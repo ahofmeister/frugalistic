@@ -25,39 +25,44 @@ export async function InsightCategories(props: { year: number }) {
   });
   return (
     <div className="grid grid-cols-2 gap-2 md:grid-cols-6">
-      {data?.map((category) => (
-        <Card
-          key={category.name}
-          style={{ backgroundColor: category.color + "40" }}
-        >
-          <CardHeader>
-            <CardTitle>
-              <div className="text-xl">{category.name}</div>
-              <div className="text-lg">{formatAmount(category.total)}</div>
-            </CardTitle>
-            <CardDescription>
-              <span className="flex gap-x-2">
-                Previous:
+      {data?.map((category) => {
+        const previousTotal = prev?.find(
+          (prevCategory) => prevCategory.name === category.name,
+        )?.total;
+        return (
+          <Card
+            key={category.name}
+            style={{ backgroundColor: category.color + "40" }}
+          >
+            <CardHeader>
+              <CardTitle>
+                <div className="text-xl">{category.name}</div>
+                <div className="text-lg">{formatAmount(category.total)}</div>
+              </CardTitle>
+              {previousTotal && previousTotal > 0 && (
+                <CardDescription>
+                  <span className="flex gap-x-2">
+                    Previous:
+                    <TransactionAmount amount={previousTotal} />
+                  </span>
+                </CardDescription>
+              )}
+            </CardHeader>
+            <CardFooter>
+              <div className="flex gap-x-1">
+                <div>Monthly Average</div>
                 <TransactionAmount
-                  amount={
-                    prev?.find(
-                      (prevCategory) => prevCategory.name === category.name,
-                    )?.total || 0
-                  }
+                  amount={category.total / getMonthsInYear(props.year)}
                 />
-              </span>
-            </CardDescription>
-          </CardHeader>
-          <CardFooter>
-            <div className="flex gap-x-1">
-              <div>Monthly Average</div>
-              <TransactionAmount
-                amount={category.total / (new Date().getMonth() + 1)}
-              />
-            </div>
-          </CardFooter>
-        </Card>
-      ))}
+              </div>
+            </CardFooter>
+          </Card>
+        );
+      })}
     </div>
   );
+}
+
+function getMonthsInYear(year: number): number {
+  return year === new Date().getFullYear() ? new Date().getMonth() + 1 : 12;
 }
