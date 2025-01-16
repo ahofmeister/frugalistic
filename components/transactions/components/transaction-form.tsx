@@ -10,6 +10,7 @@ import { z } from "zod";
 import DeleteTransaction from "@/app/dashboard/transactions/edit/[id]/delete-transaction";
 import LoadingSpinner from "@/components/loading/loading";
 import AmountInput from "@/components/transactions/components/amount-input";
+import { getBgColor } from "@/components/transactions/components/transaction-amount";
 import {
   makeTransactionRecurring,
   upsertTransaction,
@@ -40,7 +41,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
+import { transactionTypes } from "@/lib/transaction-types";
+import { capitalize, cn } from "@/lib/utils";
 import {
   Category,
   NewTransaction,
@@ -192,9 +194,18 @@ const TransactionForm = ({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="income">Income</SelectItem>
-                      <SelectItem value="expense">Expense</SelectItem>
-                      <SelectItem value="savings">Savings</SelectItem>
+                      <SelectContent>
+                        {transactionTypes.map((type) => (
+                          <SelectItem key={type} value={type}>
+                            <div className="flex gap-x-2 items-center">
+                              <span
+                                className={`w-3 h-3 rounded-full ${getBgColor(type)}`}
+                              ></span>
+                              <span>{capitalize(type)}</span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
                     </SelectContent>
                   </Select>
                   <FormMessage />
