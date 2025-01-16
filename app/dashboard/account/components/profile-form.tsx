@@ -25,7 +25,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Profile, ProfileUpdate } from "@/types";
 
-const AccountForm = (props: { user?: Profile | null }) => {
+const ProfileForm = (props: { user?: Profile | null }) => {
   const formSchema = z.object({
     firstName: z.string().optional(),
     lastName: z.string().optional(),
@@ -59,25 +59,23 @@ const AccountForm = (props: { user?: Profile | null }) => {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
-                <div className="grid gap-2">
-                  <FormField
-                    disabled={true}
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Email" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+                <FormField
+                  disabled={true}
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Email" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2">
+                  <div className="gap-2">
                     <FormField
                       control={form.control}
                       name="firstName"
@@ -92,21 +90,19 @@ const AccountForm = (props: { user?: Profile | null }) => {
                       )}
                     />
                   </div>
-                  <div className="grid gap-2">
-                    <FormField
-                      control={form.control}
-                      name="lastName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Last Name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Last Name" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                  <FormField
+                    control={form.control}
+                    name="lastName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Last Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Last Name" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
               </div>
 
@@ -127,4 +123,4 @@ const AccountForm = (props: { user?: Profile | null }) => {
   );
 };
 
-export default AccountForm;
+export default ProfileForm;
