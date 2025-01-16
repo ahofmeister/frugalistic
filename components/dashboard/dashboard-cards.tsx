@@ -59,7 +59,12 @@ const DashboardCards = async (props: {
           total={income}
           ofLabel="income"
         />
-        <DashboardCard amount={leftover} total={income} ofLabel="income left" />
+        <DashboardCard
+          amount={leftover}
+          total={income}
+          type="leftover"
+          ofLabel="income left"
+        />
       </div>
     </div>
   );

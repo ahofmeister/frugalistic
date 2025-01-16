@@ -2,9 +2,16 @@ import React from "react";
 
 import TransactionAmount, {
   getBgColor,
+  getTextColor,
 } from "@/components/transactions/components/transaction-amount";
-import { Card, CardDescription, CardHeader } from "@/components/ui/card";
-import { TransactionType } from "@/types";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { capitalize } from "@/lib/utils";
+import { TransactionTypeWithLeftover } from "@/types";
 
 const DashboardCard = ({
   amount,
@@ -14,7 +21,7 @@ const DashboardCard = ({
   ofLabel,
 }: {
   amount: number;
-  type?: TransactionType | undefined;
+  type: TransactionTypeWithLeftover;
   total?: number;
   label?: string;
   ofLabel?: string;
@@ -25,17 +32,20 @@ const DashboardCard = ({
       // @ts-expect-error CSS property exists
       style={{ "--tw-bg-opacity": 0.2 }}
     >
-      <CardHeader className="text-xl">
+      <CardHeader>
+        <CardTitle className={getTextColor(type)}>
+          {capitalize(type as string)}
+        </CardTitle>
         <div className="text-2xl">
           <TransactionAmount amount={amount} type={type} />
         </div>
         <CardDescription>
-          <span className="text-sm text-gray-400">
-            {total && (
-              <>{`${((amount / total) * 100).toFixed(0)}% of ${ofLabel}`}</>
-            )}
-            {label}
-          </span>
+          {total !== undefined && total > 0 && (
+            <span className="text-sm text-gray-400">
+              <>{`${((amount / (total || 1)) * 100).toFixed(0)}% of ${ofLabel}`}</>
+              {label}
+            </span>
+          )}
         </CardDescription>
       </CardHeader>
     </Card>

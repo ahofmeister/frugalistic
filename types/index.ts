@@ -10,6 +10,7 @@ export type TransactionWithCategory = Transaction & {
   category: Category;
 };
 export type TransactionType = Database["public"]["Enums"]["transaction_type"];
+export type TransactionTypeWithLeftover = TransactionType | "leftover";
 
 export type TransactionWithRecurring = Transaction & {
   recurring_transaction: RecurringTransaction;

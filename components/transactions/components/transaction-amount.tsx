@@ -1,7 +1,7 @@
 import React from "react";
 
 import { cn } from "@/lib/utils";
-import { TransactionType } from "@/types";
+import { TransactionTypeWithLeftover } from "@/types";
 
 export const formatAmount = (input: number) => {
   if (input === 0) {
@@ -20,7 +20,7 @@ const TransactionAmount = ({
   className,
 }: {
   amount: number;
-  type?: TransactionType;
+  type?: TransactionTypeWithLeftover;
   className?: string;
 }) => {
   const typeClass = getTextColor(type);
@@ -32,7 +32,7 @@ const TransactionAmount = ({
 
 export default TransactionAmount;
 
-export function getTextColor(type: TransactionType | undefined) {
+export function getTextColor(type: TransactionTypeWithLeftover | undefined) {
   switch (type) {
     case "savings":
       return "text-savings";
@@ -40,12 +40,14 @@ export function getTextColor(type: TransactionType | undefined) {
       return "text-expense";
     case "income":
       return "text-income";
+    case "leftover":
+      return "text-white";
     default:
       return "";
   }
 }
 
-export function getBgColor(type: TransactionType | undefined) {
+export function getBgColor(type: TransactionTypeWithLeftover | undefined) {
   switch (type) {
     case "savings":
       return "bg-savings";

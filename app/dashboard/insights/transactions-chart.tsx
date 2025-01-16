@@ -11,20 +11,22 @@ import {
 } from "@/components/ui/chart";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { capitalize, shortAmount } from "@/lib/utils";
-import { Transaction, TransactionType } from "@/types";
+import {
+  Transaction,
+  TransactionType,
+  TransactionTypeWithLeftover,
+} from "@/types";
 import { transactionWithLeftover } from "@/utils/transaction/colors";
 
-type TransactionTypeWithLeftOver = TransactionType | "leftover";
-
 export function TransactionsChart(props: { transactions: Transaction[] }) {
-  const allTypes: TransactionTypeWithLeftOver[] = [
+  const allTypes: TransactionTypeWithLeftover[] = [
     "income",
     "expense",
     "savings",
     "leftover",
   ];
   const [activeTypes, setActiveTypes] =
-    useState<TransactionTypeWithLeftOver[]>(allTypes);
+    useState<TransactionTypeWithLeftover[]>(allTypes);
 
   const groupedByMonth = props.transactions.reduce(
     (acc: Record<string, Record<TransactionType, number>>, transaction) => {
@@ -63,7 +65,7 @@ export function TransactionsChart(props: { transactions: Transaction[] }) {
         defaultValue={activeTypes}
         type="multiple"
         onValueChange={(value) =>
-          setActiveTypes(value as TransactionTypeWithLeftOver[])
+          setActiveTypes(value as TransactionTypeWithLeftover[])
         }
       >
         {allTypes.map((type) => (
