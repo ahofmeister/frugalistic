@@ -93,38 +93,39 @@ export const searchTransactions = async (
         .select(
           "id, description, amount, datetime, type, category(name, color), recurring_transaction(*)",
         );
+
   if (filter.category) {
-    await query.eq("category.name", filter.category);
+    query.eq("category.name", filter.category);
   }
 
   if (filter.dateFrom) {
-    await query.gte("datetime", filter.dateFrom);
+    query.gte("datetime", filter.dateFrom);
   }
 
   if (filter.dateTo) {
-    await query.lte("datetime", filter.dateTo);
+    query.lte("datetime", filter.dateTo);
   }
 
   if (filter.amountMin) {
-    await query.gte("amount", filter.amountMin);
+    query.gte("amount", filter.amountMin);
   }
 
   if (filter.amountMax) {
-    await query.lte("amount", filter.amountMax);
+    query.lte("amount", filter.amountMax);
   }
 
   if (filter.description) {
-    await query.ilike("description", `%${filter.description}%`);
+    query.ilike("description", `%${filter.description}%`);
   }
 
   if (filter.type) {
-    await query.eq("type", filter.type);
+    query.eq("type", filter.type);
   }
 
-  await query.order("datetime", { ascending: false });
+  query.order("datetime", { ascending: false });
 
   if (isFilterEmpty(filter)) {
-    await query.limit(50);
+    query.limit(50);
   }
   const { data } = await query.returns<TransactionWithRecurring[]>();
   return data ?? [];

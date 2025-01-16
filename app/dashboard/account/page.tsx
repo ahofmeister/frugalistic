@@ -1,7 +1,8 @@
 import { UserCog } from "lucide-react";
 
-import AccountForm from "@/app/dashboard/account/components/account-form";
 import DeleteAccount from "@/app/dashboard/account/components/delete-account";
+import ProfileForm from "@/app/dashboard/account/components/profile-form";
+import UpdatePassword from "@/app/dashboard/account/components/update-password-form";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function AccountPage() {
@@ -16,7 +17,8 @@ export default async function AccountPage() {
           <h1 className="text-2xl font-bold">Account Settings</h1>
         </div>
 
-        <AccountForm user={user} />
+        <ProfileForm user={user} />
+        <UpdatePassword />
 
         <DeleteAccount />
       </div>

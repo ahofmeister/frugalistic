@@ -294,6 +294,12 @@ export type Database = {
           savings: number
         }[]
       }
+      verify_user_password: {
+        Args: {
+          password: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       division: "essentials" | "leisure" | "savings"
