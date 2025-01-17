@@ -2,10 +2,7 @@
 import { addMonths, addYears, format } from "date-fns";
 import { revalidatePath, revalidateTag } from "next/cache";
 
-import {
-  isFilterEmpty,
-  SearchFilter,
-} from "@/app/dashboard/search/search-filter";
+import { SearchFilter } from "@/app/dashboard/search/search-filter";
 import {
   NewTransaction,
   RecurringInterval,
@@ -121,12 +118,11 @@ export const searchTransactions = async (
   if (filter.type) {
     query.eq("type", filter.type);
   }
+  query.order(filter.sortBy ?? "datetime", {
+    ascending: filter.sortDirection === "asc",
+  });
 
-  query.order("datetime", { ascending: false });
-
-  if (isFilterEmpty(filter)) {
-    query.limit(50);
-  }
+  query.limit(100);
   const { data } = await query.returns<TransactionWithRecurring[]>();
   return data ?? [];
 };

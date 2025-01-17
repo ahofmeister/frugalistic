@@ -1,4 +1,5 @@
-import { TransactionType } from "@/types";
+import { SortDirection } from "@/app/dashboard/search/search-sort-direction";
+import { Transaction, TransactionType } from "@/types";
 
 export type SearchFilter = {
   dateFrom: string | undefined;
@@ -8,6 +9,8 @@ export type SearchFilter = {
   description: string | undefined;
   category: string | undefined;
   type: TransactionType;
+  sortBy: keyof Transaction | undefined;
+  sortDirection: SortDirection;
 };
 
 export function isFilterEmpty(filter: SearchFilter): boolean {

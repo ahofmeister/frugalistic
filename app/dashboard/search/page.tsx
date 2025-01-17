@@ -6,6 +6,8 @@ import {
   isFilterEmpty,
   SearchFilter,
 } from "@/app/dashboard/search/search-filter";
+import SearchSortBy from "@/app/dashboard/search/search-sort-by";
+import SearchSortDirection from "@/app/dashboard/search/search-sort-direction";
 import ResetQueryParam from "@/app/dashboard/transactions/reset-query-param";
 import CategorySearchFilter from "@/components/transactions/components/category-search-filter";
 import TransactionSearchInput from "@/components/transactions/components/transaction-search-input";
@@ -58,6 +60,12 @@ export default async function TransactionSearchPage(props: {
         />
       </div>
       <ResetQueryParam disabled={isFilterEmpty(searchParams)} />
+      <div className="flex gap-x-4 justify-start">
+        <div className="w-36">
+          <SearchSortBy sortBy={searchParams.sortBy} />
+          <SearchSortDirection sortDirection={searchParams.sortDirection} />
+        </div>
+      </div>
       <div className="mt-4">
         <Suspense
           fallback={
