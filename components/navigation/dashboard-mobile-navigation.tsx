@@ -23,8 +23,8 @@ export function DashboardMobileNavigation() {
                 : "text-muted-foreground hover:text-primary",
             )}
           >
-            <item.icon className="h-6 w-6" />
-            <span className="text-xs">{item.title}</span>
+            <item.icon className="h-5 w-5" />
+            <span className="text-[10px]">{item.title}</span>
           </Link>
         ))}
       </div>
