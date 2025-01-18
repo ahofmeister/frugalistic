@@ -53,23 +53,6 @@ export const navConfig: NavConfig = {
       href: "/dashboard/account",
       icon: UserIcon,
     },
-    // {
-    //   title: "Categories",
-    //   href: "/dashboard/categories",
-    //   icon: Table,
-    // },
-
-    // {
-    //   title: "Recurring",
-    //   href: "/dashboard/recurring",
-    //   icon: History,
-    // },
-    // {
-    //   title: "Insights",
-    //   href: "/dashboard/insights",
-    //   icon: LineChart,
-    // },
-    //
   ],
   publicNavigation: [
     {
