@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-const CategoriesCard = async () => {
+const CategoriesCard = () => {
   return (
     <Link href="/dashboard/settings">
       <Card className="flex justify-between">
