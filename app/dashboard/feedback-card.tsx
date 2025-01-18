@@ -1,6 +1,5 @@
 "use client";
 
-import { MessageSquarePlus } from "lucide-react";
 import React, { useState } from "react";
 
 import { addFeedback } from "@/components/feedback/feedback-actions";
@@ -8,22 +7,25 @@ import LoadingSpinner from "@/components/loading/loading";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { SidebarMenuButton, useSidebar } from "@/components/ui/sidebar";
 import { Textarea } from "@/components/ui/textarea";
 
-export default function Component() {
+export default function FeedbackCard() {
   const [open, setOpen] = useState(false);
   const [feedback, setFeedback] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const { state } = useSidebar();
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
@@ -47,17 +49,12 @@ export default function Component() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <SidebarMenuButton asChild tooltip="Feedback">
-          {state === "expanded" ? (
-            <Button variant="outline">
-              <div className="flex">Feedback</div>
-            </Button>
-          ) : (
-            <Button variant="outline" asChild>
-              <MessageSquarePlus />
-            </Button>
-          )}
-        </SidebarMenuButton>
+        <Card>
+          <CardHeader>
+            <CardTitle>Feedback?</CardTitle>
+            <CardDescription>We appreciate all your feedback.</CardDescription>
+          </CardHeader>
+        </Card>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader className="flex-row justify-between items-start">

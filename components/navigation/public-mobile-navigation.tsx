@@ -8,6 +8,7 @@ import { useState } from "react";
 
 import AppButton from "@/components/auth/app-button";
 import { navConfig } from "@/components/navigation/nav-config";
+import { siteConfig } from "@/components/site-config";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -17,11 +18,17 @@ import {
 } from "@/components/ui/drawer";
 import { cn } from "@/lib/utils";
 
-export function MobileNav() {
+export function PublicMobileNavigation() {
   const [open, setOpen] = useState(false);
 
   return (
     <span className="md:hidden flex items-center w-full px-6">
+      <Link
+        href="/"
+        className="flex font-semibold text-primary text-xl items-center"
+      >
+        {siteConfig.name}
+      </Link>
       <Drawer open={open} onOpenChange={setOpen}>
         <DrawerTrigger asChild>
           <Button

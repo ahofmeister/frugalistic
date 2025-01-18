@@ -1,11 +1,10 @@
 import "../globals.css";
 
-import { cookies } from "next/headers";
 import React from "react";
 
 import { SettingsProvider } from "@/app/dashboard/settings/use-setting";
-import { AppSidebar } from "@/components/app-sidebar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { DashboardMobileNavigation } from "@/components/navigation/dashboard-mobile-navigation";
+import DashboardNavigation from "@/components/navigation/dashboard-navigation";
 import { Setting } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
@@ -14,9 +13,6 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const cookieStore = await cookies();
-  const defaultOpen = cookieStore.get("sidebar:state")?.value !== "false";
-
   const supabase = await createClient();
   const { data: settings } = await supabase
     .from("setting")
@@ -25,19 +21,15 @@ export default async function RootLayout({
 
   return (
     <div className="h-screen">
-      <SidebarProvider defaultOpen={defaultOpen}>
-        <div className="absolute left-2 top-2 size-fit">
-          <SidebarTrigger />
-        </div>
-        <AppSidebar />
-        <main className="p-2 mx-2 mt-8 md:mt-4 flex-1 overflow-y-auto">
-          <SettingsProvider
-            setting={settings ?? ({ date_format: "dd.MM.yyyy" } as Setting)}
-          >
-            {children}
-          </SettingsProvider>
-        </main>
-      </SidebarProvider>
+      <DashboardNavigation />
+      <main className="p-2 mx-2 flex-1 overflow-y-auto">
+        <SettingsProvider
+          setting={settings ?? ({ date_format: "dd.MM.yyyy" } as Setting)}
+        >
+          {children}
+        </SettingsProvider>
+      </main>
+      <DashboardMobileNavigation />
     </div>
   );
 }

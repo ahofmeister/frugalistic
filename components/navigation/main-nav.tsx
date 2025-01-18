@@ -3,19 +3,27 @@
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import React from "react";
 
 import AppButton from "@/components/auth/app-button";
-import { navConfig } from "@/components/navigation/nav-config";
+import { NavItem } from "@/components/navigation/nav-config";
+import { siteConfig } from "@/components/site-config";
 import { cn } from "@/lib/utils";
 
-export function MainNav() {
+export function MainNav(props: { items: NavItem[]; showAppButton: boolean }) {
   const pathname = usePathname();
 
   return (
     <div className="mr-4 hidden md:flex w-full">
+      <Link
+        href="/"
+        className="flex font-semibold text-primary text-xl items-center px-6"
+      >
+        {siteConfig.name}
+      </Link>
       <nav className="flex w-full items-center justify-between">
         <div className="flex items-center gap-4 text-sm xl:gap-6">
-          {navConfig.publicNavigation.map((item) => (
+          {props.items.map((item) => (
             <Link
               key={item.title}
               href={item.href}
@@ -33,9 +41,7 @@ export function MainNav() {
             </Link>
           ))}
         </div>
-        <div>
-          <AppButton />
-        </div>
+        {props.showAppButton && <AppButton />}
       </nav>
     </div>
   );

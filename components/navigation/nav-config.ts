@@ -1,11 +1,10 @@
 import {
-  Activity,
   ChartColumnDecreasing,
-  History,
-  LayoutDashboard,
+  Home,
   LucideProps,
   Search,
-  Table,
+  SquarePlus,
+  UserIcon,
 } from "lucide-react";
 import { ForwardRefExoticComponent } from "react";
 
@@ -17,8 +16,12 @@ export interface NavItem {
   icon?: ForwardRefExoticComponent<Omit<LucideProps, "ref">>;
 }
 
+export type NavItemIcon = NavItem & {
+  icon: ForwardRefExoticComponent<Omit<LucideProps, "ref">>;
+};
+
 export interface NavConfig {
-  dashboardNavigation: NavItem[];
+  dashboardNavigation: NavItemIcon[];
   publicNavigation: NavItem[];
 }
 
@@ -27,33 +30,28 @@ export const navConfig: NavConfig = {
     {
       title: "Dashboard",
       href: "/dashboard",
-      icon: LayoutDashboard,
-    },
-    {
-      title: "Categories",
-      href: "/dashboard/categories",
-      icon: Table,
+      icon: Home,
     },
     {
       title: "Search",
       href: "/dashboard/search",
       icon: Search,
     },
+
     {
-      title: "Recurring",
-      href: "/dashboard/recurring",
-      icon: History,
+      title: "Add",
+      href: "/dashboard/transactions/new",
+      icon: SquarePlus,
     },
     {
       title: "Insights",
       href: "/dashboard/insights",
-      icon: Activity,
-    },
-
-    {
-      title: "Statistics",
-      href: "/dashboard/statistics",
       icon: ChartColumnDecreasing,
+    },
+    {
+      title: "Account",
+      href: "/dashboard/account",
+      icon: UserIcon,
     },
   ],
   publicNavigation: [

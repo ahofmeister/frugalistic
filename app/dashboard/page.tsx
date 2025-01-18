@@ -37,7 +37,7 @@ export default async function DashboardPage(props: {
         <CategoriesBanner />
       </div>
 
-      <div className="flex flex-col sm:flex-row justify-between gap-y-4">
+      <div className="flex flex-col sm:flex-row justify-between">
         <div className="flex font-semibold text-2xl">
           {isYear ? year : format(new Date(year, month, 1), "MMMM yyyy")}
         </div>

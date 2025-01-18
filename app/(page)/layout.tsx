@@ -3,7 +3,7 @@ import "../globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import React from "react";
 
-import SiteHeader from "@/components/navigation/siteHeader";
+import { PublicNavigation } from "@/components/navigation/public-navigation";
 
 export default function PageLayout({
   children,
@@ -12,7 +12,7 @@ export default function PageLayout({
 }) {
   return (
     <>
-      <SiteHeader />
+      <PublicNavigation />
       <main className="m-10">{children}</main>
       <Analytics />
     </>
