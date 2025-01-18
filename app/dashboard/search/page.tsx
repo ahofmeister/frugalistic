@@ -63,8 +63,8 @@ export default async function TransactionSearchPage(props: {
       <div className="flex gap-x-4 justify-start">
         <div className="w-36">
           <SearchSortBy sortBy={searchParams.sortBy} />
-          <SearchSortDirection sortDirection={searchParams.sortDirection} />
         </div>
+        <SearchSortDirection sortDirection={searchParams.sortDirection} />
       </div>
       <div className="mt-4">
         <Suspense
