@@ -10,7 +10,10 @@ import { NavItem } from "@/components/navigation/nav-config";
 import { siteConfig } from "@/components/site-config";
 import { cn } from "@/lib/utils";
 
-export function MainNav(props: { items: NavItem[]; showAppButton: boolean }) {
+export function MainNavigation(props: {
+  items: NavItem[];
+  showAppButton: boolean;
+}) {
   const pathname = usePathname();
 
   return (
@@ -29,9 +32,9 @@ export function MainNav(props: { items: NavItem[]; showAppButton: boolean }) {
               href={item.href}
               className={cn(
                 "transition-colors hover:text-foreground/80",
-                pathname.startsWith(item.href)
-                  ? "text-foreground"
-                  : "text-foreground/80",
+                pathname === item.href
+                  ? "text-primary"
+                  : "text-muted-foreground hover:text-primary",
               )}
             >
               <div className="flex gap-x-1 items-center">

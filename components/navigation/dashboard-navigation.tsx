@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 
-import { MainNav } from "@/components/navigation/main-nav";
+import { MainNavigation } from "@/components/navigation/main-navigation";
 import { navConfig } from "@/components/navigation/nav-config";
 import { PublicMobileNavigation } from "@/components/navigation/public-mobile-navigation";
 
@@ -9,7 +9,10 @@ const DashboardNavigation = () => {
   return (
     <header className="md:flex hidden sticky top-0 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 dark:border-border">
       <div className="flex h-14 pl-4">
-        <MainNav items={navConfig.dashboardNavigation} showAppButton={false} />
+        <MainNavigation
+          items={navConfig.dashboardNavigation}
+          showAppButton={false}
+        />
 
         <PublicMobileNavigation />
       </div>
