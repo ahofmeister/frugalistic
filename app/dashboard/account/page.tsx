@@ -4,6 +4,7 @@ import CategoriesCard from "@/app/dashboard/account/categories-card";
 import DeleteAccount from "@/app/dashboard/account/components/delete-account";
 import ProfileForm from "@/app/dashboard/account/components/profile-form";
 import UpdatePassword from "@/app/dashboard/account/components/update-password-form";
+import { LogoutCard } from "@/app/dashboard/account/logout-card";
 import RecurringTransactionsCard from "@/app/dashboard/account/recurring-transactions-card";
 import SettingsCard from "@/app/dashboard/account/settings-card";
 import FeedbackCard from "@/app/dashboard/feedback-card";
@@ -36,6 +37,8 @@ export default async function AccountPage() {
             </CardHeader>
           </Card>
         </Link>
+
+        <LogoutCard />
 
         <DeleteAccount />
       </div>
