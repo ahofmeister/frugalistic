@@ -1,7 +1,9 @@
 import { ArrowDown, ArrowUp } from "lucide-react";
+import React from "react";
 
 import TransactionAmount, {
   getBgColor,
+  getTextColor,
 } from "@/components/transactions/components/transaction-amount";
 import {
   Card,
@@ -11,6 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { capitalize } from "@/lib/utils";
 import { TransactionType } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
@@ -63,13 +66,14 @@ export async function TotalCard(props: {
     // @ts-expect-error CSS property exists
     <Card className={getBgColor(props.type)} style={{ "--tw-bg-opacity": 0.2 }}>
       <CardHeader>
-        <CardTitle>
-          <TransactionAmount
-            className="text-2xl"
-            amount={currentYear!.total}
-            type={props.type}
-          />
+        <CardTitle className={getTextColor(props.type)}>
+          {capitalize(props.type as string)}
         </CardTitle>
+        <TransactionAmount
+          className="text-2xl"
+          amount={currentYear!.total}
+          type={props.type}
+        />
         {previousYear && previousYear.total > 0 && (
           <CardDescription>
             <span className="flex gap-x-2">
