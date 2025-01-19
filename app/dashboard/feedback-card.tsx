@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { toast } from "sonner";
 
 import { addFeedback } from "@/components/feedback/feedback-actions";
 import LoadingSpinner from "@/components/loading/loading";
@@ -35,6 +36,8 @@ export default function FeedbackCard() {
       const response = await addFeedback(feedback);
       if (response) {
         setFeedback("");
+        setOpen(false);
+        toast.success("Feedback successfully sent!");
       } else {
         setError("Failed to send feedback. Please try again.");
       }
