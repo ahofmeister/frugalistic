@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 
 import useUpdateQueryParam from "@/app/useUpdateQueryParam";
+import { TransactionSelectItems } from "@/components/transactions/components/transaction-select-items";
 import {
   Select,
   SelectContent,
@@ -9,12 +10,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { transactionTypes } from "@/lib/transaction-types";
 import { TransactionType } from "@/types";
 
 const TYPE_ALL_VALUE = "all";
 
-const TypeSearchFilter = (props: { value?: TransactionType }) => {
+const TransactionTypeSearchFilter = (props: { value?: TransactionType }) => {
   const [type, setType] = useState<string>(props.value ?? "all");
 
   const updateQueryParams = useUpdateQueryParam();
@@ -38,15 +38,11 @@ const TypeSearchFilter = (props: { value?: TransactionType }) => {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value={TYPE_ALL_VALUE}>Select Type</SelectItem>
-          {transactionTypes.map((type) => (
-            <SelectItem key={type} value={type}>
-              {type}
-            </SelectItem>
-          ))}
+          <TransactionSelectItems />
         </SelectContent>
       </Select>
     </div>
   );
 };
 
-export default TypeSearchFilter;
+export default TransactionTypeSearchFilter;

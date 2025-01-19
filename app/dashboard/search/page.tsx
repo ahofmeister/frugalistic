@@ -8,11 +8,11 @@ import {
 } from "@/app/dashboard/search/search-filter";
 import SearchSortBy from "@/app/dashboard/search/search-sort-by";
 import SearchSortDirection from "@/app/dashboard/search/search-sort-direction";
+import TransactionTypeSearchFilter from "@/app/dashboard/search/transaction-type-search-filter";
 import ResetQueryParam from "@/app/dashboard/transactions/reset-query-param";
 import CategorySearchFilter from "@/components/transactions/components/category-search-filter";
 import TransactionSearchInput from "@/components/transactions/components/transaction-search-input";
 import TransactionsSearchResult from "@/components/transactions/components/transactions-search-result";
-import TypeSearchFilter from "@/components/transactions/components/type-search-filter";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -30,7 +30,10 @@ export default async function TransactionSearchPage(props: {
           value={searchParams.category}
         />
 
-        <TypeSearchFilter key={searchParams.type} value={searchParams.type} />
+        <TransactionTypeSearchFilter
+          key={searchParams.type}
+          value={searchParams.type}
+        />
       </div>
       <div className="flex gap-x-4">
         <DateSearchFilter
