@@ -71,6 +71,7 @@ export async function makeTransactionRecurring(
 export async function upsertTransaction(newTransaction: NewTransaction) {
   const supabase = await createClient();
 
+  revalidatePath("/");
   return await supabase.from("transactions").upsert(newTransaction);
 }
 
