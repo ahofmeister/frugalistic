@@ -22,7 +22,7 @@ export default async function RootLayout({
   return (
     <div className="h-screen">
       <DashboardNavigation />
-      <main className="p-2 mx-2 flex-1 overflow-y-auto">
+      <main className="p-2 mx-2 flex-1 overflow-y-auto pb-[calc(5rem+env(safe-area-inset-bottom))]">
         <SettingsProvider
           setting={settings ?? ({ date_format: "dd.MM.yyyy" } as Setting)}
         >
