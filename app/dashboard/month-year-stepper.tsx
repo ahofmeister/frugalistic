@@ -46,7 +46,7 @@ export function MonthYearStepper({
   };
 
   return (
-    <Button variant="outline" onClick={handleStep}>
+    <Button size="sm" variant="outline" onClick={handleStep}>
       {icon}
     </Button>
   );

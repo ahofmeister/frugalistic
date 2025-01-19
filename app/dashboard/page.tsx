@@ -8,7 +8,7 @@ import DashboardCards from "@/components/dashboard/dashboard-cards";
 import { DashboardCategories } from "@/components/dashboard/dashboard-categories";
 import DashboardTransactions from "@/components/dashboard/dashboard-transactions";
 import { Period, PeriodSelector } from "@/components/dashboard/period-selector";
-import { SelectToday } from "@/components/dashboard/select-today";
+import { SelectNow } from "@/components/dashboard/select-now";
 
 export default async function DashboardPage(props: {
   searchParams: Promise<{ year: number; month: number; period: Period }>;
@@ -37,28 +37,28 @@ export default async function DashboardPage(props: {
         <CategoriesBanner />
       </div>
 
-      <div className="flex flex-col sm:flex-row justify-between">
-        <div className="flex font-semibold text-2xl">
+      <div className="flex flex-col sm:flex-row justify-between gap-y-4">
+        <div className="flex font-semibold text-2xl items-center gap-x-4">
+          <MonthYearStepper
+            period={period}
+            amount={-1}
+            icon={<ChevronLeft />}
+            year={year}
+            month={month}
+          />
           {isYear ? year : format(new Date(year, month, 1), "MMMM yyyy")}
+          <MonthYearStepper
+            period={period}
+            amount={1}
+            icon={<ChevronRight />}
+            year={year}
+            month={month}
+          />
         </div>
 
         <div className="flex gap-4">
-          <div className="flex font-semibold text-xl justify-center">
-            <MonthYearStepper
-              period={period}
-              amount={-1}
-              icon={<ChevronLeft />}
-              year={year}
-              month={month}
-            />
-            <SelectToday updateMode="both" />
-            <MonthYearStepper
-              period={period}
-              amount={1}
-              icon={<ChevronRight />}
-              year={year}
-              month={month}
-            />
+          <div className="flex font-semibold text-xl justify-center gap-x-2">
+            <SelectNow />
           </div>
           <PeriodSelector value={searchParams.period} year={year} />
         </div>
