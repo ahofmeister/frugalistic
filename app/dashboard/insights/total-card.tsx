@@ -1,6 +1,7 @@
 import { ArrowDown, ArrowUp } from "lucide-react";
 import React from "react";
 
+import { AverageAmount } from "@/app/dashboard/insights/average-amount";
 import TransactionAmount, {
   getBgColor,
   getTextColor,
@@ -88,13 +89,10 @@ export async function TotalCard(props: {
       </CardHeader>
       <CardContent>{getCardFooter(percentageChange)}</CardContent>
       <CardFooter>
-        <div className="flex gap-x-1">
-          <div>Monthly Average</div>
-          <TransactionAmount
-            amount={currentYear!.total / getMonthsInYear(props.year)}
-            type={props.type}
-          />
-        </div>
+        <AverageAmount
+          amount={currentYear!.total / getMonthsInYear(props.year)}
+          type={props.type}
+        />
       </CardFooter>
     </Card>
   );

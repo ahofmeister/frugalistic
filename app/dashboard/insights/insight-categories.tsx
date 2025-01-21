@@ -1,5 +1,6 @@
 import React from "react";
 
+import { AverageAmount } from "@/app/dashboard/insights/average-amount";
 import TransactionAmount, {
   formatAmount,
 } from "@/components/transactions/components/transaction-amount";
@@ -49,12 +50,9 @@ export async function InsightCategories(props: { year: number }) {
               )}
             </CardHeader>
             <CardFooter>
-              <div className="flex gap-x-1">
-                <div>Monthly Average</div>
-                <TransactionAmount
-                  amount={category.total / getMonthsInYear(props.year)}
-                />
-              </div>
+              <AverageAmount
+                amount={category.total / getMonthsInYear(props.year)}
+              />
             </CardFooter>
           </Card>
         );
