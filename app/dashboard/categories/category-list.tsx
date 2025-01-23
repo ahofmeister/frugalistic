@@ -24,7 +24,7 @@ const CategoryList = async () => {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-2">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-2 gap-x-2">
       {orderedCategories.map((category) => (
         <CategoryCard
           key={category.id}

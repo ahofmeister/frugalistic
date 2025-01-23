@@ -1,10 +1,8 @@
-import { Edit2 } from "lucide-react";
-import Link from "next/link";
+"use client";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 import AddCategory from "@/components/categories/add-category";
-import DeleteCategory from "@/components/categories/delete-category";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardDescription,
@@ -19,8 +17,14 @@ export function CategoryCard(props: {
   exists: boolean;
 }) {
   const category = props.category;
+  const router = useRouter();
   return (
-    <Card key={category.name} style={{ color: category.color }}>
+    <Card
+      key={category.name}
+      className="cursor-pointer"
+      onClick={() => router.push(`/dashboard/categories/edit/${category.id}`)}
+      style={{ color: category.color }}
+    >
       <CardHeader>
         <CardTitle>{category.name}</CardTitle>
         <CardDescription className="text-sm text-gray-200">
@@ -28,16 +32,7 @@ export function CategoryCard(props: {
         </CardDescription>
       </CardHeader>
       <CardFooter className="flex justify-between">
-        {props.exists ? (
-          <>
-            <Link href={`/dashboard/categories/edit/${category.id}`}>
-              <Button variant="outline" size="icon">
-                <Edit2 />
-              </Button>
-            </Link>
-            <DeleteCategory category={category as Category} />
-          </>
-        ) : (
+        {!props.exists && (
           <div className="flex items-center gap-x-2">
             <AddCategory category={category} />
             <div className="text-xs text-muted-foreground">

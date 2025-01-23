@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { createCategory } from "@/components/categories/categories-api";
+import DeleteCategory from "@/components/categories/delete-category";
 import LoadingSpinner from "@/components/loading/loading";
 import { Button } from "@/components/ui/button";
 import { ColorPicker } from "@/components/ui/color-picker";
@@ -103,19 +104,25 @@ const CategoryForm = (props: { category?: Category }) => {
               )}
             />
 
-            <Button
-              type="submit"
-              disabled={form.formState.isSubmitting || !form.formState.isValid}
-              className="w-full"
-            >
-              {form.formState.isSubmitting ? (
-                <LoadingSpinner />
-              ) : props.category ? (
-                "Save"
-              ) : (
-                "Create Category"
-              )}
-            </Button>
+            <div className="flex flex-col gap-y-4">
+              {props.category && <DeleteCategory category={props.category} />}
+
+              <Button
+                type="submit"
+                disabled={
+                  form.formState.isSubmitting || !form.formState.isValid
+                }
+                className="w-full"
+              >
+                {form.formState.isSubmitting ? (
+                  <LoadingSpinner />
+                ) : props.category ? (
+                  "Save"
+                ) : (
+                  "Create Category"
+                )}
+              </Button>
+            </div>
           </div>
         </form>
       </Form>
