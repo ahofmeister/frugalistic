@@ -8,7 +8,7 @@ export async function RelatedTransactions(props: { description: string }) {
   const { data: transactions } = await supabase
     .from("transactions")
     .select("*, category(*), recurring_transaction(*)")
-    .order("created_at")
+    .order("datetime", { ascending: false })
     .eq("description", props.description)
     .returns<TransactionWithRecurring[]>();
 
