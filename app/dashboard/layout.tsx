@@ -1,5 +1,6 @@
 import "../globals.css";
 
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import React from "react";
 
 import { SettingsProvider } from "@/app/dashboard/settings/use-setting";
@@ -26,7 +27,7 @@ export default async function RootLayout({
         <SettingsProvider
           setting={settings ?? ({ date_format: "dd.MM.yyyy" } as Setting)}
         >
-          {children}
+          <NuqsAdapter>{children}</NuqsAdapter>
         </SettingsProvider>
       </main>
       <DashboardMobileNavigation />
