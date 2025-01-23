@@ -1,7 +1,10 @@
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
+import { RelatedTransactions } from "@/app/dashboard/transactions/edit/[id]/related-transactions";
+import LoadingSpinner from "@/components/loading/loading";
 import TransactionForm from "@/components/transactions/components/transaction-form";
-import { Category, TransactionWithRecurring } from "@/types";
+import { TransactionWithRecurring } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function TransactionEditPage(props: {
@@ -13,7 +16,7 @@ export default async function TransactionEditPage(props: {
     .from("transactions")
     .select("*, recurring_transaction(interval)")
     .eq("id", params.id)
-    .returns<TransactionWithRecurring>()
+    .returns<TransactionWithRecurring[]>()
     .single();
 
   if (!transaction) {
@@ -29,14 +32,19 @@ export default async function TransactionEditPage(props: {
   const { data: categories } = await supabase
     .from("categories")
     .select("*")
-    .order("name")
-    .returns<Category[]>();
+    .order("name");
 
   return (
-    <TransactionForm
-      transaction={transaction ?? undefined}
-      autoSuggests={autoSuggests ?? []}
-      categories={categories ?? []}
-    />
+    <div className="">
+      <TransactionForm
+        transaction={transaction}
+        autoSuggests={autoSuggests ?? []}
+        categories={categories ?? []}
+      />
+      <div className="mt-4 mb-2 text-xl">Related Transactions</div>
+      <Suspense fallback={<LoadingSpinner />}>
+        <RelatedTransactions description={transaction.description} />
+      </Suspense>
+    </div>
   );
 }
