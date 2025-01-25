@@ -21,7 +21,7 @@ export function TransactionCard(props: {
   const transaction = props.transaction;
   return (
     <Card
-      className="cursor-pointer"
+      className="cursor-pointer hover:bg-card/70"
       key={transaction.id}
       onClick={() =>
         router.push(`/dashboard/transactions/edit/${transaction.id}`)
