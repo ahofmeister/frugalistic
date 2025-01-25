@@ -43,7 +43,10 @@ export default async function TransactionEditPage(props: {
       />
       <div className="mt-4 mb-2 text-xl">Related Transactions</div>
       <Suspense fallback={<LoadingSpinner />}>
-        <RelatedTransactions description={transaction.description} />
+        <RelatedTransactions
+          description={transaction.description}
+          existingTransactionId={transaction.id}
+        />
       </Suspense>
     </div>
   );
