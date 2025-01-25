@@ -1,28 +1,36 @@
 "use client";
 
+import { parseAsInteger, useQueryState } from "nuqs";
 import React, { ReactElement } from "react";
 
-import useUpdateQueryParam from "@/app/useUpdateQueryParam";
 import { Period } from "@/components/dashboard/period-selector";
 import { Button } from "@/components/ui/button";
 
 export function MonthYearStepper({
-  year,
-  month,
+  incomingYear,
+  incomingMonth,
   amount,
   period,
   icon,
 }: {
-  year: number;
-  month: number;
+  incomingYear: number;
+  incomingMonth: number;
   amount: number;
   period: Period;
   icon: ReactElement;
 }) {
-  const updateQueryParam = useUpdateQueryParam();
+  const [month, setMonth] = useQueryState(
+    "month",
+    parseAsInteger.withDefault(incomingMonth).withOptions({ shallow: false }),
+  );
+
+  const [year, setYear] = useQueryState(
+    "year",
+    parseAsInteger.withDefault(incomingYear).withOptions({ shallow: false }),
+  );
 
   const handleStep = () => {
-    let nextMonth: number | undefined = month;
+    let nextMonth: number | null = month;
     let nextYear = year;
 
     if (period === "month") {
@@ -36,13 +44,11 @@ export function MonthYearStepper({
       }
     } else {
       nextYear += amount;
-      nextMonth = undefined;
+      nextMonth = null;
     }
 
-    updateQueryParam([
-      { key: "month", value: nextMonth?.toString() },
-      { key: "year", value: nextYear.toString() },
-    ]);
+    void setMonth(nextMonth);
+    void setYear(nextYear);
   };
 
   return (
