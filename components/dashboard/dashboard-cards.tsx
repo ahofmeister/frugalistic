@@ -1,23 +1,32 @@
 import React from "react";
 
 import DashboardCard from "@/components/dashboard/dashboard-card";
+import { Period } from "@/components/dashboard/period-selector";
 import { TransactionWithCategory } from "@/types";
 import { createClient } from "@/utils/supabase/server";
+import { getPeriodDates } from "@/utils/transaction/dates";
 
 const DashboardCards = async (props: {
-  startDate: string;
-  endDate: string;
+  month: number;
+  year: number;
+  period: Period;
 }) => {
   let income = 0;
   let expense = 0;
   let savings = 0;
 
+  const { startDate, endDate } = getPeriodDates(
+    props.year,
+    props.month,
+    props.period,
+  );
+
   const supabase = await createClient();
   const { data: transactions } = await supabase
     .from("transactions")
     .select("*, category(*)")
-    .gte("datetime", props.startDate)
-    .lte("datetime", props.endDate)
+    .gte("datetime", startDate)
+    .lte("datetime", endDate)
     .order("datetime", { ascending: false })
     .order("created_at", { ascending: false })
     .returns<TransactionWithCategory[]>();

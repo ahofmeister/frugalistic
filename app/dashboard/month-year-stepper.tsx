@@ -21,12 +21,12 @@ export function MonthYearStepper({
 }) {
   const [month, setMonth] = useQueryState(
     "month",
-    parseAsInteger.withDefault(incomingMonth),
+    parseAsInteger.withDefault(incomingMonth).withOptions({ shallow: false }),
   );
 
   const [year, setYear] = useQueryState(
     "year",
-    parseAsInteger.withDefault(incomingYear),
+    parseAsInteger.withDefault(incomingYear).withOptions({ shallow: false }),
   );
 
   const handleStep = () => {
@@ -53,7 +53,6 @@ export function MonthYearStepper({
 
   return (
     <Button size="sm" variant="outline" onClick={handleStep}>
-      {year} -{month}
       {icon}
     </Button>
   );

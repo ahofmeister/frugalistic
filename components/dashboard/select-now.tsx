@@ -5,8 +5,14 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 
 export function SelectNow() {
-  const [, setYear] = useQueryState("year", parseAsInteger);
-  const [, setMonth] = useQueryState("month", parseAsInteger);
+  const [, setYear] = useQueryState(
+    "year",
+    parseAsInteger.withOptions({ shallow: false }),
+  );
+  const [, setMonth] = useQueryState(
+    "month",
+    parseAsInteger.withOptions({ shallow: false }),
+  );
 
   return (
     <Button
