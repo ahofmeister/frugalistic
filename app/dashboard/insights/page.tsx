@@ -2,7 +2,7 @@ import { format } from "date-fns";
 import React, { Suspense } from "react";
 
 import { InsightCategories } from "@/app/dashboard/insights/insight-categories";
-import { TotalCard } from "@/app/dashboard/insights/total-card";
+import { InsightsTotal } from "@/app/dashboard/insights/insights-total";
 import TransactionCategoryDistribution from "@/app/dashboard/insights/transaction-category-distribution";
 import SelectYear from "@/app/dashboard/insights/transaction-type-select";
 import { TransactionsChart } from "@/app/dashboard/insights/transactions-chart";
@@ -88,7 +88,7 @@ const InsightsPage = async (props: {
                 </Card>
               }
             >
-              <TotalCard year={year} type={type} />
+              <InsightsTotal year={year} type={type} />
             </Suspense>
           </div>
         ))}
