@@ -1,7 +1,7 @@
 "use client";
+import { useQueryState } from "nuqs";
 import React, { useEffect, useState } from "react";
 
-import useUpdateQueryParam from "@/app/useUpdateQueryParam";
 import CategoryColor from "@/components/categories/category-color";
 import {
   Select,
@@ -13,14 +13,12 @@ import {
 import { Category } from "@/types";
 import { createClient } from "@/utils/supabase/client";
 
-const CATEGORY_ALL_VALUE = "all";
-
-const CategorySearchFilter = (props: {
-  // categories: Category[];
-  value?: string;
-}) => {
-  const [category, setCategory] = useState<string>(props.value ?? "all");
+const CategorySearchFilter = () => {
   const [categories, setCategories] = useState<Category[]>([]);
+
+  const [category, setCategoryId] = useQueryState("category", {
+    shallow: false,
+  });
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -34,27 +32,21 @@ const CategorySearchFilter = (props: {
     void fetchCategories();
   }, []);
 
-  const updateQueryParams = useUpdateQueryParam();
-
   return (
     <div>
       <Select
-        value={category}
+        value={category ?? undefined}
         onValueChange={(value) => {
-          if (value == CATEGORY_ALL_VALUE) {
-            updateQueryParams({ key: "category", value: undefined });
-          } else {
-            updateQueryParams({ key: "category", value });
-          }
-
-          setCategory(value);
+          void setCategoryId(value);
         }}
       >
-        <SelectTrigger>
+        <SelectTrigger className="w-[280px]">
           <SelectValue placeholder="Select a category" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value={CATEGORY_ALL_VALUE}>Select Category</SelectItem>
+          <SelectItem value={null as unknown as string}>
+            Select Category
+          </SelectItem>
           {categories?.map((category) => (
             <SelectItem key={category.id} value={category.name}>
               <div className="flex gap-x-2 items-center">

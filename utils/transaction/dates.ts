@@ -1,4 +1,4 @@
-import { endOfMonth, endOfYear, format } from "date-fns";
+import { endOfMonth, endOfYear, format, formatDate } from "date-fns";
 
 import { Period } from "@/components/dashboard/period-selector";
 
@@ -15,4 +15,11 @@ export function getPeriodDates(year: number, month: number, period: Period) {
     startDate: format(startDate, "yyyy-MM-dd"),
     endDate: format(endDate, "yyyy-MM-dd"),
   };
+}
+
+export function getYearBoundaries(year: number) {
+  const startDate = format(new Date(year, 0, 1), "yyyy-MM-dd");
+  const endDate = formatDate(new Date(year, 11, 31), "yyyy-MM-dd");
+
+  return { startDate, endDate };
 }
