@@ -25,10 +25,7 @@ export default async function TransactionSearchPage(props: {
     <div className="flex flex-col ml-2 mt-2 gap-4">
       <TransactionSearchInput value={searchParams.description} />
       <div className="flex gap-x-4">
-        <CategorySearchFilter
-          key={searchParams.category}
-          value={searchParams.category}
-        />
+        <CategorySearchFilter />
 
         <TransactionTypeSearchFilter
           key={searchParams.type}
