@@ -11,7 +11,7 @@ export function AverageAmount(props: {
   return (
     <div className="flex gap-x-1 items-center">
       <CircleSlash2 size="14" />
-      <TransactionAmount amount={props.amount} type={props.type} />/ month
+      <TransactionAmount amount={props.amount} type={props.type} />
     </div>
   );
 }

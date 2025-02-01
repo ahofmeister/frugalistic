@@ -6,16 +6,10 @@ import { AverageAmount } from "@/app/dashboard/insights/average-amount";
 import TransactionAmount, {
   formatAmount,
 } from "@/components/transactions/components/transaction-amount";
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { getYearBoundaries } from "@/utils/transaction/dates";
 
-function CategoryCard({
+function InsightCategoryCard({
   category,
   previousTotal,
   months,
@@ -49,23 +43,24 @@ function CategoryCard({
     >
       <CardHeader>
         <CardTitle>
-          <div className="text-xl">{category.name}</div>
-          <div className="text-lg">{formatAmount(category.total)}</div>
+          <div className="text-lg">{category.name}</div>
+          <div className="flex justify-between text-xl">
+            {formatAmount(category.total)}
+            <AverageAmount amount={category.total / months} />
+          </div>
         </CardTitle>
-        {previousTotal && previousTotal > 0 && (
-          <CardDescription>
-            <span className="flex gap-x-2">
-              Previous:
-              <TransactionAmount amount={previousTotal} />
-            </span>
-          </CardDescription>
-        )}
       </CardHeader>
-      <CardFooter>
-        <AverageAmount amount={category.total / months} />
-      </CardFooter>
+      {previousTotal && previousTotal > 0 && (
+        <CardFooter className="flex flex-col text-muted-foreground items-start">
+          <span className="text-sm">{year - 1}</span>
+          <div className="flex justify-between w-full">
+            <TransactionAmount amount={previousTotal} />
+            <AverageAmount amount={(previousTotal || 0) / 12} />
+          </div>
+        </CardFooter>
+      )}
     </Card>
   );
 }
 
-export default CategoryCard;
+export default InsightCategoryCard;
