@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { Category, NewCategory } from "@/types";
 
 export function CategoryCard(props: {
@@ -21,8 +22,13 @@ export function CategoryCard(props: {
   return (
     <Card
       key={category.name}
-      className="cursor-pointer"
-      onClick={() => router.push(`/dashboard/categories/edit/${category.id}`)}
+      className={cn(props.category.id && "cursor-pointer")}
+      onClick={() => {
+        if (!props.category.id) {
+          return;
+        }
+        router.push(`/dashboard/categories/edit/${category.id}`);
+      }}
       style={{ color: category.color }}
     >
       <CardHeader>
