@@ -33,6 +33,10 @@ export default async function TransactionEditPage(props: {
     .from("categories")
     .select("*")
     .order("name");
+  const { data: favorites } = await supabase
+    .from("favorite")
+    .select("*")
+    .order("description");
 
   return (
     <div className="">
@@ -40,6 +44,7 @@ export default async function TransactionEditPage(props: {
         transaction={transaction}
         autoSuggests={autoSuggests ?? []}
         categories={categories ?? []}
+        favorites={favorites ?? []}
       />
       <div className="mt-4 mb-2 text-xl">Related Transactions</div>
       <Suspense fallback={<LoadingSpinner />}>

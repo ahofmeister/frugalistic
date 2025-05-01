@@ -39,3 +39,7 @@ export type ProfileUpdate = Database["public"]["Tables"]["profile"]["Update"];
 // Settings
 export type Setting = Database["public"]["Tables"]["setting"]["Row"];
 export type SettingUpdate = Database["public"]["Tables"]["setting"]["Update"];
+
+// Favorite
+export type Favorite = Database["public"]["Tables"]["favorite"]["Row"];
+export type NewFavorite = Database["public"]["Tables"]["favorite"]["Insert"];

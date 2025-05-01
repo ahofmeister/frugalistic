@@ -17,8 +17,14 @@ export default async function NewTransactionPage() {
     .order("name")
     .returns<Category[]>();
 
+  const { data: favorites } = await supabase
+    .from("favorite")
+    .select("*")
+    .order("name");
+
   return (
     <TransactionForm
+      favorites={favorites ?? []}
       autoSuggests={autoSuggests ?? []}
       categories={categories ?? []}
     />

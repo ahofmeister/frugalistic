@@ -39,6 +39,44 @@ export type Database = {
         }
         Relationships: []
       }
+      favorite: {
+        Row: {
+          amount: number
+          category: string | null
+          created_at: string | null
+          description: string
+          id: string
+          type: Database["public"]["Enums"]["transaction_type"]
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          category?: string | null
+          created_at?: string | null
+          description: string
+          id?: string
+          type: Database["public"]["Enums"]["transaction_type"]
+          user_id?: string
+        }
+        Update: {
+          amount?: number
+          category?: string | null
+          created_at?: string | null
+          description?: string
+          id?: string
+          type?: Database["public"]["Enums"]["transaction_type"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "favorite_category_fkey"
+            columns: ["category"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       feedback: {
         Row: {
           created_at: string | null
@@ -293,6 +331,12 @@ export type Database = {
           expense: number
           savings: number
         }[]
+      }
+      verify_current_password_new: {
+        Args: {
+          password: string
+        }
+        Returns: boolean
       }
       verify_user_password: {
         Args: {

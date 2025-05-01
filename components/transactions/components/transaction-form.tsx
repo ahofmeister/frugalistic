@@ -2,12 +2,17 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
+import { HeartIcon } from "lucide-react";
 import React, { useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
 import DeleteTransaction from "@/app/dashboard/transactions/edit/[id]/delete-transaction";
+import {
+  addFavorite,
+  removeFavorite,
+} from "@/components/favorite/favorite-actions";
 import LoadingSpinner from "@/components/loading/loading";
 import AmountInput from "@/components/transactions/components/amount-input";
 import { TransactionSelectItems } from "@/components/transactions/components/transaction-select-items";
@@ -44,6 +49,7 @@ import {
 import { cn } from "@/lib/utils";
 import {
   Category,
+  Favorite,
   NewTransaction,
   TransactionAutoSuggest,
   TransactionWithRecurring,
@@ -53,10 +59,12 @@ const TransactionForm = ({
   transaction,
   autoSuggests,
   categories,
+  favorites,
 }: {
   transaction?: TransactionWithRecurring;
   autoSuggests?: TransactionAutoSuggest[];
   categories?: Category[];
+  favorites?: Favorite[];
 }) => {
   const formSchema = z.object({
     description: z.string().min(1),
@@ -109,6 +117,10 @@ const TransactionForm = ({
     }
   }
 
+  const favorite = favorites?.find(
+    (favorite) => transaction?.description === favorite.description,
+  );
+  const isFavorite = transaction && favorite;
   return (
     <div className="max-w-2xl mx-auto px-2 py-4">
       <Form {...form}>
@@ -122,7 +134,36 @@ const TransactionForm = ({
           )}
           className="space-y-6"
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <Button
+              disabled={!transaction}
+              variant="outline"
+              type="button"
+              className="w-fit"
+              onClick={() => {
+                if (isFavorite) {
+                  return removeFavorite(favorite?.id);
+                }
+                return addFavorite(transaction!);
+              }}
+            >
+              <HeartIcon
+                color={isFavorite ? "#FF00FF" : "#FFFFFF"}
+                fill={isFavorite ? "#FF00FF" : "#FFFFFF"}
+              />
+            </Button>
+            {/*<div className="col-span-2">*/}
+            {/*<Dialog>*/}
+            {/*  <DialogTrigger>*/}
+            {/*    <Button variant="outline" type="button">*/}
+            {/*      <Heart color="#FF00FF" fill="#FF00FF" />*/}
+            {/*    </Button>*/}
+            {/*  </DialogTrigger>*/}
+            {/*  <DialogContent className="h-full">*/}
+            {/*    <DialogTitle>Favorites</DialogTitle>*/}
+            {/*  </DialogContent>*/}
+            {/*</Dialog>*/}
+            {/*</div>*/}
             <div className="col-span-2">
               <FormField
                 control={form.control}
