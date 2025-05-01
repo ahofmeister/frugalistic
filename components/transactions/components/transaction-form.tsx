@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import { HeartIcon } from "lucide-react";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -15,6 +15,7 @@ import {
 } from "@/components/favorite/favorite-actions";
 import LoadingSpinner from "@/components/loading/loading";
 import AmountInput from "@/components/transactions/components/amount-input";
+import { getTextColor } from "@/components/transactions/components/transaction-amount";
 import { TransactionSelectItems } from "@/components/transactions/components/transaction-select-items";
 import {
   makeTransactionRecurring,
@@ -26,6 +27,12 @@ import {
 } from "@/components/ui/auto-suggest-input";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -49,7 +56,7 @@ import {
 import { cn } from "@/lib/utils";
 import {
   Category,
-  Favorite,
+  FavoriteWithCategory,
   NewTransaction,
   TransactionAutoSuggest,
   TransactionWithRecurring,
@@ -64,7 +71,7 @@ const TransactionForm = ({
   transaction?: TransactionWithRecurring;
   autoSuggests?: TransactionAutoSuggest[];
   categories?: Category[];
-  favorites?: Favorite[];
+  favorites?: FavoriteWithCategory[];
 }) => {
   const formSchema = z.object({
     description: z.string().min(1),
@@ -121,6 +128,8 @@ const TransactionForm = ({
     (favorite) => transaction?.description === favorite.description,
   );
   const isFavorite = transaction && favorite;
+
+  const [favoriteOpen, setFavoriteOpen] = useState<boolean>(false);
   return (
     <div className="max-w-2xl mx-auto px-2 py-4">
       <Form {...form}>
@@ -135,35 +144,75 @@ const TransactionForm = ({
           className="space-y-6"
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <Button
-              disabled={!transaction}
-              variant="outline"
-              type="button"
-              className="w-fit"
-              onClick={() => {
-                if (isFavorite) {
-                  return removeFavorite(favorite?.id);
-                }
-                return addFavorite(transaction!);
-              }}
-            >
-              <HeartIcon
-                color={isFavorite ? "#FF00FF" : "#FFFFFF"}
-                fill={isFavorite ? "#FF00FF" : "#FFFFFF"}
-              />
-            </Button>
-            {/*<div className="col-span-2">*/}
-            {/*<Dialog>*/}
-            {/*  <DialogTrigger>*/}
-            {/*    <Button variant="outline" type="button">*/}
-            {/*      <Heart color="#FF00FF" fill="#FF00FF" />*/}
-            {/*    </Button>*/}
-            {/*  </DialogTrigger>*/}
-            {/*  <DialogContent className="h-full">*/}
-            {/*    <DialogTitle>Favorites</DialogTitle>*/}
-            {/*  </DialogContent>*/}
-            {/*</Dialog>*/}
-            {/*</div>*/}
+            <div className="col-span-2 flex justify-between">
+              <Button
+                disabled={!transaction}
+                variant="outline"
+                type="button"
+                className="w-fit"
+                onClick={() => {
+                  if (isFavorite) {
+                    return removeFavorite(favorite?.id);
+                  }
+                  return addFavorite(transaction!);
+                }}
+              >
+                <HeartIcon
+                  color={isFavorite ? "#FF00FF" : "#FFFFFF"}
+                  fill={isFavorite ? "#FF00FF" : "#FFFFFF"}
+                />
+              </Button>
+              <Button
+                disabled={!favorites || favorites.length <= 0}
+                variant="outline"
+                type="button"
+                onClick={() => setFavoriteOpen(true)}
+              >
+                Favorites
+              </Button>
+              <Dialog open={favoriteOpen} onOpenChange={setFavoriteOpen}>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Favorites</DialogTitle>
+                  </DialogHeader>
+                  {favorites?.map((item) => (
+                    <div key={item.id} className="flex justify-between">
+                      <div className="flex flex-col">
+                        <span className={getTextColor(item.type)}>
+                          {item.description}
+                        </span>
+                        <div>
+                          <span style={{ color: item.category.color ?? "" }}>
+                            {item.category.name}
+                          </span>{" "}
+                          in <span>{item.type}</span>
+                        </div>
+                      </div>
+                      <Button
+                        variant="outline"
+                        type="button"
+                        className="flex  self-center"
+                        onClick={() => {
+                          form.setValue("description", item.description);
+                          form.setValue("type", item.type);
+                          form.setValue("amount", item.amount.toString());
+                          if (item.category) {
+                            form.setValue("category", item.category.id);
+                          }
+
+                          autoCompleteRef.current?.setInputValue(
+                            item.description,
+                          );
+                          setFavoriteOpen(false);
+                        }}
+                      >
+                        Apply
+                      </Button>
+                    </div>
+                  ))}
+                </DialogContent>
+              </Dialog>
+            </div>
             <div className="col-span-2">
               <FormField
                 control={form.control}

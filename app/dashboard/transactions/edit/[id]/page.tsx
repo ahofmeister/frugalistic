@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { RelatedTransactions } from "@/app/dashboard/transactions/edit/[id]/related-transactions";
 import LoadingSpinner from "@/components/loading/loading";
 import TransactionForm from "@/components/transactions/components/transaction-form";
-import { TransactionWithRecurring } from "@/types";
+import { FavoriteWithCategory, TransactionWithRecurring } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function TransactionEditPage(props: {
@@ -35,8 +35,9 @@ export default async function TransactionEditPage(props: {
     .order("name");
   const { data: favorites } = await supabase
     .from("favorite")
-    .select("*")
-    .order("description");
+    .select("*, category(*)")
+    .order("description")
+    .returns<FavoriteWithCategory[]>();
 
   return (
     <div className="">

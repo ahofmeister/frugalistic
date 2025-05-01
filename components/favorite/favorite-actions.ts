@@ -7,7 +7,7 @@ import { createClient } from "@/utils/supabase/server";
 export async function addFavorite(transaction: TransactionWithRecurring) {
   const supabase = await createClient();
 
-  const { data, error } = await supabase.from("favorite").upsert({
+  const { data, error } = await supabase.from("favorite").insert({
     category: transaction.category,
     description: transaction.description,
     amount: transaction.amount,
@@ -18,6 +18,7 @@ export async function addFavorite(transaction: TransactionWithRecurring) {
     console.log(error);
     return;
   }
+
   revalidatePath("/", "layout");
   return data;
 }

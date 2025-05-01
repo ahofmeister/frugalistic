@@ -1,4 +1,4 @@
-import { Database } from "./supabase";
+import { Database } from "./supabase"; // Transactions
 
 // Transactions
 export type Transaction = Database["public"]["Tables"]["transactions"]["Row"];
@@ -42,4 +42,7 @@ export type SettingUpdate = Database["public"]["Tables"]["setting"]["Update"];
 
 // Favorite
 export type Favorite = Database["public"]["Tables"]["favorite"]["Row"];
+export type FavoriteWithCategory = Favorite & {
+  category: Category;
+};
 export type NewFavorite = Database["public"]["Tables"]["favorite"]["Insert"];

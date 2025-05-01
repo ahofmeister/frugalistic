@@ -1,5 +1,5 @@
 import TransactionForm from "@/components/transactions/components/transaction-form";
-import { Category } from "@/types";
+import { Category, FavoriteWithCategory } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function NewTransactionPage() {
@@ -19,9 +19,9 @@ export default async function NewTransactionPage() {
 
   const { data: favorites } = await supabase
     .from("favorite")
-    .select("*")
-    .order("name");
-
+    .select("*, category(*)")
+    .order("description")
+    .returns<FavoriteWithCategory[]>();
   return (
     <TransactionForm
       favorites={favorites ?? []}
