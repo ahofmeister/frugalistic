@@ -53,6 +53,10 @@ export async function DashboardCategories(props: {
   );
   const total = expenses?.reduce((acc, expense) => acc + expense.amount, 0);
 
+  if (expenses?.length === 0) {
+    return null;
+  }
+
   return (
     <div className="w-full">
       <div className="text-lg my-2">Categories</div>
@@ -66,6 +70,7 @@ export async function DashboardCategories(props: {
             year={props.year}
             month={props.month}
             total={total ?? 0}
+            period={props.period}
           />
         ))}
       </div>
