@@ -8,7 +8,7 @@ import { getPeriodDates } from "@/utils/transaction/dates";
 
 interface CategoryData {
   category: string;
-  total: number;
+  amount: number;
   fill: string;
 }
 
@@ -40,17 +40,18 @@ export async function DashboardCategories(props: {
       const amount = transaction.amount;
 
       if (!acc[name]) {
-        acc[name] = { category: name, total: 0, fill: color };
+        acc[name] = { category: name, amount: 0, fill: color };
       }
 
-      acc[name].total += amount;
+      acc[name].amount += amount;
 
       return acc;
     }, {});
 
   const groupedCategories = Object.values(categories ?? []).sort(
-    (a, b) => b.total - a.total,
+    (a, b) => b.amount - a.amount,
   );
+  const total = expenses?.reduce((acc, expense) => acc + expense.amount, 0);
 
   return (
     <div className="w-full">
@@ -60,10 +61,11 @@ export async function DashboardCategories(props: {
           <DashboardCategoryCard
             key={expense.category}
             category={expense.category}
-            total={expense.total}
+            amount={expense.amount}
             fill={expense.fill}
             year={props.year}
             month={props.month}
+            total={total ?? 0}
           />
         ))}
       </div>

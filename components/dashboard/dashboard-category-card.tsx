@@ -4,20 +4,22 @@ import { useRouter } from "next/navigation";
 import React from "react";
 
 import { formatAmount } from "@/components/transactions/components/transaction-amount";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function DashboardCategoryCard({
   category,
-  total,
+  amount,
   fill,
   month,
   year,
+  total,
 }: {
   category: string;
-  total: number;
+  amount: number;
   fill: string;
   month: number;
   year: number;
+  total: number;
 }) {
   const router = useRouter();
   const dateFrom = formatDate(
@@ -35,9 +37,16 @@ export function DashboardCategoryCard({
         )
       }
     >
-      <CardHeader>{category}</CardHeader>
+      <CardHeader>
+        <CardTitle>{category}</CardTitle>
+      </CardHeader>
       <CardContent className="flex flex-col gap-y-2">
-        <div className="text-lg">{formatAmount(total)}</div>
+        <div className="flex gap-x-1 items-center">
+          <div className="text-lg">{formatAmount(amount)}</div>
+        </div>
+        <span className="text-sm text-gray-400">
+          <>{`${((amount / total) * 100).toFixed(2)}% of total`}</>
+        </span>
       </CardContent>
     </Card>
   );
