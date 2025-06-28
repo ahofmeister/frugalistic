@@ -1,11 +1,16 @@
 import React from "react";
 
-import { CategoriesExpensesChart } from "@/components/dashboard/categories-expenses-chart";
+import { DashboardCategoryCard } from "@/components/dashboard/dashboard-category-card";
 import { Period } from "@/components/dashboard/period-selector";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TransactionWithCategory } from "@/types";
+import { Transaction, TransactionWithCategory } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { getPeriodDates } from "@/utils/transaction/dates";
+
+interface CategoryData {
+  category: string;
+  total: number;
+  fill: string;
+}
 
 export async function DashboardCategories(props: {
   month: number;
@@ -28,16 +33,40 @@ export async function DashboardCategories(props: {
     .order("created_at", { ascending: false })
     .returns<TransactionWithCategory[]>();
 
+  const categories = expenses
+    ?.filter((transaction: Transaction) => transaction.category)
+    .reduce<Record<string, CategoryData>>((acc, transaction) => {
+      const { name, color } = transaction.category;
+      const amount = transaction.amount;
+
+      if (!acc[name]) {
+        acc[name] = { category: name, total: 0, fill: color };
+      }
+
+      acc[name].total += amount;
+
+      return acc;
+    }, {});
+
+  const groupedCategories = Object.values(categories ?? []).sort(
+    (a, b) => b.total - a.total,
+  );
+
   return (
     <div className="w-full">
-      <Card>
-        <CardHeader>
-          <CardTitle>Expenses Breakdown</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <CategoriesExpensesChart expenses={expenses ?? []} />
-        </CardContent>
-      </Card>
+      <div className="text-lg my-2">Categories</div>
+      <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
+        {groupedCategories?.map((expense) => (
+          <DashboardCategoryCard
+            key={expense.category}
+            category={expense.category}
+            total={expense.total}
+            fill={expense.fill}
+            year={props.year}
+            month={props.month}
+          />
+        ))}
+      </div>
     </div>
   );
 }
