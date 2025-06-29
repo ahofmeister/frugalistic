@@ -33,7 +33,7 @@ export function DashboardCategoryCard({
       style={{ color: fill }}
       onClick={() =>
         router.push(
-          `/dashboard/search?category=${category}&dateFrom=${dateFrom}&dateTo=${dateTo}`,
+          `/dashboard/search?category=${category}&dateFrom=${dateFrom}&dateTo=${dateTo}&type=expense`,
         )
       }
     >
