@@ -1,7 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon } from "@radix-ui/react-icons";
-import { format } from "date-fns";
+import { format, startOfYesterday } from "date-fns";
 import { HeartIcon } from "lucide-react";
 import React, { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -294,7 +294,7 @@ const TransactionForm = ({
               control={form.control}
               name="category"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="col-span-2">
                   <FormLabel>Category</FormLabel>
                   <Select onValueChange={field.onChange} value={categoryValue}>
                     <FormControl>
@@ -320,47 +320,59 @@ const TransactionForm = ({
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="datetime"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Date</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground",
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) => date < new Date("1900-01-01")}
+                        initialFocus
+                        required
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormItem className="flex flex-col">
+              <FormLabel>&nbsp;</FormLabel>
+              <Button
+                type="button"
+                onClick={() => form.setValue("datetime", startOfYesterday())}
+                variant="outline"
+              >
+                Yesterday
+              </Button>
+            </FormItem>
           </div>
-          <FormField
-            control={form.control}
-            name="datetime"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Date</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          "w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground",
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) => date < new Date("1900-01-01")}
-                      initialFocus
-                      required
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+
           {transaction && (
             <div className="flex flex-col gap-y-2 mt-2">
               <div className="flex gap-x-2">
