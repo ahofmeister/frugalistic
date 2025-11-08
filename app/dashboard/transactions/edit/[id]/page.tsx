@@ -24,7 +24,7 @@ export default async function TransactionEditPage(props: {
   }
 
   const { data: autoSuggests } = await supabase
-    .from("transaction_auto_suggest2")
+    .from("transaction_auto_suggest")
     .select("*")
     .order("frequency", { ascending: false })
     .order("description", { ascending: true });

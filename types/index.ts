@@ -18,7 +18,7 @@ export type TransactionWithRecurring = Transaction & {
 };
 
 export type TransactionAutoSuggest =
-  Database["public"]["Views"]["transaction_auto_suggest2"]["Row"];
+  Database["public"]["Views"]["transaction_auto_suggest"]["Row"];
 
 // Recurring Transactions
 export type RecurringInterval =
