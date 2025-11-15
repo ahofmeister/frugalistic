@@ -2,7 +2,7 @@ import React, { Suspense } from "react";
 import { MonthYearStepper } from "./month-year-stepper";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Period, PeriodSelector } from "@/components/dashboard/period-selector";
-import { DashboardDateLabel } from "@/app/dashboard/dashboardDateLabel";
+import { DashboardDateLabel } from "@/app/dashboard/dashboard-date-label";
 import { SelectNow } from "@/components/dashboard/select-now";
 import { DashboardCategories } from "@/components/dashboard/dashboard-categories";
 import DashboardCards from "@/components/dashboard/dashboard-cards";
