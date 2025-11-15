@@ -1,9 +1,9 @@
 "use client";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { parseAsIsoDate, useQueryState } from "nuqs";
 
-import useUpdateQueryParam from "@/app/useUpdateQueryParam";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -13,23 +13,13 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
-const DateSearchFilter = (props: {
-  paramName: string;
-  label: string;
-  value?: string;
-}) => {
-  const [value, setValue] = useState<Date | undefined>(
-    props.value ? new Date(props.value) : undefined,
+const DateSearchFilter = (props: { paramName: string; label: string }) => {
+  const [value, setValue] = useQueryState(
+    props.paramName,
+    parseAsIsoDate.withOptions({
+      shallow: false,
+    }),
   );
-
-  const updateQueryParams = useUpdateQueryParam();
-
-  useEffect(() => {
-    updateQueryParams({
-      key: props.paramName,
-      value: value ? format(value, "yyyy-MM-dd") : "",
-    });
-  }, [value]);
 
   return (
     <div>
@@ -49,14 +39,12 @@ const DateSearchFilter = (props: {
         <PopoverContent className="w-auto p-0">
           <Calendar
             mode="single"
-            selected={value}
-            onSelect={(value) => {
-              setValue(value);
-              if (value) {
-                updateQueryParams({
-                  key: props.paramName,
-                  value: format(value, "yyyy-MM-dd"),
-                });
+            selected={value ?? new Date()}
+            onSelect={async (date) => {
+              if (date) {
+                await setValue(date);
+              } else {
+                await setValue(null);
               }
             }}
             initialFocus

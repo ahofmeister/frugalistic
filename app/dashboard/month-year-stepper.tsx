@@ -1,32 +1,30 @@
 "use client";
 
-import { parseAsInteger, useQueryState } from "nuqs";
 import React, { ReactElement } from "react";
-
-import { Period } from "@/components/dashboard/period-selector";
 import { Button } from "@/components/ui/button";
+import { parseAsInteger } from "nuqs/server";
+import { parseAsString, useQueryState } from "nuqs";
+import { parseMonth } from "@/lib/utils";
 
 export function MonthYearStepper({
-  incomingYear,
-  incomingMonth,
   amount,
-  period,
   icon,
 }: {
-  incomingYear: number;
-  incomingMonth: number;
   amount: number;
-  period: Period;
   icon: ReactElement;
 }) {
-  const [month, setMonth] = useQueryState(
-    "month",
-    parseAsInteger.withDefault(incomingMonth).withOptions({ shallow: false }),
-  );
+  const [month, setMonth] = useQueryState("month", parseMonth);
 
   const [year, setYear] = useQueryState(
     "year",
-    parseAsInteger.withDefault(incomingYear).withOptions({ shallow: false }),
+    parseAsInteger
+      .withDefault(new Date().getFullYear())
+      .withOptions({ shallow: false }),
+  );
+
+  const [period] = useQueryState(
+    "period",
+    parseAsString.withDefault("month").withOptions({ shallow: false }),
   );
 
   const handleStep = () => {

@@ -1,10 +1,11 @@
 import React from "react";
 
 import { DashboardCategoryCard } from "@/components/dashboard/dashboard-category-card";
-import { Period } from "@/components/dashboard/period-selector";
 import { Transaction, TransactionWithCategory } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { getPeriodDates } from "@/utils/transaction/dates";
+import { DashboardParams } from "@/app/dashboard/page";
+import { loadSearchParams } from "@/app/dashboard/search-params";
 
 interface CategoryData {
   category: string;
@@ -12,15 +13,17 @@ interface CategoryData {
   fill: string;
 }
 
-export async function DashboardCategories(props: {
-  month: number;
-  year: number;
-  period: Period;
+export async function DashboardCategories({
+  searchParams,
+}: {
+  searchParams: Promise<DashboardParams>;
 }) {
+  const awaitedParams = await loadSearchParams(searchParams);
+
   const { startDate, endDate } = getPeriodDates(
-    props.year,
-    props.month,
-    props.period,
+    awaitedParams.year,
+    awaitedParams.month,
+    awaitedParams.period,
   );
   const supabase = await createClient();
   const { data: expenses } = await supabase
@@ -67,10 +70,10 @@ export async function DashboardCategories(props: {
             category={expense.category}
             amount={expense.amount}
             fill={expense.fill}
-            year={props.year}
-            month={props.month}
+            year={awaitedParams.year}
+            month={awaitedParams.month}
             total={total ?? 0}
-            period={props.period}
+            period={awaitedParams.period}
           />
         ))}
       </div>

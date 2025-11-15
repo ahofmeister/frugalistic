@@ -1,24 +1,27 @@
 import React from "react";
 
 import DashboardCard from "@/components/dashboard/dashboard-card";
-import { Period } from "@/components/dashboard/period-selector";
 import { TransactionWithCategory } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { getPeriodDates } from "@/utils/transaction/dates";
+import { DashboardParams } from "@/app/dashboard/page";
+import { loadSearchParams } from "@/app/dashboard/search-params";
 
-const DashboardCards = async (props: {
-  month: number;
-  year: number;
-  period: Period;
+const DashboardCards = async ({
+  searchParams,
+}: {
+  searchParams: Promise<DashboardParams>;
 }) => {
   let income = 0;
   let expense = 0;
   let savings = 0;
 
+  const awaitedParams = await loadSearchParams(searchParams);
+
   const { startDate, endDate } = getPeriodDates(
-    props.year,
-    props.month,
-    props.period,
+    awaitedParams.year,
+    awaitedParams.month,
+    awaitedParams.period,
   );
 
   const supabase = await createClient();

@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Suspense } from "react";
 
 export default function NotFound() {
   return (
@@ -28,7 +29,9 @@ export default function NotFound() {
           </p>
         </CardContent>
         <CardFooter className="flex justify-center space-x-4">
-          <AppButton />
+          <Suspense>
+            <AppButton />
+          </Suspense>
         </CardFooter>
       </Card>
     </div>

@@ -1,5 +1,4 @@
-"use client";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import React from "react";
 
 import FormattedDate from "@/app/dashboard/formatted-date";
@@ -17,35 +16,42 @@ import { RecurringTransaction } from "@/types";
 
 const RecurringTransactionCard = (props: {
   transaction: RecurringTransaction;
+  dateFormat: string;
 }) => {
   const transaction = props.transaction;
-  const router = useRouter();
+
   return (
-    <Card
-      key={transaction.id}
-      className="cursor-pointer"
-      onClick={() => router.push(`/dashboard/recurring/${transaction.id}`)}
-    >
-      <CardHeader>
-        <CardTitle className="flex justify-between">
-          <div>{transaction.description}</div>
-          <div>
-            <TransactionAmount
-              amount={transaction.amount}
-              type={transaction.type}
+    <Link href={`/dashboard/recurring/${transaction.id}`}>
+      <Card
+        key={transaction.id}
+        className="cursor-pointer hover:bg-accent transition-colors"
+      >
+        <CardHeader>
+          <CardTitle className="flex justify-between">
+            <div>{transaction.description}</div>
+            <div>
+              <TransactionAmount
+                amount={transaction.amount}
+                type={transaction.type}
+              />
+            </div>
+          </CardTitle>
+          <CardDescription>
+            <FormattedDate
+              date={transaction.next_run ?? "-"}
+              format={props.dateFormat}
             />
-          </div>
-        </CardTitle>
-        <CardDescription>
-          <FormattedDate date={transaction.next_run ?? "-"} />
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="flex justify-end"></CardContent>
-      <CardFooter className="flex gap-x-4">
-        {!transaction.enabled && <Badge variant="destructive">disabled</Badge>}
-        <Badge variant="secondary">{transaction.interval}</Badge>
-      </CardFooter>
-    </Card>
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex justify-end"></CardContent>
+        <CardFooter className="flex gap-x-4">
+          {!transaction.enabled && (
+            <Badge variant="destructive">disabled</Badge>
+          )}
+          <Badge variant="secondary">{transaction.interval}</Badge>
+        </CardFooter>
+      </Card>
+    </Link>
   );
 };
 

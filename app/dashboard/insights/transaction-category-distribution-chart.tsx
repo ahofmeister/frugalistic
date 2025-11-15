@@ -49,7 +49,7 @@ const transformData = (
 const onlyUnique = (value: string, index: number, array: string[]) =>
   array.indexOf(value) === index;
 
-const TransactionCategoryDistribution = ({
+const TransactionCategoryDistributionChart = ({
   transactions,
 }: {
   transactions: TransactionWithCategory[];
@@ -158,4 +158,4 @@ const TransactionCategoryDistribution = ({
   );
 };
 
-export default TransactionCategoryDistribution;
+export default TransactionCategoryDistributionChart;

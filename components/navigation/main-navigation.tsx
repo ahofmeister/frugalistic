@@ -3,7 +3,7 @@
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React from "react";
+import React, { Suspense } from "react";
 
 import AppButton from "@/components/auth/app-button";
 import { NavItem } from "@/components/navigation/nav-config";
@@ -12,14 +12,14 @@ import { cn } from "@/lib/utils";
 
 export function MainNavigation(props: {
   items: NavItem[];
-  showAppButton: boolean;
+  inDashboard: boolean;
 }) {
   const pathname = usePathname();
 
   return (
     <div className="mr-4 hidden md:flex w-full">
       <Link
-        href="/"
+        href={props.inDashboard ? "/dashboard" : "/"}
         className="flex font-semibold text-primary text-xl items-center px-6"
       >
         {siteConfig.name}
@@ -44,7 +44,8 @@ export function MainNavigation(props: {
             </Link>
           ))}
         </div>
-        {props.showAppButton && <AppButton />}
+
+        <Suspense>{!props.inDashboard && <AppButton />}</Suspense>
       </nav>
     </div>
   );

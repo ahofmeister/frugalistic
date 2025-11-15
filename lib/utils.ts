@@ -6,7 +6,9 @@ import {
   startOfMonth,
   startOfYear,
 } from "date-fns";
+import { createLoader, parseAsInteger, parseAsStringEnum } from "nuqs/server";
 import { twMerge } from "tailwind-merge";
+import { Period } from "@/components/dashboard/period-selector";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -50,3 +52,23 @@ export const getDateRange = (
     dateTo: formatDate(to, "yyyy-MM-dd"),
   };
 };
+
+export const parsePeriod = parseAsStringEnum<Period>(["month", "year"])
+  .withDefault("month")
+  .withOptions({
+    shallow: false,
+  });
+
+export const parseMonth = parseAsInteger
+  .withDefault(new Date().getMonth())
+  .withOptions({
+    shallow: false,
+  });
+
+export const parseYear = parseAsInteger
+  .withDefault(new Date().getFullYear())
+  .withOptions({ shallow: false });
+
+export const loadYearSearchParam = createLoader({
+  year: parseAsInteger.withDefault(new Date().getFullYear()),
+});

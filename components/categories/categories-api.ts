@@ -13,11 +13,11 @@ export async function createCategory(newCategory: NewCategory) {
     console.log(error);
   }
 
-  revalidateTag("category");
+  revalidateTag("category", { expire: 10 });
 }
 
 export async function deleteCategory(id: string) {
   const supabase = await createClient();
   await supabase.from("categories").delete().eq("id", id);
-  revalidateTag("category");
+  revalidateTag("category", { expire: 10 });
 }

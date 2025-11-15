@@ -1,25 +1,20 @@
 "use client";
-import { useEffect, useState } from "react";
+import { parseAsString, useQueryState } from "nuqs";
 
-import useUpdateQueryParam from "@/app/useUpdateQueryParam";
 import { Input } from "@/components/ui/input";
 
-const TransactionSearchInput = (props: { value?: string }) => {
-  const [value, setValue] = useState<string | undefined>(props.value ?? "");
-  const updateQueryParams = useUpdateQueryParam();
-
-  useEffect(() => {
-    setValue(props?.value ?? "");
-  }, [props.value]);
+const TransactionSearchInput = () => {
+  const [description, setDescription] = useQueryState(
+    "description",
+    parseAsString.withDefault("").withOptions({ shallow: false }),
+  );
 
   return (
     <Input
       onChange={(event) => {
-        const newValue = event.target.value;
-        setValue(newValue);
-        updateQueryParams({ key: "description", value: newValue ?? "" });
+        void setDescription(event.target.value || null);
       }}
-      value={value}
+      value={description}
       placeholder="Search transactions"
     />
   );

@@ -1,20 +1,22 @@
-"use client";
-import { useRouter } from "next/navigation";
-
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import {
+  isFilterEmpty,
+  SearchFilter,
+} from "@/app/dashboard/search/search-filter";
 
-const ResetQueryParam = (props: { disabled?: boolean }) => {
-  const router = useRouter();
+const ResetQueryParam = async ({
+  searchParams,
+}: {
+  searchParams: Promise<SearchFilter>;
+}) => {
+  const params = await searchParams;
   return (
-    <Button
-      disabled={props.disabled}
-      variant="secondary"
-      onClick={() => {
-        router.push("/dashboard/search");
-      }}
-    >
-      Reset Filter
-    </Button>
+    <Link href={"/dashboard/search"}>
+      <Button disabled={isFilterEmpty(params)} variant="secondary">
+        Reset Filter
+      </Button>
+    </Link>
   );
 };
 export default ResetQueryParam;

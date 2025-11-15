@@ -1,14 +1,12 @@
 "use client";
-import { useState } from "react";
-
-import useUpdateQueryParam from "@/app/useUpdateQueryParam";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { useQueryState } from "nuqs";
+import { parsePeriod } from "@/lib/utils";
 
 export type Period = "month" | "year";
 
-export function PeriodSelector(props: { value: Period; year: number }) {
-  const [period, setPeriod] = useState<Period>(props.value ?? "month");
-  const updateQueryParam = useUpdateQueryParam();
+export function PeriodSelector() {
+  const [period, setPeriod] = useQueryState("period", parsePeriod);
 
   return (
     <ToggleGroup
@@ -19,21 +17,7 @@ export function PeriodSelector(props: { value: Period; year: number }) {
         if (!newPeriod) {
           return;
         }
-        setPeriod(newPeriod);
-
-        const newVar = [
-          { key: "period", value: newPeriod },
-          { key: "year", value: props.year.toString() },
-          {
-            key: "month",
-            value:
-              newPeriod === "month"
-                ? new Date().getMonth().toString()
-                : undefined,
-          },
-        ];
-
-        updateQueryParam(newVar);
+        void setPeriod(newPeriod);
       }}
     >
       <ToggleGroupItem value="month">Month</ToggleGroupItem>

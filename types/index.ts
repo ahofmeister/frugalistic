@@ -23,8 +23,6 @@ export type TransactionAutoSuggest =
 // Recurring Transactions
 export type RecurringInterval =
   Database["public"]["Enums"]["recurring_interval"];
-export type NewRecurringTransaction =
-  Database["public"]["Tables"]["transactions_recurring"]["Insert"];
 export type RecurringTransaction =
   Database["public"]["Tables"]["transactions_recurring"]["Row"];
 
@@ -45,4 +43,3 @@ export type Favorite = Database["public"]["Tables"]["favorite"]["Row"];
 export type FavoriteWithCategory = Favorite & {
   category: Category;
 };
-export type NewFavorite = Database["public"]["Tables"]["favorite"]["Insert"];

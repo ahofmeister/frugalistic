@@ -3,12 +3,20 @@ import React from "react";
 import InsightCategoryCard from "@/app/dashboard/insights/insight-category-card";
 import { createClient } from "@/utils/supabase/server";
 import { getYearBoundaries } from "@/utils/transaction/dates";
+import { SearchParams } from "nuqs/server";
+import { loadYearSearchParam } from "@/lib/utils";
 
-export async function InsightCategories(props: { year: number }) {
+export async function InsightCategories({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
   const supabase = await createClient();
 
-  const currentYear = getYearBoundaries(props.year);
-  const previousYear = getYearBoundaries(props.year - 1);
+  const { year } = await loadYearSearchParam(searchParams);
+
+  const currentYear = getYearBoundaries(year);
+  const previousYear = getYearBoundaries(year - 1);
 
   const { data } = await supabase.rpc("get_category_totals", {
     from_date: currentYear.startDate,
@@ -27,11 +35,11 @@ export async function InsightCategories(props: { year: number }) {
         )?.total;
         return (
           <InsightCategoryCard
-            year={props.year}
+            year={year}
             key={category.name}
             category={category}
             previousTotal={previousTotal}
-            months={getMonthsInYear(props.year)}
+            months={getMonthsInYear(year)}
           />
         );
       })}
