@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
+import { parseAsString, useQueryState } from "nuqs";
 
-import useUpdateQueryParam from "@/app/useUpdateQueryParam";
 import {
   Select,
   SelectContent,
@@ -11,15 +11,13 @@ import {
 } from "@/components/ui/select";
 import { Transaction } from "@/types";
 
-const SearchSortBy = (props: { sortBy: keyof Transaction | undefined }) => {
-  const updateQueryParam = useUpdateQueryParam();
-
-  const handleChange = (value: string) => {
-    updateQueryParam({
-      key: "sortBy",
-      value: value as keyof Transaction,
-    });
-  };
+const SearchSortBy = () => {
+  const [sortBy, setSortBy] = useQueryState(
+    "sortBy",
+    parseAsString.withDefault("").withOptions({
+      shallow: false,
+    }),
+  );
 
   const transactionKeys = [
     "amount",
@@ -28,7 +26,12 @@ const SearchSortBy = (props: { sortBy: keyof Transaction | undefined }) => {
   ] as (keyof Transaction)[];
 
   return (
-    <Select value={props.sortBy} onValueChange={handleChange}>
+    <Select
+      value={sortBy}
+      onValueChange={async (value: string) => {
+        await setSortBy(value as keyof Transaction);
+      }}
+    >
       <SelectTrigger>
         <SelectValue placeholder="Sort By" />
       </SelectTrigger>

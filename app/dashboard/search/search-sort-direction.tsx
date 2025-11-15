@@ -1,25 +1,25 @@
 "use client";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import React from "react";
+import { parseAsString, useQueryState } from "nuqs";
 
-import useUpdateQueryParam from "@/app/useUpdateQueryParam";
 import { Button } from "@/components/ui/button";
 
 export type SortDirection = "asc" | "desc";
 
-const SearchSortDirection = (props: { sortDirection: SortDirection }) => {
-  const updateQueryParam = useUpdateQueryParam();
+const SearchSortDirection = () => {
+  const [sortDirection, setSortDirection] = useQueryState(
+    "sortDirection",
+    parseAsString.withOptions({
+      shallow: false,
+    }),
+  );
 
   return (
     <Button
-      onClick={() =>
-        updateQueryParam({
-          key: "sortDirection",
-          value: props.sortDirection === "asc" ? "desc" : "asc",
-        })
-      }
+      onClick={() => setSortDirection(sortDirection === "asc" ? "desc" : "asc")}
     >
-      {props.sortDirection === "asc" ? (
+      {sortDirection === "asc" ? (
         <>
           Ascending <ArrowUp className="ml-2" size={16} />
         </>

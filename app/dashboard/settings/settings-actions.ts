@@ -1,7 +1,7 @@
 "use server";
 import { revalidatePath } from "next/cache";
 
-import { SettingUpdate } from "@/types";
+import { Setting, SettingUpdate } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
 export async function updateSettings(setting: SettingUpdate) {
@@ -13,4 +13,14 @@ export async function updateSettings(setting: SettingUpdate) {
     console.log(error);
   }
   revalidatePath("/", "layout");
+}
+
+export async function getSettings(): Promise<Setting> {
+  const supabase = await createClient();
+  const { data: settings } = await supabase
+    .from("setting")
+    .select("*")
+    .single();
+
+  return settings ?? ({ date_format: "dd.MM.yyyy" } as Setting);
 }

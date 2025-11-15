@@ -1,8 +1,6 @@
-"use client";
-
 import { BarChart2, DollarSign, Lock, Users } from "lucide-react";
 import Link from "next/link";
-import React, { ReactNode } from "react";
+import React, { ReactNode, Suspense } from "react";
 
 import GitHub from "@/app/git-hub";
 import AppButton from "@/components/auth/app-button";
@@ -145,7 +143,9 @@ const About: React.FC = () => {
           </p>
         </CardContent>
         <CardFooter className="flex justify-center mt-2">
-          <AppButton />
+          <Suspense>
+            <AppButton />
+          </Suspense>
         </CardFooter>
       </Card>
     </div>

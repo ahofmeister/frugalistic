@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React from "react";
+import React, { Suspense } from "react";
 
 import CategoryList from "@/app/dashboard/categories/category-list";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,9 @@ export default function CategoriesPage() {
         </Link>
       </div>
 
-      <CategoryList />
+      <Suspense>
+        <CategoryList />
+      </Suspense>
     </div>
   );
 }

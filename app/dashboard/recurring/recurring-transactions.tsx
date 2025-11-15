@@ -5,6 +5,7 @@ import RecurringTransactionCard from "@/app/dashboard/recurring/recurring-transa
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { createClient } from "@/utils/supabase/server";
+import { getSettings } from "@/app/dashboard/settings/settings-actions";
 
 const RecurringTransactions = async () => {
   const supabase = await createClient();
@@ -13,6 +14,8 @@ const RecurringTransactions = async () => {
     .from("transactions_recurring")
     .select()
     .order("enabled", { ascending: false });
+
+  const settings = await getSettings();
 
   return (
     <div className="w-full">
@@ -31,6 +34,7 @@ const RecurringTransactions = async () => {
       <div className="flex flex-col gap-y-2">
         {transactions?.map((transaction) => (
           <RecurringTransactionCard
+            dateFormat={settings.date_format}
             key={transaction.id}
             transaction={transaction}
           />

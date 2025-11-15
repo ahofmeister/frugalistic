@@ -12,7 +12,7 @@ export function PublicNavigation() {
       <div className="flex h-14 pl-4">
         <MainNavigation
           items={navConfig.publicNavigation}
-          showAppButton={true}
+          inDashboard={false}
         />
         <PublicMobileNavigation />
       </div>

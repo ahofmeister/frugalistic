@@ -65,7 +65,7 @@ export async function makeTransactionRecurring(
   if (error) {
     console.log(error);
   }
-  revalidateTag("transactions");
+  revalidateTag("transactions", { expire: 10 });
 }
 
 export async function upsertTransaction(newTransaction: NewTransaction) {

@@ -1,84 +1,80 @@
 import React, { Suspense } from "react";
-
-import AmountSearchFilter from "@/app/dashboard/search/amount-search-filter";
-import DateSearchFilter from "@/app/dashboard/search/date-search-filter";
-import {
-  isFilterEmpty,
-  SearchFilter,
-} from "@/app/dashboard/search/search-filter";
-import SearchSortBy from "@/app/dashboard/search/search-sort-by";
-import SearchSortDirection from "@/app/dashboard/search/search-sort-direction";
-import TransactionTypeSearchFilter from "@/app/dashboard/search/transaction-type-search-filter";
-import ResetQueryParam from "@/app/dashboard/transactions/reset-query-param";
-import CategorySearchFilter from "@/components/transactions/components/category-search-filter";
-import TransactionSearchInput from "@/components/transactions/components/transaction-search-input";
-import TransactionsSearchResult from "@/components/transactions/components/transactions-search-result";
+import { SearchFilter } from "@/app/dashboard/search/search-filter";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import TransactionsSearchResult from "@/components/transactions/components/transactions-search-result";
+import TransactionSearchInput from "@/components/transactions/components/transaction-search-input";
+import CategorySearchFilter from "@/components/transactions/components/category-search-filter";
+import TransactionTypeSearchFilter from "@/app/dashboard/search/transaction-type-search-filter";
+import DateSearchFilter from "@/app/dashboard/search/date-search-filter";
+import AmountSearchFilter from "@/app/dashboard/search/amount-search-filter";
+import ResetQueryParam from "@/app/dashboard/transactions/reset-query-param";
+import SearchSortBy from "@/app/dashboard/search/search-sort-by";
+import SearchSortDirection from "@/app/dashboard/search/search-sort-direction";
 
-export default async function TransactionSearchPage(props: {
+export default async function TransactionSearchPage({
+  searchParams,
+}: {
   searchParams: Promise<SearchFilter>;
 }) {
-  const searchParams = await props.searchParams;
-
   return (
     <div className="flex flex-col ml-2 mt-2 gap-4">
-      <TransactionSearchInput value={searchParams.description} />
+      <Suspense>
+        <TransactionSearchInput />
+      </Suspense>
       <div className="flex gap-x-4">
-        <CategorySearchFilter />
+        <Suspense>
+          <CategorySearchFilter />
+        </Suspense>
 
-        <TransactionTypeSearchFilter
-          key={searchParams.type}
-          value={searchParams.type}
-        />
+        <Suspense>
+          <TransactionTypeSearchFilter />
+        </Suspense>
       </div>
       <div className="flex gap-x-4">
-        <DateSearchFilter
-          key={searchParams.dateFrom}
-          paramName="dateFrom"
-          label="Date from"
-          value={searchParams.dateFrom}
-        />
-        <DateSearchFilter
-          key={searchParams.dateTo}
-          paramName="dateTo"
-          label="Date to"
-          value={searchParams.dateTo}
-        />
+        <Suspense>
+          <DateSearchFilter paramName="dateFrom" label="Date from" />
+          <DateSearchFilter paramName="dateTo" label="Date to" />
+        </Suspense>
       </div>
       Amount Range
       <div className="flex gap-x-4">
-        <AmountSearchFilter
-          paramName="amountMin"
-          placeholder="Amount from"
-          value={searchParams.amountMin}
-        />
-        <AmountSearchFilter
-          paramName="amountMax"
-          placeholder="Amount to"
-          value={searchParams.amountMax}
-        />
+        <Suspense>
+          <AmountSearchFilter paramName="amountMin" placeholder="Amount from" />
+          <AmountSearchFilter paramName="amountMax" placeholder="Amount to" />
+        </Suspense>
       </div>
-      <ResetQueryParam disabled={isFilterEmpty(searchParams)} />
+      <Suspense>
+        <ResetQueryParam searchParams={searchParams} />
+      </Suspense>
       <div className="flex gap-x-4 justify-start">
         <div className="w-36">
-          <SearchSortBy sortBy={searchParams.sortBy} />
+          <Suspense>
+            <SearchSortBy />
+          </Suspense>
         </div>
-        <SearchSortDirection sortDirection={searchParams.sortDirection} />
+        <Suspense>
+          <SearchSortDirection />
+        </Suspense>
       </div>
       <div className="mt-4">
         <Suspense
           fallback={
             <>
-              {Array.from({ length: 25 }).map((_, i) => (
-                <Card key={i} className="mb-2">
+              <div>
+                <Skeleton className={"w-32 h-6 mb-2"}></Skeleton>
+              </div>
+              {Array.from({ length: 100 }).map((_, i) => (
+                <Card key={i} className="mb-2 h-20">
                   <CardHeader>
                     <CardTitle className="flex justify-between">
                       <Skeleton className="w-20 h-4"></Skeleton>
-                      <Skeleton className="w-20 h-4"></Skeleton>
+                      <Skeleton className="w-14 h-4"></Skeleton>
                     </CardTitle>
-                    <Skeleton className="w-20 h-4"></Skeleton>
-                    <Skeleton className="w-24 h-4"></Skeleton>
+                    <div className={"flex justify-between"}>
+                      <Skeleton className="w-20 h-4"></Skeleton>
+                      <Skeleton className="w-24 h-4"></Skeleton>
+                    </div>
                   </CardHeader>
                 </Card>
               ))}

@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { use } from "react";
 
 import { deleteRecurringTransaction } from "@/components/transactions/transactions-api";
 import {
@@ -14,12 +14,11 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { RecurringTransaction } from "@/types";
 
-const DeleteRecurringTransaction = (props: {
-  recurringTransaction: RecurringTransaction;
-}) => {
+const DeleteRecurringTransaction = (props: { id: Promise<string> }) => {
   const router = useRouter();
+
+  const id = use(props.id);
 
   return (
     <AlertDialog>
@@ -37,9 +36,7 @@ const DeleteRecurringTransaction = (props: {
         <AlertDialogAction
           className="bg-destructive"
           onClick={async () => {
-            const error = await deleteRecurringTransaction(
-              props.recurringTransaction.id,
-            );
+            const error = await deleteRecurringTransaction(id);
 
             if (!error) {
               router.push("/dashboard/recurring");

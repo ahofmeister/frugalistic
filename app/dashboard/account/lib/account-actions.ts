@@ -24,7 +24,7 @@ export async function updateAccount(account: ProfileUpdate) {
     if (error) {
       console.log(error);
     }
-    revalidateTag("profile");
+    revalidateTag("profile", { expire: 10 });
   }
 }
 

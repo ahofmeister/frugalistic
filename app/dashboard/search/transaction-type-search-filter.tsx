@@ -1,7 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import React, { useTransition } from "react";
 
-import useUpdateQueryParam from "@/app/useUpdateQueryParam";
 import { TransactionSelectItems } from "@/components/transactions/components/transaction-select-items";
 import {
   Select,
@@ -11,27 +10,40 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { TransactionType } from "@/types";
+import { createParser, useQueryState } from "nuqs";
 
 const TYPE_ALL_VALUE = "all";
 
-const TransactionTypeSearchFilter = (props: { value?: TransactionType }) => {
-  const [type, setType] = useState<string>(props.value ?? "all");
+const parseTransactionTypeFilter = createParser({
+  parse(value) {
+    if (value === "income" || value === "expense" || value === "savings") {
+      return value as TransactionType;
+    }
+    return "all";
+  },
+  serialize(value) {
+    return value;
+  },
+})
+  .withDefault("all")
+  .withOptions({ shallow: false });
 
-  const updateQueryParams = useUpdateQueryParam();
+const TransactionTypeSearchFilter = () => {
+  const [type, setType] = useQueryState("type", parseTransactionTypeFilter);
+  const [isPending, startTransition] = useTransition();
 
   return (
     <div>
       <Select
         value={type}
         onValueChange={(value) => {
-          if (value == TYPE_ALL_VALUE) {
-            updateQueryParams({ key: "type", value: undefined });
-          } else {
-            updateQueryParams({ key: "type", value });
-          }
-
-          setType(value);
+          startTransition(async () => {
+            await setType(
+              value === TYPE_ALL_VALUE ? null : (value as TransactionType),
+            );
+          });
         }}
+        disabled={isPending}
       >
         <SelectTrigger>
           <SelectValue placeholder="Select a type" />

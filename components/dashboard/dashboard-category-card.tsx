@@ -1,5 +1,4 @@
-"use client";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import React from "react";
 
 import { Period } from "@/components/dashboard/period-selector";
@@ -24,30 +23,25 @@ export function DashboardCategoryCard({
   total: number;
   period: Period;
 }) {
-  const router = useRouter();
   const { dateFrom, dateTo } = getDateRange(period, year, month);
 
   return (
-    <Card
-      className="cursor-pointer"
-      style={{ color: fill }}
-      onClick={() =>
-        router.push(
-          `/dashboard/search?category=${category}&dateFrom=${dateFrom}&dateTo=${dateTo}&type=expense`,
-        )
-      }
+    <Link
+      href={`/dashboard/search?category=${category}&dateFrom=${dateFrom}&dateTo=${dateTo}&type=expense`}
     >
-      <CardHeader>
-        <CardTitle>{category}</CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-y-2">
-        <div className="flex gap-x-1 items-center">
-          <div className="text-lg">{formatAmount(amount)}</div>
-        </div>
-        <span className="text-sm text-gray-400">
-          {`${((amount / total) * 100).toFixed(2)}% of total`}
-        </span>
-      </CardContent>
-    </Card>
+      <Card style={{ color: fill }}>
+        <CardHeader>
+          <CardTitle>{category}</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-y-2">
+          <div className="flex gap-x-1 items-center">
+            <div className="text-lg">{formatAmount(amount)}</div>
+          </div>
+          <span className="text-sm text-gray-400">
+            {`${((amount / total) * 100).toFixed(2)}% of total`}
+          </span>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }
