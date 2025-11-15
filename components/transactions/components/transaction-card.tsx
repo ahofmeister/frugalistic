@@ -1,5 +1,3 @@
-import { useRouter } from "next/navigation";
-
 import FormattedDate from "@/app/dashboard/formatted-date";
 import CategoryColor from "@/components/categories/category-color";
 import TransactionAmount from "@/components/transactions/components/transaction-amount";
@@ -18,8 +16,8 @@ export function TransactionCard(props: {
   transaction: TransactionWithRecurring;
   dateFormat: string;
 }) {
-  const router = useRouter();
   const transaction = props.transaction;
+
   return (
     <Link href={`/dashboard/transactions/edit/${transaction.id}`}>
       <Card key={transaction.id}>
