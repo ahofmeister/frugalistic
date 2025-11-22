@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import { MonthYearStepper } from "../../dashboard/month-year-stepper";
+import { MonthYearStepper } from "../../month-year-stepper";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Period, PeriodSelector } from "@/components/dashboard/period-selector";
 import { DashboardDateLabel } from "@/app/(dashboard)/dashboard/dashboard-date-label";

@@ -19,7 +19,7 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import FeedbackCard from "@/app/dashboard/feedback-card";
+import FeedbackCard from "@/components/feedback/feedback-card";
 
 export default function MainNavigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
