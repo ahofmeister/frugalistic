@@ -27,7 +27,7 @@ export function CategoryCard(props: {
         if (!props.category.id) {
           return;
         }
-        router.push(`/dashboard/categories/edit/${category.id}`);
+        router.push(`/categories/edit/${category.id}`);
       }}
       style={{ color: category.color }}
     >

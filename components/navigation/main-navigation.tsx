@@ -1,17 +1,18 @@
 "use client";
 
 import {
-  BarChart2,
-  HeartIcon,
-  Home,
+  BarChartBig,
+  Heart,
+  LayoutDashboard,
+  LineChart,
+  ListOrdered,
   LucideIcon,
   Menu,
-  MessageCircle,
-  PlusIcon,
-  Receipt,
-  Settings,
-  TrendingUp,
-  Wallet,
+  MessageSquareText,
+  Repeat2,
+  SquarePlus,
+  Tags,
+  UserCog,
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -124,13 +125,13 @@ export default function MainNavigation() {
                   Overview
                 </div>
                 <div className="space-y-1">
-                  <NavItem href="/dashboard" icon={Home}>
+                  <NavItem href="/dashboard" icon={LayoutDashboard}>
                     Dashboard
                   </NavItem>
-                  <NavItem href="/insights" icon={BarChart2}>
+                  <NavItem href="/insights" icon={LineChart}>
                     Insights
                   </NavItem>
-                  <NavItem href="/statistics" icon={TrendingUp}>
+                  <NavItem href="/statistics" icon={BarChartBig}>
                     Statistics
                   </NavItem>
                 </div>
@@ -141,22 +142,22 @@ export default function MainNavigation() {
                   Transactions
                 </div>
                 <div className="space-y-1">
-                  <NavItem href="/transactions/new" icon={PlusIcon}>
+                  <NavItem href="/transactions/new" icon={SquarePlus}>
                     New transaction
                   </NavItem>
-                  <NavItem href="/transactions" icon={Wallet}>
+                  <NavItem href="/transactions" icon={ListOrdered}>
                     Transactions
                   </NavItem>
-                  <NavItem href="/transactions/recurring" icon={Receipt}>
+                  <NavItem href="/transactions/recurring" icon={Repeat2}>
                     Recurring
                   </NavItem>
-                  <NavItem href="/favorites" icon={HeartIcon}>
+                  <NavItem href="/favorites" icon={Heart}>
                     <div className="flex gap-x-2 items-center">
                       <span>Favorites</span>
                       <Badge variant="secondary">Soon</Badge>
                     </div>
                   </NavItem>
-                  <NavItem href="/categories" icon={Receipt}>
+                  <NavItem href="/categories" icon={Tags}>
                     Categories
                   </NavItem>
                 </div>
@@ -167,7 +168,7 @@ export default function MainNavigation() {
                   Support
                 </div>
                 <div className="space-y-1">
-                  <NavItem icon={MessageCircle} noLink>
+                  <NavItem icon={MessageSquareText} noLink>
                     <FeedbackCard />
                   </NavItem>
                 </div>
@@ -177,7 +178,7 @@ export default function MainNavigation() {
 
           <div className="px-4 py-4 border-t border-border">
             <div className="space-y-1">
-              <NavItem href="/account" icon={Settings}>
+              <NavItem href="/account" icon={UserCog}>
                 Account
               </NavItem>
             </div>

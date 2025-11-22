@@ -22,10 +22,7 @@ const RecurringTransactionCard = (props: {
 
   return (
     <Link href={`/app/(dashboard)/transactions/recurring/${transaction.id}`}>
-      <Card
-        key={transaction.id}
-        className="cursor-pointer hover:bg-accent transition-colors"
-      >
+      <Card>
         <CardHeader>
           <CardTitle className="flex justify-between">
             <div>{transaction.description}</div>

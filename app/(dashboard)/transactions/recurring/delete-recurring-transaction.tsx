@@ -39,7 +39,7 @@ const DeleteRecurringTransaction = (props: { id: Promise<string> }) => {
             const error = await deleteRecurringTransaction(id);
 
             if (!error) {
-              router.push("/dashboard/recurring");
+              router.push("/transactions/recurring");
             }
           }}
         >
