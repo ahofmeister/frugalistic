@@ -21,7 +21,7 @@ const RecurringTransactionCard = (props: {
   const transaction = props.transaction;
 
   return (
-    <Link href={`/app/(dashboard)/transactions/recurring/${transaction.id}`}>
+    <Link href={`/transactions/recurring/${transaction.id}`}>
       <Card>
         <CardHeader>
           <CardTitle className="flex justify-between">

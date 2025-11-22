@@ -23,7 +23,7 @@ const RecurringTransactions = async () => {
       {transactions?.length === 0 && (
         <Card className=" inset-0 gap-y-4 flex flex-col h-[240px] items-center justify-center  text-muted-foreground text-lg">
           No recurring transactions to display yet!
-          <Link href="/app/(dashboard)/transactions/new">
+          <Link href="/transactions/new">
             <Button variant="default">
               <div className="flex">New Transaction</div>
             </Button>

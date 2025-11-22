@@ -19,7 +19,7 @@ export function TransactionCard(props: {
   const transaction = props.transaction;
 
   return (
-    <Link href={`/app/(dashboard)/transactions/edit/${transaction.id}`}>
+    <Link href={`/transactions/edit/${transaction.id}`}>
       <Card key={transaction.id}>
         <CardHeader>
           <CardTitle className="flex justify-between">
