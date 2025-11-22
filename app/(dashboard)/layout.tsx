@@ -12,7 +12,9 @@ export default async function RootLayout({
 }) {
   return (
     <div className={"flex h-screen"}>
-      <MainNavigation />
+      <Suspense>
+        <MainNavigation />
+      </Suspense>
       <main className="pb-[calc(5rem+env(safe-area-inset-bottom))] p-4 w-full pt-20 lg:pt-8">
         <NuqsAdapter>{children}</NuqsAdapter>
       </main>
