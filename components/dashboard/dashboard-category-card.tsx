@@ -27,7 +27,7 @@ export function DashboardCategoryCard({
 
   return (
     <Link
-      href={`/dashboard/search?category=${category}&dateFrom=${dateFrom}&dateTo=${dateTo}&type=expense`}
+      href={`/transactions?category=${category}&dateFrom=${dateFrom}&dateTo=${dateTo}&type=expense`}
     >
       <Card style={{ color: fill }}>
         <CardHeader>

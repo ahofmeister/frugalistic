@@ -1,9 +1,9 @@
 import React from "react";
 
-import { SearchFilter } from "@/app/dashboard/search/search-filter";
+import { SearchFilter } from "@/app/(dashboard)/transactions/search-filter";
 import TransactionList from "@/components/transactions/components/transaction-list";
 import { searchTransactions } from "@/components/transactions/transactions-api";
-import { getSettings } from "@/app/dashboard/settings/settings-actions";
+import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
 
 const TransactionsSearchResult = async (props: {
   filter: Promise<SearchFilter>;

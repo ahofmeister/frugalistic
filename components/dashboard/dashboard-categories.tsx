@@ -4,8 +4,8 @@ import { DashboardCategoryCard } from "@/components/dashboard/dashboard-category
 import { Transaction, TransactionWithCategory } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { getPeriodDates } from "@/utils/transaction/dates";
-import { DashboardParams } from "@/app/dashboard/page";
-import { loadSearchParams } from "@/app/dashboard/search-params";
+import { DashboardParams } from "@/app/(dashboard)/dashboard/page";
+import { loadSearchParams } from "@/app/(dashboard)/search-params";
 
 interface CategoryData {
   category: string;

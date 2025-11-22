@@ -1,34 +1,34 @@
-import React from "react";
 import TransactionList from "@/components/transactions/components/transaction-list";
 import { TransactionWithRecurring } from "@/types";
 import { createClient } from "@/utils/supabase/server";
-import { getPeriodDates } from "@/utils/transaction/dates";
-import { loadSearchParams } from "@/app/(dashboard)/search-params";
-import { DashboardParams } from "@/app/(dashboard)/dashboard/page";
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
 
-export default async function DashboardTransactions({
-  searchParams,
-}: {
-  searchParams: Promise<DashboardParams>;
-}) {
+export async function RelatedTransactions(props: { id: Promise<string> }) {
   const supabase = await createClient();
 
-  const awaitedParams = await loadSearchParams(searchParams);
+  const id = await props.id;
 
-  const { startDate, endDate } = getPeriodDates(
-    awaitedParams.year,
-    awaitedParams.month,
-    awaitedParams.period,
-  );
+  const { data: transaction } = await supabase
+    .from("transactions")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (!transaction) {
+    return;
+  }
+
   const { data: transactions } = await supabase
     .from("transactions")
     .select("*, category(*), recurring_transaction(*)")
-    .gte("datetime", startDate)
-    .lte("datetime", endDate)
     .order("datetime", { ascending: false })
-    .order("created_at", { ascending: false })
+    .eq("description", transaction.description)
+    .neq("id", transaction.id)
     .returns<TransactionWithRecurring[]>();
+
+  if (!transactions || transactions?.length === 0) {
+    return;
+  }
 
   const settings = await getSettings();
 

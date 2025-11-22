@@ -1,4 +1,4 @@
-import FormattedDate from "@/app/dashboard/formatted-date";
+import FormattedDate from "@/app/(dashboard)/dashboard/formatted-date";
 import CategoryColor from "@/components/categories/category-color";
 import TransactionAmount from "@/components/transactions/components/transaction-amount";
 import { Badge } from "@/components/ui/badge";
@@ -19,7 +19,7 @@ export function TransactionCard(props: {
   const transaction = props.transaction;
 
   return (
-    <Link href={`/dashboard/transactions/edit/${transaction.id}`}>
+    <Link href={`/app/(dashboard)/transactions/edit/${transaction.id}`}>
       <Card key={transaction.id}>
         <CardHeader>
           <CardTitle className="flex justify-between">

@@ -8,7 +8,7 @@ import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import DeleteTransaction from "@/app/dashboard/transactions/edit/[id]/delete-transaction";
+import DeleteTransaction from "@/app/(dashboard)/transactions/edit/[id]/delete-transaction";
 import {
   addFavorite,
   removeFavorite,
@@ -131,7 +131,7 @@ const TransactionForm = ({
 
   const [favoriteOpen, setFavoriteOpen] = useState<boolean>(false);
   return (
-    <div className="max-w-2xl mx-auto px-2 py-4">
+    <div className="max-w-2xl mx-auto px-2">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit((transaction) =>
