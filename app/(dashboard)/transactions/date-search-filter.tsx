@@ -36,7 +36,7 @@ const DateSearchFilter = (props: { paramName: string; label: string }) => {
             {value ? format(value, "yyyy-MM-dd") : <span>{props.label}</span>}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0">
+        <PopoverContent className="w-auto p-0" align="start">
           <Calendar
             mode="single"
             selected={value ?? new Date()}
