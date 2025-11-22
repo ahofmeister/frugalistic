@@ -42,7 +42,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`dark ${poppinsFont.className}`}>
-      <body className="bg-background">
+      <body>
         {children}
         <Toaster richColors />
       </body>

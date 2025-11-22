@@ -22,7 +22,6 @@ export type NavItemIcon = NavItem & {
 
 export interface NavConfig {
   dashboardNavigation: NavItemIcon[];
-  publicNavigation: NavItem[];
 }
 
 export const navConfig: NavConfig = {
@@ -34,36 +33,24 @@ export const navConfig: NavConfig = {
     },
     {
       title: "Search",
-      href: "/dashboard/search",
+      href: "/transactions",
       icon: Search,
     },
 
     {
       title: "Add",
-      href: "/dashboard/transactions/new",
+      href: "/transactions/new",
       icon: SquarePlus,
     },
     {
       title: "Insights",
-      href: "/dashboard/insights",
+      href: "/insights",
       icon: ChartColumnDecreasing,
     },
     {
       title: "Account",
-      href: "/dashboard/account",
+      href: "/account",
       icon: UserIcon,
-    },
-  ],
-  publicNavigation: [
-    {
-      title: "About",
-      href: "/about",
-    },
-
-    {
-      title: "Roadmap",
-      external: true,
-      href: "https://alexander-hofmeister.notion.site/Frugalistic-Roadmap-787863f18f044b68ba716d9a439f06c6?pvs=74",
     },
   ],
 };

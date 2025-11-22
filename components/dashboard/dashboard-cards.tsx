@@ -4,8 +4,8 @@ import DashboardCard from "@/components/dashboard/dashboard-card";
 import { TransactionWithCategory } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { getPeriodDates } from "@/utils/transaction/dates";
-import { DashboardParams } from "@/app/dashboard/page";
-import { loadSearchParams } from "@/app/dashboard/search-params";
+import { DashboardParams } from "@/app/(dashboard)/dashboard/page";
+import { loadSearchParams } from "@/app/(dashboard)/search-params";
 
 const DashboardCards = async ({
   searchParams,

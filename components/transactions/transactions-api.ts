@@ -2,7 +2,7 @@
 import { addMonths, addYears, format } from "date-fns";
 import { revalidatePath, revalidateTag } from "next/cache";
 
-import { SearchFilter } from "@/app/dashboard/search/search-filter";
+import { SearchFilter } from "@/app/(dashboard)/transactions/search-filter";
 import {
   NewTransaction,
   RecurringInterval,
@@ -123,7 +123,7 @@ export const searchTransactions = async (
     ascending: filter.sortDirection === "asc",
   });
 
-  query.limit(100);
+  query.limit(200);
   const { data } = await query.returns<TransactionWithRecurring[]>();
   return data ?? [];
 };

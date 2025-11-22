@@ -8,12 +8,6 @@ import LoadingSpinner from "@/components/loading/loading";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -52,12 +46,7 @@ export default function FeedbackCard() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Card>
-          <CardHeader>
-            <CardTitle>Feedback?</CardTitle>
-            <CardDescription>We appreciate all your feedback.</CardDescription>
-          </CardHeader>
-        </Card>
+        <div className="w-full cursor-pointer">Give Feedback</div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader className="flex-row justify-between items-start">

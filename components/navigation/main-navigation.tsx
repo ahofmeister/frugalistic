@@ -1,52 +1,196 @@
 "use client";
 
-import { ArrowUpRight } from "lucide-react";
+import {
+  BarChart2,
+  HeartIcon,
+  Home,
+  LucideIcon,
+  Menu,
+  MessageCircle,
+  PlusIcon,
+  Receipt,
+  Settings,
+  TrendingUp,
+  Wallet,
+} from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
-import React, { Suspense } from "react";
+import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
+import FeedbackCard from "@/app/dashboard/feedback-card";
 
-import AppButton from "@/components/auth/app-button";
-import { NavItem } from "@/components/navigation/nav-config";
-import { siteConfig } from "@/components/site-config";
-import { cn } from "@/lib/utils";
-
-export function MainNavigation(props: {
-  items: NavItem[];
-  inDashboard: boolean;
-}) {
+export default function MainNavigation() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  return (
-    <div className="mr-4 hidden md:flex w-full">
-      <Link
-        href={props.inDashboard ? "/dashboard" : "/"}
-        className="flex font-semibold text-primary text-xl items-center px-6"
-      >
-        {siteConfig.name}
-      </Link>
-      <nav className="flex w-full items-center justify-between">
-        <div className="flex items-center gap-4 text-sm xl:gap-6">
-          {props.items.map((item) => (
-            <Link
-              key={item.title}
-              href={item.href}
-              className={cn(
-                "transition-colors hover:text-foreground/80",
-                pathname === item.href
-                  ? "text-primary"
-                  : "text-muted-foreground hover:text-primary",
-              )}
-            >
-              <div className="flex gap-x-1 items-center">
-                {item.title}
-                {item.external && <ArrowUpRight size="15" />}
-              </div>
-            </Link>
-          ))}
-        </div>
+  function handleNavigation() {
+    setIsMobileMenuOpen(false);
+  }
 
-        <Suspense>{!props.inDashboard && <AppButton />}</Suspense>
+  function NavItem({
+    href,
+    icon: Icon,
+    children,
+    noLink,
+  }: {
+    href?: string;
+    icon?: LucideIcon;
+    children: React.ReactNode;
+    noLink?: boolean;
+  }) {
+    const isActive = href && pathname === href;
+
+    const content = (
+      <>
+        {Icon && <Icon className="h-4 w-4 mr-3 flex-shrink-0 cursor-pointer" />}
+        {children}
+      </>
+    );
+
+    if (noLink) {
+      return (
+        <div className="flex items-center px-3 py-2 text-sm rounded-md transition-colors text-muted-foreground hover:text-foreground hover:bg-accent cursor-pointer">
+          {content}
+        </div>
+      );
+    }
+
+    return (
+      <Link
+        href={href || "#"}
+        onClick={handleNavigation}
+        className={`flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
+          isActive
+            ? "bg-accent text-foreground font-medium"
+            : "text-muted-foreground hover:text-foreground hover:bg-accent"
+        }`}
+      >
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <>
+      <div className="md:hidden fixed top-0 left-0 right-0 z-[70] bg-background flex justify-between items-center px-4 py-3 border-b border-border">
+        <Image
+          src="/icon-192x192.png"
+          alt="Frugalistic"
+          width={32}
+          height={32}
+          className="flex-shrink-0"
+        />
+        <button
+          type="button"
+          className="p-2 rounded-lg hover:bg-accent"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        >
+          <Menu className="h-5 w-5 text-foreground" />
+        </button>
+      </div>
+
+      <nav
+        className={`
+          fixed inset-y-0 left-0 z-[65] w-64 bg-background transform transition-transform duration-200 ease-in-out
+          md:translate-x-0 md:static md:w-64 border-r border-border
+          md:top-0 top-16
+          ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
+        `}
+      >
+        <div className="h-full flex flex-col">
+          <Link
+            href="/dashboard"
+            className="h-16 px-6 flex items-center border-b border-border"
+          >
+            <div className="flex items-center gap-3">
+              <Image
+                src="/icon-192x192.png"
+                alt="Frugalistic"
+                width={32}
+                height={32}
+                className="flex-shrink-0"
+              />
+              <span className="text-lg font-semibold hover:cursor-pointer text-primary">
+                Frugalistic
+              </span>
+            </div>
+          </Link>
+
+          <div className="flex-1 overflow-y-auto py-4 px-4">
+            <div className="space-y-6">
+              <div>
+                <div className="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Overview
+                </div>
+                <div className="space-y-1">
+                  <NavItem href="/dashboard" icon={Home}>
+                    Dashboard
+                  </NavItem>
+                  <NavItem href="/insights" icon={BarChart2}>
+                    Insights
+                  </NavItem>
+                  <NavItem href="/statistics" icon={TrendingUp}>
+                    Statistics
+                  </NavItem>
+                </div>
+              </div>
+
+              <div>
+                <div className="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Transactions
+                </div>
+                <div className="space-y-1">
+                  <NavItem href="/transactions/new" icon={PlusIcon}>
+                    New transaction
+                  </NavItem>
+                  <NavItem href="/transactions" icon={Wallet}>
+                    Transactions
+                  </NavItem>
+                  <NavItem href="/transactions/recurring" icon={Receipt}>
+                    Recurring
+                  </NavItem>
+                  <NavItem href="/favorites" icon={HeartIcon}>
+                    <div className="flex gap-x-2 items-center">
+                      <span>Favorites</span>
+                      <Badge variant="secondary">Soon</Badge>
+                    </div>
+                  </NavItem>
+                  <NavItem href="/categories" icon={Receipt}>
+                    Categories
+                  </NavItem>
+                </div>
+              </div>
+
+              <div>
+                <div className="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Support
+                </div>
+                <div className="space-y-1">
+                  <NavItem icon={MessageCircle} noLink>
+                    <FeedbackCard />
+                  </NavItem>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="px-4 py-4 border-t border-border">
+            <div className="space-y-1">
+              <NavItem href="/account" icon={Settings}>
+                Account
+              </NavItem>
+            </div>
+          </div>
+        </div>
       </nav>
-    </div>
+
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-[60] md:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+    </>
   );
 }
