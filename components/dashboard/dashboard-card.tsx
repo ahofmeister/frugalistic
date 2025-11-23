@@ -1,7 +1,6 @@
 import React from "react";
 
 import TransactionAmount, {
-  getBgColor,
   getTextColor,
 } from "@/components/transactions/components/transaction-amount";
 import {
@@ -27,11 +26,7 @@ const DashboardCard = ({
   ofLabel?: string;
 }) => {
   return (
-    <Card
-      className={`lg:w-[180px] size-30 ${getBgColor(type)}`}
-      // @ts-expect-error CSS property exists
-      style={{ "--tw-bg-opacity": 0.2 }}
-    >
+    <Card className={`lg:w-[180px] size-30`}>
       <CardHeader>
         <CardTitle className={getTextColor(type)}>
           {capitalize(type as string)}

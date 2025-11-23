@@ -16,7 +16,6 @@ import {
   TransactionType,
   TransactionTypeWithLeftover,
 } from "@/types";
-import { transactionWithLeftover } from "@/utils/transaction/colors";
 
 export function TransactionsChart(props: { transactions: Transaction[] }) {
   const allTypes: TransactionTypeWithLeftover[] = [
@@ -109,8 +108,8 @@ export function TransactionsChart(props: { transactions: Transaction[] }) {
                 key={type}
                 type="monotone"
                 dataKey={type}
-                stroke={transactionWithLeftover[type]}
-                fill={transactionWithLeftover[type] + "30"}
+                stroke={`var(--color-${type})`}
+                fill={`color-mix(in srgb, var(--color-${type}) 19%, transparent)`}
                 isAnimationActive={false}
               />
             ))}

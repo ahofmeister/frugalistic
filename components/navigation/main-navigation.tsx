@@ -44,7 +44,7 @@ export default function MainNavigation() {
 
     const content = (
       <>
-        {Icon && <Icon className="h-4 w-4 mr-3 flex-shrink-0 cursor-pointer" />}
+        {Icon && <Icon className="h-4 w-4 mr-3 shrink-0 cursor-pointer" />}
         {children}
       </>
     );
@@ -74,13 +74,13 @@ export default function MainNavigation() {
 
   return (
     <>
-      <div className="md:hidden fixed top-0 left-0 right-0 z-[70] bg-background flex justify-between items-center px-4 py-3 border-b border-border">
+      <div className="md:hidden fixed top-0 left-0 right-0 z-70 bg-background flex justify-between items-center px-4 py-3 border-b border-border">
         <Image
           src="/icon-192x192.png"
           alt="Frugalistic"
           width={32}
           height={32}
-          className="flex-shrink-0"
+          className="shrink-0"
         />
         <button
           type="button"
@@ -93,7 +93,7 @@ export default function MainNavigation() {
 
       <nav
         className={`
-          fixed inset-y-0 left-0 z-[65] w-64 bg-background transform transition-transform duration-200 ease-in-out
+          fixed inset-y-0 left-0 z-65 w-64 bg-background transform transition-transform duration-200 ease-in-out
           md:translate-x-0 md:static md:w-64 border-r border-border
           md:top-0 top-16
           ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
@@ -110,7 +110,7 @@ export default function MainNavigation() {
                 alt="Frugalistic"
                 width={32}
                 height={32}
-                className="flex-shrink-0"
+                className="shrink-0"
               />
               <span className="text-lg font-semibold hover:cursor-pointer text-primary">
                 Frugalistic
@@ -188,7 +188,7 @@ export default function MainNavigation() {
 
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-[60] md:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 z-60 md:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
