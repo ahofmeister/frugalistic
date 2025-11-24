@@ -2,6 +2,7 @@
 
 import {
   BarChartBig,
+  CalendarRangeIcon,
   Heart,
   LayoutDashboard,
   LineChart,
@@ -133,6 +134,9 @@ export default function MainNavigation() {
                   </NavItem>
                   <NavItem href="/statistics" icon={BarChartBig}>
                     Statistics
+                  </NavItem>
+                  <NavItem href="/annual" icon={CalendarRangeIcon}>
+                    Annual
                   </NavItem>
                 </div>
               </div>
