@@ -44,7 +44,7 @@ const CategoryForm = (props: { category?: Category }) => {
       ...newCategory,
       id: props.category ? props.category.id : undefined,
     });
-    redirect("/dashboard/categories");
+    redirect("/categories");
   }
 
   return (

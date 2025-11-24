@@ -25,7 +25,7 @@ export default function manifest(): MetadataRoute.Manifest {
       {
         icons: [],
         name: "New Transaction",
-        url: "/dashboard/transactions/new",
+        url: "transactions/new",
       },
     ],
   };
