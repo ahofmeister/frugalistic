@@ -5,6 +5,8 @@ import { Period } from "@/components/dashboard/period-selector";
 import { formatAmount } from "@/components/transactions/components/transaction-amount";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDateRange } from "@/lib/utils";
+import { Icon } from "@/components/ui/icon-picker";
+import { IconName } from "lucide-react/dynamic";
 
 export function DashboardCategoryCard({
   category,
@@ -14,6 +16,7 @@ export function DashboardCategoryCard({
   year,
   total,
   period,
+  icon,
 }: {
   category: string;
   amount: number;
@@ -22,6 +25,7 @@ export function DashboardCategoryCard({
   year: number;
   total: number;
   period: Period;
+  icon: IconName | null;
 }) {
   const { dateFrom, dateTo } = getDateRange(period, year, month);
 
@@ -31,7 +35,10 @@ export function DashboardCategoryCard({
     >
       <Card style={{ color: fill }}>
         <CardHeader>
-          <CardTitle>{category}</CardTitle>
+          <CardTitle className={"flex gap-x-2"}>
+            {icon && <Icon size={14} name={icon} />}
+            {category}
+          </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-y-2">
           <div className="flex gap-x-1 items-center">
