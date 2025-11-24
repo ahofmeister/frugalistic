@@ -41,9 +41,7 @@ export function getTextColor(type: TransactionTypeWithLeftover | undefined) {
     case "income":
       return "text-income";
     case "leftover":
-      return "text-white";
-    default:
-      return "";
+      return "text-leftover";
   }
 }
 
@@ -55,7 +53,7 @@ export function getBgColor(type: TransactionTypeWithLeftover | undefined) {
       return "bg-expense";
     case "income":
       return "bg-income";
-    default:
-      return "";
+    case "leftover":
+      return "bg-leftover";
   }
 }

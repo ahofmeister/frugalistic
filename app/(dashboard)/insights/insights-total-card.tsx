@@ -1,11 +1,8 @@
-"use client";
 import { ArrowDown, ArrowUp } from "lucide-react";
-import { useRouter } from "next/navigation";
 import React from "react";
 
 import { AverageAmount } from "@/app/(dashboard)/insights/average-amount";
 import TransactionAmount, {
-  getBgColor,
   getTextColor,
 } from "@/components/transactions/components/transaction-amount";
 import {
@@ -19,6 +16,7 @@ import {
 import { capitalize, cn } from "@/lib/utils";
 import { TransactionType } from "@/types";
 import { getYearBoundaries } from "@/utils/transaction/dates";
+import Link from "next/link";
 
 function InsightsTotalCard(props: {
   year: number;
@@ -30,7 +28,6 @@ function InsightsTotalCard(props: {
   const currentYearTotal = props.currentYearTotal;
   const previousYearTotal = props.previousYearTotal;
   const year = props.year;
-  const router = useRouter();
 
   function getMonthsInYear(year: number): number {
     return year === new Date().getFullYear() ? new Date().getMonth() + 1 : 12;
@@ -60,47 +57,43 @@ function InsightsTotalCard(props: {
   const { startDate, endDate } = getYearBoundaries(year);
 
   return (
-    <Card
-      className={cn(
-        "cursor-pointer transform transition-transform duration-200 hover:scale-105 hover:shadow-lg",
-        getBgColor(type),
-      )}
-      // @ts-expect-error CSS property exists
-      style={{ "--tw-bg-opacity": 0.2 }}
-      onClick={() =>
-        router.push(
-          `/transactions?dateFrom=${startDate}&dateTo=${endDate}&type=${type}`,
-        )
-      }
+    <Link
+      href={`/transactions?dateFrom=${startDate}&dateTo=${endDate}&type=${type}`}
     >
-      <CardHeader>
-        <CardTitle className={getTextColor(type)}>
-          {capitalize(type as string)}
-        </CardTitle>
-        <TransactionAmount
-          className="text-2xl"
-          amount={currentYearTotal}
-          type={type}
-        />
-        {previousYearTotal && previousYearTotal > 0 && (
-          <CardDescription>
-            <span className="flex gap-x-2">
-              Previous:
-              <TransactionAmount amount={previousYearTotal} type={type} />
-            </span>
-          </CardDescription>
+      <Card
+        className={cn(
+          "cursor-pointer transform transition-transform duration-200 hover:scale-105 hover:shadow-lg",
         )}
-      </CardHeader>
-      <CardContent>
-        <Footer />
-      </CardContent>
-      <CardFooter>
-        <AverageAmount
-          amount={currentYearTotal / getMonthsInYear(year)}
-          type={type}
-        />
-      </CardFooter>
-    </Card>
+      >
+        <CardHeader>
+          <CardTitle className={getTextColor(type)}>
+            {capitalize(type as string)}
+          </CardTitle>
+          <TransactionAmount
+            className="text-2xl"
+            amount={currentYearTotal}
+            type={type}
+          />
+          {previousYearTotal && previousYearTotal > 0 && (
+            <CardDescription>
+              <span className="flex gap-x-2">
+                Previous:
+                <TransactionAmount amount={previousYearTotal} type={type} />
+              </span>
+            </CardDescription>
+          )}
+        </CardHeader>
+        <CardContent>
+          <Footer />
+        </CardContent>
+        <CardFooter>
+          <AverageAmount
+            amount={currentYearTotal / getMonthsInYear(year)}
+            type={type}
+          />
+        </CardFooter>
+      </Card>
+    </Link>
   );
 }
 

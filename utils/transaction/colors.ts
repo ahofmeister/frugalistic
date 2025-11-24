@@ -1,10 +1,16 @@
+export const getThemeColor = (colorName: string) => {
+  return getComputedStyle(document.documentElement)
+    .getPropertyValue(`--color-${colorName}`)
+    .trim();
+};
+
 export const transactionColors: { [index: string]: string } = {
-  income: "#84F5F5",
-  savings: "#e9c46a",
-  expense: "#F58484",
+  income: getThemeColor("income"),
+  savings: getThemeColor("savings"),
+  expense: getThemeColor("expense"),
 };
 
 export const transactionWithLeftover: { [index: string]: string } = {
   ...transactionColors,
-  leftover: "#FFFFFF",
+  leftover: getThemeColor("leftover"),
 };
