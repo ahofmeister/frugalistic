@@ -1,0 +1,93 @@
+import { relations } from "drizzle-orm/relations";
+import {
+  categories,
+  favorite,
+  feedback,
+  profile,
+  setting,
+  transactions,
+  transactionsRecurring,
+} from "./schema";
+import { users } from "@/db/migrations/auth-schema";
+
+export const favoriteRelations = relations(favorite, ({ one }) => ({
+  category: one(categories, {
+    fields: [favorite.category],
+    references: [categories.id],
+  }),
+  users: one(users, {
+    fields: [favorite.userId],
+    references: [users.id],
+  }),
+}));
+
+export const categoriesRelations = relations(categories, ({ one, many }) => ({
+  favorites: many(favorite),
+  users: one(users, {
+    fields: [categories.userId],
+    references: [users.id],
+  }),
+  transactions: many(transactions),
+  transactionsRecurrings: many(transactionsRecurring),
+}));
+
+export const usersRelations = relations(users, ({ many }) => ({
+  favorites: many(favorite),
+  categories: many(categories),
+  transactions: many(transactions),
+  transactionsRecurrings: many(transactionsRecurring),
+  settings: many(setting),
+  feedbacks: many(feedback),
+  profiles: many(profile),
+}));
+
+export const transactionsRelations = relations(transactions, ({ one }) => ({
+  category: one(categories, {
+    fields: [transactions.category],
+    references: [categories.id],
+  }),
+  transactionsRecurring: one(transactionsRecurring, {
+    fields: [transactions.recurringTransaction],
+    references: [transactionsRecurring.id],
+  }),
+  users: one(users, {
+    fields: [transactions.userId],
+    references: [users.id],
+  }),
+}));
+
+export const transactionsRecurringRelations = relations(
+  transactionsRecurring,
+  ({ one, many }) => ({
+    transactions: many(transactions),
+    category: one(categories, {
+      fields: [transactionsRecurring.category],
+      references: [categories.id],
+    }),
+    users: one(users, {
+      fields: [transactionsRecurring.userId],
+      references: [users.id],
+    }),
+  }),
+);
+
+export const settingRelations = relations(setting, ({ one }) => ({
+  users: one(users, {
+    fields: [setting.userId],
+    references: [users.id],
+  }),
+}));
+
+export const feedbackRelations = relations(feedback, ({ one }) => ({
+  users: one(users, {
+    fields: [feedback.userId],
+    references: [users.id],
+  }),
+}));
+
+export const profileRelations = relations(profile, ({ one }) => ({
+  users: one(users, {
+    fields: [profile.id],
+    references: [users.id],
+  }),
+}));
