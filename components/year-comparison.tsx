@@ -9,6 +9,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { dbTransaction } from "@/db";
+import { categories, transactions } from "@/db/migrations/schema";
 
 interface PivotData {
   [key: string]: {
@@ -40,12 +42,13 @@ async function getCategoryYearTable(): Promise<{
 }> {
   const supabase = await createClient();
 
-  // 2️⃣ Fetch ALL transactions directly (no count, no limit)
-  const { data: transactions = [] } = await supabase
-    .from("transactions")
-    .select("*");
+  const transactionsFetched = await dbTransaction((tx) =>
+    tx.select().from(transactions),
+  );
 
-  const { data: categories = [] } = await supabase.from("categories").select();
+  const fetchedCategories = await dbTransaction((tx) =>
+    tx.select().from(categories),
+  );
 
   const pivot: PivotData = {};
   const years: Set<number> = new Set();
@@ -54,7 +57,7 @@ async function getCategoryYearTable(): Promise<{
     savings: {},
   };
 
-  categories?.forEach((cat) => {
+  fetchedCategories?.forEach((cat) => {
     pivot[cat.id] = {
       name: cat.name,
       color: cat.color,
@@ -62,7 +65,7 @@ async function getCategoryYearTable(): Promise<{
     };
   });
 
-  transactions?.forEach((tx) => {
+  transactionsFetched?.forEach((tx) => {
     if (!tx.datetime) {
       return;
     }
@@ -169,7 +172,7 @@ export default async function YearComparison() {
                     <TransactionAmount amount={amount} type={total.type} />
                     {total.type === "savings" && total.percentages && (
                       <span className="text-xs text-muted-foreground">
-                        {total.percentages[idx].toFixed(1)}%
+                        {total.percentages[idx].toFixed(1)}% of expense
                       </span>
                     )}
                   </div>
