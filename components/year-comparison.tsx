@@ -172,7 +172,7 @@ export default async function YearComparison() {
                     <TransactionAmount amount={amount} type={total.type} />
                     {total.type === "savings" && total.percentages && (
                       <span className="text-xs text-muted-foreground">
-                        {total.percentages[idx].toFixed(1)}% of expense
+                        {total.percentages[idx].toFixed(1)}% of income
                       </span>
                     )}
                   </div>
