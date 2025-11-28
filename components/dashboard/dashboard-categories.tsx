@@ -6,11 +6,13 @@ import { createClient } from "@/utils/supabase/server";
 import { getPeriodDates } from "@/utils/transaction/dates";
 import { DashboardParams } from "@/app/(dashboard)/dashboard/page";
 import { loadSearchParams } from "@/app/(dashboard)/search-params";
+import { IconName } from "lucide-react/dynamic";
 
 interface CategoryData {
   category: string;
   amount: number;
   fill: string;
+  icon?: string | null;
 }
 
 export async function DashboardCategories({
@@ -39,11 +41,11 @@ export async function DashboardCategories({
   const categories = expenses
     ?.filter((transaction: Transaction) => transaction.category)
     .reduce<Record<string, CategoryData>>((acc, transaction) => {
-      const { name, color } = transaction.category;
+      const { name, color, icon } = transaction.category;
       const amount = transaction.amount;
 
       if (!acc[name]) {
-        acc[name] = { category: name, amount: 0, fill: color };
+        acc[name] = { category: name, amount: 0, fill: color, icon: icon };
       }
 
       acc[name].amount += amount;
@@ -68,6 +70,7 @@ export async function DashboardCategories({
           <DashboardCategoryCard
             key={expense.category}
             category={expense.category}
+            icon={expense.icon as IconName}
             amount={expense.amount}
             fill={expense.fill}
             year={awaitedParams.year}
