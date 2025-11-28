@@ -53,7 +53,7 @@ const DashboardCards = async ({
 
   return (
     <div className="flex">
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-2 md:grid-cols-4 justify-center">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-2 md:grid-cols-4 justify-center w-full">
         <DashboardCard
           amount={income}
           type="income"

@@ -26,7 +26,7 @@ const DashboardCard = ({
   ofLabel?: string;
 }) => {
   return (
-    <Card className={`lg:w-[180px] size-30`}>
+    <Card className={`w-full`}>
       <CardHeader>
         <CardTitle className={getTextColor(type)}>
           {capitalize(type as string)}

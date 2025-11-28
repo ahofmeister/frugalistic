@@ -1,4 +1,3 @@
-import { createClient } from "@/utils/supabase/server";
 import TransactionAmount from "@/components/transactions/components/transaction-amount";
 import { TransactionType } from "@/types";
 import {
@@ -40,8 +39,6 @@ async function getCategoryYearTable(): Promise<{
   categories: CategoryRow[];
   totals: TotalsRow[];
 }> {
-  const supabase = await createClient();
-
   const transactionsFetched = await dbTransaction((tx) =>
     tx.select().from(transactions),
   );
