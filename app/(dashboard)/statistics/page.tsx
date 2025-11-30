@@ -5,6 +5,7 @@ import { NumberCategories } from "@/app/(dashboard)/statistics/number-categories
 import { NumberRecurringTransactions } from "@/app/(dashboard)/statistics/number-recurring-transactions";
 import { NumberTransactions } from "@/app/(dashboard)/statistics/number-transactions";
 import { TotalTransactionAmount } from "@/app/(dashboard)/statistics/total-transaction-amount";
+import { NumberFavorites } from "@/app/(dashboard)/statistics/number-favorites";
 
 export default function StatisticPage() {
   return (
@@ -23,6 +24,9 @@ export default function StatisticPage() {
       </Suspense>
       <Suspense>
         <NumberTransactions />
+      </Suspense>
+      <Suspense>
+        <NumberFavorites />
       </Suspense>
       <Suspense>
         <NumberRecurringTransactions />
