@@ -348,6 +348,7 @@ const TransactionForm = ({
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
                       <Calendar
+                        weekStartsOn={1}
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
