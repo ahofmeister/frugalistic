@@ -19,7 +19,6 @@ import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { Badge } from "@/components/ui/badge";
 import FeedbackCard from "@/components/feedback/feedback-card";
 
 export default function MainNavigation() {
@@ -155,10 +154,9 @@ export default function MainNavigation() {
                   <NavItem href="/transactions/recurring" icon={Repeat2}>
                     Recurring
                   </NavItem>
-                  <NavItem href="/favorites" icon={Heart}>
+                  <NavItem href="/transactions/favorites" icon={Heart}>
                     <div className="flex gap-x-2 items-center">
                       <span>Favorites</span>
-                      <Badge variant="secondary">Soon</Badge>
                     </div>
                   </NavItem>
                   <NavItem href="/categories" icon={Tags}>

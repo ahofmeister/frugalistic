@@ -1,7 +1,7 @@
 import { relations } from "drizzle-orm/relations";
 import {
   categories,
-  favorite,
+  favoriteSchema,
   feedback,
   profile,
   setting,
@@ -10,19 +10,19 @@ import {
 } from "./schema";
 import { users } from "@/db/migrations/auth-schema";
 
-export const favoriteRelations = relations(favorite, ({ one }) => ({
+export const favoriteRelations = relations(favoriteSchema, ({ one }) => ({
   category: one(categories, {
-    fields: [favorite.category],
+    fields: [favoriteSchema.category],
     references: [categories.id],
   }),
   users: one(users, {
-    fields: [favorite.userId],
+    fields: [favoriteSchema.userId],
     references: [users.id],
   }),
 }));
 
 export const categoriesRelations = relations(categories, ({ one, many }) => ({
-  favorites: many(favorite),
+  favorites: many(favoriteSchema),
   users: one(users, {
     fields: [categories.userId],
     references: [users.id],
@@ -32,7 +32,7 @@ export const categoriesRelations = relations(categories, ({ one, many }) => ({
 }));
 
 export const usersRelations = relations(users, ({ many }) => ({
-  favorites: many(favorite),
+  favorites: many(favoriteSchema),
   categories: many(categories),
   transactions: many(transactions),
   transactionsRecurrings: many(transactionsRecurring),

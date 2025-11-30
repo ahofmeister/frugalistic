@@ -39,14 +39,13 @@ export const recurringInterval = pgEnum("recurring_interval", [
   "monthly",
   "annually",
 ]);
-export const settingKey = pgEnum("setting_key", ["date_format"]);
 export const transactionType = pgEnum("transaction_type", [
   "income",
   "expense",
   "savings",
 ]);
 
-export const favorite = pgTable(
+export const favoriteSchema = pgTable(
   "favorite",
   {
     createdAt: timestamp("created_at", {
