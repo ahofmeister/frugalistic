@@ -5,7 +5,6 @@ import { NumberCategories } from "@/app/(dashboard)/statistics/number-categories
 import { NumberRecurringTransactions } from "@/app/(dashboard)/statistics/number-recurring-transactions";
 import { NumberTransactions } from "@/app/(dashboard)/statistics/number-transactions";
 import { TotalTransactionAmount } from "@/app/(dashboard)/statistics/total-transaction-amount";
-import YearComparison from "@/components/year-comparison";
 
 export default function StatisticPage() {
   return (
@@ -30,11 +29,6 @@ export default function StatisticPage() {
       </Suspense>
       <Suspense>
         <NumberCategories />
-      </Suspense>
-      <Suspense>
-        <div className={"col-span-6"}>
-          <YearComparison />
-        </div>
       </Suspense>
     </div>
   );
