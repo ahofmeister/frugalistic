@@ -1,72 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
-import { Plus, Star, Trash2 } from "lucide-react";
+import React from "react";
+import { Star, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import TransactionAmount, {
-  formatAmount,
-} from "@/components/transactions/components/transaction-amount";
+import TransactionAmount from "@/components/transactions/components/transaction-amount";
 import { formatDate } from "date-fns";
 import { favoriteSchema } from "@/db/migrations/schema";
-
-function QuickAddDialog({
-  favorite,
-}: {
-  favorite: typeof favoriteSchema.$inferSelect;
-}) {
-  const [open, setOpen] = useState(false);
-
-  const handleSubmit = () => {
-    console.log("Adding transaction:", {
-      description: favorite.description,
-      amount: favorite.amount,
-      date: new Date(),
-    });
-    setOpen(false);
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-          <Plus className="h-4 w-4" />
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Quick Add Transaction</DialogTitle>
-          <DialogDescription>
-            {favorite.description} • {formatAmount(favorite.amount)}
-          </DialogDescription>
-        </DialogHeader>
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="date">Date</Label>
-            <Input
-              id="date"
-              type="date"
-              defaultValue={new Date().toISOString().split("T")[0]}
-            />
-          </div>
-          <Button onClick={handleSubmit} className="w-full">
-            Add Transaction
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-}
+import { FavoriteQuickAddDialog } from "@/app/(dashboard)/transactions/favorites/favorite-quick-add-dialog";
 
 function FavoriteCard({
   favorite,
@@ -78,7 +19,7 @@ function FavoriteCard({
   return (
     <Card className="p-4">
       <div className="flex items-center justify-between gap-4">
-        <QuickAddDialog favorite={favorite} />
+        <FavoriteQuickAddDialog favorite={favorite} />
 
         <div className="flex items-center gap-3 flex-1 min-w-0">
           <div className="flex-1 min-w-0">

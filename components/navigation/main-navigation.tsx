@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   LineChart,
   ListOrdered,
+  LogOutIcon,
   LucideIcon,
   Menu,
   MessageSquareText,
@@ -20,6 +21,7 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import FeedbackCard from "@/components/feedback/feedback-card";
+import { signOut } from "@/components/auth/auth-actions";
 
 export default function MainNavigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -34,11 +36,13 @@ export default function MainNavigation() {
     icon: Icon,
     children,
     noLink,
+    onClick, // Add this
   }: {
     href?: string;
     icon?: LucideIcon;
     children: React.ReactNode;
     noLink?: boolean;
+    onClick?: () => void; // Add this
   }) {
     const isActive = href && pathname === href;
 
@@ -49,9 +53,12 @@ export default function MainNavigation() {
       </>
     );
 
-    if (noLink) {
+    if (noLink || onClick) {
       return (
-        <div className="flex items-center px-3 py-2 text-sm rounded-md transition-colors text-muted-foreground hover:text-foreground hover:bg-accent cursor-pointer">
+        <div
+          onClick={onClick}
+          className="flex items-center px-3 py-2 text-sm rounded-md transition-colors text-muted-foreground hover:text-foreground hover:bg-accent cursor-pointer"
+        >
           {content}
         </div>
       );
@@ -184,6 +191,9 @@ export default function MainNavigation() {
                 Account
               </NavItem>
             </div>
+            <NavItem icon={LogOutIcon} onClick={() => signOut()}>
+              Sign Out
+            </NavItem>
           </div>
         </div>
       </nav>

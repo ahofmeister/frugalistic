@@ -9,6 +9,8 @@ import {
   TransactionWithRecurring,
 } from "@/types";
 import { createClient } from "@/utils/supabase/server";
+import { transactions } from "@/db/migrations/schema";
+import { dbTransaction } from "@/db";
 
 const calculateNextRun = (
   date: string,
@@ -73,6 +75,14 @@ export async function upsertTransaction(newTransaction: NewTransaction) {
 
   revalidatePath("/");
   return await supabase.from("transactions").upsert(newTransaction);
+}
+
+export async function insertTransaction(
+  newTransaction: typeof transactions.$inferInsert,
+) {
+  await dbTransaction((tx) => {
+    return tx.insert(transactions).values(newTransaction);
+  });
 }
 
 export const searchTransactions = async (
