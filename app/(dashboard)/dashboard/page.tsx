@@ -25,22 +25,24 @@ export default async function DashboardPage({
       <Suspense>
         <CategoriesBanner />
       </Suspense>
-      <div className="flex font-semibold text-2xl items-center gap-x-4">
+      <div className={"flex-col flex sm:flex-row sm:justify-between gap-4"}>
+        <div className="flex font-semibold text-2xl items-center gap-x-4">
+          <Suspense>
+            <MonthYearStepper amount={-1} icon={<ChevronLeft />} />
+            <DashboardDateLabel />
+            <MonthYearStepper amount={1} icon={<ChevronRight />} />
+          </Suspense>
+        </div>
+
         <Suspense>
-          <MonthYearStepper amount={-1} icon={<ChevronLeft />} />
-          <DashboardDateLabel />
-          <MonthYearStepper amount={1} icon={<ChevronRight />} />
+          <div className="flex gap-4">
+            <div className="flex font-semibold text-xl justify-center gap-x-2">
+              <SelectNow />
+            </div>
+            <PeriodSelector />
+          </div>
         </Suspense>
       </div>
-
-      <Suspense>
-        <div className="flex gap-4">
-          <div className="flex font-semibold text-xl justify-center gap-x-2">
-            <SelectNow />
-          </div>
-          <PeriodSelector />
-        </div>
-      </Suspense>
 
       <Suspense>
         <DashboardCards searchParams={searchParams} />
