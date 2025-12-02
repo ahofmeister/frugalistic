@@ -3,6 +3,9 @@ import { revalidatePath } from "next/cache";
 
 import { TransactionWithRecurring } from "@/types";
 import { createClient } from "@/utils/supabase/server";
+import { dbTransaction } from "@/db";
+import { favoriteSchema } from "@/db/migrations/schema";
+import { eq } from "drizzle-orm";
 
 export async function addFavorite(transaction: TransactionWithRecurring) {
   const supabase = await createClient();
@@ -24,14 +27,9 @@ export async function addFavorite(transaction: TransactionWithRecurring) {
 }
 
 export async function removeFavorite(id: string) {
-  const supabase = await createClient();
+  await dbTransaction((tx) => {
+    return tx.delete(favoriteSchema).where(eq(favoriteSchema.id, id));
+  });
 
-  const { data, error } = await supabase.from("favorite").delete().eq("id", id);
-
-  if (error) {
-    console.log(error);
-    return;
-  }
   revalidatePath("/", "layout");
-  return data;
 }

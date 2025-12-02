@@ -1,15 +1,13 @@
-"use client";
-
 import React from "react";
-import { Star, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import TransactionAmount from "@/components/transactions/components/transaction-amount";
 import { formatDate } from "date-fns";
 import { favoriteSchema } from "@/db/migrations/schema";
 import { FavoriteQuickAddDialog } from "@/app/(dashboard)/transactions/favorites/favorite-quick-add-dialog";
+import { DeleteFavoriteTransactionButton } from "@/app/(dashboard)/transactions/favorites/delete-favorite-transaction-button";
 
-function FavoriteCard({
+export function FavoriteCard({
   favorite,
   dateFormat,
 }: {
@@ -41,53 +39,9 @@ function FavoriteCard({
 
         <div className="flex items-center gap-3 flex-shrink-0">
           <TransactionAmount amount={favorite.amount} type={favorite.type} />
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
+          <DeleteFavoriteTransactionButton favoriteId={favorite.id} />
         </div>
       </div>
     </Card>
-  );
-}
-
-export function FavoritesListView({
-  favorites,
-  dateFormat,
-}: {
-  favorites: (typeof favoriteSchema.$inferSelect)[];
-  dateFormat: string;
-}) {
-  if (favorites.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-12 text-center">
-        <Star className="h-12 w-12 text-muted-foreground/30 mb-4" />
-        <h3 className="font-semibold text-lg">No favorite transactions</h3>
-        <p className="text-sm text-muted-foreground">
-          Mark transactions as favorites for quick access.
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-3">
-      <div className="mb-4">
-        <h2 className="text-lg font-semibold">Favorite Transactions</h2>
-        <p className="text-sm text-muted-foreground">
-          Quick add or view your most used transactions
-        </p>
-      </div>
-      {favorites.map((favorite) => (
-        <FavoriteCard
-          key={favorite.id}
-          favorite={favorite}
-          dateFormat={dateFormat}
-        />
-      ))}
-    </div>
   );
 }
