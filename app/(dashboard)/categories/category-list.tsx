@@ -27,7 +27,7 @@ const CategoryList = async () => {
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-2 gap-x-2">
       {orderedCategories.map((category) => (
         <CategoryCard
-          key={category.id}
+          key={category.name}
           category={category}
           exists={existingCategories.includes(category.name)}
         />

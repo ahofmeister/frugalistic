@@ -21,8 +21,10 @@ export function CategoryCard(props: {
   const router = useRouter();
   return (
     <Card
-      key={category.name}
-      className={cn(props.category.id && "cursor-pointer")}
+      className={cn("flex flex-col justify-between", {
+        "cursor-pointer": props.category.id,
+        "cursor-default": !props.category.id,
+      })}
       onClick={() => {
         if (!props.category.id) {
           return;
@@ -33,7 +35,7 @@ export function CategoryCard(props: {
     >
       <CardHeader>
         <CardTitle>{category.name}</CardTitle>
-        <CardDescription className="text-sm text-gray-200">
+        <CardDescription className="text-sm text-gray-200 flex-1">
           {category?.description}
         </CardDescription>
       </CardHeader>
