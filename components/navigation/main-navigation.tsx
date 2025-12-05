@@ -12,9 +12,10 @@ import {
   Menu,
   MessageSquareText,
   Repeat2,
+  SettingsIcon,
   SquarePlus,
   Tags,
-  UserCog,
+  UserCogIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -182,18 +183,23 @@ export default function MainNavigation() {
                   </NavItem>
                 </div>
               </div>
+              <div>
+                <div className="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Account
+                </div>
+                <div className="space-y-1">
+                  <NavItem href="/account" icon={UserCogIcon}>
+                    Account
+                  </NavItem>
+                  <NavItem href="/settings" icon={SettingsIcon}>
+                    Settings
+                  </NavItem>
+                </div>
+                <NavItem icon={LogOutIcon} onClick={() => signOut()}>
+                  Sign Out
+                </NavItem>
+              </div>
             </div>
-          </div>
-
-          <div className="px-4 py-4 border-t border-border">
-            <div className="space-y-1">
-              <NavItem href="/account" icon={UserCog}>
-                Account
-              </NavItem>
-            </div>
-            <NavItem icon={LogOutIcon} onClick={() => signOut()}>
-              Sign Out
-            </NavItem>
           </div>
         </div>
       </nav>
