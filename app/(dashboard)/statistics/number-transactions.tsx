@@ -1,12 +1,19 @@
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { createClient } from "@/utils/supabase/server";
+import { count, isNotNull } from "drizzle-orm";
+import { transactions } from "@/db/migrations/schema";
+import { dbTransaction } from "@/db";
 
 export const NumberTransactions = async () => {
-  const supabase = await createClient();
+  const [{ count: totalCount }] = await dbTransaction((tx) => {
+    return tx.select({ count: count() }).from(transactions);
+  });
 
-  const { count } = await supabase
-    .from("transactions")
-    .select("id", { count: "exact", head: true });
+  const [{ count: recurringCount }] = await dbTransaction((tx) => {
+    return tx
+      .select({ count: count() })
+      .from(transactions)
+      .where(isNotNull(transactions.recurringTransaction));
+  });
 
   return (
     <Card>
@@ -15,7 +22,12 @@ export const NumberTransactions = async () => {
           <div className="text-xl">Transactions</div>
         </CardTitle>
       </CardHeader>
-      <CardFooter>{count}</CardFooter>
+      <CardFooter className="flex flex-col items-start gap-1">
+        <div>{totalCount}</div>
+        <div className="text-sm text-muted-foreground">
+          {recurringCount} from recurring
+        </div>
+      </CardFooter>
     </Card>
   );
 };
