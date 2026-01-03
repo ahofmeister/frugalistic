@@ -18,6 +18,7 @@ export type Database = {
           id: string;
           name: string;
           user_id: string;
+          icon: string | null;
         };
         Insert: {
           color: string;
