@@ -25,6 +25,8 @@ export type RecurringInterval =
   Database["public"]["Enums"]["recurring_interval"];
 export type RecurringTransaction =
   Database["public"]["Tables"]["transactions_recurring"]["Row"];
+export type UpdateRecurringTransaction =
+  Database["public"]["Tables"]["transactions_recurring"]["Update"];
 
 // Category
 export type Category = Database["public"]["Tables"]["categories"]["Row"];
