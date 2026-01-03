@@ -1,5 +1,5 @@
 "use server";
-import { addMonths, addYears, format } from "date-fns";
+import { format } from "date-fns";
 import { revalidatePath, revalidateTag } from "next/cache";
 
 import { SearchFilter } from "@/app/(dashboard)/transactions/search-filter";
@@ -7,24 +7,12 @@ import {
   NewTransaction,
   RecurringInterval,
   TransactionWithRecurring,
+  UpdateRecurringTransaction,
 } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { transactions } from "@/db/migrations/schema";
 import { dbTransaction } from "@/db";
-
-const calculateNextRun = (
-  date: string,
-  recurringInterval: "monthly" | "annually",
-): Date => {
-  const currentRun = new Date(date);
-
-  switch (recurringInterval) {
-    case "monthly":
-      return addMonths(currentRun, 1);
-    case "annually":
-      return addYears(currentRun, 1);
-  }
-};
+import { calculateNextRun } from "@/components/transactions/recurring/recurring-transactions-calculator";
 
 export async function makeTransactionRecurring(
   transaction: TransactionWithRecurring,
@@ -166,3 +154,29 @@ export const deleteRecurringTransaction = async (id: string) => {
   revalidatePath(`/`);
   return error;
 };
+
+export async function updateRecurringTransaction(
+  data: UpdateRecurringTransaction,
+): Promise<{
+  success: boolean;
+  message?: string;
+}> {
+  try {
+    const supabase = await createClient();
+    const { error } = await supabase
+      .from("transactions_recurring")
+      .update(data)
+      .eq("id", data.id!);
+
+    if (error) {
+      console.error(error);
+      return { success: false, message: "Failed to update transaction" };
+    }
+
+    revalidatePath("/");
+    return { success: true, message: "Transaction updated successfully" };
+  } catch (error) {
+    console.error(error);
+    return { success: false, message: "Failed to update transaction" };
+  }
+}
