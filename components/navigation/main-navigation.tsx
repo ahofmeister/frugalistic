@@ -18,7 +18,7 @@ import {
   UserCogIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import React, { useState } from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import FeedbackCard from "@/components/feedback/feedback-card";
@@ -37,13 +37,13 @@ export default function MainNavigation() {
     icon: Icon,
     children,
     noLink,
-    onClick, // Add this
+    onClick,
   }: {
     href?: string;
     icon?: LucideIcon;
     children: React.ReactNode;
     noLink?: boolean;
-    onClick?: () => void; // Add this
+    onClick?: () => void;
   }) {
     const isActive = href && pathname === href;
 
@@ -203,13 +203,6 @@ export default function MainNavigation() {
           </div>
         </div>
       </nav>
-
-      {isMobileMenuOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-60 md:hidden"
-          onClick={() => setIsMobileMenuOpen(false)}
-        />
-      )}
     </>
   );
 }

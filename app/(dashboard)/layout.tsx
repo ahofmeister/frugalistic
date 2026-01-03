@@ -5,7 +5,7 @@ import React, { Suspense } from "react";
 import { DashboardMobileNavigation } from "@/components/navigation/dashboard-mobile-navigation";
 import MainNavigation from "@/components/navigation/main-navigation";
 
-export default async function RootLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
