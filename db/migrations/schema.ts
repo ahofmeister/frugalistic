@@ -45,6 +45,9 @@ export const transactionType = pgEnum("transaction_type", [
   "savings",
 ]);
 
+export const COST_TYPES = ["fixed", "variable"] as const;
+export type CostType = (typeof COST_TYPES)[number];
+
 export const favoriteSchema = pgTable(
   "favorite",
   {
@@ -154,6 +157,7 @@ export const transactions = pgTable(
     id: uuid().defaultRandom().primaryKey().notNull(),
     category: uuid(),
     recurringTransaction: uuid("recurring_transaction"),
+    costType: text("cost_type").$type<CostType>().notNull().default("variable"),
   },
   (table) => [
     foreignKey({
@@ -184,6 +188,14 @@ export const transactions = pgTable(
       "disallow_empty",
       sql`(description)
                 ::text <> ''::text`,
+    ),
+    check(
+      "cost_type_check",
+      sql`${table.costType}
+            IN ('fixed', 'variable') OR
+            ${table.costType}
+            IS
+            NULL`,
     ),
   ],
 );
@@ -379,7 +391,6 @@ export const profile = pgTable(
   ],
 );
 export const transactionAutoSuggest = pgView("transaction_auto_suggest", {
-  // You can use { mode: "bigint" } if numbers are exceeding js number limitations
   uniqueId: bigint("unique_id", { mode: "number" }),
   description: text(),
   type: transactionType(),

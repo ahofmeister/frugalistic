@@ -1,6 +1,7 @@
 import React from "react";
 
 import TransactionAmount, {
+  formatAmount,
   getTextColor,
 } from "@/components/transactions/components/transaction-amount";
 import {
@@ -18,12 +19,17 @@ const DashboardCard = ({
   total,
   label,
   ofLabel,
+  breakdown,
 }: {
   amount: number;
   type: TransactionTypeWithLeftover;
   total?: number;
   label?: string;
   ofLabel?: string;
+  breakdown?: {
+    fixed: number;
+    variable: number;
+  };
 }) => {
   return (
     <Card className={`w-full`}>
@@ -42,6 +48,18 @@ const DashboardCard = ({
             </span>
           )}
         </CardDescription>
+        {breakdown && (
+          <div className="text-xs text-muted-foreground mt-1 space-y-0.5 grid grid-cols-2">
+            <div>
+              Fixed: {formatAmount(breakdown.fixed)} (
+              {Math.round((breakdown.fixed / amount) * 100)}%)
+            </div>
+            <div>
+              Variable: {formatAmount(breakdown.variable)} (
+              {Math.round((breakdown.variable / amount) * 100)}%)
+            </div>
+          </div>
+        )}
       </CardHeader>
     </Card>
   );
