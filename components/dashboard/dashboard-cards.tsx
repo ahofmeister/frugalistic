@@ -5,7 +5,7 @@ import { getPeriodDates } from "@/utils/transaction/dates";
 import { DashboardParams } from "@/app/(dashboard)/dashboard/page";
 import { loadSearchParams } from "@/app/(dashboard)/search-params";
 import { dbTransaction } from "@/db";
-import { categories, transactions } from "@/db/migrations/schema";
+import { categories, transactionSchema } from "@/db/migrations/schema";
 import { and, desc, eq, gte, lte } from "drizzle-orm";
 
 const DashboardCards = async ({
@@ -30,15 +30,18 @@ const DashboardCards = async ({
   const fetchedTransactions = await dbTransaction((tx) => {
     return tx
       .select()
-      .from(transactions)
-      .leftJoin(categories, eq(transactions.category, categories.id))
+      .from(transactionSchema)
+      .leftJoin(categories, eq(transactionSchema.category, categories.id))
       .where(
         and(
-          gte(transactions.datetime, startDate),
-          lte(transactions.datetime, endDate),
+          gte(transactionSchema.datetime, startDate),
+          lte(transactionSchema.datetime, endDate),
         ),
       )
-      .orderBy(desc(transactions.datetime), desc(transactions.createdAt));
+      .orderBy(
+        desc(transactionSchema.datetime),
+        desc(transactionSchema.createdAt),
+      );
   });
 
   const transactionsWithCategory = fetchedTransactions.map((row) => ({
@@ -87,10 +90,7 @@ const DashboardCards = async ({
           type="expense"
           total={income}
           ofLabel="income"
-          breakdown={{
-            fixed: fixedCosts,
-            variable: variableCosts,
-          }}
+          fixed={fixedCosts}
         />
         <DashboardCard
           amount={leftover}

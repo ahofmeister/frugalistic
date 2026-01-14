@@ -10,7 +10,7 @@ import {
   UpdateRecurringTransaction,
 } from "@/types";
 import { createClient } from "@/utils/supabase/server";
-import { transactions } from "@/db/migrations/schema";
+import { transactionSchema } from "@/db/migrations/schema";
 import { dbTransaction } from "@/db";
 import { calculateNextRun } from "@/components/transactions/recurring/recurring-transactions-calculator";
 
@@ -66,10 +66,10 @@ export async function upsertTransaction(newTransaction: NewTransaction) {
 }
 
 export async function insertTransaction(
-  newTransaction: typeof transactions.$inferInsert,
+  newTransaction: typeof transactionSchema.$inferInsert,
 ) {
   await dbTransaction((tx) => {
-    return tx.insert(transactions).values(newTransaction);
+    return tx.insert(transactionSchema).values(newTransaction);
   });
 }
 

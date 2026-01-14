@@ -1,12 +1,12 @@
 "use client";
 import { TransactionCard } from "@/components/transactions/components/transaction-card";
-import { TransactionWithRecurring } from "@/types";
+import { TransactionWithRecurringCategory } from "@/db/migrations/schema";
 
 export default function TransactionList({
   transactions,
   dateFormat,
 }: {
-  transactions: TransactionWithRecurring[];
+  transactions: TransactionWithRecurringCategory[];
   dateFormat: string;
 }) {
   return (

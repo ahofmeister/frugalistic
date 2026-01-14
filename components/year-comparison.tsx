@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { dbTransaction } from "@/db";
-import { categories, transactions } from "@/db/migrations/schema";
+import { categories, transactionSchema } from "@/db/migrations/schema";
 
 interface PivotData {
   [key: string]: {
@@ -40,7 +40,7 @@ async function getCategoryYearTable(): Promise<{
   totals: TotalsRow[];
 }> {
   const transactionsFetched = await dbTransaction((tx) =>
-    tx.select().from(transactions),
+    tx.select().from(transactionSchema),
   );
 
   const fetchedCategories = await dbTransaction((tx) =>

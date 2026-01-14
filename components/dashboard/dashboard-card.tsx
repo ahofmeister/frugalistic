@@ -19,17 +19,14 @@ const DashboardCard = ({
   total,
   label,
   ofLabel,
-  breakdown,
+  fixed,
 }: {
   amount: number;
   type: TransactionTypeWithLeftover;
   total?: number;
   label?: string;
   ofLabel?: string;
-  breakdown?: {
-    fixed: number;
-    variable: number;
-  };
+  fixed?: number;
 }) => {
   return (
     <Card className={`w-full`}>
@@ -45,21 +42,17 @@ const DashboardCard = ({
             <span className="text-sm text-gray-400">
               <>{`${((amount / (total || 1)) * 100).toFixed(0)}% of ${ofLabel}`}</>
               {label}
+
+              {fixed && (
+                <div className="text-xs text-muted-foreground mt-1">
+                  Fixed: {formatAmount(fixed)} (
+                  {Math.round((fixed / amount) * 100)}
+                  %)
+                </div>
+              )}
             </span>
           )}
         </CardDescription>
-        {breakdown && (
-          <div className="text-xs text-muted-foreground mt-1 space-y-0.5 grid grid-cols-2">
-            <div>
-              Fixed: {formatAmount(breakdown.fixed)} (
-              {Math.round((breakdown.fixed / amount) * 100)}%)
-            </div>
-            <div>
-              Variable: {formatAmount(breakdown.variable)} (
-              {Math.round((breakdown.variable / amount) * 100)}%)
-            </div>
-          </div>
-        )}
       </CardHeader>
     </Card>
   );

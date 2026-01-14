@@ -1,4 +1,4 @@
-import { Database } from "./supabase"; // Transactions
+import { Database } from "./supabase";
 
 // Transactions
 export type Transaction = Database["public"]["Tables"]["transactions"]["Row"];

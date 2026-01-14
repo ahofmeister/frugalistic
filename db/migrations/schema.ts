@@ -48,6 +48,14 @@ export const transactionType = pgEnum("transaction_type", [
 export const COST_TYPES = ["fixed", "variable"] as const;
 export type CostType = (typeof COST_TYPES)[number];
 
+export type TransactionWithRecurringCategory = Omit<
+  typeof transactionSchema.$inferSelect,
+  "category"
+> & {
+  recurring_transaction: typeof transactionsRecurring.$inferSelect | null;
+  category: typeof categories.$inferSelect | null;
+};
+
 export const favoriteSchema = pgTable(
   "favorite",
   {
@@ -135,7 +143,7 @@ export const categories = pgTable(
   ],
 );
 
-export const transactions = pgTable(
+export const transactionSchema = pgTable(
   "transactions",
   {
     createdAt: timestamp("created_at", {
