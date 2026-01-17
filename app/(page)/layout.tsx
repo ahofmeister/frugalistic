@@ -1,17 +1,17 @@
 import "../globals.css";
 
 import { Analytics } from "@vercel/analytics/next";
-import React from "react";
+import type React from "react";
 
 export default function PageLayout({
-  children,
+	children,
 }: {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }) {
-  return (
-    <>
-      <main className="m-10">{children}</main>
-      <Analytics />
-    </>
-  );
+	return (
+		<>
+			<main className="m-10">{children}</main>
+			<Analytics />
+		</>
+	);
 }
