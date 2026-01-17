@@ -1,10 +1,6 @@
 import TransactionList from "@/components/transactions/components/transaction-list";
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
-import {
-  categories,
-  transactionSchema,
-  transactionsRecurring,
-} from "@/db/migrations/schema";
+import { transactionSchema } from "@/db/migrations/schema";
 import { dbTransaction } from "@/db";
 import { desc, eq } from "drizzle-orm";
 
@@ -14,23 +10,14 @@ export async function RecurringTransactionHistory(props: {
   const id = await props.recurringTransactionId;
 
   const transactions = await dbTransaction((tx) => {
-    return tx
-      .select()
-      .from(transactionSchema)
-      .leftJoin(categories, eq(transactionSchema.category, categories.id))
-      .leftJoin(
-        transactionsRecurring,
-        eq(transactionSchema.recurringTransaction, transactionsRecurring.id),
-      )
-      .where(eq(transactionSchema.recurringTransaction, id))
-      .orderBy(desc(transactionSchema.datetime))
-      .then((rows) =>
-        rows.map((row) => ({
-          ...row.transactions,
-          category: row.categories,
-          recurring_transaction: row.transactions_recurring,
-        })),
-      );
+    return tx.query.transactionSchema.findMany({
+      where: eq(transactionSchema.recurringTransaction, id),
+      with: {
+        category: true,
+        recurringTransaction: true,
+      },
+      orderBy: [desc(transactionSchema.datetime)],
+    });
   });
 
   const settings = await getSettings();
