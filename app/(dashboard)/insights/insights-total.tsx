@@ -37,8 +37,8 @@ export async function InsightsTotal({
 		<InsightsTotalCard
 			year={year}
 			type={type}
-			currentYearTotal={currentYear?.total}
-			previousYearTotal={previousYear?.total}
+			currentYearTotal={currentYear?.total ?? 0}
+			previousYearTotal={previousYear?.total ?? 0}
 		/>
 	);
 }
