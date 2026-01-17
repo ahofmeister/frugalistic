@@ -44,11 +44,13 @@ const DashboardCard = ({
               {label}
 
               {fixed && (
-                <div className="text-xs text-muted-foreground mt-1">
-                  Fixed: {formatAmount(fixed)} (
-                  {Math.round((fixed / amount) * 100)}
-                  %)
-                </div>
+                <span className={"flex"}>
+                  <span className="text-xs text-muted-foreground mt-1">
+                    Fixed: {formatAmount(fixed)} (
+                    {Math.round((fixed / amount) * 100)}
+                    %)
+                  </span>
+                </span>
               )}
             </span>
           )}
