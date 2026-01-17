@@ -6,11 +6,13 @@ import { SearchFilter } from "@/app/(dashboard)/transactions/search-filter";
 import {
   NewTransaction,
   RecurringInterval,
-  TransactionWithRecurring,
   UpdateRecurringTransaction,
 } from "@/types";
 import { createClient } from "@/utils/supabase/server";
-import { transactionSchema } from "@/db/migrations/schema";
+import {
+  transactionSchema,
+  TransactionWithRecurring,
+} from "@/db/migrations/schema";
 import { dbTransaction } from "@/db";
 import { calculateNextRun } from "@/components/transactions/recurring/recurring-transactions-calculator";
 
@@ -34,7 +36,7 @@ export async function makeTransactionRecurring(
       ),
       type: transaction.type,
       interval: interval,
-      user_id: transaction.user_id,
+      user_id: transaction.userId,
     })
     .select("id")
     .single();
@@ -124,19 +126,6 @@ export const searchTransactions = async (
   query.limit(200);
   const { data } = await query.returns<TransactionWithRecurring[]>();
   return data ?? [];
-};
-
-export const toggleEnabledRecurringTransaction = async (
-  id: string,
-  newStatus: boolean,
-) => {
-  const supabase = await createClient();
-  const { error } = await supabase
-    .from("transactions_recurring")
-    .update({ enabled: newStatus })
-    .eq("id", id);
-  revalidatePath(`/`);
-  return error;
 };
 
 export const deleteTransaction = async (id: string) => {

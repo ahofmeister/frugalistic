@@ -1,10 +1,12 @@
 "use server";
 import { revalidatePath } from "next/cache";
 
-import { TransactionWithRecurring } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { dbTransaction } from "@/db";
-import { favoriteSchema } from "@/db/migrations/schema";
+import {
+  favoriteSchema,
+  TransactionWithRecurring,
+} from "@/db/migrations/schema";
 import { eq } from "drizzle-orm";
 
 export async function addFavorite(transaction: TransactionWithRecurring) {

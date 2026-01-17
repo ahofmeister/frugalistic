@@ -56,6 +56,10 @@ export type TransactionWithRecurringCategory = Omit<
   category: typeof categories.$inferSelect | null;
 };
 
+export type TransactionWithRecurring = typeof transactionSchema.$inferSelect & {
+  recurringTransaction: typeof transactionsRecurring.$inferSelect | null;
+};
+
 export const favoriteSchema = pgTable(
   "favorite",
   {
