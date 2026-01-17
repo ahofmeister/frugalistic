@@ -52,6 +52,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { Spinner } from "@/components/ui/spinner";
 import type { TransactionWithRecurringCategory } from "@/db/migrations/schema";
 import { cn } from "@/lib/utils";
 import type {
