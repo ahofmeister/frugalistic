@@ -1,19 +1,21 @@
 import React from "react";
 import TransactionList from "@/components/transactions/components/transaction-list";
-import { TransactionWithRecurring } from "@/types";
-import { createClient } from "@/utils/supabase/server";
 import { getPeriodDates } from "@/utils/transaction/dates";
 import { loadSearchParams } from "@/app/(dashboard)/search-params";
 import { DashboardParams } from "@/app/(dashboard)/dashboard/page";
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
+import { dbTransaction } from "@/db";
+import {
+  transactionSchema,
+  TransactionWithRecurringCategory,
+} from "@/db/migrations/schema";
+import { and, desc, gte, lte } from "drizzle-orm";
 
 export default async function DashboardTransactions({
   searchParams,
 }: {
   searchParams: Promise<DashboardParams>;
 }) {
-  const supabase = await createClient();
-
   const awaitedParams = await loadSearchParams(searchParams);
 
   const { startDate, endDate } = getPeriodDates(
@@ -21,20 +23,30 @@ export default async function DashboardTransactions({
     awaitedParams.month,
     awaitedParams.period,
   );
-  const { data: transactions } = await supabase
-    .from("transactions")
-    .select("*, category(*), recurring_transaction(*)")
-    .gte("datetime", startDate)
-    .lte("datetime", endDate)
-    .order("datetime", { ascending: false })
-    .order("created_at", { ascending: false })
-    .returns<TransactionWithRecurring[]>();
+
+  const transactionsWithRecurring: TransactionWithRecurringCategory[] =
+    await dbTransaction((tx) => {
+      return tx.query.transactionSchema.findMany({
+        where: and(
+          gte(transactionSchema.datetime, startDate),
+          lte(transactionSchema.datetime, endDate),
+        ),
+        with: {
+          category: true,
+          recurringTransaction: true,
+        },
+        orderBy: [
+          desc(transactionSchema.datetime),
+          desc(transactionSchema.createdAt),
+        ],
+      });
+    });
 
   const settings = await getSettings();
 
   return (
     <TransactionList
-      transactions={transactions ?? []}
+      transactions={transactionsWithRecurring ?? []}
       dateFormat={settings.date_format}
     />
   );

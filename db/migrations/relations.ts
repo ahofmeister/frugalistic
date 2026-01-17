@@ -5,7 +5,7 @@ import {
   feedback,
   profile,
   setting,
-  transactions,
+  transactionSchema,
   transactionsRecurring,
 } from "./schema";
 import { users } from "@/db/migrations/auth-schema";
@@ -27,39 +27,42 @@ export const categoriesRelations = relations(categories, ({ one, many }) => ({
     fields: [categories.userId],
     references: [users.id],
   }),
-  transactions: many(transactions),
+  transactions: many(transactionSchema),
   transactionsRecurrings: many(transactionsRecurring),
 }));
 
 export const usersRelations = relations(users, ({ many }) => ({
   favorites: many(favoriteSchema),
   categories: many(categories),
-  transactions: many(transactions),
+  transactions: many(transactionSchema),
   transactionsRecurrings: many(transactionsRecurring),
   settings: many(setting),
   feedbacks: many(feedback),
   profiles: many(profile),
 }));
 
-export const transactionsRelations = relations(transactions, ({ one }) => ({
-  category: one(categories, {
-    fields: [transactions.category],
-    references: [categories.id],
+export const transactionsRelations = relations(
+  transactionSchema,
+  ({ one }) => ({
+    category: one(categories, {
+      fields: [transactionSchema.category],
+      references: [categories.id],
+    }),
+    transactionsRecurring: one(transactionsRecurring, {
+      fields: [transactionSchema.recurringTransaction],
+      references: [transactionsRecurring.id],
+    }),
+    users: one(users, {
+      fields: [transactionSchema.userId],
+      references: [users.id],
+    }),
   }),
-  transactionsRecurring: one(transactionsRecurring, {
-    fields: [transactions.recurringTransaction],
-    references: [transactionsRecurring.id],
-  }),
-  users: one(users, {
-    fields: [transactions.userId],
-    references: [users.id],
-  }),
-}));
+);
 
 export const transactionsRecurringRelations = relations(
   transactionsRecurring,
   ({ one, many }) => ({
-    transactions: many(transactions),
+    transactions: many(transactionSchema),
     category: one(categories, {
       fields: [transactionsRecurring.category],
       references: [categories.id],

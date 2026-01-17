@@ -1,11 +1,10 @@
 import { createClient } from "@/utils/supabase/server";
-import {
-  Category,
-  FavoriteWithCategory,
-  TransactionWithRecurring,
-} from "@/types";
+import { Category, FavoriteWithCategory } from "@/types";
 import TransactionForm from "@/components/transactions/components/transaction-form";
 import React from "react";
+import { dbTransaction } from "@/db";
+import { transactionSchema } from "@/db/migrations/schema";
+import { eq } from "drizzle-orm";
 
 export const TransactionFormData = async ({
   transactionId,
@@ -34,16 +33,24 @@ export const TransactionFormData = async ({
     .order("description")
     .returns<FavoriteWithCategory[]>();
 
-  const { data: transaction } = await supabase
-    .from("transactions")
-    .select("*, recurring_transaction(*)")
-    .eq("id", id || "")
-    .returns<TransactionWithRecurring[]>()
-    .single();
+  const [transaction] = id
+    ? await dbTransaction(async (tx) => {
+        return tx.query.transactionSchema.findMany({
+          where: eq(transactionSchema.id, id),
+          with: {
+            recurringTransaction: true,
+            category: true,
+          },
+          limit: 1,
+        });
+      })
+    : [];
+
+  console.log(transaction);
 
   return (
     <TransactionForm
-      transaction={transaction ?? undefined}
+      transaction={transaction}
       favorites={favorites ?? []}
       autoSuggests={autoSuggests ?? []}
       categories={categories ?? []}

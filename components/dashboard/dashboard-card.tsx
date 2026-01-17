@@ -1,6 +1,7 @@
 import React from "react";
 
 import TransactionAmount, {
+  formatAmount,
   getTextColor,
 } from "@/components/transactions/components/transaction-amount";
 import {
@@ -18,12 +19,14 @@ const DashboardCard = ({
   total,
   label,
   ofLabel,
+  fixed,
 }: {
   amount: number;
   type: TransactionTypeWithLeftover;
   total?: number;
   label?: string;
   ofLabel?: string;
+  fixed?: number;
 }) => {
   return (
     <Card className={`w-full`}>
@@ -39,6 +42,16 @@ const DashboardCard = ({
             <span className="text-sm text-gray-400">
               <>{`${((amount / (total || 1)) * 100).toFixed(0)}% of ${ofLabel}`}</>
               {label}
+
+              {fixed && (
+                <span className={"flex"}>
+                  <span className="text-xs text-muted-foreground mt-1">
+                    Fixed: {formatAmount(fixed)} (
+                    {Math.round((fixed / amount) * 100)}
+                    %)
+                  </span>
+                </span>
+              )}
             </span>
           )}
         </CardDescription>

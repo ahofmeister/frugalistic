@@ -1,32 +1,44 @@
 import TransactionList from "@/components/transactions/components/transaction-list";
-import { TransactionWithRecurring } from "@/types";
-import { createClient } from "@/utils/supabase/server";
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
+import {
+  transactionSchema,
+  TransactionWithRecurringCategory,
+} from "@/db/migrations/schema";
+import { dbTransaction } from "@/db";
+import { and, desc, eq, ne } from "drizzle-orm";
 
 export async function RelatedTransactions(props: { id: Promise<string> }) {
-  const supabase = await createClient();
-
   const id = await props.id;
 
-  const { data: transaction } = await supabase
-    .from("transactions")
-    .select("*")
-    .eq("id", id)
-    .single();
+  const [transaction] = await dbTransaction((tx) => {
+    return tx
+      .select()
+      .from(transactionSchema)
+      .where(eq(transactionSchema.id, id))
+      .limit(1);
+  });
 
   if (!transaction) {
     return;
   }
 
-  const { data: transactions } = await supabase
-    .from("transactions")
-    .select("*, category(*), recurring_transaction(*)")
-    .order("datetime", { ascending: false })
-    .eq("description", transaction.description)
-    .neq("id", transaction.id)
-    .returns<TransactionWithRecurring[]>();
+  const transactions: TransactionWithRecurringCategory[] = await dbTransaction(
+    async (tx) => {
+      return tx.query.transactionSchema.findMany({
+        where: and(
+          eq(transactionSchema.description, transaction.description),
+          ne(transactionSchema.id, transaction.id),
+        ),
+        with: {
+          category: true,
+          recurringTransaction: true,
+        },
+        orderBy: [desc(transactionSchema.datetime)],
+      });
+    },
+  );
 
-  if (!transactions || transactions?.length === 0) {
+  if (!transactions || transactions.length === 0) {
     return;
   }
 
@@ -34,7 +46,7 @@ export async function RelatedTransactions(props: { id: Promise<string> }) {
 
   return (
     <TransactionList
-      transactions={transactions ?? []}
+      transactions={transactions}
       dateFormat={settings.date_format}
     />
   );

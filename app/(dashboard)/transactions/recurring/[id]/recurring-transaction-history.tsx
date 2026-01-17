@@ -1,25 +1,29 @@
 import TransactionList from "@/components/transactions/components/transaction-list";
-import { TransactionWithRecurring } from "@/types";
-import { createClient } from "@/utils/supabase/server";
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
+import { transactionSchema } from "@/db/migrations/schema";
+import { dbTransaction } from "@/db";
+import { desc, eq } from "drizzle-orm";
 
 export async function RecurringTransactionHistory(props: {
   recurringTransactionId: Promise<string>;
 }) {
   const id = await props.recurringTransactionId;
 
-  const supabase = await createClient();
-  const { data: transactions } = await supabase
-    .from("transactions")
-    .select("*, category(*), recurring_transaction(*)")
-    .eq("recurring_transaction", id)
-    .order("datetime", { ascending: false })
-    .returns<TransactionWithRecurring[]>();
+  const transactions = await dbTransaction((tx) => {
+    return tx.query.transactionSchema.findMany({
+      where: eq(transactionSchema.recurringTransaction, id),
+      with: {
+        category: true,
+        recurringTransaction: true,
+      },
+      orderBy: [desc(transactionSchema.datetime)],
+    });
+  });
 
   const settings = await getSettings();
   return (
     <TransactionList
-      transactions={transactions ?? []}
+      transactions={transactions}
       dateFormat={settings.date_format}
     />
   );

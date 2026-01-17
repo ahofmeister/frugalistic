@@ -6,35 +6,38 @@ import { SearchFilter } from "@/app/(dashboard)/transactions/search-filter";
 import {
   NewTransaction,
   RecurringInterval,
-  TransactionWithRecurring,
   UpdateRecurringTransaction,
 } from "@/types";
 import { createClient } from "@/utils/supabase/server";
-import { transactions } from "@/db/migrations/schema";
+import {
+  transactionSchema,
+  TransactionWithRecurringCategory,
+} from "@/db/migrations/schema";
 import { dbTransaction } from "@/db";
 import { calculateNextRun } from "@/components/transactions/recurring/recurring-transactions-calculator";
+import { eq } from "drizzle-orm";
 
 export async function makeTransactionRecurring(
-  transaction: TransactionWithRecurring,
+  transaction: TransactionWithRecurringCategory,
   interval: RecurringInterval,
 ) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("transactions_recurring")
     .upsert({
-      id: transaction.recurring_transaction
-        ? transaction.recurring_transaction.id
+      id: transaction.recurringTransaction
+        ? transaction.recurringTransaction.id
         : undefined,
       amount: transaction.amount,
       description: transaction.description,
-      category: transaction.category ? transaction.category : undefined,
+      category: transaction.category ? transaction.category.id : undefined,
       next_run: format(
         calculateNextRun(transaction.datetime, interval),
         "yyyy-MM-dd",
       ),
       type: transaction.type,
       interval: interval,
-      user_id: transaction.user_id,
+      user_id: transaction.userId,
     })
     .select("id")
     .single();
@@ -59,23 +62,38 @@ export async function makeTransactionRecurring(
 }
 
 export async function upsertTransaction(newTransaction: NewTransaction) {
-  const supabase = await createClient();
+  try {
+    await dbTransaction(async (tx) => {
+      if (newTransaction.id) {
+        await tx
+          .update(transactionSchema)
+          .set(newTransaction)
+          .where(eq(transactionSchema.id, newTransaction.id));
+      } else {
+        await tx.insert(transactionSchema).values(newTransaction);
+      }
 
-  revalidatePath("/");
-  return await supabase.from("transactions").upsert(newTransaction);
+      return { success: true };
+    });
+
+    revalidatePath("/");
+    return { error: null, success: true };
+  } catch (error) {
+    return { error, success: false };
+  }
 }
 
 export async function insertTransaction(
-  newTransaction: typeof transactions.$inferInsert,
+  newTransaction: typeof transactionSchema.$inferInsert,
 ) {
   await dbTransaction((tx) => {
-    return tx.insert(transactions).values(newTransaction);
+    return tx.insert(transactionSchema).values(newTransaction);
   });
 }
 
 export const searchTransactions = async (
   filter: SearchFilter,
-): Promise<TransactionWithRecurring[]> => {
+): Promise<TransactionWithRecurringCategory[]> => {
   const supabase = await createClient();
 
   const query = filter.category
@@ -122,21 +140,8 @@ export const searchTransactions = async (
   });
 
   query.limit(200);
-  const { data } = await query.returns<TransactionWithRecurring[]>();
+  const { data } = await query.returns<TransactionWithRecurringCategory[]>();
   return data ?? [];
-};
-
-export const toggleEnabledRecurringTransaction = async (
-  id: string,
-  newStatus: boolean,
-) => {
-  const supabase = await createClient();
-  const { error } = await supabase
-    .from("transactions_recurring")
-    .update({ enabled: newStatus })
-    .eq("id", id);
-  revalidatePath(`/`);
-  return error;
 };
 
 export const deleteTransaction = async (id: string) => {

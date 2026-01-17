@@ -9,15 +9,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { TransactionWithRecurring } from "@/types";
 import Link from "next/link";
+import { TransactionWithRecurringCategory } from "@/db/migrations/schema";
 
-export function TransactionCard(props: {
-  transaction: TransactionWithRecurring;
+export function TransactionCard({
+  transaction,
+  dateFormat,
+}: {
+  transaction: TransactionWithRecurringCategory;
   dateFormat: string;
 }) {
-  const transaction = props.transaction;
-
   return (
     <Link href={`/transactions/edit/${transaction.id}`}>
       <Card key={transaction.id}>
@@ -42,18 +43,18 @@ export function TransactionCard(props: {
               )}
             </span>
 
-            <FormattedDate
-              date={transaction.datetime}
-              format={props.dateFormat}
-            />
+            <FormattedDate date={transaction.datetime} format={dateFormat} />
           </CardDescription>
         </CardHeader>
 
-        <CardFooter>
-          {transaction.recurring_transaction && (
+        <CardFooter className={"flex gap-x-2"}>
+          {transaction.recurringTransaction && (
             <Badge variant="secondary">
-              {transaction.recurring_transaction.interval}
+              {transaction.recurringTransaction.interval}
             </Badge>
+          )}
+          {transaction.recurringTransaction && (
+            <Badge variant="secondary">{transaction.costType}</Badge>
           )}
         </CardFooter>
       </Card>

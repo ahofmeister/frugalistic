@@ -1,9 +1,92 @@
 {
-  "id": "00000000-0000-0000-0000-000000000000",
-  "prevId": "",
+  "id": "bee5fdfd-a3d8-45ff-8c71-4e32a47047cd",
+  "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.categories": {
+      "name": "categories",
+      "schema": "",
+      "columns": {
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "color": {
+          "name": "color",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "auth\n                .\n                uid\n                ()"
+        },
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "icon": {
+          "name": "icon",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "categories_user_id_fkey": {
+          "name": "categories_user_id_fkey",
+          "tableFrom": "categories",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {
+        "user's categories": {
+          "name": "user's categories",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "public"
+          ],
+          "using": "(auth.uid()\n                       = user_id)",
+          "withCheck": "(auth.uid()\n                           = user_id)"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.favorite": {
       "name": "favorite",
       "schema": "",
@@ -26,7 +109,7 @@
           "type": "uuid",
           "primaryKey": false,
           "notNull": true,
-          "default": "auth.uid()"
+          "default": "auth\n                .\n                uid\n                ()"
         },
         "amount": {
           "name": "amount",
@@ -61,7 +144,6 @@
           "name": "favorite_category_fkey",
           "tableFrom": "favorite",
           "tableTo": "categories",
-          "schemaTo": "public",
           "columnsFrom": [
             "category"
           ],
@@ -75,7 +157,6 @@
           "name": "favorite_user_id_fkey",
           "tableFrom": "favorite",
           "tableTo": "users",
-          "schemaTo": "auth",
           "columnsFrom": [
             "user_id"
           ],
@@ -88,12 +169,6 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {
-        "disallow_empty": {
-          "name": "disallow_empty",
-          "value": "(description)::text <> ''::text"
-        }
-      },
       "policies": {
         "User can see favorites": {
           "name": "User can see favorites",
@@ -102,57 +177,58 @@
           "to": [
             "public"
           ],
-          "withCheck": "(auth.uid() = user_id)",
-          "using": "(auth.uid() = user_id)"
+          "using": "(auth.uid()\n                       = user_id)",
+          "withCheck": "(auth.uid()\n                           = user_id)"
         }
       },
-      "isRLSEnabled": true
+      "checkConstraints": {
+        "disallow_empty": {
+          "name": "disallow_empty",
+          "value": "(description)\n                ::text <> ''::text"
+        }
+      },
+      "isRLSEnabled": false
     },
-    "public.categories": {
-      "name": "categories",
+    "public.feedback": {
+      "name": "feedback",
       "schema": "",
       "columns": {
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "name": {
-          "name": "name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "color": {
-          "name": "color",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "auth.uid()"
-        },
         "id": {
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
           "notNull": true,
-          "default": "gen_random_uuid()"
+          "default": "uuid_generate_v4\n                ()"
         },
-        "description": {
-          "name": "description",
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "auth\n        .\n        uid\n        ()"
+        },
+        "text": {
+          "name": "text",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
-        "icon": {
-          "name": "icon",
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'New'"
+        },
+        "response": {
+          "name": "response",
           "type": "text",
           "primaryKey": false,
           "notNull": false
@@ -160,11 +236,10 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "categories_user_id_fkey": {
-          "name": "categories_user_id_fkey",
-          "tableFrom": "categories",
+        "feedback_user_id_fkey": {
+          "name": "feedback_user_id_fkey",
+          "tableFrom": "feedback",
           "tableTo": "users",
-          "schemaTo": "auth",
           "columnsFrom": [
             "user_id"
           ],
@@ -177,20 +252,216 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {},
       "policies": {
-        "user's categories": {
-          "name": "user's categories",
+        "Allow users to delete their own entries": {
+          "name": "Allow users to delete their own entries",
+          "as": "PERMISSIVE",
+          "for": "DELETE",
+          "to": [
+            "public"
+          ],
+          "using": "(user_id = auth.uid())"
+        },
+        "Allow users to insert a new entry": {
+          "name": "Allow users to insert a new entry",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "public"
+          ]
+        },
+        "Allow users to read their own entries": {
+          "name": "Allow users to read their own entries",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "public"
+          ]
+        },
+        "Allow users to update their own entries": {
+          "name": "Allow users to update their own entries",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": [
+            "public"
+          ]
+        }
+      },
+      "checkConstraints": {
+        "feedback_status_check": {
+          "name": "feedback_status_check",
+          "value": "status\n            = ANY (ARRAY['New'::text, 'In Progress'::text, 'Resolved'::text, 'Closed'::text])"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.profile": {
+      "name": "profile",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "auth\n                .\n                uid\n                ()"
+        },
+        "firstName": {
+          "name": "firstName",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lastName": {
+          "name": "lastName",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "profiles_id_fkey": {
+          "name": "profiles_id_fkey",
+          "tableFrom": "profile",
+          "tableTo": "users",
+          "columnsFrom": [
+            "id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "user_id_key": {
+          "name": "user_id_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "id"
+          ]
+        },
+        "user_email_key": {
+          "name": "user_email_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      },
+      "policies": {
+        "user's profile": {
+          "name": "user's profile",
           "as": "PERMISSIVE",
           "for": "ALL",
           "to": [
             "public"
           ],
-          "withCheck": "(auth.uid() = user_id)",
-          "using": "(auth.uid() = user_id)"
+          "using": "(auth.uid()\n                       = id)",
+          "withCheck": "(auth.uid()\n                           = id)"
         }
       },
-      "isRLSEnabled": true
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.setting": {
+      "name": "setting",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "date_format": {
+          "name": "date_format",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'dd.MM.yyyy'"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "auth\n                .\n                uid\n                ()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "setting_user_id_fkey": {
+          "name": "setting_user_id_fkey",
+          "tableFrom": "setting",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "setting_user_id_key": {
+          "name": "setting_user_id_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "user_id"
+          ]
+        }
+      },
+      "policies": {
+        "Allow users to delete their own entries": {
+          "name": "Allow users to delete their own entries",
+          "as": "PERMISSIVE",
+          "for": "DELETE",
+          "to": [
+            "public"
+          ],
+          "using": "(user_id = auth.uid())"
+        },
+        "Allow users to insert a new entry": {
+          "name": "Allow users to insert a new entry",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "public"
+          ]
+        },
+        "Allow users to read their own entries": {
+          "name": "Allow users to read their own entries",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "public"
+          ]
+        },
+        "Allow users to update their own entries": {
+          "name": "Allow users to update their own entries",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": [
+            "public"
+          ]
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": false
     },
     "public.transactions": {
       "name": "transactions",
@@ -221,7 +492,7 @@
           "type": "uuid",
           "primaryKey": false,
           "notNull": true,
-          "default": "auth.uid()"
+          "default": "auth\n                .\n                uid\n                ()"
         },
         "amount": {
           "name": "amount",
@@ -254,6 +525,13 @@
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
+        },
+        "cost_type": {
+          "name": "cost_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'variable'"
         }
       },
       "indexes": {},
@@ -262,7 +540,6 @@
           "name": "transactions_category_fkey",
           "tableFrom": "transactions",
           "tableTo": "categories",
-          "schemaTo": "public",
           "columnsFrom": [
             "category"
           ],
@@ -276,7 +553,6 @@
           "name": "transactions_recurring_transaction_fkey",
           "tableFrom": "transactions",
           "tableTo": "transactions_recurring",
-          "schemaTo": "public",
           "columnsFrom": [
             "recurring_transaction"
           ],
@@ -290,7 +566,6 @@
           "name": "transactions_user_id_fkey",
           "tableFrom": "transactions",
           "tableTo": "users",
-          "schemaTo": "auth",
           "columnsFrom": [
             "user_id"
           ],
@@ -303,12 +578,6 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {
-        "disallow_empty": {
-          "name": "disallow_empty",
-          "value": "(description)::text <> ''::text"
-        }
-      },
       "policies": {
         "user's transaction only": {
           "name": "user's transaction only",
@@ -317,11 +586,21 @@
           "to": [
             "public"
           ],
-          "withCheck": "(auth.uid() = user_id)",
-          "using": "(auth.uid() = user_id)"
+          "using": "(auth.uid()\n                       = user_id)",
+          "withCheck": "(auth.uid()\n                           = user_id)"
         }
       },
-      "isRLSEnabled": true
+      "checkConstraints": {
+        "disallow_empty": {
+          "name": "disallow_empty",
+          "value": "(description)\n                ::text <> ''::text"
+        },
+        "cost_type_check": {
+          "name": "cost_type_check",
+          "value": "\"transactions\".\"cost_type\"\n            IN ('fixed', 'variable') OR\n            \"transactions\".\"cost_type\"\n            IS\n            NULL"
+        }
+      },
+      "isRLSEnabled": false
     },
     "public.transactions_recurring": {
       "name": "transactions_recurring",
@@ -399,7 +678,6 @@
           "name": "transactions_recurring_category_fkey",
           "tableFrom": "transactions_recurring",
           "tableTo": "categories",
-          "schemaTo": "public",
           "columnsFrom": [
             "category"
           ],
@@ -413,7 +691,6 @@
           "name": "transactions_recurring_user_id_fkey",
           "tableFrom": "transactions_recurring",
           "tableTo": "users",
-          "schemaTo": "auth",
           "columnsFrom": [
             "user_id"
           ],
@@ -426,378 +703,94 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
+      "policies": {
+        "Allow users to delete their own entries": {
+          "name": "Allow users to delete their own entries",
+          "as": "PERMISSIVE",
+          "for": "DELETE",
+          "to": [
+            "public"
+          ],
+          "using": "(user_id = auth.uid())"
+        },
+        "Allow users to insert a new entry": {
+          "name": "Allow users to insert a new entry",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "public"
+          ]
+        },
+        "Allow users to read their own entries": {
+          "name": "Allow users to read their own entries",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "public"
+          ]
+        },
+        "Allow users to update their own entries": {
+          "name": "Allow users to update their own entries",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": [
+            "public"
+          ]
+        }
+      },
       "checkConstraints": {
         "disallow_empty": {
           "name": "disallow_empty",
-          "value": "(description)::text <> ''::text"
+          "value": "(description)\n                ::text <> ''::text"
         }
       },
-      "policies": {
-        "Allow users to delete their own entries": {
-          "name": "Allow users to delete their own entries",
-          "as": "PERMISSIVE",
-          "for": "DELETE",
-          "to": [
-            "public"
-          ],
-          "using": "(user_id = auth.uid())"
-        },
-        "Allow users to insert a new entry": {
-          "name": "Allow users to insert a new entry",
-          "as": "PERMISSIVE",
-          "for": "INSERT",
-          "to": [
-            "public"
-          ]
-        },
-        "Allow users to read their own entries": {
-          "name": "Allow users to read their own entries",
-          "as": "PERMISSIVE",
-          "for": "SELECT",
-          "to": [
-            "public"
-          ]
-        },
-        "Allow users to update their own entries": {
-          "name": "Allow users to update their own entries",
-          "as": "PERMISSIVE",
-          "for": "UPDATE",
-          "to": [
-            "public"
-          ]
-        }
-      },
-      "isRLSEnabled": true
-    },
-    "public.setting": {
-      "name": "setting",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "date_format": {
-          "name": "date_format",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'dd.MM.yyyy'"
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "auth.uid()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "setting_user_id_fkey": {
-          "name": "setting_user_id_fkey",
-          "tableFrom": "setting",
-          "tableTo": "users",
-          "schemaTo": "auth",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "setting_user_id_key": {
-          "columns": [
-            "user_id"
-          ],
-          "nullsNotDistinct": false,
-          "name": "setting_user_id_key"
-        }
-      },
-      "checkConstraints": {},
-      "policies": {
-        "Allow users to delete their own entries": {
-          "name": "Allow users to delete their own entries",
-          "as": "PERMISSIVE",
-          "for": "DELETE",
-          "to": [
-            "public"
-          ],
-          "using": "(user_id = auth.uid())"
-        },
-        "Allow users to insert a new entry": {
-          "name": "Allow users to insert a new entry",
-          "as": "PERMISSIVE",
-          "for": "INSERT",
-          "to": [
-            "public"
-          ]
-        },
-        "Allow users to read their own entries": {
-          "name": "Allow users to read their own entries",
-          "as": "PERMISSIVE",
-          "for": "SELECT",
-          "to": [
-            "public"
-          ]
-        },
-        "Allow users to update their own entries": {
-          "name": "Allow users to update their own entries",
-          "as": "PERMISSIVE",
-          "for": "UPDATE",
-          "to": [
-            "public"
-          ]
-        }
-      },
-      "isRLSEnabled": true
-    },
-    "public.feedback": {
-      "name": "feedback",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "uuid_generate_v4()"
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "auth.uid()"
-        },
-        "text": {
-          "name": "text",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "status": {
-          "name": "status",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'New'"
-        },
-        "response": {
-          "name": "response",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "feedback_user_id_fkey": {
-          "name": "feedback_user_id_fkey",
-          "tableFrom": "feedback",
-          "tableTo": "users",
-          "schemaTo": "auth",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {
-        "feedback_status_check": {
-          "name": "feedback_status_check",
-          "value": "status = ANY (ARRAY['New'::text, 'In Progress'::text, 'Resolved'::text, 'Closed'::text])"
-        }
-      },
-      "policies": {
-        "Allow users to delete their own entries": {
-          "name": "Allow users to delete their own entries",
-          "as": "PERMISSIVE",
-          "for": "DELETE",
-          "to": [
-            "public"
-          ],
-          "using": "(user_id = auth.uid())"
-        },
-        "Allow users to insert a new entry": {
-          "name": "Allow users to insert a new entry",
-          "as": "PERMISSIVE",
-          "for": "INSERT",
-          "to": [
-            "public"
-          ]
-        },
-        "Allow users to read their own entries": {
-          "name": "Allow users to read their own entries",
-          "as": "PERMISSIVE",
-          "for": "SELECT",
-          "to": [
-            "public"
-          ]
-        },
-        "Allow users to update their own entries": {
-          "name": "Allow users to update their own entries",
-          "as": "PERMISSIVE",
-          "for": "UPDATE",
-          "to": [
-            "public"
-          ]
-        }
-      },
-      "isRLSEnabled": true
-    },
-    "public.profile": {
-      "name": "profile",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "auth.uid()"
-        },
-        "firstName": {
-          "name": "firstName",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "lastName": {
-          "name": "lastName",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "email": {
-          "name": "email",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "profiles_id_fkey": {
-          "name": "profiles_id_fkey",
-          "tableFrom": "profile",
-          "tableTo": "users",
-          "schemaTo": "auth",
-          "columnsFrom": [
-            "id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "user_id_key": {
-          "columns": [
-            "id"
-          ],
-          "nullsNotDistinct": false,
-          "name": "user_id_key"
-        },
-        "user_email_key": {
-          "columns": [
-            "email"
-          ],
-          "nullsNotDistinct": false,
-          "name": "user_email_key"
-        }
-      },
-      "checkConstraints": {},
-      "policies": {
-        "user's profile": {
-          "name": "user's profile",
-          "as": "PERMISSIVE",
-          "for": "ALL",
-          "to": [
-            "public"
-          ],
-          "withCheck": "(auth.uid() = id)",
-          "using": "(auth.uid() = id)"
-        }
-      },
-      "isRLSEnabled": true
+      "isRLSEnabled": false
     }
   },
   "enums": {
     "public.feedback_status": {
       "name": "feedback_status",
+      "schema": "public",
       "values": [
         "new",
         "resolved",
         "closed"
-      ],
-      "schema": "public"
+      ]
     },
     "public.onboarding_status": {
       "name": "onboarding_status",
+      "schema": "public",
       "values": [
         "current",
         "complete",
         "skip",
         "open"
-      ],
-      "schema": "public"
+      ]
     },
     "public.onboarding_step": {
       "name": "onboarding_step",
+      "schema": "public",
       "values": [
         "categories",
         "welcome"
-      ],
-      "schema": "public"
+      ]
     },
     "public.recurring_interval": {
       "name": "recurring_interval",
+      "schema": "public",
       "values": [
         "monthly",
         "annually"
-      ],
-      "schema": "public"
-    },
-    "public.setting_key": {
-      "name": "setting_key",
-      "values": [
-        "date_format"
-      ],
-      "schema": "public"
+      ]
     },
     "public.transaction_type": {
       "name": "transaction_type",
+      "schema": "public",
       "values": [
         "income",
         "expense",
         "savings"
-      ],
-      "schema": "public"
+      ]
     }
   },
   "schemas": {},
@@ -806,8 +799,6 @@
   "policies": {},
   "views": {
     "public.transaction_auto_suggest": {
-      "name": "transaction_auto_suggest",
-      "schema": "public",
       "columns": {
         "unique_id": {
           "name": "unique_id",
@@ -853,20 +844,19 @@
           "notNull": false
         }
       },
+      "definition": "WITH category_counts\n                                                 AS (SELECT TRIM(BOTH FROM t_1.description) AS description,\n                                                            t_1.type,\n                                                            c.id                            AS category,\n                                                            c.name,\n                                                            c.color,\n                                                            count(*)                        AS frequency,\n                                                            row_number()                       OVER (PARTITION BY (TRIM(BOTH FROM t_1.description)), t_1.type ORDER BY (count(*)) DESC) AS rn\n                                                     FROM transactions t_1\n                                                              JOIN categories c ON c.id = t_1.category\n                                                     GROUP BY (TRIM(BOTH FROM t_1.description)), t_1.type, c.id,\n                                                              c.name, c.color),\n                                             totals AS (SELECT category_counts.description,\n                                                               category_counts.type,\n                                                               sum(category_counts.frequency) AS total_frequency\n                                                        FROM category_counts\n                                                        GROUP BY category_counts.description, category_counts.type)\n                                        SELECT row_number()         OVER (ORDER BY t.total_frequency DESC, cc.description) AS unique_id, cc.description,\n                                               cc.type,\n                                               cc.category,\n                                               cc.name,\n                                               cc.color,\n                                               t.total_frequency AS frequency\n                                        FROM category_counts cc\n                                                 JOIN totals t ON cc.description = t.description AND cc.type = t.type\n                                        WHERE cc.rn = 1\n                                        ORDER BY t.total_frequency DESC, cc.description",
+      "name": "transaction_auto_suggest",
+      "schema": "public",
       "isExisting": false,
-      "definition": "WITH category_counts AS ( SELECT TRIM(BOTH FROM t_1.description) AS description, t_1.type, c.id AS category, c.name, c.color, count(*) AS frequency, row_number() OVER (PARTITION BY (TRIM(BOTH FROM t_1.description)), t_1.type ORDER BY (count(*)) DESC) AS rn FROM transactions t_1 JOIN categories c ON c.id = t_1.category GROUP BY (TRIM(BOTH FROM t_1.description)), t_1.type, c.id, c.name, c.color ), totals AS ( SELECT category_counts.description, category_counts.type, sum(category_counts.frequency) AS total_frequency FROM category_counts GROUP BY category_counts.description, category_counts.type ) SELECT row_number() OVER (ORDER BY t.total_frequency DESC, cc.description) AS unique_id, cc.description, cc.type, cc.category, cc.name, cc.color, t.total_frequency AS frequency FROM category_counts cc JOIN totals t ON cc.description = t.description AND cc.type = t.type WHERE cc.rn = 1 ORDER BY t.total_frequency DESC, cc.description",
-      "materialized": false,
       "with": {
         "securityInvoker": true
-      }
+      },
+      "materialized": false
     }
   },
   "_meta": {
+    "columns": {},
     "schemas": {},
-    "tables": {},
-    "columns": {}
-  },
-  "internal": {
     "tables": {}
   }
 }

@@ -17,7 +17,7 @@ import {
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import { users } from "@/db/migrations/auth-schema";
 
 export const feedbackStatus = pgEnum("feedback_status", [
@@ -35,15 +35,30 @@ export const onboardingStep = pgEnum("onboarding_step", [
   "categories",
   "welcome",
 ]);
-export const recurringInterval = pgEnum("recurring_interval", [
-  "monthly",
-  "annually",
-]);
+
+const recurringIntervals = ["monthly", "annually"] as const;
+export type RecurringInterval = (typeof recurringIntervals)[number];
+
 export const transactionType = pgEnum("transaction_type", [
   "income",
   "expense",
   "savings",
 ]);
+
+export const COST_TYPES = ["fixed", "variable"] as const;
+export type CostType = (typeof COST_TYPES)[number];
+
+export type TransactionWithRecurringCategory = Omit<
+  typeof transactionSchema.$inferSelect,
+  "category"
+> & {
+  recurringTransaction: typeof transactionsRecurring.$inferSelect | null;
+  category: typeof categories.$inferSelect | null;
+};
+
+export type TransactionWithRecurring = typeof transactionSchema.$inferSelect & {
+  recurringTransaction: typeof transactionsRecurring.$inferSelect | null;
+};
 
 export const favoriteSchema = pgTable(
   "favorite",
@@ -132,7 +147,7 @@ export const categories = pgTable(
   ],
 );
 
-export const transactions = pgTable(
+export const transactionSchema = pgTable(
   "transactions",
   {
     createdAt: timestamp("created_at", {
@@ -154,6 +169,7 @@ export const transactions = pgTable(
     id: uuid().defaultRandom().primaryKey().notNull(),
     category: uuid(),
     recurringTransaction: uuid("recurring_transaction"),
+    costType: text("cost_type").$type<CostType>().notNull().default("variable"),
   },
   (table) => [
     foreignKey({
@@ -185,6 +201,14 @@ export const transactions = pgTable(
       sql`(description)
                 ::text <> ''::text`,
     ),
+    check(
+      "cost_type_check",
+      sql`${table.costType}
+            IN ('fixed', 'variable') OR
+            ${table.costType}
+            IS
+            NULL`,
+    ),
   ],
 );
 
@@ -201,7 +225,7 @@ export const transactionsRecurring = pgTable(
     type: transactionType().notNull(),
     id: uuid().defaultRandom().primaryKey().notNull(),
     enabled: boolean().default(true).notNull(),
-    interval: recurringInterval().notNull(),
+    interval: text().$type<RecurringInterval>().notNull(),
     category: uuid(),
   },
   (table) => [
@@ -378,8 +402,38 @@ export const profile = pgTable(
     }),
   ],
 );
+
+export const transactionsRelations = relations(
+  transactionSchema,
+  ({ one }) => ({
+    recurringTransaction: one(transactionsRecurring, {
+      fields: [transactionSchema.recurringTransaction],
+      references: [transactionsRecurring.id],
+    }),
+    category: one(categories, {
+      fields: [transactionSchema.category],
+      references: [categories.id],
+    }),
+  }),
+);
+
+export const transactionsRecurringRelations = relations(
+  transactionsRecurring,
+  ({ many, one }) => ({
+    transactions: many(transactionSchema),
+    category: one(categories, {
+      fields: [transactionsRecurring.category],
+      references: [categories.id],
+    }),
+  }),
+);
+
+export const categoriesRelations = relations(categories, ({ many }) => ({
+  transactions: many(transactionSchema),
+  recurringTransactions: many(transactionsRecurring),
+}));
+
 export const transactionAutoSuggest = pgView("transaction_auto_suggest", {
-  // You can use { mode: "bigint" } if numbers are exceeding js number limitations
   uniqueId: bigint("unique_id", { mode: "number" }),
   description: text(),
   type: transactionType(),

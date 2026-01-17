@@ -1,11 +1,12 @@
 import React from "react";
 
 import DashboardCard from "@/components/dashboard/dashboard-card";
-import { TransactionWithCategory } from "@/types";
-import { createClient } from "@/utils/supabase/server";
 import { getPeriodDates } from "@/utils/transaction/dates";
 import { DashboardParams } from "@/app/(dashboard)/dashboard/page";
 import { loadSearchParams } from "@/app/(dashboard)/search-params";
+import { dbTransaction } from "@/db";
+import { categories, transactionSchema } from "@/db/migrations/schema";
+import { and, desc, eq, gte, lte } from "drizzle-orm";
 
 const DashboardCards = async ({
   searchParams,
@@ -15,6 +16,8 @@ const DashboardCards = async ({
   let income = 0;
   let expense = 0;
   let savings = 0;
+  let fixedCosts = 0;
+  let variableCosts = 0;
 
   const awaitedParams = await loadSearchParams(searchParams);
 
@@ -24,17 +27,29 @@ const DashboardCards = async ({
     awaitedParams.period,
   );
 
-  const supabase = await createClient();
-  const { data: transactions } = await supabase
-    .from("transactions")
-    .select("*, category(*)")
-    .gte("datetime", startDate)
-    .lte("datetime", endDate)
-    .order("datetime", { ascending: false })
-    .order("created_at", { ascending: false })
-    .returns<TransactionWithCategory[]>();
+  const fetchedTransactions = await dbTransaction((tx) => {
+    return tx
+      .select()
+      .from(transactionSchema)
+      .leftJoin(categories, eq(transactionSchema.category, categories.id))
+      .where(
+        and(
+          gte(transactionSchema.datetime, startDate),
+          lte(transactionSchema.datetime, endDate),
+        ),
+      )
+      .orderBy(
+        desc(transactionSchema.datetime),
+        desc(transactionSchema.createdAt),
+      );
+  });
 
-  transactions?.forEach((transaction) => {
+  const transactionsWithCategory = fetchedTransactions.map((row) => ({
+    ...row.transactions,
+    category: row.categories,
+  }));
+
+  transactionsWithCategory?.forEach((transaction) => {
     const amount = transaction.amount;
     switch (transaction.type) {
       case "income":
@@ -42,6 +57,11 @@ const DashboardCards = async ({
         break;
       case "expense":
         expense += amount;
+        if (transaction.costType === "fixed") {
+          fixedCosts += amount;
+        } else if (transaction.costType === "variable") {
+          variableCosts += amount;
+        }
         break;
       case "savings":
         savings += amount;
@@ -70,6 +90,7 @@ const DashboardCards = async ({
           type="expense"
           total={income}
           ofLabel="income"
+          fixed={fixedCosts}
         />
         <DashboardCard
           amount={leftover}

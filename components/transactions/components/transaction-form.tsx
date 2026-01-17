@@ -59,8 +59,9 @@ import {
   FavoriteWithCategory,
   NewTransaction,
   TransactionAutoSuggest,
-  TransactionWithRecurring,
 } from "@/types";
+
+import { TransactionWithRecurringCategory } from "@/db/migrations/schema";
 
 const TransactionForm = ({
   transaction,
@@ -68,7 +69,7 @@ const TransactionForm = ({
   categories,
   favorites,
 }: {
-  transaction?: TransactionWithRecurring;
+  transaction?: TransactionWithRecurringCategory;
   autoSuggests?: TransactionAutoSuggest[];
   categories?: Category[];
   favorites?: FavoriteWithCategory[];
@@ -79,6 +80,7 @@ const TransactionForm = ({
     type: z.enum(["income", "expense", "savings"]),
     category: z.string(),
     datetime: z.date(),
+    costType: z.enum(["fixed", "variable"]).optional(),
   });
 
   const defaultValues = {
@@ -87,7 +89,8 @@ const TransactionForm = ({
     amount: transaction ? transaction.amount.toString() : "0",
     datetime: transaction ? new Date(transaction.datetime) : new Date(),
     category:
-      transaction && transaction.category ? transaction.category : undefined,
+      transaction && transaction.category ? transaction.category.id : undefined,
+    costType: transaction?.costType ?? "variable",
   };
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -100,13 +103,13 @@ const TransactionForm = ({
   function resetForm() {
     form.reset(defaultValues);
     if (autoCompleteRef && autoCompleteRef.current) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
       autoCompleteRef.current.clearInput();
     }
   }
 
   const typeValue = form.watch("type");
   const categoryValue = form.watch("category");
+  const costTypeValue = form.watch("costType");
 
   async function handleSubmit(newTransaction: NewTransaction) {
     const { error } = await upsertTransaction({
@@ -115,6 +118,7 @@ const TransactionForm = ({
     });
 
     if (error) {
+      console.error(error);
       toast.error(`Failed to ${transaction ? "save" : "create"} transaction`);
     } else if (!transaction) {
       toast.success("Transaction created successfully!");
@@ -130,6 +134,7 @@ const TransactionForm = ({
   const isFavorite = transaction && favorite;
 
   const [favoriteOpen, setFavoriteOpen] = useState<boolean>(false);
+
   return (
     <div className="max-w-2xl mx-auto px-2">
       <Form {...form}>
@@ -154,7 +159,9 @@ const TransactionForm = ({
                   if (isFavorite) {
                     return removeFavorite(favorite?.id);
                   }
-                  return addFavorite(transaction!);
+                  if (transaction) {
+                    return addFavorite(transaction);
+                  }
                 }}
               >
                 <HeartIcon
@@ -227,7 +234,7 @@ const TransactionForm = ({
                           (l) =>
                             l.type === transaction?.type &&
                             l.description === transaction?.description &&
-                            l.category === transaction.category,
+                            l.category === transaction.category?.id,
                         )}
                         placeholder="Enter or choose description"
                         onValueChange={(e: TransactionAutoSuggest) => {
@@ -290,11 +297,16 @@ const TransactionForm = ({
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="category"
               render={({ field }) => (
-                <FormItem className="col-span-2">
+                <FormItem
+                  className={cn({
+                    "col-span-2": typeValue !== "expense",
+                  })}
+                >
                   <FormLabel>Category</FormLabel>
                   <Select onValueChange={field.onChange} value={categoryValue}>
                     <FormControl>
@@ -320,6 +332,34 @@ const TransactionForm = ({
                 </FormItem>
               )}
             />
+
+            {typeValue === "expense" && (
+              <FormField
+                control={form.control}
+                name="costType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Cost Type</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={costTypeValue}
+                      disabled={!!transaction?.recurringTransaction}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select cost type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="fixed">Fixed</SelectItem>
+                        <SelectItem value="variable">Variable</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             <FormField
               control={form.control}
@@ -381,8 +421,8 @@ const TransactionForm = ({
                   type="button"
                   variant="outline"
                   disabled={
-                    transaction.recurring_transaction &&
-                    transaction.recurring_transaction.interval === "monthly"
+                    transaction.recurringTransaction !== null &&
+                    transaction.recurringTransaction.interval === "monthly"
                   }
                   onClick={() =>
                     makeTransactionRecurring(transaction, "monthly")
@@ -395,8 +435,8 @@ const TransactionForm = ({
                   type="button"
                   variant="outline"
                   disabled={
-                    transaction.recurring_transaction &&
-                    transaction.recurring_transaction.interval === "annually"
+                    transaction.recurringTransaction !== null &&
+                    transaction.recurringTransaction === "annually"
                   }
                   onClick={() =>
                     makeTransactionRecurring(transaction, "annually")
