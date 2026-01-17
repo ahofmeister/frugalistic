@@ -38,7 +38,7 @@ export function DashboardCategoryCard({
             <div className="text-lg">{formatAmount(amount)}</div>
           </div>
           <span className="text-sm text-gray-400">
-            {`${((amount / total) * 100).toFixed(2)}% of total`}
+            {`${((amount / total) * 100).toFixed(2)}% of expenses`}
           </span>
         </CardContent>
       </Card>
