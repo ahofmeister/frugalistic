@@ -4,17 +4,17 @@ import { RelatedTransactions } from "@/app/(dashboard)/transactions/edit/[id]/re
 import { TransactionFormData } from "@/app/(dashboard)/transactions/new/transaction-form-data";
 
 export default async function TransactionEditPage(props: {
-  params: Promise<{ id: string }>;
+	params: Promise<{ id: string }>;
 }) {
-  return (
-    <div>
-      <Suspense>
-        <TransactionFormData transactionId={props.params.then((p) => p.id)} />
-      </Suspense>
-      <div className="mt-4 mb-2 text-xl">Related Transactions</div>
-      <Suspense>
-        <RelatedTransactions id={props.params.then((p) => p.id)} />
-      </Suspense>
-    </div>
-  );
+	return (
+		<div>
+			<Suspense>
+				<TransactionFormData transactionId={props.params.then((p) => p.id)} />
+			</Suspense>
+			<div className="mt-4 mb-2 text-xl">Related Transactions</div>
+			<Suspense>
+				<RelatedTransactions id={props.params.then((p) => p.id)} />
+			</Suspense>
+		</div>
+	);
 }

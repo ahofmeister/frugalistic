@@ -1,447 +1,449 @@
-import {
-  bigint,
-  boolean,
-  check,
-  date,
-  doublePrecision,
-  foreignKey,
-  integer,
-  numeric,
-  pgEnum,
-  pgPolicy,
-  pgTable,
-  pgView,
-  text,
-  timestamp,
-  unique,
-  uuid,
-  varchar,
-} from "drizzle-orm/pg-core";
 import { relations, sql } from "drizzle-orm";
+import {
+	bigint,
+	boolean,
+	check,
+	date,
+	doublePrecision,
+	foreignKey,
+	integer,
+	numeric,
+	pgEnum,
+	pgPolicy,
+	pgTable,
+	pgView,
+	text,
+	timestamp,
+	unique,
+	uuid,
+	varchar,
+} from "drizzle-orm/pg-core";
 import { users } from "@/db/migrations/auth-schema";
 
 export const feedbackStatus = pgEnum("feedback_status", [
-  "new",
-  "resolved",
-  "closed",
+	"new",
+	"resolved",
+	"closed",
 ]);
 export const onboardingStatus = pgEnum("onboarding_status", [
-  "current",
-  "complete",
-  "skip",
-  "open",
+	"current",
+	"complete",
+	"skip",
+	"open",
 ]);
 export const onboardingStep = pgEnum("onboarding_step", [
-  "categories",
-  "welcome",
+	"categories",
+	"welcome",
 ]);
 
 const recurringIntervals = ["monthly", "annually"] as const;
 export type RecurringInterval = (typeof recurringIntervals)[number];
 
 export const transactionType = pgEnum("transaction_type", [
-  "income",
-  "expense",
-  "savings",
+	"income",
+	"expense",
+	"savings",
 ]);
 
 export const COST_TYPES = ["fixed", "variable"] as const;
 export type CostType = (typeof COST_TYPES)[number];
 
 export type TransactionWithRecurringCategory = Omit<
-  typeof transactionSchema.$inferSelect,
-  "category"
+	typeof transactionSchema.$inferSelect,
+	"category"
 > & {
-  recurringTransaction: typeof transactionsRecurring.$inferSelect | null;
-  category: typeof categories.$inferSelect | null;
+	recurringTransaction: typeof transactionsRecurring.$inferSelect | null;
+	category: typeof categories.$inferSelect | null;
 };
 
 export type TransactionWithRecurring = typeof transactionSchema.$inferSelect & {
-  recurringTransaction: typeof transactionsRecurring.$inferSelect | null;
+	recurringTransaction: typeof transactionsRecurring.$inferSelect | null;
 };
 
 export const favoriteSchema = pgTable(
-  "favorite",
-  {
-    createdAt: timestamp("created_at", {
-      withTimezone: true,
-      mode: "string",
-    }).defaultNow(),
-    description: varchar().notNull(),
-    userId: uuid("user_id")
-      .default(
-        sql`auth
+	"favorite",
+	{
+		createdAt: timestamp("created_at", {
+			withTimezone: true,
+			mode: "string",
+		}).defaultNow(),
+		description: varchar().notNull(),
+		userId: uuid("user_id")
+			.default(
+				sql`auth
                 .
                 uid
                 ()`,
-      )
-      .notNull(),
-    amount: integer().notNull(),
-    type: transactionType().notNull(),
-    id: uuid().defaultRandom().primaryKey().notNull(),
-    category: uuid(),
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.category],
-      foreignColumns: [categories.id],
-      name: "favorite_category_fkey",
-    }),
-    foreignKey({
-      columns: [table.userId],
-      foreignColumns: [users.id],
-      name: "favorite_user_id_fkey",
-    }).onDelete("cascade"),
-    pgPolicy("User can see favorites", {
-      as: "permissive",
-      for: "all",
-      to: ["public"],
-      using: sql`(auth.uid()
+			)
+			.notNull(),
+		amount: integer().notNull(),
+		type: transactionType().notNull(),
+		id: uuid().defaultRandom().primaryKey().notNull(),
+		category: uuid(),
+	},
+	(table) => [
+		foreignKey({
+			columns: [table.category],
+			foreignColumns: [categories.id],
+			name: "favorite_category_fkey",
+		}),
+		foreignKey({
+			columns: [table.userId],
+			foreignColumns: [users.id],
+			name: "favorite_user_id_fkey",
+		}).onDelete("cascade"),
+		pgPolicy("User can see favorites", {
+			as: "permissive",
+			for: "all",
+			to: ["public"],
+			using: sql`(auth.uid()
                        = user_id)`,
-      withCheck: sql`(auth.uid()
+			withCheck: sql`(auth.uid()
                            = user_id)`,
-    }),
-    check(
-      "disallow_empty",
-      sql`(description)
+		}),
+		check(
+			"disallow_empty",
+			sql`(description)
                 ::text <> ''::text`,
-    ),
-  ],
+		),
+	],
 );
 
 export const categories = pgTable(
-  "categories",
-  {
-    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
-      .defaultNow()
-      .notNull(),
-    name: text().notNull(),
-    color: text().notNull(),
-    userId: uuid("user_id")
-      .default(
-        sql`auth
+	"categories",
+	{
+		createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+			.defaultNow()
+			.notNull(),
+		name: text().notNull(),
+		color: text().notNull(),
+		userId: uuid("user_id")
+			.default(
+				sql`auth
                 .
                 uid
                 ()`,
-      )
-      .notNull(),
-    id: uuid().defaultRandom().primaryKey().notNull(),
-    description: text(),
-    icon: text(),
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.userId],
-      foreignColumns: [users.id],
-      name: "categories_user_id_fkey",
-    }).onDelete("cascade"),
-    pgPolicy("user's categories", {
-      as: "permissive",
-      for: "all",
-      to: ["public"],
-      using: sql`(auth.uid()
+			)
+			.notNull(),
+		id: uuid().defaultRandom().primaryKey().notNull(),
+		description: text(),
+		icon: text(),
+	},
+	(table) => [
+		foreignKey({
+			columns: [table.userId],
+			foreignColumns: [users.id],
+			name: "categories_user_id_fkey",
+		}).onDelete("cascade"),
+		pgPolicy("user's categories", {
+			as: "permissive",
+			for: "all",
+			to: ["public"],
+			using: sql`(auth.uid()
                        = user_id)`,
-      withCheck: sql`(auth.uid()
+			withCheck: sql`(auth.uid()
                            = user_id)`,
-    }),
-  ],
+		}),
+	],
 );
 
 export const transactionSchema = pgTable(
-  "transactions",
-  {
-    createdAt: timestamp("created_at", {
-      withTimezone: true,
-      mode: "string",
-    }).defaultNow(),
-    description: varchar().notNull(),
-    datetime: date().defaultNow().notNull(),
-    userId: uuid("user_id")
-      .default(
-        sql`auth
+	"transactions",
+	{
+		createdAt: timestamp("created_at", {
+			withTimezone: true,
+			mode: "string",
+		}).defaultNow(),
+		description: varchar().notNull(),
+		datetime: date().defaultNow().notNull(),
+		userId: uuid("user_id")
+			.default(
+				sql`auth
                 .
                 uid
                 ()`,
-      )
-      .notNull(),
-    amount: integer().notNull(),
-    type: transactionType().notNull(),
-    id: uuid().defaultRandom().primaryKey().notNull(),
-    category: uuid(),
-    recurringTransaction: uuid("recurring_transaction"),
-    costType: text("cost_type").$type<CostType>().notNull().default("variable"),
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.category],
-      foreignColumns: [categories.id],
-      name: "transactions_category_fkey",
-    }),
-    foreignKey({
-      columns: [table.recurringTransaction],
-      foreignColumns: [transactionsRecurring.id],
-      name: "transactions_recurring_transaction_fkey",
-    }).onDelete("set null"),
-    foreignKey({
-      columns: [table.userId],
-      foreignColumns: [users.id],
-      name: "transactions_user_id_fkey",
-    }).onDelete("cascade"),
-    pgPolicy("user's transaction only", {
-      as: "permissive",
-      for: "all",
-      to: ["public"],
-      using: sql`(auth.uid()
+			)
+			.notNull(),
+		amount: integer().notNull(),
+		type: transactionType().notNull(),
+		id: uuid().defaultRandom().primaryKey().notNull(),
+		category: uuid(),
+		recurringTransaction: uuid("recurring_transaction"),
+		costType: text("cost_type").$type<CostType>().notNull().default("variable"),
+	},
+	(table) => [
+		foreignKey({
+			columns: [table.category],
+			foreignColumns: [categories.id],
+			name: "transactions_category_fkey",
+		}),
+		foreignKey({
+			columns: [table.recurringTransaction],
+			foreignColumns: [transactionsRecurring.id],
+			name: "transactions_recurring_transaction_fkey",
+		}).onDelete("set null"),
+		foreignKey({
+			columns: [table.userId],
+			foreignColumns: [users.id],
+			name: "transactions_user_id_fkey",
+		}).onDelete("cascade"),
+		pgPolicy("user's transaction only", {
+			as: "permissive",
+			for: "all",
+			to: ["public"],
+			using: sql`(auth.uid()
                        = user_id)`,
-      withCheck: sql`(auth.uid()
+			withCheck: sql`(auth.uid()
                            = user_id)`,
-    }),
-    check(
-      "disallow_empty",
-      sql`(description)
+		}),
+		check(
+			"disallow_empty",
+			sql`(description)
                 ::text <> ''::text`,
-    ),
-    check(
-      "cost_type_check",
-      sql`${table.costType}
+		),
+		check(
+			"cost_type_check",
+			sql`${table.costType}
             IN ('fixed', 'variable') OR
             ${table.costType}
             IS
             NULL`,
-    ),
-  ],
+		),
+	],
 );
 
 export const transactionsRecurring = pgTable(
-  "transactions_recurring",
-  {
-    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
-      .defaultNow()
-      .notNull(),
-    description: varchar().notNull(),
-    nextRun: date("next_run"),
-    userId: uuid("user_id").notNull(),
-    amount: doublePrecision().notNull(),
-    type: transactionType().notNull(),
-    id: uuid().defaultRandom().primaryKey().notNull(),
-    enabled: boolean().default(true).notNull(),
-    interval: text().$type<RecurringInterval>().notNull(),
-    category: uuid(),
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.category],
-      foreignColumns: [categories.id],
-      name: "transactions_recurring_category_fkey",
-    }),
-    foreignKey({
-      columns: [table.userId],
-      foreignColumns: [users.id],
-      name: "transactions_recurring_user_id_fkey",
-    }).onDelete("cascade"),
-    pgPolicy("Allow users to delete their own entries", {
-      as: "permissive",
-      for: "delete",
-      to: ["public"],
-      using: sql`(user_id = auth.uid())`,
-    }),
-    pgPolicy("Allow users to insert a new entry", {
-      as: "permissive",
-      for: "insert",
-      to: ["public"],
-    }),
-    pgPolicy("Allow users to read their own entries", {
-      as: "permissive",
-      for: "select",
-      to: ["public"],
-    }),
-    pgPolicy("Allow users to update their own entries", {
-      as: "permissive",
-      for: "update",
-      to: ["public"],
-    }),
-    check(
-      "disallow_empty",
-      sql`(description)
+	"transactions_recurring",
+	{
+		createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+			.defaultNow()
+			.notNull(),
+		description: varchar().notNull(),
+		nextRun: date("next_run"),
+		userId: uuid("user_id").notNull(),
+		amount: doublePrecision().notNull(),
+		type: transactionType().notNull(),
+		id: uuid().defaultRandom().primaryKey().notNull(),
+		enabled: boolean().default(true).notNull(),
+		interval: text().$type<RecurringInterval>().notNull(),
+		category: uuid(),
+	},
+	(table) => [
+		foreignKey({
+			columns: [table.category],
+			foreignColumns: [categories.id],
+			name: "transactions_recurring_category_fkey",
+		}),
+		foreignKey({
+			columns: [table.userId],
+			foreignColumns: [users.id],
+			name: "transactions_recurring_user_id_fkey",
+		}).onDelete("cascade"),
+		pgPolicy("Allow users to delete their own entries", {
+			as: "permissive",
+			for: "delete",
+			to: ["public"],
+			using: sql`(user_id = auth.uid())`,
+		}),
+		pgPolicy("Allow users to insert a new entry", {
+			as: "permissive",
+			for: "insert",
+			to: ["public"],
+		}),
+		pgPolicy("Allow users to read their own entries", {
+			as: "permissive",
+			for: "select",
+			to: ["public"],
+		}),
+		pgPolicy("Allow users to update their own entries", {
+			as: "permissive",
+			for: "update",
+			to: ["public"],
+		}),
+		check(
+			"disallow_empty",
+			sql`(description)
                 ::text <> ''::text`,
-    ),
-  ],
+		),
+	],
 );
 
 export const setting = pgTable(
-  "setting",
-  {
-    id: uuid().defaultRandom().primaryKey().notNull(),
-    dateFormat: text("date_format").default("dd.MM.yyyy").notNull(),
-    userId: uuid("user_id")
-      .default(
-        sql`auth
+	"setting",
+	{
+		id: uuid().defaultRandom().primaryKey().notNull(),
+		dateFormat: text("date_format").default("dd.MM.yyyy").notNull(),
+		userId: uuid("user_id")
+			.default(
+				sql`auth
                 .
                 uid
                 ()`,
-      )
-      .notNull(),
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.userId],
-      foreignColumns: [users.id],
-      name: "setting_user_id_fkey",
-    }).onDelete("cascade"),
-    unique("setting_user_id_key").on(table.userId),
-    pgPolicy("Allow users to delete their own entries", {
-      as: "permissive",
-      for: "delete",
-      to: ["public"],
-      using: sql`(user_id = auth.uid())`,
-    }),
-    pgPolicy("Allow users to insert a new entry", {
-      as: "permissive",
-      for: "insert",
-      to: ["public"],
-    }),
-    pgPolicy("Allow users to read their own entries", {
-      as: "permissive",
-      for: "select",
-      to: ["public"],
-    }),
-    pgPolicy("Allow users to update their own entries", {
-      as: "permissive",
-      for: "update",
-      to: ["public"],
-    }),
-  ],
+			)
+			.notNull(),
+	},
+	(table) => [
+		foreignKey({
+			columns: [table.userId],
+			foreignColumns: [users.id],
+			name: "setting_user_id_fkey",
+		}).onDelete("cascade"),
+		unique("setting_user_id_key").on(table.userId),
+		pgPolicy("Allow users to delete their own entries", {
+			as: "permissive",
+			for: "delete",
+			to: ["public"],
+			using: sql`(user_id = auth.uid())`,
+		}),
+		pgPolicy("Allow users to insert a new entry", {
+			as: "permissive",
+			for: "insert",
+			to: ["public"],
+		}),
+		pgPolicy("Allow users to read their own entries", {
+			as: "permissive",
+			for: "select",
+			to: ["public"],
+		}),
+		pgPolicy("Allow users to update their own entries", {
+			as: "permissive",
+			for: "update",
+			to: ["public"],
+		}),
+	],
 );
 
 export const feedback = pgTable(
-  "feedback",
-  {
-    id: uuid()
-      .default(
-        sql`uuid_generate_v4
+	"feedback",
+	{
+		id: uuid()
+			.default(
+				sql`uuid_generate_v4
                 ()`,
-      )
-      .primaryKey()
-      .notNull(),
-    userId: uuid("user_id").default(sql`auth
+			)
+			.primaryKey()
+			.notNull(),
+		userId: uuid("user_id").default(sql`auth
         .
         uid
         ()`),
-    text: text().notNull(),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
-    status: text().default("New"),
-    response: text(),
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.userId],
-      foreignColumns: [users.id],
-      name: "feedback_user_id_fkey",
-    }).onDelete("cascade"),
-    pgPolicy("Allow users to delete their own entries", {
-      as: "permissive",
-      for: "delete",
-      to: ["public"],
-      using: sql`(user_id = auth.uid())`,
-    }),
-    pgPolicy("Allow users to insert a new entry", {
-      as: "permissive",
-      for: "insert",
-      to: ["public"],
-    }),
-    pgPolicy("Allow users to read their own entries", {
-      as: "permissive",
-      for: "select",
-      to: ["public"],
-    }),
-    pgPolicy("Allow users to update their own entries", {
-      as: "permissive",
-      for: "update",
-      to: ["public"],
-    }),
-    check(
-      "feedback_status_check",
-      sql`status
+		text: text().notNull(),
+		createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
+		status: text().default("New"),
+		response: text(),
+	},
+	(table) => [
+		foreignKey({
+			columns: [table.userId],
+			foreignColumns: [users.id],
+			name: "feedback_user_id_fkey",
+		}).onDelete("cascade"),
+		pgPolicy("Allow users to delete their own entries", {
+			as: "permissive",
+			for: "delete",
+			to: ["public"],
+			using: sql`(user_id = auth.uid())`,
+		}),
+		pgPolicy("Allow users to insert a new entry", {
+			as: "permissive",
+			for: "insert",
+			to: ["public"],
+		}),
+		pgPolicy("Allow users to read their own entries", {
+			as: "permissive",
+			for: "select",
+			to: ["public"],
+		}),
+		pgPolicy("Allow users to update their own entries", {
+			as: "permissive",
+			for: "update",
+			to: ["public"],
+		}),
+		check(
+			"feedback_status_check",
+			sql`status
             = ANY (ARRAY['New'::text, 'In Progress'::text, 'Resolved'::text, 'Closed'::text])`,
-    ),
-  ],
+		),
+	],
 );
 
 export const profile = pgTable(
-  "profile",
-  {
-    id: uuid()
-      .default(
-        sql`auth
+	"profile",
+	{
+		id: uuid()
+			.default(
+				sql`auth
                 .
                 uid
                 ()`,
-      )
-      .primaryKey()
-      .notNull(),
-    firstName: text(),
-    lastName: text(),
-    email: text(),
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.id],
-      foreignColumns: [users.id],
-      name: "profiles_id_fkey",
-    }).onDelete("cascade"),
-    unique("user_id_key").on(table.id),
-    unique("user_email_key").on(table.email),
-    pgPolicy("user's profile", {
-      as: "permissive",
-      for: "all",
-      to: ["public"],
-      using: sql`(auth.uid()
+			)
+			.primaryKey()
+			.notNull(),
+		firstName: text(),
+		lastName: text(),
+		email: text(),
+	},
+	(table) => [
+		foreignKey({
+			columns: [table.id],
+			foreignColumns: [users.id],
+			name: "profiles_id_fkey",
+		}).onDelete("cascade"),
+		unique("user_id_key").on(table.id),
+		unique("user_email_key").on(table.email),
+		pgPolicy("user's profile", {
+			as: "permissive",
+			for: "all",
+			to: ["public"],
+			using: sql`(auth.uid()
                        = id)`,
-      withCheck: sql`(auth.uid()
+			withCheck: sql`(auth.uid()
                            = id)`,
-    }),
-  ],
+		}),
+	],
 );
 
 export const transactionsRelations = relations(
-  transactionSchema,
-  ({ one }) => ({
-    recurringTransaction: one(transactionsRecurring, {
-      fields: [transactionSchema.recurringTransaction],
-      references: [transactionsRecurring.id],
-    }),
-    category: one(categories, {
-      fields: [transactionSchema.category],
-      references: [categories.id],
-    }),
-  }),
+	transactionSchema,
+	({ one }) => ({
+		recurringTransaction: one(transactionsRecurring, {
+			fields: [transactionSchema.recurringTransaction],
+			references: [transactionsRecurring.id],
+		}),
+		category: one(categories, {
+			fields: [transactionSchema.category],
+			references: [categories.id],
+		}),
+	}),
 );
 
 export const transactionsRecurringRelations = relations(
-  transactionsRecurring,
-  ({ many, one }) => ({
-    transactions: many(transactionSchema),
-    category: one(categories, {
-      fields: [transactionsRecurring.category],
-      references: [categories.id],
-    }),
-  }),
+	transactionsRecurring,
+	({ many, one }) => ({
+		transactions: many(transactionSchema),
+		category: one(categories, {
+			fields: [transactionsRecurring.category],
+			references: [categories.id],
+		}),
+	}),
 );
 
 export const categoriesRelations = relations(categories, ({ many }) => ({
-  transactions: many(transactionSchema),
-  recurringTransactions: many(transactionsRecurring),
+	transactions: many(transactionSchema),
+	recurringTransactions: many(transactionsRecurring),
 }));
 
 export const transactionAutoSuggest = pgView("transaction_auto_suggest", {
-  uniqueId: bigint("unique_id", { mode: "number" }),
-  description: text(),
-  type: transactionType(),
-  category: uuid(),
-  name: text(),
-  color: text(),
-  frequency: numeric(),
-}).with({ securityInvoker: true }).as(sql`WITH category_counts
+	uniqueId: bigint("unique_id", { mode: "number" }),
+	description: text(),
+	type: transactionType(),
+	category: uuid(),
+	name: text(),
+	color: text(),
+	frequency: numeric(),
+})
+	.with({ securityInvoker: true })
+	.as(sql`WITH category_counts
                                                  AS (SELECT TRIM(BOTH FROM t_1.description) AS description,
                                                             t_1.type,
                                                             c.id                            AS category,
