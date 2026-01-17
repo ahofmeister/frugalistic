@@ -48,12 +48,12 @@ export function TransactionCard({
         </CardHeader>
 
         <CardFooter className={"flex gap-x-2"}>
-          {transaction.recurring_transaction && (
+          {transaction.recurringTransaction && (
             <Badge variant="secondary">
-              {transaction.recurring_transaction.interval}
+              {transaction.recurringTransaction.interval}
             </Badge>
           )}
-          {transaction.recurring_transaction && (
+          {transaction.recurringTransaction && (
             <Badge variant="secondary">{transaction.costType}</Badge>
           )}
         </CardFooter>
