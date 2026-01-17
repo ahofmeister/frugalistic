@@ -1,9 +1,7 @@
 import TransactionList from "@/components/transactions/components/transaction-list";
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
 import {
-  categories,
   transactionSchema,
-  transactionsRecurring,
   TransactionWithRecurringCategory,
 } from "@/db/migrations/schema";
 import { dbTransaction } from "@/db";
@@ -26,26 +24,17 @@ export async function RelatedTransactions(props: { id: Promise<string> }) {
 
   const transactions: TransactionWithRecurringCategory[] = await dbTransaction(
     async (tx) => {
-      const rows = await tx
-        .select()
-        .from(transactionSchema)
-        .leftJoin(categories, eq(transactionSchema.category, categories.id))
-        .leftJoin(
-          transactionsRecurring,
-          eq(transactionSchema.recurringTransaction, transactionsRecurring.id),
-        )
-        .where(
-          and(
-            eq(transactionSchema.description, transaction.description),
-            ne(transactionSchema.id, transaction.id),
-          ),
-        )
-        .orderBy(desc(transactionSchema.datetime));
-      return rows.map((row) => ({
-        ...row.transactions,
-        category: row.categories,
-        recurring_transaction: row.transactions_recurring,
-      }));
+      return tx.query.transactionSchema.findMany({
+        where: and(
+          eq(transactionSchema.description, transaction.description),
+          ne(transactionSchema.id, transaction.id),
+        ),
+        with: {
+          category: true,
+          recurringTransaction: true,
+        },
+        orderBy: [desc(transactionSchema.datetime)],
+      });
     },
   );
 
