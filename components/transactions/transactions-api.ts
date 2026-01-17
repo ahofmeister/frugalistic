@@ -11,7 +11,6 @@ import {
 import { createClient } from "@/utils/supabase/server";
 import {
   transactionSchema,
-  TransactionWithRecurring,
   TransactionWithRecurringCategory,
 } from "@/db/migrations/schema";
 import { dbTransaction } from "@/db";
@@ -94,7 +93,7 @@ export async function insertTransaction(
 
 export const searchTransactions = async (
   filter: SearchFilter,
-): Promise<TransactionWithRecurring[]> => {
+): Promise<TransactionWithRecurringCategory[]> => {
   const supabase = await createClient();
 
   const query = filter.category
@@ -141,7 +140,7 @@ export const searchTransactions = async (
   });
 
   query.limit(200);
-  const { data } = await query.returns<TransactionWithRecurring[]>();
+  const { data } = await query.returns<TransactionWithRecurringCategory[]>();
   return data ?? [];
 };
 
