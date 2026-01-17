@@ -12,24 +12,26 @@ import { createClient } from "@/utils/supabase/server";
 import {
   transactionSchema,
   TransactionWithRecurring,
+  TransactionWithRecurringCategory,
 } from "@/db/migrations/schema";
 import { dbTransaction } from "@/db";
 import { calculateNextRun } from "@/components/transactions/recurring/recurring-transactions-calculator";
+import { eq } from "drizzle-orm";
 
 export async function makeTransactionRecurring(
-  transaction: TransactionWithRecurring,
+  transaction: TransactionWithRecurringCategory,
   interval: RecurringInterval,
 ) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("transactions_recurring")
     .upsert({
-      id: transaction.recurring_transaction
-        ? transaction.recurring_transaction.id
+      id: transaction.recurringTransaction
+        ? transaction.recurringTransaction.id
         : undefined,
       amount: transaction.amount,
       description: transaction.description,
-      category: transaction.category ? transaction.category : undefined,
+      category: transaction.category ? transaction.category.id : undefined,
       next_run: format(
         calculateNextRun(transaction.datetime, interval),
         "yyyy-MM-dd",
@@ -61,10 +63,25 @@ export async function makeTransactionRecurring(
 }
 
 export async function upsertTransaction(newTransaction: NewTransaction) {
-  const supabase = await createClient();
+  try {
+    await dbTransaction(async (tx) => {
+      if (newTransaction.id) {
+        await tx
+          .update(transactionSchema)
+          .set(newTransaction)
+          .where(eq(transactionSchema.id, newTransaction.id));
+      } else {
+        await tx.insert(transactionSchema).values(newTransaction);
+      }
 
-  revalidatePath("/");
-  return await supabase.from("transactions").upsert(newTransaction);
+      return { success: true };
+    });
+
+    revalidatePath("/");
+    return { error: null, success: true };
+  } catch (error) {
+    return { error, success: false };
+  }
 }
 
 export async function insertTransaction(

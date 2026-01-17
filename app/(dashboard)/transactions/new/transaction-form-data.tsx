@@ -3,10 +3,7 @@ import { Category, FavoriteWithCategory } from "@/types";
 import TransactionForm from "@/components/transactions/components/transaction-form";
 import React from "react";
 import { dbTransaction } from "@/db";
-import {
-  transactionSchema,
-  transactionsRecurring,
-} from "@/db/migrations/schema";
+import { transactionSchema } from "@/db/migrations/schema";
 import { eq } from "drizzle-orm";
 
 export const TransactionFormData = async ({
@@ -38,24 +35,18 @@ export const TransactionFormData = async ({
 
   const [transaction] = id
     ? await dbTransaction(async (tx) => {
-        const rows = await tx
-          .select()
-          .from(transactionSchema)
-          .leftJoin(
-            transactionsRecurring,
-            eq(
-              transactionSchema.recurringTransaction,
-              transactionsRecurring.id,
-            ),
-          )
-          .where(eq(transactionSchema.id, id || ""))
-          .limit(1);
-        return rows.map((row) => ({
-          ...row.transactions,
-          recurring_transaction: row.transactions_recurring,
-        }));
+        return tx.query.transactionSchema.findMany({
+          where: eq(transactionSchema.id, id),
+          with: {
+            recurringTransaction: true,
+            category: true,
+          },
+          limit: 1,
+        });
       })
     : [];
+
+  console.log(transaction);
 
   return (
     <TransactionForm

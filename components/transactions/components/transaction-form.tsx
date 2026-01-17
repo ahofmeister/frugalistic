@@ -60,7 +60,8 @@ import {
   NewTransaction,
   TransactionAutoSuggest,
 } from "@/types";
-import { TransactionWithRecurring } from "@/db/migrations/schema";
+
+import { TransactionWithRecurringCategory } from "@/db/migrations/schema";
 
 const TransactionForm = ({
   transaction,
@@ -68,7 +69,7 @@ const TransactionForm = ({
   categories,
   favorites,
 }: {
-  transaction?: TransactionWithRecurring;
+  transaction?: TransactionWithRecurringCategory;
   autoSuggests?: TransactionAutoSuggest[];
   categories?: Category[];
   favorites?: FavoriteWithCategory[];
@@ -88,7 +89,7 @@ const TransactionForm = ({
     amount: transaction ? transaction.amount.toString() : "0",
     datetime: transaction ? new Date(transaction.datetime) : new Date(),
     category:
-      transaction && transaction.category ? transaction.category : undefined,
+      transaction && transaction.category ? transaction.category.id : undefined,
     costType: transaction?.costType ?? "variable",
   };
   const form = useForm<z.infer<typeof formSchema>>({
@@ -102,7 +103,6 @@ const TransactionForm = ({
   function resetForm() {
     form.reset(defaultValues);
     if (autoCompleteRef && autoCompleteRef.current) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
       autoCompleteRef.current.clearInput();
     }
   }
@@ -118,6 +118,7 @@ const TransactionForm = ({
     });
 
     if (error) {
+      console.error(error);
       toast.error(`Failed to ${transaction ? "save" : "create"} transaction`);
     } else if (!transaction) {
       toast.success("Transaction created successfully!");
@@ -133,6 +134,7 @@ const TransactionForm = ({
   const isFavorite = transaction && favorite;
 
   const [favoriteOpen, setFavoriteOpen] = useState<boolean>(false);
+
   return (
     <div className="max-w-2xl mx-auto px-2">
       <Form {...form}>
@@ -232,7 +234,7 @@ const TransactionForm = ({
                           (l) =>
                             l.type === transaction?.type &&
                             l.description === transaction?.description &&
-                            l.category === transaction.category,
+                            l.category === transaction.category?.id,
                         )}
                         placeholder="Enter or choose description"
                         onValueChange={(e: TransactionAutoSuggest) => {
