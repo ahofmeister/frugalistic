@@ -4,8 +4,7 @@
 		"dev": "next dev --experimental-https",
 		"build": "next build",
 		"start": "next start",
-		"lint": "next lint --dir . && tsc --noEmit",
-		"lint:fix": "next lint --dir . --fix",
+		"test": "vitest",
 		"generate:supabase-types": "sh -ac '. .env.local && npx supabase gen types --lang=typescript --project-id \"$SUPABASE_PROJECT_ID\" --schema public > types/supabase.ts'"
 	},
 	"dependencies": {
