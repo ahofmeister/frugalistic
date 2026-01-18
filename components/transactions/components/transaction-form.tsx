@@ -341,7 +341,6 @@ const TransactionForm = ({
 										<Select
 											onValueChange={field.onChange}
 											value={costTypeValue}
-											disabled={!!transaction?.recurringTransaction}
 										>
 											<FormControl>
 												<SelectTrigger>
