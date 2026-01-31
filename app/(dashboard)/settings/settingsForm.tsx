@@ -15,15 +15,15 @@ export function SettingsForm({
 	const [dateFormat, setDateFormat] = useState(initialDateFormat);
 	const [isPending, startTransition] = useTransition();
 
-	const getError = (fmt: string) => {
-		if (!fmt) {
+	const getError = (currentFormat: string) => {
+		if (!currentFormat) {
 			return "Required";
 		}
-		if (fmt.length > 20) {
+		if (currentFormat.length > 20) {
 			return "Must be 20 characters or less";
 		}
 		try {
-			format(new Date(), fmt);
+			format(new Date(), currentFormat);
 			return null;
 		} catch {
 			return "Invalid format";

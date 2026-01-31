@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { parseAsBoolean, useQueryState } from "nuqs";
+import { useTransition } from "react";
 import { toast } from "sonner";
 import { deleteTransaction } from "@/components/transactions/transactions-api";
 import { Button } from "@/components/ui/button";
@@ -15,29 +16,29 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 
 const DeleteTransaction = (props: { id: string }) => {
-	const [isPending, setIsPending] = useState(false);
-	const [isDialogOpen, setIsDialogOpen] = useState(false);
-
+	const [isDialogOpen, setIsDialogOpen] = useQueryState(
+		"deleteTransaction",
+		parseAsBoolean.withDefault(false),
+	);
+	const [isPending, startTransition] = useTransition();
 	const router = useRouter();
 
 	const handleDelete = async () => {
-		setIsPending(true);
-
-		try {
-			const { error } = await deleteTransaction(props.id);
-			if (error) {
-				toast.error("Failed to delete the transaction. Please try again later.");
-			} else {
-				toast.success("The transaction has been successfully removed.");
-				router.replace("/dashboard");
+		startTransition(async () => {
+			try {
+				const { error } = await deleteTransaction(props.id);
+				if (error) {
+					toast.error("Failed to delete the transaction. Please try again later.");
+				} else {
+					toast.success("The transaction has been successfully removed.");
+					void setIsDialogOpen(false);
+					router.replace("/dashboard");
+				}
+			} catch (error) {
+				console.error("Error deleting transaction:", error);
+				toast.error("An unexpected error occurred. Please try again.");
 			}
-		} catch (error) {
-			console.error("Error deleting transaction:", error);
-			toast.error("An unexpected error occurred. Please try again.");
-		} finally {
-			setIsPending(false);
-			setIsDialogOpen(false);
-		}
+		});
 	};
 
 	return (

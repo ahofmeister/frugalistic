@@ -137,7 +137,7 @@ export const deleteTransaction = async (id: string) => {
 export const deleteRecurringTransaction = async (id: string) => {
 	const supabase = await createClient();
 	const { error } = await supabase.from("transactions_recurring").delete().eq("id", id).single();
-	revalidatePath(`/`);
+	revalidatePath("", "layout");
 	return error;
 };
 
