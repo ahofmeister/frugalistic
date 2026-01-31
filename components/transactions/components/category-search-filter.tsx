@@ -33,31 +33,29 @@ const CategorySearchFilter = () => {
 	}, []);
 
 	return (
-		<div>
-			<Select
-				value={category ?? undefined}
-				onValueChange={(value) => {
-					void setCategoryId(value);
-				}}
-			>
-				<SelectTrigger className="w-[280px]">
-					<SelectValue placeholder="Select a category" />
-				</SelectTrigger>
-				<SelectContent>
-					<SelectItem value={null as unknown as string}>
-						Select Category
+		<Select
+			value={category ?? undefined}
+			onValueChange={(value) => {
+				void setCategoryId(value);
+			}}
+		>
+			<SelectTrigger>
+				<SelectValue placeholder="Select a category" />
+			</SelectTrigger>
+			<SelectContent>
+				<SelectItem value={null as unknown as string}>
+					Select Category
+				</SelectItem>
+				{categories?.map((category) => (
+					<SelectItem key={category.id} value={category.name}>
+						<div className="flex gap-x-2 items-center">
+							<CategoryColor color={category.color} />
+							{category.name}
+						</div>
 					</SelectItem>
-					{categories?.map((category) => (
-						<SelectItem key={category.id} value={category.name}>
-							<div className="flex gap-x-2 items-center">
-								<CategoryColor color={category.color} />
-								{category.name}
-							</div>
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
-		</div>
+				))}
+			</SelectContent>
+		</Select>
 	);
 };
 
