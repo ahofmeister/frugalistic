@@ -15,13 +15,7 @@ import {
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 const DeleteAccount = () => {
 	const router = useRouter();
@@ -34,8 +28,7 @@ const DeleteAccount = () => {
 					<CardTitle className="text-destructive">Danger Zone</CardTitle>
 				</div>
 				<CardDescription>
-					Once you delete your account, there is no going back. Please be
-					certain.
+					Once you delete your account, there is no going back. Please be certain.
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
@@ -49,8 +42,8 @@ const DeleteAccount = () => {
 						<AlertDialogHeader>
 							<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
 							<AlertDialogDescription>
-								This action cannot be undone. This will permanently delete your
-								account and remove all your data from our servers.
+								This action cannot be undone. This will permanently delete your account and remove
+								all your data from our servers.
 							</AlertDialogDescription>
 						</AlertDialogHeader>
 						<AlertDialogFooter>

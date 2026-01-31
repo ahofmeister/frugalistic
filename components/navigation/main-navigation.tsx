@@ -110,10 +110,7 @@ export default function MainNavigation() {
         `}
 			>
 				<div className="h-full flex flex-col">
-					<Link
-						href="/dashboard"
-						className="h-16 px-6 flex items-center border-b border-border"
-					>
+					<Link href="/dashboard" className="h-16 px-6 flex items-center border-b border-border">
 						<div className="flex items-center gap-3">
 							<Image
 								src="/icon-192x192.png"

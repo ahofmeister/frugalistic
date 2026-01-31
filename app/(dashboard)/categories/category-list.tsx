@@ -13,12 +13,8 @@ const CategoryList = async () => {
 	const existingCategories = categories?.map((category) => category.name) || [];
 
 	const orderedCategories: (Category | NewCategory)[] = [
-		...(categories?.filter((category) =>
-			existingCategories.includes(category.name),
-		) || []),
-		...defaultCategories.filter(
-			(category) => !existingCategories.includes(category.name),
-		),
+		...(categories?.filter((category) => existingCategories.includes(category.name)) || []),
+		...defaultCategories.filter((category) => !existingCategories.includes(category.name)),
 	];
 
 	return (

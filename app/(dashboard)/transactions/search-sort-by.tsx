@@ -18,11 +18,7 @@ const SearchSortBy = () => {
 		}),
 	);
 
-	const transactionKeys = [
-		"amount",
-		"datetime",
-		"description",
-	] as (keyof Transaction)[];
+	const transactionKeys = ["amount", "datetime", "description"] as (keyof Transaction)[];
 
 	return (
 		<Select

@@ -27,9 +27,7 @@ export function FavoriteCard({
 						<div className="flex items-center gap-2 mt-1">
 							<span className="text-xs text-muted-foreground">
 								{favorite.createdAt && (
-									<div>
-										Created: {formatDate(favorite.createdAt, dateFormat)}
-									</div>
+									<div>Created: {formatDate(favorite.createdAt, dateFormat)}</div>
 								)}
 							</span>
 						</div>

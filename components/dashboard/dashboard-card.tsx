@@ -2,12 +2,7 @@ import TransactionAmount, {
 	formatAmount,
 	getTextColor,
 } from "@/components/transactions/components/transaction-amount";
-import {
-	Card,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { capitalize } from "@/lib/utils";
 import type { TransactionTypeWithLeftover } from "@/types";
 
@@ -29,9 +24,7 @@ const DashboardCard = ({
 	return (
 		<Card className={`w-full`}>
 			<CardHeader>
-				<CardTitle className={getTextColor(type)}>
-					{capitalize(type as string)}
-				</CardTitle>
+				<CardTitle className={getTextColor(type)}>{capitalize(type as string)}</CardTitle>
 				<div className="text-2xl">
 					<TransactionAmount amount={amount} type={type} />
 				</div>
@@ -44,8 +37,7 @@ const DashboardCard = ({
 							{fixed && (
 								<span className={"flex"}>
 									<span className="text-xs text-muted-foreground mt-1">
-										Fixed: {formatAmount(fixed)} (
-										{Math.round((fixed / amount) * 100)}
+										Fixed: {formatAmount(fixed)} ({Math.round((fixed / amount) * 100)}
 										%)
 									</span>
 								</span>

@@ -17,10 +17,7 @@ export async function updateSettings(setting: SettingUpdate) {
 
 export async function getSettings(): Promise<Setting> {
 	const supabase = await createClient();
-	const { data: settings } = await supabase
-		.from("setting")
-		.select("*")
-		.single();
+	const { data: settings } = await supabase.from("setting").select("*").single();
 
 	return settings ?? ({ date_format: "dd.MM.yyyy" } as Setting);
 }

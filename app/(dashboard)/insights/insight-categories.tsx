@@ -4,11 +4,7 @@ import { loadYearSearchParam } from "@/lib/utils";
 import { createClient } from "@/utils/supabase/server";
 import { getYearBoundaries } from "@/utils/transaction/dates";
 
-export async function InsightCategories({
-	searchParams,
-}: {
-	searchParams: Promise<SearchParams>;
-}) {
+export async function InsightCategories({ searchParams }: { searchParams: Promise<SearchParams> }) {
 	const supabase = await createClient();
 
 	const { year } = await loadYearSearchParam(searchParams);

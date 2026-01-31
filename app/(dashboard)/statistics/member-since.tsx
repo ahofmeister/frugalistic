@@ -23,10 +23,7 @@ export const MemberSince = async () => {
 			<CardFooter className="flex flex-col items-start gap-1">
 				{user?.created_at && (
 					<>
-						<FormattedDate
-							date={user.created_at}
-							format={settings.date_format}
-						/>
+						<FormattedDate date={user.created_at} format={settings.date_format} />
 						<div className="text-sm text-muted-foreground">
 							{differenceInDays(new Date(), new Date(user.created_at))} days
 						</div>

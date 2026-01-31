@@ -1,7 +1,5 @@
 export const getThemeColor = (colorName: string) => {
-	return getComputedStyle(document.documentElement)
-		.getPropertyValue(`--color-${colorName}`)
-		.trim();
+	return getComputedStyle(document.documentElement).getPropertyValue(`--color-${colorName}`).trim();
 };
 
 export const transactionColors: { [index: string]: string } = {

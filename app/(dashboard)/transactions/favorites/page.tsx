@@ -33,11 +33,7 @@ async function FavoritesList() {
 				</p>
 			</div>
 			{fetchedFavorites.map((favorite) => (
-				<FavoriteCard
-					key={favorite.id}
-					favorite={favorite}
-					dateFormat={settings.date_format}
-				/>
+				<FavoriteCard key={favorite.id} favorite={favorite} dateFormat={settings.date_format} />
 			))}
 		</div>
 	);

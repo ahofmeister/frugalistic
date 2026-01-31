@@ -6,11 +6,7 @@ import { Button } from "@/components/ui/button";
 import type { NewCategory } from "@/types";
 
 const DeleteCategory = ({ category }: { category: NewCategory }) => (
-	<Button
-		size="icon"
-		variant="outline"
-		onClick={() => createCategory(category)}
-	>
+	<Button size="icon" variant="outline" onClick={() => createCategory(category)}>
 		<Plus />
 	</Button>
 );

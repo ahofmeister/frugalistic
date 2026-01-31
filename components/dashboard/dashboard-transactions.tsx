@@ -4,10 +4,7 @@ import { loadSearchParams } from "@/app/(dashboard)/search-params";
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
 import TransactionList from "@/components/transactions/components/transaction-list";
 import { dbTransaction } from "@/db";
-import {
-	type TransactionWithRecurringCategory,
-	transactionSchema,
-} from "@/db/migrations/schema";
+import { type TransactionWithRecurringCategory, transactionSchema } from "@/db/migrations/schema";
 import { getPeriodDates } from "@/utils/transaction/dates";
 
 export default async function DashboardTransactions({
@@ -23,8 +20,8 @@ export default async function DashboardTransactions({
 		awaitedParams.period,
 	);
 
-	const transactionsWithRecurring: TransactionWithRecurringCategory[] =
-		await dbTransaction((tx) => {
+	const transactionsWithRecurring: TransactionWithRecurringCategory[] = await dbTransaction(
+		(tx) => {
 			return tx.query.transactionSchema.findMany({
 				where: and(
 					gte(transactionSchema.datetime, startDate),
@@ -34,12 +31,10 @@ export default async function DashboardTransactions({
 					category: true,
 					recurringTransaction: true,
 				},
-				orderBy: [
-					desc(transactionSchema.datetime),
-					desc(transactionSchema.createdAt),
-				],
+				orderBy: [desc(transactionSchema.datetime), desc(transactionSchema.createdAt)],
 			});
-		});
+		},
+	);
 
 	const settings = await getSettings();
 

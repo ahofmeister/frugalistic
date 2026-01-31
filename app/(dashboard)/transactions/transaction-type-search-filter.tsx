@@ -37,9 +37,7 @@ const TransactionTypeSearchFilter = () => {
 				value={type}
 				onValueChange={(value) => {
 					startTransition(async () => {
-						await setType(
-							value === TYPE_ALL_VALUE ? null : (value as TransactionType),
-						);
+						await setType(value === TYPE_ALL_VALUE ? null : (value as TransactionType));
 					});
 				}}
 				disabled={isPending}

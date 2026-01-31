@@ -54,9 +54,7 @@ export function SettingsForm({
 					placeholder="yyyy-MM-dd"
 					className="pr-20"
 				/>
-				<div className="absolute right-3 top-1/2 -translate-y-1/2">
-					{isPending && <Spinner />}
-				</div>
+				<div className="absolute right-3 top-1/2 -translate-y-1/2">{isPending && <Spinner />}</div>
 			</div>
 			<div className="text-xs text-muted-foreground">
 				{error && <span className="text-destructive">{error}</span>}

@@ -4,28 +4,14 @@ import { useState } from "react";
 import { Area, AreaChart, XAxis, YAxis } from "recharts";
 
 import TransactionAmount from "@/components/transactions/components/transaction-amount";
-import {
-	ChartContainer,
-	ChartTooltip,
-	ChartTooltipContent,
-} from "@/components/ui/chart";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { capitalize, shortAmount } from "@/lib/utils";
-import type {
-	Transaction,
-	TransactionType,
-	TransactionTypeWithLeftover,
-} from "@/types";
+import type { Transaction, TransactionType, TransactionTypeWithLeftover } from "@/types";
 
 export function TransactionsChart(props: { transactions: Transaction[] }) {
-	const allTypes: TransactionTypeWithLeftover[] = [
-		"income",
-		"expense",
-		"savings",
-		"leftover",
-	];
-	const [activeTypes, setActiveTypes] =
-		useState<TransactionTypeWithLeftover[]>(allTypes);
+	const allTypes: TransactionTypeWithLeftover[] = ["income", "expense", "savings", "leftover"];
+	const [activeTypes, setActiveTypes] = useState<TransactionTypeWithLeftover[]>(allTypes);
 
 	const groupedByMonth = props.transactions.reduce(
 		(acc: Record<string, Record<TransactionType, number>>, transaction) => {
@@ -63,9 +49,7 @@ export function TransactionsChart(props: { transactions: Transaction[] }) {
 				size="sm"
 				defaultValue={activeTypes}
 				type="multiple"
-				onValueChange={(value) =>
-					setActiveTypes(value as TransactionTypeWithLeftover[])
-				}
+				onValueChange={(value) => setActiveTypes(value as TransactionTypeWithLeftover[])}
 			>
 				{allTypes.map((type) => (
 					<ToggleGroupItem key={type} value={type}>
@@ -74,10 +58,7 @@ export function TransactionsChart(props: { transactions: Transaction[] }) {
 				))}
 			</ToggleGroup>
 			<div className="overflow-x-scroll mt-3">
-				<ChartContainer
-					config={{}}
-					className="max-h-[400px] w-full min-h-[200px] h-[240px]"
-				>
+				<ChartContainer config={{}} className="max-h-[400px] w-full min-h-[200px] h-[240px]">
 					<AreaChart data={chartData}>
 						<XAxis dataKey="name" stroke="transparent" />
 						<YAxis

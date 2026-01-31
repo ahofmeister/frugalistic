@@ -4,11 +4,7 @@ import { Button } from "@/components/ui/button";
 import type { Category } from "@/types";
 
 const DeleteCategory = ({ category }: { category: Category }) => (
-	<Button
-		className="w-full"
-		variant="destructive"
-		onClick={() => deleteCategory(category.id)}
-	>
+	<Button className="w-full" variant="destructive" onClick={() => deleteCategory(category.id)}>
 		Delete Category
 	</Button>
 );

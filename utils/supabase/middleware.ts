@@ -10,9 +10,7 @@ export async function updateSession(request: NextRequest) {
 	const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 	if (!supabaseUrl || !supabaseKey) {
-		throw new Error(
-			"Missing Supabase environment variables. Please check your .env file.",
-		);
+		throw new Error("Missing Supabase environment variables. Please check your .env file.");
 	}
 
 	const supabase = createServerClient(supabaseUrl, supabaseKey, {

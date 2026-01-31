@@ -6,11 +6,7 @@ import { dbTransaction } from "@/db";
 import { categories, transactionSchema } from "@/db/migrations/schema";
 import { getPeriodDates } from "@/utils/transaction/dates";
 
-const DashboardCards = async ({
-	searchParams,
-}: {
-	searchParams: Promise<DashboardParams>;
-}) => {
+const DashboardCards = async ({ searchParams }: { searchParams: Promise<DashboardParams> }) => {
 	let income = 0;
 	let expense = 0;
 	let savings = 0;
@@ -31,15 +27,9 @@ const DashboardCards = async ({
 			.from(transactionSchema)
 			.leftJoin(categories, eq(transactionSchema.category, categories.id))
 			.where(
-				and(
-					gte(transactionSchema.datetime, startDate),
-					lte(transactionSchema.datetime, endDate),
-				),
+				and(gte(transactionSchema.datetime, startDate), lte(transactionSchema.datetime, endDate)),
 			)
-			.orderBy(
-				desc(transactionSchema.datetime),
-				desc(transactionSchema.createdAt),
-			);
+			.orderBy(desc(transactionSchema.datetime), desc(transactionSchema.createdAt));
 	});
 
 	const transactionsWithCategory = fetchedTransactions.map((row) => ({
@@ -72,17 +62,8 @@ const DashboardCards = async ({
 	return (
 		<div className="flex">
 			<div className="grid grid-cols-2 gap-2 sm:grid-cols-2 md:grid-cols-4 justify-center w-full">
-				<DashboardCard
-					amount={income}
-					type="income"
-					label="Income this period"
-				/>
-				<DashboardCard
-					amount={savings}
-					type="savings"
-					total={income}
-					ofLabel="income"
-				/>
+				<DashboardCard amount={income} type="income" label="Income this period" />
+				<DashboardCard amount={savings} type="savings" total={income} ofLabel="income" />
 				<DashboardCard
 					amount={expense}
 					type="expense"
@@ -90,12 +71,7 @@ const DashboardCards = async ({
 					ofLabel="income"
 					fixed={fixedCosts}
 				/>
-				<DashboardCard
-					amount={leftover}
-					total={income}
-					type="leftover"
-					ofLabel="income left"
-				/>
+				<DashboardCard amount={leftover} total={income} type="leftover" ofLabel="income left" />
 			</div>
 		</div>
 	);

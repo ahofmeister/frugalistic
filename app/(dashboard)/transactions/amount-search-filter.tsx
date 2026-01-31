@@ -3,11 +3,7 @@ import { parseAsString, useQueryState } from "nuqs";
 
 import AmountInput from "@/components/transactions/components/amount-input";
 
-const AmountSearchFilter = (props: {
-	paramName: string;
-	placeholder: string;
-	value?: string;
-}) => {
+const AmountSearchFilter = (props: { paramName: string; placeholder: string; value?: string }) => {
 	const [value, setValue] = useQueryState(
 		props.paramName,
 		parseAsString.withOptions({

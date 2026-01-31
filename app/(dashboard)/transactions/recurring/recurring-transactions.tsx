@@ -8,9 +8,7 @@ import { createClient } from "@/utils/supabase/server";
 const RecurringTransactions = async () => {
 	const supabase = await createClient();
 
-	const { data: transactions } = await supabase
-		.from("transactions_recurring")
-		.select();
+	const { data: transactions } = await supabase.from("transactions_recurring").select();
 
 	const typeOrder = { expense: 1, savings: 2, income: 3 };
 

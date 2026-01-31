@@ -2,20 +2,11 @@
 import { useRouter } from "next/navigation";
 
 import AddCategory from "@/components/categories/add-category";
-import {
-	Card,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { Category, NewCategory } from "@/types";
 
-export function CategoryCard(props: {
-	category: Category | NewCategory;
-	exists: boolean;
-}) {
+export function CategoryCard(props: { category: Category | NewCategory; exists: boolean }) {
 	const category = props.category;
 	const router = useRouter();
 	return (
@@ -42,9 +33,7 @@ export function CategoryCard(props: {
 				{!props.exists && (
 					<div className="flex items-center gap-x-2">
 						<AddCategory category={category} />
-						<div className="text-xs text-muted-foreground">
-							Default category
-						</div>
+						<div className="text-xs text-muted-foreground">Default category</div>
 					</div>
 				)}
 			</CardFooter>

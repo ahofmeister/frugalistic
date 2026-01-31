@@ -1,9 +1,6 @@
 import { addMonths, addYears } from "date-fns";
 
-export const calculateNextRun = (
-	date: string,
-	recurringInterval: "monthly" | "annually",
-): Date => {
+export const calculateNextRun = (date: string, recurringInterval: "monthly" | "annually"): Date => {
 	const currentRun = new Date(date);
 
 	switch (recurringInterval) {

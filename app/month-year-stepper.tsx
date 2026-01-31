@@ -6,20 +6,12 @@ import type { ReactElement } from "react";
 import { Button } from "@/components/ui/button";
 import { parseMonth } from "@/lib/utils";
 
-export function MonthYearStepper({
-	amount,
-	icon,
-}: {
-	amount: number;
-	icon: ReactElement;
-}) {
+export function MonthYearStepper({ amount, icon }: { amount: number; icon: ReactElement }) {
 	const [month, setMonth] = useQueryState("month", parseMonth);
 
 	const [year, setYear] = useQueryState(
 		"year",
-		parseAsInteger
-			.withDefault(new Date().getFullYear())
-			.withOptions({ shallow: false }),
+		parseAsInteger.withDefault(new Date().getFullYear()).withOptions({ shallow: false }),
 	);
 
 	const [period] = useQueryState(

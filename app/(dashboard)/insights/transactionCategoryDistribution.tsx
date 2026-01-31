@@ -22,10 +22,7 @@ export async function TransactionCategoryDistribution({
 
 	return (
 		<TransactionCategoryDistributionChart
-			transactions={
-				transactions?.filter((transaction) => transaction.type === "expense") ??
-				[]
-			}
+			transactions={transactions?.filter((transaction) => transaction.type === "expense") ?? []}
 		/>
 	);
 }

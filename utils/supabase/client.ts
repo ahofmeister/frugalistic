@@ -7,9 +7,7 @@ export const createClient = () => {
 	const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 	if (!url || !key) {
-		throw new Error(
-			"Missing Supabase environment variables. Please check your .env file.",
-		);
+		throw new Error("Missing Supabase environment variables. Please check your .env file.");
 	}
 
 	return createBrowserClient<Database>(url, key);

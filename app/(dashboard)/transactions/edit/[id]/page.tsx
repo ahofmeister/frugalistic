@@ -3,9 +3,7 @@ import { Suspense } from "react";
 import { RelatedTransactions } from "@/app/(dashboard)/transactions/edit/[id]/related-transactions";
 import { TransactionFormData } from "@/app/(dashboard)/transactions/new/transaction-form-data";
 
-export default async function TransactionEditPage(props: {
-	params: Promise<{ id: string }>;
-}) {
+export default async function TransactionEditPage(props: { params: Promise<{ id: string }> }) {
 	return (
 		<div>
 			<Suspense>

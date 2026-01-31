@@ -20,30 +20,19 @@ import {
 } from "drizzle-orm/pg-core";
 import { users } from "@/db/migrations/auth-schema";
 
-export const feedbackStatus = pgEnum("feedback_status", [
-	"new",
-	"resolved",
-	"closed",
-]);
+export const feedbackStatus = pgEnum("feedback_status", ["new", "resolved", "closed"]);
 export const onboardingStatus = pgEnum("onboarding_status", [
 	"current",
 	"complete",
 	"skip",
 	"open",
 ]);
-export const onboardingStep = pgEnum("onboarding_step", [
-	"categories",
-	"welcome",
-]);
+export const onboardingStep = pgEnum("onboarding_step", ["categories", "welcome"]);
 
 const recurringIntervals = ["monthly", "annually"] as const;
 export type RecurringInterval = (typeof recurringIntervals)[number];
 
-export const transactionType = pgEnum("transaction_type", [
-	"income",
-	"expense",
-	"savings",
-]);
+export const transactionType = pgEnum("transaction_type", ["income", "expense", "savings"]);
 
 export const COST_TYPES = ["fixed", "variable"] as const;
 export type CostType = (typeof COST_TYPES)[number];
@@ -403,30 +392,24 @@ export const profile = pgTable(
 	],
 );
 
-export const transactionsRelations = relations(
-	transactionSchema,
-	({ one }) => ({
-		recurringTransaction: one(transactionsRecurring, {
-			fields: [transactionSchema.recurringTransaction],
-			references: [transactionsRecurring.id],
-		}),
-		category: one(categories, {
-			fields: [transactionSchema.category],
-			references: [categories.id],
-		}),
+export const transactionsRelations = relations(transactionSchema, ({ one }) => ({
+	recurringTransaction: one(transactionsRecurring, {
+		fields: [transactionSchema.recurringTransaction],
+		references: [transactionsRecurring.id],
 	}),
-);
+	category: one(categories, {
+		fields: [transactionSchema.category],
+		references: [categories.id],
+	}),
+}));
 
-export const transactionsRecurringRelations = relations(
-	transactionsRecurring,
-	({ many, one }) => ({
-		transactions: many(transactionSchema),
-		category: one(categories, {
-			fields: [transactionsRecurring.category],
-			references: [categories.id],
-		}),
+export const transactionsRecurringRelations = relations(transactionsRecurring, ({ many, one }) => ({
+	transactions: many(transactionSchema),
+	category: one(categories, {
+		fields: [transactionsRecurring.category],
+		references: [categories.id],
 	}),
-);
+}));
 
 export const categoriesRelations = relations(categories, ({ many }) => ({
 	transactions: many(transactionSchema),

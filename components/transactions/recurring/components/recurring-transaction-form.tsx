@@ -29,11 +29,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Switch } from "@/components/ui/switch";
 import type { RecurringTransaction } from "@/types";
 
-const RecurringTransactionForm = ({
-	transaction,
-}: {
-	transaction: RecurringTransaction;
-}) => {
+const RecurringTransactionForm = ({ transaction }: { transaction: RecurringTransaction }) => {
 	const formSchema = z.object({
 		description: z.string().min(1),
 		amount: z.coerce.string(),
@@ -101,10 +97,7 @@ const RecurringTransactionForm = ({
 								<FormItem>
 									<FormLabel>Amount</FormLabel>
 									<FormControl>
-										<AmountInput
-											value={field.value}
-											onChange={field.onChange}
-										/>
+										<AmountInput value={field.value} onChange={field.onChange} />
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -168,9 +161,7 @@ const RecurringTransactionForm = ({
 								<FormControl>
 									<Input
 										value={
-											transaction.next_run
-												? format(new Date(transaction.next_run), "PPP")
-												: "N/A"
+											transaction.next_run ? format(new Date(transaction.next_run), "PPP") : "N/A"
 										}
 										disabled
 									/>
@@ -185,10 +176,7 @@ const RecurringTransactionForm = ({
 								<FormItem className="col-span-2">
 									<div className="flex items-center space-x-2">
 										<FormControl>
-											<Switch
-												checked={field.value}
-												onCheckedChange={field.onChange}
-											/>
+											<Switch checked={field.value} onCheckedChange={field.onChange} />
 										</FormControl>
 										<Label htmlFor="enabled">Enabled</Label>
 									</div>

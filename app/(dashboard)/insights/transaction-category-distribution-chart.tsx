@@ -20,9 +20,7 @@ interface MonthCategoryTotals {
 	[category: string]: number;
 }
 
-const transformData = (
-	transactions: TransactionWithCategory[],
-): MonthCategoryTotals[] => {
+const transformData = (transactions: TransactionWithCategory[]): MonthCategoryTotals[] => {
 	const monthlyTotals: Record<number, MonthCategoryTotals> = {};
 
 	transactions.forEach(({ datetime, category, amount }) => {
@@ -88,13 +86,8 @@ const TransactionCategoryDistributionChart = ({
 
 	return (
 		<>
-			<div className="flex justify-center font-bold text-xl">
-				Category Insights
-			</div>
-			<ChartContainer
-				config={{}}
-				className="max-h-[400px] w-full min-h-[200px] h-[240px]"
-			>
+			<div className="flex justify-center font-bold text-xl">Category Insights</div>
+			<ChartContainer config={{}} className="max-h-[400px] w-full min-h-[200px] h-[240px]">
 				<BarChart
 					data={dataTransformed}
 					margin={{
@@ -107,14 +100,9 @@ const TransactionCategoryDistributionChart = ({
 					<XAxis
 						stroke="transparent"
 						dataKey="month"
-						tickFormatter={(value) =>
-							format(new Date(2024, value as number, 1), "LLL")
-						}
+						tickFormatter={(value) => format(new Date(2024, value as number, 1), "LLL")}
 					/>
-					<YAxis
-						stroke="transparent"
-						tickFormatter={(value: number) => shortAmount(value)}
-					/>
+					<YAxis stroke="transparent" tickFormatter={(value: number) => shortAmount(value)} />
 					<ChartLegend content={renderLegend} />
 					<ChartTooltip
 						content={

@@ -3,13 +3,7 @@ import FormattedDate from "@/app/(dashboard)/dashboard/formatted-date";
 import CategoryColor from "@/components/categories/category-color";
 import TransactionAmount from "@/components/transactions/components/transaction-amount";
 import { Badge } from "@/components/ui/badge";
-import {
-	Card,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import type { TransactionWithRecurringCategory } from "@/db/migrations/schema";
 
 export function TransactionCard({
@@ -25,10 +19,7 @@ export function TransactionCard({
 				<CardHeader>
 					<CardTitle className="flex justify-between">
 						<div>{transaction.description}</div>
-						<TransactionAmount
-							amount={transaction.amount}
-							type={transaction.type}
-						/>
+						<TransactionAmount amount={transaction.amount} type={transaction.type} />
 					</CardTitle>
 
 					<CardDescription className="flex justify-between ">
@@ -49,9 +40,7 @@ export function TransactionCard({
 
 				<CardFooter className={"flex gap-x-2"}>
 					{transaction.recurringTransaction && (
-						<Badge variant="secondary">
-							{transaction.recurringTransaction.interval}
-						</Badge>
+						<Badge variant="secondary">{transaction.recurringTransaction.interval}</Badge>
 					)}
 					{transaction.recurringTransaction && (
 						<Badge variant="secondary">{transaction.costType}</Badge>

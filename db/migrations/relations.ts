@@ -41,38 +41,32 @@ export const usersRelations = relations(users, ({ many }) => ({
 	profiles: many(profile),
 }));
 
-export const transactionsRelations = relations(
-	transactionSchema,
-	({ one }) => ({
-		category: one(categories, {
-			fields: [transactionSchema.category],
-			references: [categories.id],
-		}),
-		transactionsRecurring: one(transactionsRecurring, {
-			fields: [transactionSchema.recurringTransaction],
-			references: [transactionsRecurring.id],
-		}),
-		users: one(users, {
-			fields: [transactionSchema.userId],
-			references: [users.id],
-		}),
+export const transactionsRelations = relations(transactionSchema, ({ one }) => ({
+	category: one(categories, {
+		fields: [transactionSchema.category],
+		references: [categories.id],
 	}),
-);
+	transactionsRecurring: one(transactionsRecurring, {
+		fields: [transactionSchema.recurringTransaction],
+		references: [transactionsRecurring.id],
+	}),
+	users: one(users, {
+		fields: [transactionSchema.userId],
+		references: [users.id],
+	}),
+}));
 
-export const transactionsRecurringRelations = relations(
-	transactionsRecurring,
-	({ one, many }) => ({
-		transactions: many(transactionSchema),
-		category: one(categories, {
-			fields: [transactionsRecurring.category],
-			references: [categories.id],
-		}),
-		users: one(users, {
-			fields: [transactionsRecurring.userId],
-			references: [users.id],
-		}),
+export const transactionsRecurringRelations = relations(transactionsRecurring, ({ one, many }) => ({
+	transactions: many(transactionSchema),
+	category: one(categories, {
+		fields: [transactionsRecurring.category],
+		references: [categories.id],
 	}),
-);
+	users: one(users, {
+		fields: [transactionsRecurring.userId],
+		references: [users.id],
+	}),
+}));
 
 export const settingRelations = relations(setting, ({ one }) => ({
 	users: one(users, {

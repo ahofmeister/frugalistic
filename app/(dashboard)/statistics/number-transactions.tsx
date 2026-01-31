@@ -24,9 +24,7 @@ export const NumberTransactions = async () => {
 			</CardHeader>
 			<CardFooter className="flex flex-col items-start gap-1">
 				<div>{totalCount}</div>
-				<div className="text-sm text-muted-foreground">
-					{recurringCount} from recurring
-				</div>
+				<div className="text-sm text-muted-foreground">{recurringCount} from recurring</div>
 			</CardFooter>
 		</Card>
 	);

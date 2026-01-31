@@ -5,21 +5,11 @@ import { InsightsTotal } from "@/app/(dashboard)/insights/insights-total";
 import { InsightsTransactionsTypes } from "@/app/(dashboard)/insights/insightsTransactionsTypes";
 import { MinMaxSelectYear } from "@/app/(dashboard)/insights/minMaxSelectYear";
 import { TransactionCategoryDistribution } from "@/app/(dashboard)/insights/transactionCategoryDistribution";
-import {
-	Card,
-	CardContent,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { transactionTypes } from "@/lib/transaction-types";
 
-const InsightsPage = async ({
-	searchParams,
-}: {
-	searchParams: Promise<SearchParams>;
-}) => {
+const InsightsPage = async ({ searchParams }: { searchParams: Promise<SearchParams> }) => {
 	return (
 		<div className="flex flex-col gap-y-6">
 			<div className="flex gap-x-4 justify-between items-center">

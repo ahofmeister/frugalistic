@@ -9,10 +9,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import DeleteTransaction from "@/app/(dashboard)/transactions/edit/[id]/delete-transaction";
-import {
-	addFavorite,
-	removeFavorite,
-} from "@/components/favorite/favorite-actions";
+import { addFavorite, removeFavorite } from "@/components/favorite/favorite-actions";
 import AmountInput from "@/components/transactions/components/amount-input";
 import { getTextColor } from "@/components/transactions/components/transaction-amount";
 import { TransactionSelectItems } from "@/components/transactions/components/transaction-select-items";
@@ -20,18 +17,10 @@ import {
 	makeTransactionRecurring,
 	upsertTransaction,
 } from "@/components/transactions/transactions-api";
-import {
-	AutoComplete,
-	type AutoCompleteRef,
-} from "@/components/ui/auto-suggest-input";
+import { AutoComplete, type AutoCompleteRef } from "@/components/ui/auto-suggest-input";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
 	Form,
 	FormControl,
@@ -40,11 +29,7 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
 	Select,
 	SelectContent,
@@ -126,9 +111,7 @@ const TransactionForm = ({
 		}
 	}
 
-	const favorite = favorites?.find(
-		(favorite) => transaction?.description === favorite.description,
-	);
+	const favorite = favorites?.find((favorite) => transaction?.description === favorite.description);
 	const isFavorite = transaction && favorite;
 
 	const [favoriteOpen, setFavoriteOpen] = useState<boolean>(false);
@@ -183,9 +166,7 @@ const TransactionForm = ({
 									{favorites?.map((item) => (
 										<div key={item.id} className="flex justify-between">
 											<div className="flex flex-col">
-												<span className={getTextColor(item.type)}>
-													{item.description}
-												</span>
+												<span className={getTextColor(item.type)}>{item.description}</span>
 												<div>
 													<span style={{ color: item.category.color ?? "" }}>
 														{item.category.name}
@@ -205,9 +186,7 @@ const TransactionForm = ({
 														form.setValue("category", item.category.id);
 													}
 
-													autoCompleteRef.current?.setInputValue(
-														item.description,
-													);
+													autoCompleteRef.current?.setInputValue(item.description);
 													setFavoriteOpen(false);
 												}}
 											>
@@ -260,10 +239,7 @@ const TransactionForm = ({
 								<FormItem>
 									<FormLabel>Amount</FormLabel>
 									<FormControl>
-										<AmountInput
-											value={field.value}
-											onChange={field.onChange}
-										/>
+										<AmountInput value={field.value} onChange={field.onChange} />
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -338,10 +314,7 @@ const TransactionForm = ({
 								render={({ field }) => (
 									<FormItem>
 										<FormLabel>Cost Type</FormLabel>
-										<Select
-											onValueChange={field.onChange}
-											value={costTypeValue}
-										>
+										<Select onValueChange={field.onChange} value={costTypeValue}>
 											<FormControl>
 												<SelectTrigger>
 													<SelectValue placeholder="Select cost type" />
@@ -374,11 +347,7 @@ const TransactionForm = ({
 														!field.value && "text-muted-foreground",
 													)}
 												>
-													{field.value ? (
-														format(field.value, "PPP")
-													) : (
-														<span>Pick a date</span>
-													)}
+													{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
 													<CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
 												</Button>
 											</FormControl>
@@ -421,9 +390,7 @@ const TransactionForm = ({
 										transaction.recurringTransaction !== null &&
 										transaction.recurringTransaction.interval === "monthly"
 									}
-									onClick={() =>
-										makeTransactionRecurring(transaction, "monthly")
-									}
+									onClick={() => makeTransactionRecurring(transaction, "monthly")}
 								>
 									Monthly Recurring
 								</Button>
@@ -435,9 +402,7 @@ const TransactionForm = ({
 										transaction.recurringTransaction !== null &&
 										transaction.recurringTransaction === "annually"
 									}
-									onClick={() =>
-										makeTransactionRecurring(transaction, "annually")
-									}
+									onClick={() => makeTransactionRecurring(transaction, "annually")}
 								>
 									Annually Recurring
 								</Button>
@@ -449,13 +414,7 @@ const TransactionForm = ({
 						className="w-full"
 						disabled={form.formState.isSubmitting || !form.formState.isValid}
 					>
-						{form.formState.isSubmitting ? (
-							<Spinner />
-						) : transaction ? (
-							"Save"
-						) : (
-							"Add Transaction"
-						)}
+						{form.formState.isSubmitting ? <Spinner /> : transaction ? "Save" : "Add Transaction"}
 					</Button>
 
 					{transaction && <DeleteTransaction id={transaction.id} />}

@@ -4,11 +4,7 @@ import { toast } from "sonner";
 import { removeFavorite } from "@/components/favorite/favorite-actions";
 import { Button } from "@/components/ui/button";
 
-export function DeleteFavoriteTransactionButton({
-	favoriteId,
-}: {
-	favoriteId: string;
-}) {
+export function DeleteFavoriteTransactionButton({ favoriteId }: { favoriteId: string }) {
 	return (
 		<Button
 			variant="ghost"

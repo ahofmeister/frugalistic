@@ -5,15 +5,8 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import type { SearchFilter } from "@/app/(dashboard)/transactions/search-filter";
 import { calculateNextRun } from "@/components/transactions/recurring/recurring-transactions-calculator";
 import { dbTransaction } from "@/db";
-import {
-	type TransactionWithRecurringCategory,
-	transactionSchema,
-} from "@/db/migrations/schema";
-import type {
-	NewTransaction,
-	RecurringInterval,
-	UpdateRecurringTransaction,
-} from "@/types";
+import { type TransactionWithRecurringCategory, transactionSchema } from "@/db/migrations/schema";
+import type { NewTransaction, RecurringInterval, UpdateRecurringTransaction } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
 export async function makeTransactionRecurring(
@@ -24,16 +17,11 @@ export async function makeTransactionRecurring(
 	const { data, error } = await supabase
 		.from("transactions_recurring")
 		.upsert({
-			id: transaction.recurringTransaction
-				? transaction.recurringTransaction.id
-				: undefined,
+			id: transaction.recurringTransaction ? transaction.recurringTransaction.id : undefined,
 			amount: transaction.amount,
 			description: transaction.description,
 			category: transaction.category ? transaction.category.id : undefined,
-			next_run: format(
-				calculateNextRun(transaction.datetime, interval),
-				"yyyy-MM-dd",
-			),
+			next_run: format(calculateNextRun(transaction.datetime, interval), "yyyy-MM-dd"),
 			type: transaction.type,
 			interval: interval,
 			user_id: transaction.userId,
@@ -82,9 +70,7 @@ export async function upsertTransaction(newTransaction: NewTransaction) {
 	}
 }
 
-export async function insertTransaction(
-	newTransaction: typeof transactionSchema.$inferInsert,
-) {
+export async function insertTransaction(newTransaction: typeof transactionSchema.$inferInsert) {
 	await dbTransaction((tx) => {
 		return tx.insert(transactionSchema).values(newTransaction);
 	});
@@ -150,18 +136,12 @@ export const deleteTransaction = async (id: string) => {
 
 export const deleteRecurringTransaction = async (id: string) => {
 	const supabase = await createClient();
-	const { error } = await supabase
-		.from("transactions_recurring")
-		.delete()
-		.eq("id", id)
-		.single();
+	const { error } = await supabase.from("transactions_recurring").delete().eq("id", id).single();
 	revalidatePath(`/`);
 	return error;
 };
 
-export async function updateRecurringTransaction(
-	data: UpdateRecurringTransaction,
-): Promise<{
+export async function updateRecurringTransaction(data: UpdateRecurringTransaction): Promise<{
 	success: boolean;
 	message?: string;
 }> {

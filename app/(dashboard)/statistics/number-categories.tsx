@@ -4,9 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 export const NumberCategories = async () => {
 	const supabase = await createClient();
 
-	const { count } = await supabase
-		.from("categories")
-		.select("id", { count: "exact", head: true });
+	const { count } = await supabase.from("categories").select("id", { count: "exact", head: true });
 
 	return (
 		<Card>

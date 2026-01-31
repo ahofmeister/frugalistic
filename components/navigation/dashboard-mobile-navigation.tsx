@@ -18,9 +18,7 @@ export function DashboardMobileNavigation() {
 						href={item.href}
 						className={cn(
 							"flex flex-col  w-full gap-1 items-center justify-center",
-							pathname === item.href
-								? "text-primary"
-								: "text-muted-foreground hover:text-primary",
+							pathname === item.href ? "text-primary" : "text-muted-foreground hover:text-primary",
 						)}
 					>
 						<item.icon className="h-5 w-5" />

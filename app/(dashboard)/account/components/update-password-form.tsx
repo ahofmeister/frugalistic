@@ -10,13 +10,7 @@ import {
 	updatePassword,
 } from "@/app/(dashboard)/account/lib/account-actions";
 import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
 	Form,
 	FormControl,
@@ -68,9 +62,7 @@ export default function PasswordChangeForm() {
 					<Card>
 						<CardHeader>
 							<CardTitle>Update Password</CardTitle>
-							<CardDescription>
-								Update your password by providing the current one.
-							</CardDescription>
+							<CardDescription>Update your password by providing the current one.</CardDescription>
 						</CardHeader>
 						<CardContent className="space-y-6">
 							<div className="space-y-4">
@@ -81,11 +73,7 @@ export default function PasswordChangeForm() {
 										<FormItem>
 											<FormLabel>Current Password</FormLabel>
 											<FormControl>
-												<Input
-													type="password"
-													placeholder="Current Password"
-													{...field}
-												/>
+												<Input type="password" placeholder="Current Password" {...field} />
 											</FormControl>
 											<FormMessage />
 										</FormItem>
@@ -101,11 +89,7 @@ export default function PasswordChangeForm() {
 												<FormItem>
 													<FormLabel>New Password</FormLabel>
 													<FormControl>
-														<Input
-															type="password"
-															placeholder="New Password"
-															{...field}
-														/>
+														<Input type="password" placeholder="New Password" {...field} />
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -119,11 +103,7 @@ export default function PasswordChangeForm() {
 											<FormItem>
 												<FormLabel>Confirm password</FormLabel>
 												<FormControl>
-													<Input
-														type="password"
-														placeholder="Confirm password"
-														{...field}
-													/>
+													<Input type="password" placeholder="Confirm password" {...field} />
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -134,9 +114,7 @@ export default function PasswordChangeForm() {
 
 							<Button
 								type="submit"
-								disabled={
-									form.formState.isSubmitting || !form.formState.isValid
-								}
+								disabled={form.formState.isSubmitting || !form.formState.isValid}
 								className="w-full"
 							>
 								{form.formState.isSubmitting ? <Spinner /> : "Save"}

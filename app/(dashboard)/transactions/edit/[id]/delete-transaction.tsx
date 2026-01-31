@@ -26,9 +26,7 @@ const DeleteTransaction = (props: { id: string }) => {
 		try {
 			const { error } = await deleteTransaction(props.id);
 			if (error) {
-				toast.error(
-					"Failed to delete the transaction. Please try again later.",
-				);
+				toast.error("Failed to delete the transaction. Please try again later.");
 			} else {
 				toast.success("The transaction has been successfully removed.");
 				router.replace("/dashboard");
@@ -58,24 +56,14 @@ const DeleteTransaction = (props: { id: string }) => {
 					<DialogHeader>
 						<DialogTitle>Are you sure?</DialogTitle>
 						<DialogDescription>
-							This action cannot be undone. This will permanently delete the
-							transaction.
+							This action cannot be undone. This will permanently delete the transaction.
 						</DialogDescription>
 					</DialogHeader>
 					<DialogFooter>
-						<Button
-							variant="secondary"
-							onClick={() => setIsDialogOpen(false)}
-							disabled={isPending}
-						>
+						<Button variant="secondary" onClick={() => setIsDialogOpen(false)} disabled={isPending}>
 							Cancel
 						</Button>
-						<Button
-							type="button"
-							variant="destructive"
-							onClick={handleDelete}
-							disabled={isPending}
-						>
+						<Button type="button" variant="destructive" onClick={handleDelete} disabled={isPending}>
 							{isPending ? <Spinner /> : "Delete"}
 						</Button>
 					</DialogFooter>

@@ -35,19 +35,12 @@ export type AutoCompleteRef = {
 };
 
 export const AutoComplete = forwardRef<AutoCompleteRef, AutoCompleteProps>(
-	(
-		{ options, placeholder, isLoading = false, disabled, value, onValueChange },
-		ref,
-	) => {
+	({ options, placeholder, isLoading = false, disabled, value, onValueChange }, ref) => {
 		const inputRef = useRef<HTMLInputElement>(null);
 
 		const [isOpen, setOpen] = useState(false);
-		const [_selected, setSelected] = useState<
-			TransactionAutoSuggest | undefined
-		>(value);
-		const [inputValue, setInputValue] = useState<string>(
-			value?.description || "",
-		);
+		const [_selected, setSelected] = useState<TransactionAutoSuggest | undefined>(value);
+		const [inputValue, setInputValue] = useState<string>(value?.description || "");
 
 		useImperativeHandle(ref, () => ({
 			setInputValue: (newValue: string) => {
@@ -151,11 +144,7 @@ export const AutoComplete = forwardRef<AutoCompleteRef, AutoCompleteProps>(
 										return (
 											<CommandItem
 												key={option.unique_id}
-												value={
-													option.unique_id?.toString() +
-													" " +
-													option.description
-												}
+												value={option.unique_id?.toString() + " " + option.description}
 												onMouseDown={(event: any) => {
 													event.preventDefault();
 													event.stopPropagation();
@@ -169,13 +158,8 @@ export const AutoComplete = forwardRef<AutoCompleteRef, AutoCompleteProps>(
 													className={getTextColor(type)}
 													style={{ color: getTextColor(type) }}
 												></span>{" "}
-												<span className={getTextColor(type)}>
-													{option.description}
-												</span>
-												in{" "}
-												<span style={{ color: option.color ?? "" }}>
-													{option.name}
-												</span>
+												<span className={getTextColor(type)}>{option.description}</span>
+												in <span style={{ color: option.color ?? "" }}>{option.name}</span>
 											</CommandItem>
 										);
 									})}

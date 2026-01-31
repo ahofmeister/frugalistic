@@ -5,11 +5,7 @@ import { parseAsIsoDate, useQueryState } from "nuqs";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
 const DateSearchFilter = (props: { paramName: string; label: string }) => {
@@ -26,10 +22,7 @@ const DateSearchFilter = (props: { paramName: string; label: string }) => {
 				<PopoverTrigger asChild>
 					<Button
 						variant="outline"
-						className={cn(
-							"justify-start text-left font-normal",
-							!value && "text-muted-foreground",
-						)}
+						className={cn("justify-start text-left font-normal", !value && "text-muted-foreground")}
 					>
 						<CalendarIcon className="mr-2 h-4 w-4" />
 						{value ? format(value, "yyyy-MM-dd") : <span>{props.label}</span>}

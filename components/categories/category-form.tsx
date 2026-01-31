@@ -108,9 +108,7 @@ const CategoryForm = (props: { category?: Category }) => {
 
 							<Button
 								type="submit"
-								disabled={
-									form.formState.isSubmitting || !form.formState.isValid
-								}
+								disabled={form.formState.isSubmitting || !form.formState.isValid}
 								className="w-full"
 							>
 								{form.formState.isSubmitting ? (

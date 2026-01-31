@@ -2,15 +2,10 @@
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { dbTransaction } from "@/db";
-import {
-	favoriteSchema,
-	type TransactionWithRecurringCategory,
-} from "@/db/migrations/schema";
+import { favoriteSchema, type TransactionWithRecurringCategory } from "@/db/migrations/schema";
 import { createClient } from "@/utils/supabase/server";
 
-export async function addFavorite(
-	transaction: TransactionWithRecurringCategory,
-) {
+export async function addFavorite(transaction: TransactionWithRecurringCategory) {
 	const supabase = await createClient();
 
 	const { data, error } = await supabase.from("favorite").insert({

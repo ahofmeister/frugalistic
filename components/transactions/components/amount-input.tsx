@@ -31,13 +31,7 @@ const AmountInput: React.FC<AmountInputProps> = ({ value, onChange }) => {
 	};
 
 	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-		const allowedKeys = [
-			"Backspace",
-			"Delete",
-			"ArrowLeft",
-			"ArrowRight",
-			"Tab",
-		];
+		const allowedKeys = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab"];
 
 		if (!/^[0-9]$/.test(e.key) && !allowedKeys.includes(e.key)) {
 			e.preventDefault();
@@ -57,9 +51,7 @@ const AmountInput: React.FC<AmountInputProps> = ({ value, onChange }) => {
 		if (e.key === "Backspace") {
 			e.preventDefault();
 			numericValue = numericValue.slice(0, -1);
-			setInputValue(
-				numericValue.length === 0 ? "0,00" : formatInput(numericValue),
-			);
+			setInputValue(numericValue.length === 0 ? "0,00" : formatInput(numericValue));
 			onChange(numericValue);
 		}
 	};

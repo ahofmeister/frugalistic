@@ -6,9 +6,7 @@ import { createClient } from "@/utils/supabase/server";
 
 export async function CategoriesBanner() {
 	const supabase = await createClient();
-	const { count } = await supabase
-		.from("categories")
-		.select("*", { count: "exact", head: true });
+	const { count } = await supabase.from("categories").select("*", { count: "exact", head: true });
 
 	if (count && count > 0) {
 		return null;

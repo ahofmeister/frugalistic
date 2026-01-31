@@ -4,14 +4,8 @@ import { parseAsInteger, useQueryState } from "nuqs";
 import { Button } from "@/components/ui/button";
 
 export function SelectNow() {
-	const [, setYear] = useQueryState(
-		"year",
-		parseAsInteger.withOptions({ shallow: false }),
-	);
-	const [, setMonth] = useQueryState(
-		"month",
-		parseAsInteger.withOptions({ shallow: false }),
-	);
+	const [, setYear] = useQueryState("year", parseAsInteger.withOptions({ shallow: false }));
+	const [, setMonth] = useQueryState("month", parseAsInteger.withOptions({ shallow: false }));
 
 	return (
 		<Button

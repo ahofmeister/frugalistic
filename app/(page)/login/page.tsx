@@ -2,9 +2,7 @@ import { Suspense } from "react";
 import { signIn, signUp } from "@/components/auth/auth-actions";
 import { SubmitButton } from "@/components/auth/submit-button";
 
-export default async function Login(props: {
-	searchParams: Promise<{ message: string }>;
-}) {
+export default async function Login(props: { searchParams: Promise<{ message: string }> }) {
 	return (
 		<div className="mx-auto flex-1 flex flex-col w-full px-8 sm:max-w-md justify-center gap-2">
 			<form className="animate-in flex-1 flex flex-col w-full justify-center gap-2 text-foreground">

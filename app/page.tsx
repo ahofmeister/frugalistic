@@ -15,13 +15,7 @@ import GitHub from "@/app/git-hub";
 import AppButton from "@/components/auth/app-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function LandingPage() {
 	const features = [
@@ -48,11 +42,7 @@ export default function LandingPage() {
 		description: string;
 	};
 
-	const FeatureCard: React.FC<FeatureCardProps> = ({
-		icon,
-		title,
-		description,
-	}) => (
+	const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description }) => (
 		<Card className="h-full group hover:shadow-lg transition-all duration-300 border-border/50 hover:border-primary/20">
 			<CardHeader className="pb-3">
 				<div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/15 transition-colors">
@@ -71,10 +61,7 @@ export default function LandingPage() {
 	};
 
 	const TechItem: React.FC<TechItemProps> = ({ name }) => (
-		<Badge
-			variant="secondary"
-			className="rounded-full px-4 py-1.5 text-sm font-medium"
-		>
+		<Badge variant="secondary" className="rounded-full px-4 py-1.5 text-sm font-medium">
 			{name}
 		</Badge>
 	);
@@ -99,12 +86,11 @@ export default function LandingPage() {
 						Free Financial Management
 					</p>
 					<h1 className="text-4xl font-bold tracking-tight lg:text-6xl text-balance">
-						Take Control of Your Finances with{" "}
-						<span className="text-primary">Frugalistic</span>
+						Take Control of Your Finances with <span className="text-primary">Frugalistic</span>
 					</h1>
 					<p className="text-muted-foreground mt-6 text-lg lg:text-xl max-w-2xl mx-auto text-balance">
-						Track your expenses, savings, and income effortlessly. Visualize
-						your financial health and stay on top of your finances.
+						Track your expenses, savings, and income effortlessly. Visualize your financial health
+						and stay on top of your finances.
 					</p>
 
 					<div className="mt-10 w-fit justify-self-center">
@@ -171,9 +157,9 @@ export default function LandingPage() {
 							Built for Your Financial Success
 						</h2>
 						<p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-							Frugalistic is a free and open-source financial management tool
-							designed to help you take control of your finances. Managing money
-							should be simple, transparent, and accessible to everyone.
+							Frugalistic is a free and open-source financial management tool designed to help you
+							take control of your finances. Managing money should be simple, transparent, and
+							accessible to everyone.
 						</p>
 					</div>
 
@@ -215,16 +201,13 @@ export default function LandingPage() {
 
 					<Card className="border-primary/30 bg-primary/5 shadow-xl">
 						<CardHeader className="text-center pb-2 pt-10">
-							<CardTitle className="text-3xl font-bold">
-								Ready to Take Control?
-							</CardTitle>
+							<CardTitle className="text-3xl font-bold">Ready to Take Control?</CardTitle>
 						</CardHeader>
 						<CardContent className="text-center pb-4">
 							<p className="text-lg text-muted-foreground max-w-lg mx-auto">
-								Take charge of your finances today with Frugalistic. Whether you
-								are tracking monthly expenses or planning for the future,
-								Frugalistic provides the tools you need—powered by the
-								transparency and flexibility of open source.
+								Take charge of your finances today with Frugalistic. Whether you are tracking
+								monthly expenses or planning for the future, Frugalistic provides the tools you
+								need—powered by the transparency and flexibility of open source.
 							</p>
 						</CardContent>
 						<CardFooter className="flex-col gap-4 pb-10">
@@ -247,9 +230,7 @@ export default function LandingPage() {
 
 			<section className="py-16 lg:py-24 border-t border-border/50">
 				<div className="max-w-3xl mx-auto px-6 text-center">
-					<h2 className="text-2xl font-bold lg:text-3xl mb-4">
-						Start Managing Your Money Today
-					</h2>
+					<h2 className="text-2xl font-bold lg:text-3xl mb-4">Start Managing Your Money Today</h2>
 					<p className="text-muted-foreground text-lg mb-8">
 						Join Frugalistic and gain full control over your financial health.
 					</p>

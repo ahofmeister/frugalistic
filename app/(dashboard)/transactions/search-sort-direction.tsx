@@ -15,9 +15,7 @@ const SearchSortDirection = () => {
 	);
 
 	return (
-		<Button
-			onClick={() => setSortDirection(sortDirection === "asc" ? "desc" : "asc")}
-		>
+		<Button onClick={() => setSortDirection(sortDirection === "asc" ? "desc" : "asc")}>
 			{sortDirection === "asc" ? (
 				<>
 					Ascending <ArrowUp className="ml-2" size={16} />

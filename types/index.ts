@@ -17,14 +17,11 @@ export type TransactionWithRecurring = Transaction & {
 	category: Category;
 };
 
-export type TransactionAutoSuggest =
-	Database["public"]["Views"]["transaction_auto_suggest"]["Row"];
+export type TransactionAutoSuggest = Database["public"]["Views"]["transaction_auto_suggest"]["Row"];
 
 // Recurring Transactions
-export type RecurringInterval =
-	Database["public"]["Enums"]["recurring_interval"];
-export type RecurringTransaction =
-	Database["public"]["Tables"]["transactions_recurring"]["Row"];
+export type RecurringInterval = Database["public"]["Enums"]["recurring_interval"];
+export type RecurringTransaction = Database["public"]["Tables"]["transactions_recurring"]["Row"];
 export type UpdateRecurringTransaction =
 	Database["public"]["Tables"]["transactions_recurring"]["Update"];
 

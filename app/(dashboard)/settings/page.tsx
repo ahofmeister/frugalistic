@@ -7,12 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 async function DateFormatSetting() {
 	const settings = await getSettings();
 
-	return (
-		<SettingsForm
-			initialDateFormat={settings.date_format}
-			settingsId={settings.id}
-		/>
-	);
+	return <SettingsForm initialDateFormat={settings.date_format} settingsId={settings.id} />;
 }
 
 export default async function SettingsPage() {

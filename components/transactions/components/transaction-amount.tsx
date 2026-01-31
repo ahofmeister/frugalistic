@@ -23,16 +23,12 @@ const TransactionAmount = ({
 }) => {
 	const typeClass = getTextColor(type);
 
-	return (
-		<span className={cn(typeClass, className)}>{formatAmount(amount)}</span>
-	);
+	return <span className={cn(typeClass, className)}>{formatAmount(amount)}</span>;
 };
 
 export default TransactionAmount;
 
-export function getTextColor(
-	type: TransactionTypeWithLeftover | undefined | null,
-) {
+export function getTextColor(type: TransactionTypeWithLeftover | undefined | null) {
 	switch (type) {
 		case "savings":
 			return "text-savings";

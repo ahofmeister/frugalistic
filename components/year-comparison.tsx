@@ -39,13 +39,9 @@ async function getCategoryYearTable(): Promise<{
 	categories: CategoryRow[];
 	totals: TotalsRow[];
 }> {
-	const transactionsFetched = await dbTransaction((tx) =>
-		tx.select().from(transactionSchema),
-	);
+	const transactionsFetched = await dbTransaction((tx) => tx.select().from(transactionSchema));
 
-	const fetchedCategories = await dbTransaction((tx) =>
-		tx.select().from(categories),
-	);
+	const fetchedCategories = await dbTransaction((tx) => tx.select().from(categories));
 
 	const pivot: PivotData = {};
 	const years: Set<number> = new Set();
@@ -78,8 +74,7 @@ async function getCategoryYearTable(): Promise<{
 			if (!pivot[tx.category]) {
 				pivot[tx.category] = { name: "", color: "", years: {} };
 			}
-			pivot[tx.category].years[year] =
-				(pivot[tx.category].years[year] || 0) + tx.amount;
+			pivot[tx.category].years[year] = (pivot[tx.category].years[year] || 0) + tx.amount;
 		}
 	});
 
@@ -141,14 +136,9 @@ export default async function YearComparison() {
 			<Table className="w-full border-collapse border border-border">
 				<TableHeader>
 					<TableRow>
-						<TableHead className="border border-border p-3 text-left">
-							Category
-						</TableHead>
+						<TableHead className="border border-border p-3 text-left">Category</TableHead>
 						{years.map((year) => (
-							<TableHead
-								key={year}
-								className="border border-border p-3 text-center"
-							>
+							<TableHead key={year} className="border border-border p-3 text-center">
 								{year}
 							</TableHead>
 						))}
@@ -157,14 +147,9 @@ export default async function YearComparison() {
 				<TableBody>
 					{totals.map((total) => (
 						<TableRow key={total.label} className="bg-card font-semibold">
-							<TableCell className="border border-border p-3">
-								{total.label}
-							</TableCell>
+							<TableCell className="border border-border p-3">{total.label}</TableCell>
 							{total.amounts.map((amount, idx) => (
-								<TableCell
-									key={idx}
-									className="border border-border p-3 text-right"
-								>
+								<TableCell key={idx} className="border border-border p-3 text-right">
 									<div className="flex flex-col items-end gap-1">
 										<TransactionAmount amount={amount} type={total.type} />
 										{total.type === "savings" && total.percentages && (
@@ -184,18 +169,12 @@ export default async function YearComparison() {
 						<TableRow key={cat.id} className="hover:bg-card">
 							<TableCell className="border border-border p-3 font-medium">
 								<div className="flex items-center gap-2">
-									<div
-										className="w-4 h-4 rounded"
-										style={{ backgroundColor: cat.color }}
-									/>
+									<div className="w-4 h-4 rounded" style={{ backgroundColor: cat.color }} />
 									{cat.name}
 								</div>
 							</TableCell>
 							{cat.amounts.map((amount, idx) => (
-								<TableCell
-									key={idx}
-									className="border border-border p-3 text-right"
-								>
+								<TableCell key={idx} className="border border-border p-3 text-right">
 									<TransactionAmount amount={amount} type="expense" />
 								</TableCell>
 							))}

@@ -23,10 +23,7 @@ const CategorySearchFilter = () => {
 	useEffect(() => {
 		const fetchCategories = async () => {
 			const supabase = createClient();
-			const { data } = await supabase
-				.from("categories")
-				.select("*")
-				.order("name");
+			const { data } = await supabase.from("categories").select("*").order("name");
 			setCategories(data ?? []);
 		};
 		void fetchCategories();
@@ -43,9 +40,7 @@ const CategorySearchFilter = () => {
 				<SelectValue placeholder="Select a category" />
 			</SelectTrigger>
 			<SelectContent>
-				<SelectItem value={null as unknown as string}>
-					Select Category
-				</SelectItem>
+				<SelectItem value={null as unknown as string}>Select Category</SelectItem>
 				{categories?.map((category) => (
 					<SelectItem key={category.id} value={category.name}>
 						<div className="flex gap-x-2 items-center">

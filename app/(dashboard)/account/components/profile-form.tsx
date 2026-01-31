@@ -5,13 +5,7 @@ import { z } from "zod";
 
 import { updateAccount } from "@/app/(dashboard)/account/lib/account-actions";
 import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
 	Form,
 	FormControl,
@@ -107,9 +101,7 @@ const ProfileForm = (props: { user?: Profile | null }) => {
 
 							<Button
 								type="submit"
-								disabled={
-									form.formState.isSubmitting || !form.formState.isValid
-								}
+								disabled={form.formState.isSubmitting || !form.formState.isValid}
 								className="w-full"
 							>
 								{form.formState.isSubmitting ? <Spinner /> : "Save"}

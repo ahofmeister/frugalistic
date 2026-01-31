@@ -49,9 +49,7 @@ export async function DashboardCategories({
 			return acc;
 		}, {});
 
-	const groupedCategories = Object.values(categories ?? []).sort(
-		(a, b) => b.amount - a.amount,
-	);
+	const groupedCategories = Object.values(categories ?? []).sort((a, b) => b.amount - a.amount);
 	const total = expenses?.reduce((acc, expense) => acc + expense.amount, 0);
 
 	if (expenses?.length === 0) {

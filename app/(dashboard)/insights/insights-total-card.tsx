@@ -55,23 +55,15 @@ function InsightsTotalCard(props: {
 	const { startDate, endDate } = getYearBoundaries(year);
 
 	return (
-		<Link
-			href={`/transactions?dateFrom=${startDate}&dateTo=${endDate}&type=${type}`}
-		>
+		<Link href={`/transactions?dateFrom=${startDate}&dateTo=${endDate}&type=${type}`}>
 			<Card
 				className={cn(
 					"cursor-pointer transform transition-transform duration-200 hover:scale-105 hover:shadow-lg",
 				)}
 			>
 				<CardHeader>
-					<CardTitle className={getTextColor(type)}>
-						{capitalize(type as string)}
-					</CardTitle>
-					<TransactionAmount
-						className="text-2xl"
-						amount={currentYearTotal}
-						type={type}
-					/>
+					<CardTitle className={getTextColor(type)}>{capitalize(type as string)}</CardTitle>
+					<TransactionAmount className="text-2xl" amount={currentYearTotal} type={type} />
 					{previousYearTotal && previousYearTotal > 0 && (
 						<CardDescription>
 							<span className="flex gap-x-2">
@@ -85,10 +77,7 @@ function InsightsTotalCard(props: {
 					<Footer />
 				</CardContent>
 				<CardFooter>
-					<AverageAmount
-						amount={currentYearTotal / getMonthsInYear(year)}
-						type={type}
-					/>
+					<AverageAmount amount={currentYearTotal / getMonthsInYear(year)} type={type} />
 				</CardFooter>
 			</Card>
 		</Link>
