@@ -32,7 +32,7 @@ const DeleteTransaction = (props: { id: string }) => {
 				} else {
 					toast.success("The transaction has been successfully removed.");
 					void setIsDialogOpen(false);
-					router.replace("/dashboard");
+					router.push("/dashboard");
 				}
 			} catch (error) {
 				console.error("Error deleting transaction:", error);
