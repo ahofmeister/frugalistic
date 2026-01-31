@@ -1,16 +1,12 @@
 "use server";
 import { revalidateTag } from "next/cache";
-
+import { getCurrentUser } from "@/components/auth/auth-actions";
 import type { ProfileUpdate } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
 export async function updateAccount(account: ProfileUpdate) {
+	const user = await getCurrentUser();
 	const supabase = await createClient();
-
-	const {
-		data: { user },
-	} = await supabase.auth.getUser();
-
 	if (user) {
 		const { error } = await supabase
 			.from("profile")

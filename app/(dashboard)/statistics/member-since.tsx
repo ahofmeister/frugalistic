@@ -1,15 +1,11 @@
 import { differenceInDays } from "date-fns";
 import FormattedDate from "@/app/(dashboard)/dashboard/formatted-date";
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
+import { getCurrentUser } from "@/components/auth/auth-actions";
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { createClient } from "@/utils/supabase/server";
 
 export const MemberSince = async () => {
-	const supabase = await createClient();
-
-	const {
-		data: { user },
-	} = await supabase.auth.getUser();
+	const user = await getCurrentUser();
 
 	const settings = await getSettings();
 

@@ -52,3 +52,11 @@ export const signUp = async (formData: FormData) => {
 
 	return redirect("/login?message=Check email to continue sign in process");
 };
+
+export const getCurrentUser = async () => {
+	const supabase = await createClient();
+	const {
+		data: { user },
+	} = await supabase.auth.getUser();
+	return user;
+};

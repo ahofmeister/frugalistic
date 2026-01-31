@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
+import { getCurrentUser } from "@/components/auth/auth-actions";
 
 export async function updateSession(request: NextRequest) {
 	let supabaseResponse = NextResponse.next({
@@ -32,9 +33,7 @@ export async function updateSession(request: NextRequest) {
 		},
 	});
 
-	const {
-		data: { user },
-	} = await supabase.auth.getUser();
+	const user = await getCurrentUser();
 
 	if (user) {
 		return supabaseResponse;

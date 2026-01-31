@@ -1,30 +1,9 @@
-"use client";
-
-import type { User } from "@supabase/auth-js";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-
+import { getCurrentUser } from "@/components/auth/auth-actions";
 import { Button } from "@/components/ui/button";
-import { createClient } from "@/utils/supabase/client";
 
-export default function AppButton() {
-	const [user, setUser] = useState<User | undefined>();
-	const [loading, setLoading] = useState(true);
-	const supabase = createClient();
-
-	useEffect(() => {
-		const fetchUser = async () => {
-			const { data } = await supabase.auth.getUser();
-			setUser(data?.user || undefined);
-			setLoading(false);
-		};
-
-		void fetchUser();
-	}, [supabase]);
-
-	if (loading) {
-		return null;
-	}
+export default async function AppButton() {
+	const user = await getCurrentUser();
 
 	if (!user) {
 		return (
