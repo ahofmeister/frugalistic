@@ -1,5 +1,5 @@
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { Input } from "@/components/ui/input";
 
@@ -19,10 +19,6 @@ const formatInput = (numericValue: string): string => {
 
 const AmountInput: React.FC<AmountInputProps> = ({ value, onChange }) => {
 	const [inputValue, setInputValue] = useState(formatInput(value));
-
-	useEffect(() => {
-		setInputValue(formatInput(value));
-	}, [value]);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const rawValue = e.target.value.replace(/\D/g, "");
