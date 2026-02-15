@@ -45,8 +45,6 @@ export const TransactionFormData = async ({
 			})
 		: [];
 
-	console.log(transaction);
-
 	return (
 		<TransactionForm
 			transaction={transaction}

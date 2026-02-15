@@ -49,6 +49,7 @@ async function getCategoryYearTable(): Promise<{
 		income: {},
 		savings: {},
 	};
+	const fixedExpenses: { [key: number]: number } = {};
 
 	fetchedCategories?.forEach((cat) => {
 		pivot[cat.id] = {
@@ -75,6 +76,10 @@ async function getCategoryYearTable(): Promise<{
 				pivot[tx.category] = { name: "", color: "", years: {} };
 			}
 			pivot[tx.category].years[year] = (pivot[tx.category].years[year] || 0) + tx.amount;
+
+			if (tx.costType === "fixed") {
+				fixedExpenses[year] = (fixedExpenses[year] || 0) + tx.amount;
+			}
 		}
 	});
 
@@ -95,6 +100,13 @@ async function getCategoryYearTable(): Promise<{
 		incomeAmounts[idx] > 0 ? (s / incomeAmounts[idx]) * 100 : 0,
 	);
 
+	const expenseAmounts = sortedYears.map((y) => expenseTotals[y] || 0);
+	const fixedExpensePercentages = expenseAmounts.map((total, idx) => {
+		const year = sortedYears[idx];
+		const fixed = fixedExpenses[year] || 0;
+		return total > 0 ? (fixed / total) * 100 : 0;
+	});
+
 	const totalsRows: TotalsRow[] = [
 		{
 			label: "Income",
@@ -109,8 +121,9 @@ async function getCategoryYearTable(): Promise<{
 		},
 		{
 			label: "Total Expense",
-			amounts: sortedYears.map((y) => expenseTotals[y] || 0),
+			amounts: expenseAmounts,
 			type: "expense",
+			percentages: fixedExpensePercentages,
 		},
 	];
 
@@ -148,13 +161,18 @@ export default async function YearComparison() {
 					{totals.map((total) => (
 						<TableRow key={total.label} className="bg-card font-semibold">
 							<TableCell className="border border-border p-3">{total.label}</TableCell>
-							{total.amounts.map((amount, idx) => (
-								<TableCell key={idx} className="border border-border p-3 text-right">
+							{total.amounts.map((amount, index) => (
+								<TableCell key={index} className="border border-border p-3 text-right">
 									<div className="flex flex-col items-end gap-1">
 										<TransactionAmount amount={amount} type={total.type} />
 										{total.type === "savings" && total.percentages && (
 											<span className="text-xs text-muted-foreground">
-												{total.percentages[idx].toFixed(1)}% of income
+												{total.percentages[index].toFixed(1)}% of income
+											</span>
+										)}
+										{total.type === "expense" && total.percentages && (
+											<span className="text-xs text-muted-foreground">
+												{total.percentages[index].toFixed(1)}% fixed{" "}
 											</span>
 										)}
 									</div>
