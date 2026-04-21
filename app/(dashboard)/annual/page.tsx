@@ -1,13 +1,11 @@
 import { Suspense } from "react";
-import YearComparison from "@/components/year-comparison";
+import AnnuallyComparison from "@/components/comparison/annual-comparison";
 
 const AnnualPage = () => {
 	return (
-		<div>
-			<Suspense>
-				<YearComparison />
-			</Suspense>
-		</div>
+		<Suspense>
+			<AnnuallyComparison />
+		</Suspense>
 	);
 };
 
