@@ -33,7 +33,7 @@ export default async function AnnualComparison() {
 	const { columns, categories, totals } = await getAnnualComparisonData();
 
 	return (
-		<div className="w-full p-4 overflow-x-auto">
+		<div className="w-full overflow-x-auto">
 			<Table className="w-full border-collapse border border-border">
 				<TableHeader>
 					<TableRow>
