@@ -1,24 +1,20 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import type { SearchParams } from "nuqs/server";
 import { Suspense } from "react";
 import { CategoriesBanner } from "@/app/(dashboard)/categories/categories-banner";
 import { DashboardDateLabel } from "@/app/(dashboard)/dashboard/dashboard-date-label";
 import DashboardCards from "@/components/dashboard/dashboard-cards";
 import { DashboardCategories } from "@/components/dashboard/dashboard-categories";
 import DashboardTransactions from "@/components/dashboard/dashboard-transactions";
-import { type Period, PeriodSelector } from "@/components/dashboard/period-selector";
+import { PeriodSelector } from "@/components/dashboard/period-selector";
 import { SelectNow } from "@/components/dashboard/select-now";
+import NextRecurringTransactions from "@/components/transactions/recurring/components/next-recurring-transactions";
 import { MonthYearStepper } from "../../month-year-stepper";
-
-export type DashboardParams = {
-	month: string;
-	year: string;
-	period: Period;
-};
 
 export default async function DashboardPage({
 	searchParams,
 }: {
-	searchParams: Promise<DashboardParams>;
+	searchParams: Promise<SearchParams>;
 }) {
 	return (
 		<div className={"space-y-4"}>
@@ -49,6 +45,10 @@ export default async function DashboardPage({
 			</Suspense>
 			<Suspense>
 				<DashboardCategories searchParams={searchParams} />
+			</Suspense>
+
+			<Suspense>
+				<NextRecurringTransactions searchParams={searchParams} />
 			</Suspense>
 
 			<div className="mt-4">

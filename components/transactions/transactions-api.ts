@@ -1,11 +1,15 @@
 "use server";
-import { format } from "date-fns";
-import { eq } from "drizzle-orm";
+import { endOfMonth, format, startOfMonth } from "date-fns";
+import { and, between, eq, lte, notExists, or, sql } from "drizzle-orm";
 import { revalidatePath, revalidateTag } from "next/cache";
 import type { SearchFilter } from "@/app/(dashboard)/transactions/search-filter";
 import { calculateNextRun } from "@/components/transactions/recurring/recurring-transactions-calculator";
 import { dbTransaction } from "@/db";
-import { type TransactionWithRecurringCategory, transactionSchema } from "@/db/migrations/schema";
+import {
+	type TransactionWithRecurringCategory,
+	transactionSchema,
+	transactionsRecurring,
+} from "@/db/migrations/schema";
 import type { NewTransaction, RecurringInterval, UpdateRecurringTransaction } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
@@ -163,4 +167,44 @@ export async function updateRecurringTransaction(data: UpdateRecurringTransactio
 		console.error(error);
 		return { success: false, message: "Failed to update transaction" };
 	}
+}
+
+export async function getRecurringTransactionsForMonth(year: number, month: number) {
+	const date = new Date(year, month, 1);
+	const from = format(startOfMonth(date), "yyyy-MM-dd");
+	const to = format(endOfMonth(date), "yyyy-MM-dd");
+
+	const today = new Date();
+	const isFutureMonth =
+		year > today.getFullYear() || (year === today.getFullYear() && month > today.getMonth());
+
+	return await dbTransaction(async (tx) => {
+		return tx
+			.select()
+			.from(transactionsRecurring)
+			.where(
+				and(
+					eq(transactionsRecurring.enabled, true),
+					isFutureMonth
+						? or(
+								eq(transactionsRecurring.interval, "monthly"),
+								and(
+									eq(transactionsRecurring.interval, "annually"),
+									between(transactionsRecurring.nextRun, from, to),
+								),
+							)
+						: or(
+								and(
+									eq(transactionsRecurring.interval, "monthly"),
+									lte(transactionsRecurring.nextRun, to),
+								),
+								and(
+									eq(transactionsRecurring.interval, "annually"),
+									between(transactionsRecurring.nextRun, from, to),
+								),
+							),
+				),
+			)
+			.orderBy(transactionsRecurring.nextRun);
+	});
 }

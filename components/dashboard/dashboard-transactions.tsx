@@ -1,6 +1,6 @@
 import { and, desc, gte, lte } from "drizzle-orm";
-import type { DashboardParams } from "@/app/(dashboard)/dashboard/page";
-import { loadSearchParams } from "@/app/(dashboard)/search-params";
+import type { SearchParams } from "nuqs/server";
+import { loadDashboardParams } from "@/app/(dashboard)/search-params";
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
 import TransactionList from "@/components/transactions/components/transaction-list";
 import { dbTransaction } from "@/db";
@@ -10,9 +10,9 @@ import { getPeriodDates } from "@/utils/transaction/dates";
 export default async function DashboardTransactions({
 	searchParams,
 }: {
-	searchParams: Promise<DashboardParams>;
+	searchParams: Promise<SearchParams>;
 }) {
-	const awaitedParams = await loadSearchParams(searchParams);
+	const awaitedParams = await loadDashboardParams(searchParams);
 
 	const { startDate, endDate } = getPeriodDates(
 		awaitedParams.year,

@@ -1,19 +1,18 @@
 import { and, desc, eq, gte, lte } from "drizzle-orm";
-import type { DashboardParams } from "@/app/(dashboard)/dashboard/page";
-import { loadSearchParams } from "@/app/(dashboard)/search-params";
+import type { SearchParams } from "nuqs/server";
+import { loadDashboardParams } from "@/app/(dashboard)/search-params";
 import DashboardCard from "@/components/dashboard/dashboard-card";
 import { dbTransaction } from "@/db";
 import { categories, transactionSchema } from "@/db/migrations/schema";
 import { getPeriodDates } from "@/utils/transaction/dates";
 
-const DashboardCards = async ({ searchParams }: { searchParams: Promise<DashboardParams> }) => {
+const DashboardCards = async ({ searchParams }: { searchParams: Promise<SearchParams> }) => {
 	let income = 0;
 	let expense = 0;
 	let savings = 0;
 	let fixedCosts = 0;
-	let _variableCosts = 0;
 
-	const awaitedParams = await loadSearchParams(searchParams);
+	const awaitedParams = await loadDashboardParams(searchParams);
 
 	const { startDate, endDate } = getPeriodDates(
 		awaitedParams.year,
@@ -47,8 +46,6 @@ const DashboardCards = async ({ searchParams }: { searchParams: Promise<Dashboar
 				expense += amount;
 				if (transaction.costType === "fixed") {
 					fixedCosts += amount;
-				} else if (transaction.costType === "variable") {
-					_variableCosts += amount;
 				}
 				break;
 			case "savings":

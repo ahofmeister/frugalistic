@@ -3,12 +3,13 @@ import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
 import RecurringTransactionCard from "@/app/(dashboard)/transactions/recurring/recurring-transaction-card";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { createClient } from "@/utils/supabase/server";
+import { dbTransaction } from "@/db";
+import { transactionsRecurring } from "@/db/migrations/schema";
 
 const RecurringTransactions = async () => {
-	const supabase = await createClient();
-
-	const { data: transactions } = await supabase.from("transactions_recurring").select();
+	const transactions = await dbTransaction((tx) => {
+		return tx.select().from(transactionsRecurring);
+	});
 
 	const typeOrder = { expense: 1, savings: 2, income: 3 };
 
