@@ -1,6 +1,6 @@
 "use server";
 import { endOfMonth, format, startOfMonth } from "date-fns";
-import { and, between, eq, lte, notExists, or, sql } from "drizzle-orm";
+import { and, between, eq, lte, or } from "drizzle-orm";
 import { revalidatePath, revalidateTag } from "next/cache";
 import type { SearchFilter } from "@/app/(dashboard)/transactions/search-filter";
 import { calculateNextRun } from "@/components/transactions/recurring/recurring-transactions-calculator";
