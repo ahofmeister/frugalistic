@@ -1,5 +1,5 @@
 import { CommandLoading } from "cmdk";
-import {
+import React, {
 	forwardRef,
 	type KeyboardEvent,
 	useCallback,
@@ -144,8 +144,8 @@ export const AutoComplete = forwardRef<AutoCompleteRef, AutoCompleteProps>(
 										return (
 											<CommandItem
 												key={option.unique_id}
-												value={option.unique_id?.toString() + " " + option.description}
-												onMouseDown={(event: any) => {
+												value={`${option.unique_id?.toString()} ${option.description}`}
+												onMouseDown={(event: React.MouseEvent<HTMLElement>) => {
 													event.preventDefault();
 													event.stopPropagation();
 												}}

@@ -11,10 +11,10 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import type { RecurringTransaction } from "@/types";
+import type { transactionsRecurring } from "@/db/migrations/schema";
 
 const RecurringTransactionCard = (props: {
-	transaction: RecurringTransaction;
+	transaction: typeof transactionsRecurring.$inferSelect;
 	dateFormat: string;
 }) => {
 	const transaction = props.transaction;
@@ -30,7 +30,7 @@ const RecurringTransactionCard = (props: {
 						</div>
 					</CardTitle>
 					<CardDescription>
-						<FormattedDate date={transaction.next_run ?? "-"} format={props.dateFormat} />
+						<FormattedDate date={transaction.nextRun ?? "-"} format={props.dateFormat} />
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="flex justify-end"></CardContent>

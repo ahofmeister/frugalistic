@@ -1,5 +1,5 @@
-import type { DashboardParams } from "@/app/(dashboard)/dashboard/page";
-import { loadSearchParams } from "@/app/(dashboard)/search-params";
+import type { SearchParams } from "nuqs/server";
+import { loadDashboardParams } from "@/app/(dashboard)/search-params";
 import { DashboardCategoryCard } from "@/components/dashboard/dashboard-category-card";
 import type { Transaction, TransactionWithCategory } from "@/types";
 import { createClient } from "@/utils/supabase/server";
@@ -14,15 +14,12 @@ interface CategoryData {
 export async function DashboardCategories({
 	searchParams,
 }: {
-	searchParams: Promise<DashboardParams>;
+	searchParams: Promise<SearchParams>;
 }) {
-	const awaitedParams = await loadSearchParams(searchParams);
+	const params = await loadDashboardParams(searchParams);
 
-	const { startDate, endDate } = getPeriodDates(
-		awaitedParams.year,
-		awaitedParams.month,
-		awaitedParams.period,
-	);
+	const { startDate, endDate } = getPeriodDates(params.year, params.month, params.period);
+
 	const supabase = await createClient();
 	const { data: expenses } = await supabase
 		.from("transactions")
@@ -66,10 +63,10 @@ export async function DashboardCategories({
 						category={expense.category}
 						amount={expense.amount}
 						fill={expense.fill}
-						year={awaitedParams.year}
-						month={awaitedParams.month}
+						year={params.year}
+						month={params.month}
 						total={total ?? 0}
-						period={awaitedParams.period}
+						period={params.period}
 					/>
 				))}
 			</div>
