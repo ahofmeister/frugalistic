@@ -2,12 +2,6 @@ import { createLoader, createParser, parseAsInteger } from "nuqs/server";
 
 import type { Period } from "@/components/dashboard/period-selector";
 
-export type DashboardParams = {
-	month: number;
-	year: number;
-	period: Period;
-};
-
 const parsePeriod = createParser({
 	parse(queryValue) {
 		return queryValue as Period;
