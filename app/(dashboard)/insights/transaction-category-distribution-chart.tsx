@@ -30,7 +30,7 @@ const transformData = (transactions: TransactionWithCategory[]): MonthCategoryTo
 			monthlyTotals[month] = { month, total: 0 };
 		}
 
-		if (category.name) {
+		if (category?.name) {
 			if (!monthlyTotals[month][category.name]) {
 				monthlyTotals[month][category.name] = 0;
 			}
@@ -52,12 +52,12 @@ const TransactionCategoryDistributionChart = ({
 	transactions: TransactionWithCategory[];
 }) => {
 	const names = transactions
-		.map((transaction) => transaction.category.name)
+		.map((transaction) => transaction.category?.name)
 		.filter((name): name is string => name !== null)
 		.filter(onlyUnique);
 
 	const colors = transactions
-		.map((transaction) => transaction.category.color)
+		.map((transaction) => transaction.category?.color)
 		.filter((color): color is string => color !== null)
 		.filter(onlyUnique);
 
