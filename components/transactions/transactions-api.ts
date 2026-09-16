@@ -118,7 +118,7 @@ export const searchTransactions = async (filter: SearchFilter) => {
 				recurringTransaction: transactionsRecurring,
 			})
 			.from(transactions)
-			.leftJoin(categories, eq(transactions.categoryId, categories.id))
+			.innerJoin(categories, eq(transactions.categoryId, categories.id))
 			.leftJoin(
 				transactionsRecurring,
 				eq(transactions.recurringTransactionId, transactionsRecurring.id),
@@ -130,7 +130,7 @@ export const searchTransactions = async (filter: SearchFilter) => {
 		return rows.map(({ transaction, category, recurringTransaction }) => ({
 			...transaction,
 			category,
-			recurring_transaction: recurringTransaction,
+			recurringTransaction: recurringTransaction,
 		}));
 	});
 };

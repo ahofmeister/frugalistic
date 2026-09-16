@@ -12,7 +12,7 @@ export async function addFavorite(transaction: TransactionWithRecurringCategory)
 			return tx
 				.insert(favoriteSchema)
 				.values({
-					category: transaction.category.id,
+					categoryId: transaction.category.id,
 					description: transaction.description,
 					amount: transaction.amount,
 					type: transaction.type,
