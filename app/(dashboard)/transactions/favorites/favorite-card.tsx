@@ -4,7 +4,7 @@ import { DeleteFavoriteTransactionButton } from "@/app/(dashboard)/transactions/
 import { FavoriteQuickAddDialog } from "@/app/(dashboard)/transactions/favorites/favorite-quick-add-dialog";
 import TransactionAmount from "@/components/transactions/components/transaction-amount";
 import { Card } from "@/components/ui/card";
-import type { favoriteSchema } from "@/db/schema/schema";
+import type { favoriteSchema } from "@/drizzle/schema";
 
 export function FavoriteCard({
 	favorite,
@@ -22,7 +22,7 @@ export function FavoriteCard({
 					<div className="flex-1 min-w-0">
 						<div className="flex items-center gap-2 flex-wrap">
 							<h3 className="font-medium truncate">{favorite.description}</h3>
-							<Star className="h-4 w-4 text-yellow-500 flex-shrink-0 fill-yellow-500" />
+							<Star className="h-4 w-4 text-yellow-500 shrink-0 fill-yellow-500" />
 						</div>
 						<div className="flex items-center gap-2 mt-1">
 							<span className="text-xs text-muted-foreground">
@@ -34,7 +34,7 @@ export function FavoriteCard({
 					</div>
 				</div>
 
-				<div className="flex items-center gap-3 flex-shrink-0">
+				<div className="flex items-center gap-3 shrink-0">
 					<TransactionAmount amount={favorite.amount} type={favorite.type} />
 					<DeleteFavoriteTransactionButton favoriteId={favorite.id} />
 				</div>
