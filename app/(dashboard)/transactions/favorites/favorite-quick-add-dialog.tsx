@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import type { favoriteSchema } from "@/db/schema/schema";
+import type { favoriteSchema } from "@/drizzle/schema";
 import { cn } from "@/lib/utils";
 
 type QuickAddState = {
@@ -48,7 +48,7 @@ export function FavoriteQuickAddDialog({
 				await insertTransaction({
 					description: favorite.description,
 					amount: favorite.amount,
-					category: favorite.category,
+					categoryId: favorite.categoryId,
 					type: favorite.type,
 					datetime: new Date(selectedDate).toDateString(),
 				});

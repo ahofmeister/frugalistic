@@ -4,7 +4,7 @@ import CategoryColor from "@/components/categories/category-color";
 import TransactionAmount from "@/components/transactions/components/transaction-amount";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import type { TransactionWithRecurringCategory } from "@/db/schema/schema";
+import type { TransactionWithRecurringCategory } from "@/drizzle/schema";
 
 export function TransactionCard({
 	transaction,

@@ -26,7 +26,7 @@ export const favoriteSchema = pgTable(
 		amount: integer().notNull(),
 		type: text("type").$type<TransactionType>().notNull(),
 		id: uuid().defaultRandom().primaryKey().notNull(),
-		categoryId: uuid("category_id"),
+		categoryId: uuid("category_id").notNull(),
 	},
 	(table) => [
 		foreignKey({
