@@ -26,14 +26,9 @@ const DeleteTransaction = (props: { id: string }) => {
 	const handleDelete = async () => {
 		startTransition(async () => {
 			try {
-				const { error } = await deleteTransaction(props.id);
-				if (error) {
-					toast.error("Failed to delete the transaction. Please try again later.");
-				} else {
-					toast.success("The transaction has been successfully removed.");
-					void setIsDialogOpen(false);
-					router.push("/dashboard");
-				}
+				await deleteTransaction(props.id);
+				toast.success("The transaction has been successfully removed.");
+				router.push("/dashboard");
 			} catch (error) {
 				console.error("Error deleting transaction:", error);
 				toast.error("An unexpected error occurred. Please try again.");

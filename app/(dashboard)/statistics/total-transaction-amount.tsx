@@ -1,22 +1,21 @@
+import { eq, sum } from "drizzle-orm";
+
 import TransactionAmount from "@/components/transactions/components/transaction-amount";
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { dbTransaction } from "@/drizzle/client";
+import type { TransactionType } from "@/drizzle/schema";
+import { transactions } from "@/drizzle/schema";
 import { capitalize } from "@/lib/utils";
-import type { TransactionType } from "@/types";
-import { createClient } from "@/utils/supabase/server";
-
-type TotalSum = {
-	sum: number;
-};
 
 export async function TotalTransactionAmount(props: { type: TransactionType }) {
-	const supabase = await createClient();
-
-	const { data } = await supabase
-		.from("transactions")
-		.select("amount.sum()")
-		.eq("type", props.type)
-		.returns<TotalSum[]>()
-		.single();
+	const [result] = await dbTransaction((tx) => {
+		return tx
+			.select({
+				sum: sum(transactions.amount),
+			})
+			.from(transactions)
+			.where(eq(transactions.type, props.type));
+	});
 
 	return (
 		<Card>
@@ -26,7 +25,7 @@ export async function TotalTransactionAmount(props: { type: TransactionType }) {
 				</CardTitle>
 			</CardHeader>
 			<CardFooter>
-				<TransactionAmount amount={data?.sum ?? 0} type={props.type} />{" "}
+				<TransactionAmount amount={Number(result?.sum ?? 0)} type={props.type} />
 			</CardFooter>
 		</Card>
 	);

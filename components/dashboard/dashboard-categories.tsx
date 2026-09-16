@@ -1,8 +1,7 @@
 import type { SearchParams } from "nuqs/server";
 import { loadDashboardParams } from "@/app/(dashboard)/search-params";
 import { DashboardCategoryCard } from "@/components/dashboard/dashboard-category-card";
-import type { Transaction, TransactionWithCategory } from "@/types";
-import { createClient } from "@/utils/supabase/server";
+import { dbTransaction } from "@/drizzle/client";
 import { getPeriodDates } from "@/utils/transaction/dates";
 
 interface CategoryData {
@@ -20,44 +19,61 @@ export async function DashboardCategories({
 
 	const { startDate, endDate } = getPeriodDates(params.year, params.month, params.period);
 
-	const supabase = await createClient();
-	const { data: expenses } = await supabase
-		.from("transactions")
-		.select("*, category(*)")
-		.gte("datetime", startDate)
-		.lte("datetime", endDate)
-		.eq("type", "expense")
-		.order("datetime", { ascending: false })
-		.order("created_at", { ascending: false })
-		.returns<TransactionWithCategory[]>();
+	const expenses = await dbTransaction((tx) => {
+		return tx.query.transactions.findMany({
+			where: {
+				datetime: {
+					gte: startDate,
+					lte: endDate,
+				},
+				type: {
+					eq: "expense",
+				},
+			},
+			with: {
+				category: true,
+			},
+			orderBy: {
+				datetime: "desc",
+				createdAt: "desc",
+			},
+		});
+	});
 
-	const categories = expenses
-		?.filter((transaction: Transaction) => transaction.category)
-		.reduce<Record<string, CategoryData>>((acc, transaction) => {
+	const groupedCategories = Object.values(
+		expenses.reduce<Record<string, CategoryData>>((acc, transaction) => {
+			if (!transaction.category) {
+				console.log(transaction);
+			}
+
 			const { name, color } = transaction.category;
 			const amount = transaction.amount;
 
 			if (!acc[name]) {
-				acc[name] = { category: name, amount: 0, fill: color };
+				acc[name] = {
+					category: name,
+					amount: 0,
+					fill: color,
+				};
 			}
 
 			acc[name].amount += amount;
 
 			return acc;
-		}, {});
+		}, {}),
+	).sort((a, b) => b.amount - a.amount);
 
-	const groupedCategories = Object.values(categories ?? []).sort((a, b) => b.amount - a.amount);
-	const total = expenses?.reduce((acc, expense) => acc + expense.amount, 0);
+	const total = expenses.reduce((acc, expense) => acc + expense.amount, 0);
 
-	if (expenses?.length === 0) {
+	if (expenses.length === 0) {
 		return null;
 	}
 
 	return (
 		<div className="w-full">
-			<div className="text-lg my-2">Categories</div>
+			<div className="my-2 text-lg">Categories</div>
 			<div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-				{groupedCategories?.map((expense) => (
+				{groupedCategories.map((expense) => (
 					<DashboardCategoryCard
 						key={expense.category}
 						category={expense.category}
@@ -65,7 +81,7 @@ export async function DashboardCategories({
 						fill={expense.fill}
 						year={params.year}
 						month={params.month}
-						total={total ?? 0}
+						total={total}
 						period={params.period}
 					/>
 				))}

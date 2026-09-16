@@ -1,11 +1,17 @@
 import { notFound } from "next/navigation";
 import CategoryForm from "@/components/categories/category-form";
-import { createClient } from "@/utils/supabase/server";
+import { dbTransaction } from "@/drizzle/client";
 
 export async function CategoryFormWithData(props: { categoryId: Promise<string> }) {
 	const id = await props.categoryId;
-	const supabase = await createClient();
-	const { data: category } = await supabase.from("categories").select("*").eq("id", id).single();
+
+	const category = await dbTransaction((tx) => {
+		return tx.query.categories.findFirst({
+			where: {
+				id,
+			},
+		});
+	});
 
 	if (!category) {
 		notFound();

@@ -3,8 +3,8 @@ import TransactionAmount, {
 	getTextColor,
 } from "@/components/transactions/components/transaction-amount";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import type { TransactionTypeWithLeftover } from "@/drizzle/schema";
 import { capitalize } from "@/lib/utils";
-import type { TransactionTypeWithLeftover } from "@/types";
 
 const DashboardCard = ({
 	amount,

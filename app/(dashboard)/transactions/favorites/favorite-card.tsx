@@ -4,7 +4,7 @@ import { DeleteFavoriteTransactionButton } from "@/app/(dashboard)/transactions/
 import { FavoriteQuickAddDialog } from "@/app/(dashboard)/transactions/favorites/favorite-quick-add-dialog";
 import TransactionAmount from "@/components/transactions/components/transaction-amount";
 import { Card } from "@/components/ui/card";
-import type { favoriteSchema } from "@/db/migrations/schema";
+import type { favoriteSchema } from "@/db/schema/schema";
 
 export function FavoriteCard({
 	favorite,

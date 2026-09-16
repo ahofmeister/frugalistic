@@ -1,5 +1,5 @@
 import type { SortDirection } from "@/app/(dashboard)/transactions/search-sort-direction";
-import type { Transaction, TransactionType } from "@/types";
+import type { TransactionType, transactions } from "@/drizzle/schema/transaction-schema";
 
 export type SearchFilter = {
 	dateFrom: string | undefined;
@@ -9,7 +9,7 @@ export type SearchFilter = {
 	description: string | undefined;
 	category: string | undefined;
 	type: TransactionType;
-	sortBy: keyof Transaction | undefined;
+	sortBy: keyof typeof transactions.$inferSelect | undefined;
 	sortDirection: SortDirection;
 };
 

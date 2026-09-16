@@ -1,23 +1,32 @@
 "use server";
 
-import { revalidateTag } from "next/cache";
+import { asc, eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+import { dbTransaction } from "@/drizzle/client";
+import { categories } from "@/drizzle/schema";
 
-import type { NewCategory } from "@/types";
-import { createClient } from "@/utils/supabase/server";
+export async function createCategory(newCategory: typeof categories.$inferInsert) {
+	await dbTransaction((tx) => {
+		return tx.insert(categories).values(newCategory);
+	});
 
-export async function createCategory(newCategory: NewCategory) {
-	const supabase = await createClient();
-
-	const { error } = await supabase.from("categories").upsert(newCategory);
-	if (error) {
-		console.log(error);
-	}
-
-	revalidateTag("category", { expire: 10 });
+	revalidatePath("categories");
 }
 
 export async function deleteCategory(id: string) {
-	const supabase = await createClient();
-	await supabase.from("categories").delete().eq("id", id);
-	revalidateTag("category", { expire: 10 });
+	try {
+		await dbTransaction((tx) => {
+			return tx.delete(categories).where(eq(categories.id, id));
+		});
+	} catch (e) {
+		console.error(e);
+	}
+
+	revalidatePath("categories");
+}
+
+export async function getCategories() {
+	return dbTransaction((tx) => {
+		return tx.select().from(categories).orderBy(asc(categories.name));
+	});
 }

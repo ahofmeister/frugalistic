@@ -33,7 +33,7 @@ export default async function NextRecurringTransactions(props: {
 								<RecurringTransactionCard
 									key={transaction.id}
 									transaction={{ ...transaction, nextRun: projectedDate }}
-									dateFormat={settings.date_format}
+									dateFormat={settings.dateFormat}
 								/>
 							);
 						})}

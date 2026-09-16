@@ -1,67 +1,71 @@
 "use server";
 import { endOfMonth, format, startOfMonth } from "date-fns";
-import { and, between, eq, lte, or } from "drizzle-orm";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { and, asc, between, desc, eq, gte, ilike, lte, or, sql } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 import type { SearchFilter } from "@/app/(dashboard)/transactions/search-filter";
 import { calculateNextRun } from "@/components/transactions/recurring/recurring-transactions-calculator";
-import { dbTransaction } from "@/db";
+import { dbTransaction } from "@/drizzle/client";
+import type { RecurringInterval, TransactionType } from "@/drizzle/schema";
+import { categories } from "@/drizzle/schema/category-schema";
 import {
 	type TransactionWithRecurringCategory,
-	transactionSchema,
 	transactionsRecurring,
-} from "@/db/migrations/schema";
-import type { NewTransaction, RecurringInterval, UpdateRecurringTransaction } from "@/types";
-import { createClient } from "@/utils/supabase/server";
+} from "@/drizzle/schema/transaction-recurring-schema";
+import { transactions } from "@/drizzle/schema/transaction-schema";
 
 export async function makeTransactionRecurring(
 	transaction: TransactionWithRecurringCategory,
 	interval: RecurringInterval,
 ) {
-	const supabase = await createClient();
-	const { data, error } = await supabase
-		.from("transactions_recurring")
-		.upsert({
-			id: transaction.recurringTransaction ? transaction.recurringTransaction.id : undefined,
-			amount: transaction.amount,
-			description: transaction.description,
-			category: transaction.category ? transaction.category.id : undefined,
-			next_run: format(calculateNextRun(transaction.datetime, interval), "yyyy-MM-dd"),
-			type: transaction.type,
-			interval: interval,
-			user_id: transaction.userId,
-		})
-		.select("id")
-		.single();
+	try {
+		await dbTransaction(async (tx) => {
+			const [recurring] = await tx
+				.insert(transactionsRecurring)
+				.values({
+					id: transaction.recurringTransaction ? transaction.recurringTransaction.id : undefined,
+					amount: transaction.amount,
+					description: transaction.description,
+					categoryId: transaction.category.id,
+					nextRun: format(calculateNextRun(transaction.datetime, interval), "yyyy-MM-dd"),
+					type: transaction.type,
+					interval,
+					userId: transaction.userId,
+				})
+				.onConflictDoUpdate({
+					target: transactionsRecurring.id,
+					set: {
+						amount: transaction.amount,
+						description: transaction.description,
+						categoryId: transaction.category ? transaction.category.id : undefined,
+						nextRun: format(calculateNextRun(transaction.datetime, interval), "yyyy-MM-dd"),
+						type: transaction.type,
+						interval,
+					},
+				})
+				.returning({ id: transactionsRecurring.id });
 
-	if (data) {
-		const supabase = await createClient();
-		const { error } = await supabase
-			.from("transactions")
-			.update({
-				recurring_transaction: data.id,
-			})
-			.eq("id", transaction.id);
-		if (error) {
-			console.log(error);
-		}
-	}
+			await tx
+				.update(transactions)
+				.set({ recurringTransactionId: recurring.id })
+				.where(eq(transactions.id, transaction.id));
+		});
 
-	if (error) {
-		console.log(error);
+		revalidatePath("transactions");
+	} catch (error) {
+		console.error(error);
 	}
-	revalidateTag("transactions", { expire: 10 });
 }
 
-export async function upsertTransaction(newTransaction: NewTransaction) {
+export async function upsertTransaction(newTransaction: typeof transactions.$inferInsert) {
 	try {
 		await dbTransaction(async (tx) => {
 			if (newTransaction.id) {
 				await tx
-					.update(transactionSchema)
+					.update(transactions)
 					.set(newTransaction)
-					.where(eq(transactionSchema.id, newTransaction.id));
+					.where(eq(transactions.id, newTransaction.id));
 			} else {
-				await tx.insert(transactionSchema).values(newTransaction);
+				await tx.insert(transactions).values(newTransaction);
 			}
 
 			return { success: true };
@@ -74,92 +78,93 @@ export async function upsertTransaction(newTransaction: NewTransaction) {
 	}
 }
 
-export async function insertTransaction(newTransaction: typeof transactionSchema.$inferInsert) {
+export async function insertTransaction(newTransaction: typeof transactions.$inferInsert) {
 	await dbTransaction((tx) => {
-		return tx.insert(transactionSchema).values(newTransaction);
+		return tx.insert(transactions).values(newTransaction);
 	});
 }
 
-export const searchTransactions = async (
-	filter: SearchFilter,
-): Promise<TransactionWithRecurringCategory[]> => {
-	const supabase = await createClient();
+export const searchTransactions = async (filter: SearchFilter) => {
+	const sortableColumns = {
+		datetime: transactions.datetime,
+		amount: transactions.amount,
+		description: transactions.description,
+		type: transactions.type,
+	} as const;
 
-	const query = filter.category
-		? supabase
-				.from("transactions")
-				.select(
-					"id, description, amount, datetime, type, category!inner(name, color), recurring_transaction(*)",
-				)
-		: supabase
-				.from("transactions")
-				.select(
-					"id, description, amount, datetime, type, category(name, color), recurring_transaction(*)",
-				);
+	const sortColumn =
+		sortableColumns[(filter.sortBy as keyof typeof sortableColumns) ?? "datetime"] ??
+		transactions.datetime;
+	const sortFn = filter.sortDirection === "asc" ? asc : desc;
 
-	if (filter.category) {
-		query.eq("category.name", filter.category);
-	}
+	return dbTransaction(async (tx) => {
+		const amountMin = filter.amountMin ? Number(filter.amountMin) : undefined;
+		const amountMax = filter.amountMax ? Number(filter.amountMax) : undefined;
 
-	if (filter.dateFrom) {
-		query.gte("datetime", filter.dateFrom);
-	}
+		const conditions = [
+			filter.category ? eq(categories.name, filter.category) : undefined,
+			filter.dateFrom ? gte(transactions.datetime, filter.dateFrom) : undefined,
+			filter.dateTo ? lte(transactions.datetime, filter.dateTo) : undefined,
+			Number.isFinite(amountMin) ? gte(transactions.amount, amountMin as number) : undefined,
+			Number.isFinite(amountMax) ? lte(transactions.amount, amountMax as number) : undefined,
+			filter.description ? ilike(transactions.description, `%${filter.description}%`) : undefined,
+			filter.type ? eq(transactions.type, filter.type) : undefined,
+		].filter((c): c is NonNullable<typeof c> => c !== undefined);
 
-	if (filter.dateTo) {
-		query.lte("datetime", filter.dateTo);
-	}
+		const rows = await tx
+			.select({
+				transaction: transactions,
+				category: categories,
+				recurringTransaction: transactionsRecurring,
+			})
+			.from(transactions)
+			.leftJoin(categories, eq(transactions.categoryId, categories.id))
+			.leftJoin(
+				transactionsRecurring,
+				eq(transactions.recurringTransactionId, transactionsRecurring.id),
+			)
+			.where(conditions.length ? and(...conditions) : undefined)
+			.orderBy(sortFn(sortColumn))
+			.limit(200);
 
-	if (filter.amountMin) {
-		query.gte("amount", filter.amountMin);
-	}
-
-	if (filter.amountMax) {
-		query.lte("amount", filter.amountMax);
-	}
-
-	if (filter.description) {
-		query.ilike("description", `%${filter.description}%`);
-	}
-
-	if (filter.type) {
-		query.eq("type", filter.type);
-	}
-	query.order(filter.sortBy ?? "datetime", {
-		ascending: filter.sortDirection === "asc",
+		return rows.map(({ transaction, category, recurringTransaction }) => ({
+			...transaction,
+			category,
+			recurring_transaction: recurringTransaction,
+		}));
 	});
-
-	query.limit(200);
-	const { data } = await query.returns<TransactionWithRecurringCategory[]>();
-	return data ?? [];
 };
 
 export const deleteTransaction = async (id: string) => {
-	const supabase = await createClient();
-	return supabase.from("transactions").delete().eq("id", id);
+	return dbTransaction((tx) => tx.delete(transactions).where(eq(transactions.id, id)));
 };
 
 export const deleteRecurringTransaction = async (id: string) => {
-	const supabase = await createClient();
-	const { error } = await supabase.from("transactions_recurring").delete().eq("id", id).single();
-	revalidatePath("", "layout");
-	return error;
+	try {
+		await dbTransaction((tx) =>
+			tx.delete(transactionsRecurring).where(eq(transactionsRecurring.id, id)),
+		);
+		revalidatePath("", "layout");
+		return null;
+	} catch (error) {
+		console.error(error);
+		return error;
+	}
 };
 
-export async function updateRecurringTransaction(data: UpdateRecurringTransaction): Promise<{
+export async function updateRecurringTransaction(
+	data: typeof transactionsRecurring.$inferInsert,
+): Promise<{
 	success: boolean;
 	message?: string;
 }> {
 	try {
-		const supabase = await createClient();
-		const { error } = await supabase
-			.from("transactions_recurring")
-			.update(data)
-			.eq("id", data.id ?? "");
-
-		if (error) {
-			console.error(error);
-			return { success: false, message: "Failed to update transaction" };
-		}
+		await dbTransaction((tx) =>
+			tx
+				.update(transactionsRecurring)
+				.set(data)
+				.where(eq(transactionsRecurring.id, data.id ?? "")),
+		);
 
 		revalidatePath("/");
 		return { success: true, message: "Transaction updated successfully" };
@@ -207,4 +212,25 @@ export async function getRecurringTransactionsForMonth(year: number, month: numb
 			)
 			.orderBy(transactionsRecurring.nextRun);
 	});
+}
+
+export async function getTotalByTypeAndYear(
+	transactionType: TransactionType,
+	transactionYear: number,
+) {
+	const [{ total }] = await dbTransaction((tx) =>
+		tx
+			.select({
+				total: sql<string | null>`sum(${transactions.amount})`,
+			})
+			.from(transactions)
+			.where(
+				and(
+					eq(transactions.type, transactionType),
+					sql`extract(year from ${transactions.datetime}) = ${transactionYear}`,
+				),
+			),
+	);
+
+	return total !== null ? Number(total) : null;
 }

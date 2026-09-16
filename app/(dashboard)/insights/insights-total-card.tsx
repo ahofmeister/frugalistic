@@ -12,8 +12,8 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import type { TransactionType } from "@/drizzle/schema";
 import { capitalize, cn } from "@/lib/utils";
-import type { TransactionType } from "@/types";
 import { getYearBoundaries } from "@/utils/transaction/dates";
 
 function InsightsTotalCard(props: {

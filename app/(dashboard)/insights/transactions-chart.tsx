@@ -6,10 +6,14 @@ import { Area, AreaChart, XAxis, YAxis } from "recharts";
 import TransactionAmount from "@/components/transactions/components/transaction-amount";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import type {
+	TransactionType,
+	TransactionTypeWithLeftover,
+	transactions,
+} from "@/drizzle/schema/transaction-schema";
 import { capitalize, shortAmount } from "@/lib/utils";
-import type { Transaction, TransactionType, TransactionTypeWithLeftover } from "@/types";
 
-export function TransactionsChart(props: { transactions: Transaction[] }) {
+export function TransactionsChart(props: { transactions: (typeof transactions.$inferSelect)[] }) {
 	const allTypes: TransactionTypeWithLeftover[] = ["income", "expense", "savings", "leftover"];
 	const [activeTypes, setActiveTypes] = useState<TransactionTypeWithLeftover[]>(allTypes);
 

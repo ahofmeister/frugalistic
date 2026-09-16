@@ -1,27 +1,32 @@
 "use server";
+
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { dbTransaction } from "@/db";
-import { favoriteSchema, type TransactionWithRecurringCategory } from "@/db/migrations/schema";
-import { createClient } from "@/utils/supabase/server";
+import { dbTransaction } from "@/drizzle/client";
+import { favoriteSchema } from "@/drizzle/schema";
+import type { TransactionWithRecurringCategory } from "@/drizzle/schema/transaction-recurring-schema";
 
 export async function addFavorite(transaction: TransactionWithRecurringCategory) {
-	const supabase = await createClient();
+	try {
+		const [favorite] = await dbTransaction((tx) => {
+			return tx
+				.insert(favoriteSchema)
+				.values({
+					category: transaction.category.id,
+					description: transaction.description,
+					amount: transaction.amount,
+					type: transaction.type,
+				})
+				.returning();
+		});
 
-	const { data, error } = await supabase.from("favorite").insert({
-		category: transaction.category?.id,
-		description: transaction.description,
-		amount: transaction.amount,
-		type: transaction.type,
-	});
+		revalidatePath("/", "layout");
 
-	if (error) {
-		console.log(error);
+		return favorite;
+	} catch (error) {
+		console.error("Error adding favorite:", error);
 		return;
 	}
-
-	revalidatePath("/", "layout");
-	return data;
 }
 
 export async function removeFavorite(id: string) {
@@ -31,6 +36,7 @@ export async function removeFavorite(id: string) {
 		});
 
 		revalidatePath("/", "layout");
+
 		return { success: true };
 	} catch (error) {
 		console.error("Error removing favorite:", error);

@@ -40,7 +40,7 @@ export function SettingsForm({
 		}
 
 		startTransition(async () => {
-			await updateSettings({ date_format: dateFormat, id: settingsId });
+			await updateSettings({ dateFormat: dateFormat, id: settingsId });
 		});
 	};
 

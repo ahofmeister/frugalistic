@@ -1,17 +1,15 @@
-import { drizzle, type PostgresJsQueryResultHKT } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
 import "server-only";
 
-import { type DrizzleConfig, type ExtractTablesWithRelations, sql } from "drizzle-orm";
-import type { PgTransaction } from "drizzle-orm/pg-core";
+import { type DrizzleConfig, sql } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/postgres-js";
 import { type JwtPayload, jwtDecode } from "jwt-decode";
-import * as schema from "@/db/migrations/schema";
+import postgres from "postgres";
+import { relations } from "@/drizzle/schema/relations";
 import { createClient } from "@/utils/supabase/server";
 
 const config = {
-	casing: "snake_case",
-	schema,
-} satisfies DrizzleConfig<typeof schema>;
+	relations: relations,
+} satisfies DrizzleConfig<typeof relations>;
 
 declare namespace global {
 	let postgresSqlClient: ReturnType<typeof postgres> | undefined;
@@ -50,19 +48,18 @@ export async function rlsDb() {
 		return db.transaction(async (tx) => {
 			try {
 				await tx.execute(sql`
-                    select set_config('request.jwt.claims', '${sql.raw(JSON.stringify(token))}', TRUE);
-                    select set_config('request.jwt.claim.sub', '${sql.raw(token.sub ?? "")}', TRUE);
-                    set local role ${sql.raw(token.role ?? "anon")};
-                `);
+					select set_config('request.jwt.claims', '${sql.raw(JSON.stringify(token))}', TRUE);
+					select set_config('request.jwt.claim.sub', '${sql.raw(token.sub ?? "")}', TRUE);
+					set local role ${sql.raw(token.role ?? "anon")};
+				`);
 
 				const result = await transaction(tx);
 
 				await tx.execute(sql`
-                    select set_config('request.jwt.claims', NULL, TRUE);
-                    select set_config('request.jwt.claim.sub', NULL, TRUE);
-                    reset
-                    role;
-                `);
+					select set_config('request.jwt.claims', NULL, TRUE);
+					select set_config('request.jwt.claim.sub', NULL, TRUE);
+					reset role;
+				`);
 
 				return result;
 			} catch (error) {
@@ -90,16 +87,9 @@ function decode(accessToken: string) {
 		return { role: "anon" } as JwtPayload & { role: string };
 	}
 }
+type TransactionClient = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
-export async function dbTransaction<T>(
-	fn: (
-		tx: PgTransaction<
-			PostgresJsQueryResultHKT,
-			typeof schema,
-			ExtractTablesWithRelations<typeof schema>
-		>,
-	) => Promise<T>,
-): Promise<T> {
+export async function dbTransaction<T>(fn: (tx: TransactionClient) => Promise<T>): Promise<T> {
 	const client = await rlsDb();
 	return client.runTransaction(fn);
 }

@@ -1,39 +1,46 @@
-import { and, desc, eq, ne } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
 import TransactionList from "@/components/transactions/components/transaction-list";
-import { dbTransaction } from "@/db";
-import { type TransactionWithRecurringCategory, transactionSchema } from "@/db/migrations/schema";
+import { dbTransaction } from "@/drizzle/client";
+
+import { transactions } from "@/drizzle/schema/transaction-schema";
 
 export async function RelatedTransactions(props: { id: Promise<string> }) {
 	const id = await props.id;
 
 	const [transaction] = await dbTransaction((tx) => {
-		return tx.select().from(transactionSchema).where(eq(transactionSchema.id, id)).limit(1);
+		return tx.select().from(transactions).where(eq(transactions.id, id)).limit(1);
 	});
 
 	if (!transaction) {
 		return;
 	}
 
-	const transactions: TransactionWithRecurringCategory[] = await dbTransaction(async (tx) => {
-		return tx.query.transactionSchema.findMany({
-			where: and(
-				eq(transactionSchema.description, transaction.description),
-				ne(transactionSchema.id, transaction.id),
-			),
+	const foundTransactions = await dbTransaction((tx) => {
+		return tx.query.transactions.findMany({
+			where: {
+				description: {
+					eq: transaction.description,
+				},
+				id: {
+					ne: transaction.id,
+				},
+			},
 			with: {
 				category: true,
 				recurringTransaction: true,
 			},
-			orderBy: [desc(transactionSchema.datetime)],
+			orderBy: {
+				datetime: "desc",
+			},
 		});
 	});
 
-	if (!transactions || transactions.length === 0) {
+	if (!foundTransactions || foundTransactions.length === 0) {
 		return;
 	}
 
 	const settings = await getSettings();
 
-	return <TransactionList transactions={transactions} dateFormat={settings.date_format} />;
+	return <TransactionList transactions={foundTransactions} dateFormat={settings.dateFormat} />;
 }

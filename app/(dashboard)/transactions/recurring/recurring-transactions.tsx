@@ -3,8 +3,8 @@ import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
 import RecurringTransactionCard from "@/app/(dashboard)/transactions/recurring/recurring-transaction-card";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { dbTransaction } from "@/db";
-import { transactionsRecurring } from "@/db/migrations/schema";
+import { dbTransaction } from "@/drizzle/client";
+import { transactionsRecurring } from "@/drizzle/schema/transaction-recurring-schema";
 
 const RecurringTransactions = async () => {
 	const transactions = await dbTransaction((tx) => {
@@ -32,7 +32,7 @@ const RecurringTransactions = async () => {
 		<div className="w-full">
 			<div className="text-2xl font-semibold mb-4">Recurring Transactions</div>
 			{sortedTransactions?.length === 0 && (
-				<Card className=" inset-0 gap-y-4 flex flex-col h-[240px] items-center justify-center  text-muted-foreground text-lg">
+				<Card className=" inset-0 gap-y-4 flex flex-col h-60 items-center justify-center  text-muted-foreground text-lg">
 					No recurring transactions to display yet!
 					<Link href="/transactions/new">
 						<Button variant="default">
@@ -45,7 +45,7 @@ const RecurringTransactions = async () => {
 			<div className="flex flex-col gap-y-2">
 				{sortedTransactions?.map((transaction) => (
 					<RecurringTransactionCard
-						dateFormat={settings.date_format}
+						dateFormat={settings.dateFormat}
 						key={transaction.id}
 						transaction={transaction}
 					/>

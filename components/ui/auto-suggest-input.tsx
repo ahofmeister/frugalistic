@@ -17,13 +17,13 @@ import {
 	CommandList,
 } from "@/components/ui/command";
 import { Skeleton } from "@/components/ui/skeleton";
+import type { transactionAutoSuggest } from "@/drizzle/schema";
 import { cn } from "@/lib/utils";
-import type { TransactionAutoSuggest } from "@/types";
 
 type AutoCompleteProps = {
-	options: TransactionAutoSuggest[];
-	value?: TransactionAutoSuggest;
-	onValueChange?: (value: TransactionAutoSuggest) => void;
+	options: (typeof transactionAutoSuggest.$inferSelect)[];
+	value?: typeof transactionAutoSuggest.$inferSelect;
+	onValueChange?: (value: typeof transactionAutoSuggest.$inferSelect) => void;
 	isLoading?: boolean;
 	disabled?: boolean;
 	placeholder?: string;
@@ -39,7 +39,9 @@ export const AutoComplete = forwardRef<AutoCompleteRef, AutoCompleteProps>(
 		const inputRef = useRef<HTMLInputElement>(null);
 
 		const [isOpen, setOpen] = useState(false);
-		const [_selected, setSelected] = useState<TransactionAutoSuggest | undefined>(value);
+		const [_selected, setSelected] = useState<
+			typeof transactionAutoSuggest.$inferSelect | undefined
+		>(value);
 		const [inputValue, setInputValue] = useState<string>(value?.description || "");
 
 		useImperativeHandle(ref, () => ({
@@ -64,7 +66,7 @@ export const AutoComplete = forwardRef<AutoCompleteRef, AutoCompleteProps>(
 
 				if (event.key === "Enter" && input.value !== "") {
 					const optionToSelect = options.find(
-						(option) => option.unique_id?.toString() === input.value,
+						(option) => option.uniqueId?.toString() === input.value,
 					);
 					if (optionToSelect) {
 						setSelected(optionToSelect);
@@ -84,7 +86,7 @@ export const AutoComplete = forwardRef<AutoCompleteRef, AutoCompleteProps>(
 		}, []);
 
 		const handleSelectOption = useCallback(
-			(selectedOption: TransactionAutoSuggest) => {
+			(selectedOption: typeof transactionAutoSuggest.$inferSelect) => {
 				if (!selectedOption.description) {
 					return;
 				}
@@ -110,7 +112,7 @@ export const AutoComplete = forwardRef<AutoCompleteRef, AutoCompleteProps>(
 					frequency: null,
 					name: null,
 					type: null,
-					unique_id: null,
+					uniqueId: null,
 					description: inputValue,
 				});
 			}
@@ -143,8 +145,8 @@ export const AutoComplete = forwardRef<AutoCompleteRef, AutoCompleteProps>(
 										const type = option.type;
 										return (
 											<CommandItem
-												key={option.unique_id}
-												value={`${option.unique_id?.toString()} ${option.description}`}
+												key={option.uniqueId}
+												value={`${option.uniqueId?.toString()} ${option.description}`}
 												onMouseDown={(event: React.MouseEvent<HTMLElement>) => {
 													event.preventDefault();
 													event.stopPropagation();

@@ -7,7 +7,7 @@ export default async function TransactionEditPage(props: { params: Promise<{ id:
 	return (
 		<div>
 			<Suspense>
-				<TransactionFormData transactionId={props.params.then((p) => p.id)} />
+				<TransactionFormData redirectNotFound transactionId={props.params.then((p) => p.id)} />
 			</Suspense>
 			<div className="mt-4 mb-2 text-xl">Related Transactions</div>
 			<Suspense>

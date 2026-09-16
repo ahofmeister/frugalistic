@@ -9,7 +9,8 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import type { TransactionType } from "@/types";
+
+import type { TransactionType } from "@/drizzle/schema";
 
 const TYPE_ALL_VALUE = "all";
 

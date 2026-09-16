@@ -2,8 +2,9 @@ import { and, desc, eq, gte, lte } from "drizzle-orm";
 import type { SearchParams } from "nuqs/server";
 import { loadDashboardParams } from "@/app/(dashboard)/search-params";
 import DashboardCard from "@/components/dashboard/dashboard-card";
-import { dbTransaction } from "@/db";
-import { categories, transactionSchema } from "@/db/migrations/schema";
+import { dbTransaction } from "@/drizzle/client";
+import { categories } from "@/drizzle/schema/category-schema";
+import { transactions } from "@/drizzle/schema/transaction-schema";
 import { getPeriodDates } from "@/utils/transaction/dates";
 
 const DashboardCards = async ({ searchParams }: { searchParams: Promise<SearchParams> }) => {
@@ -23,12 +24,10 @@ const DashboardCards = async ({ searchParams }: { searchParams: Promise<SearchPa
 	const fetchedTransactions = await dbTransaction((tx) => {
 		return tx
 			.select()
-			.from(transactionSchema)
-			.leftJoin(categories, eq(transactionSchema.category, categories.id))
-			.where(
-				and(gte(transactionSchema.datetime, startDate), lte(transactionSchema.datetime, endDate)),
-			)
-			.orderBy(desc(transactionSchema.datetime), desc(transactionSchema.createdAt));
+			.from(transactions)
+			.leftJoin(categories, eq(transactions.categoryId, categories.id))
+			.where(and(gte(transactions.datetime, startDate), lte(transactions.datetime, endDate)))
+			.orderBy(desc(transactions.datetime), desc(transactions.createdAt));
 	});
 
 	const transactionsWithCategory = fetchedTransactions.map((row) => ({

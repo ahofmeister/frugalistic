@@ -1,13 +1,10 @@
 "use server";
-import { createClient } from "@/utils/supabase/server";
 
-export async function addFeedback(feedback: string) {
-	const supabase = await createClient();
+import { dbTransaction } from "@/drizzle/client";
+import { feedback } from "@/drizzle/schema";
 
-	const { data, error } = await supabase.from("feedback").upsert({ text: feedback }).select();
-
-	if (error) {
-		console.log(error);
-	}
-	return data;
+export async function addFeedback(text: string) {
+	return dbTransaction((tx) => {
+		return tx.insert(feedback).values({ text }).returning();
+	});
 }

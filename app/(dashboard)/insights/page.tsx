@@ -7,7 +7,7 @@ import { MinMaxSelectYear } from "@/app/(dashboard)/insights/minMaxSelectYear";
 import { TransactionCategoryDistribution } from "@/app/(dashboard)/insights/transactionCategoryDistribution";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { transactionTypes } from "@/lib/transaction-types";
+import { transactionTypes } from "@/drizzle/schema";
 
 const InsightsPage = async ({ searchParams }: { searchParams: Promise<SearchParams> }) => {
 	return (

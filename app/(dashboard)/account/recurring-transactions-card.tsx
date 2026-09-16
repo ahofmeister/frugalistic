@@ -1,20 +1,17 @@
 import Link from "next/link";
 
 import { Card } from "@/components/ui/card";
-import { createClient } from "@/utils/supabase/server";
+import { dbTransaction } from "@/drizzle/client";
+import { transactionsRecurring } from "@/drizzle/schema/transaction-recurring-schema";
 
 const RecurringTransactionsCard = async () => {
-	const supabase = await createClient();
-
-	const { count } = await supabase
-		.from("transactions_recurring")
-		.select("*", { count: "exact", head: true });
+	const recurringCount = await dbTransaction((tx) => tx.$count(transactionsRecurring));
 
 	return (
 		<Link href="/transactions/recurring">
 			<Card className="flex justify-between">
 				<div>Recurring Transactions</div>
-				<div>{count}</div>
+				<div>{recurringCount}</div>
 			</Card>
 		</Link>
 	);

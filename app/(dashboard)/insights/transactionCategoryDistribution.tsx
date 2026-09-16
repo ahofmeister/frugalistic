@@ -1,28 +1,38 @@
+import { and, eq, gte, lte } from "drizzle-orm";
 import type { SearchParams } from "nuqs/server";
 import TransactionCategoryDistributionChart from "@/app/(dashboard)/insights/transaction-category-distribution-chart";
+import { dbTransaction } from "@/drizzle/client";
+import { categories, transactions } from "@/drizzle/schema";
 import { getDateRange, loadYearSearchParam } from "@/lib/utils";
-import type { TransactionWithCategory } from "@/types";
-import { createClient } from "@/utils/supabase/server";
 
 export async function TransactionCategoryDistribution({
 	searchParams,
 }: {
 	searchParams: Promise<SearchParams>;
 }) {
-	const supabase = await createClient();
-
 	const { year } = await loadYearSearchParam(searchParams);
+	const { dateFrom, dateTo } = getDateRange("year", year, 1);
 
-	const { data: transactions = [] } = await supabase
-		.from("transactions")
-		.select("*, category(*)")
-		.gte("datetime", getDateRange("year", year, 1).dateFrom)
-		.lte("datetime", getDateRange("year", year, 1).dateTo)
-		.returns<TransactionWithCategory[]>();
+	const data = await dbTransaction((tx) =>
+		tx
+			.select()
+			.from(transactions)
+			.innerJoin(categories, eq(transactions.categoryId, categories.id))
+			.where(
+				and(
+					gte(transactions.datetime, dateFrom),
+					lte(transactions.datetime, dateTo),
+					eq(transactions.type, "expense"),
+				),
+			),
+	);
 
 	return (
 		<TransactionCategoryDistributionChart
-			transactions={transactions?.filter((transaction) => transaction.type === "expense") ?? []}
+			allTransactions={data.map(({ transactions, categories }) => ({
+				...transactions,
+				category: categories,
+			}))}
 		/>
 	);
 }

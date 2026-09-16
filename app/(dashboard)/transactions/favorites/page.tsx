@@ -2,8 +2,8 @@ import { Star } from "lucide-react";
 import { Suspense } from "react";
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
 import { FavoriteCard } from "@/app/(dashboard)/transactions/favorites/favorite-card";
-import { dbTransaction } from "@/db";
-import { favoriteSchema } from "@/db/migrations/schema";
+import { dbTransaction } from "@/drizzle/client";
+import { favoriteSchema } from "@/drizzle/schema";
 
 async function FavoritesList() {
 	const fetchedFavorites = await dbTransaction(async (tx) => {
@@ -33,7 +33,7 @@ async function FavoritesList() {
 				</p>
 			</div>
 			{fetchedFavorites.map((favorite) => (
-				<FavoriteCard key={favorite.id} favorite={favorite} dateFormat={settings.date_format} />
+				<FavoriteCard key={favorite.id} favorite={favorite} dateFormat={settings.dateFormat} />
 			))}
 		</div>
 	);

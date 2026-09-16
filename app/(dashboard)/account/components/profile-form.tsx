@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { updateAccount } from "@/app/(dashboard)/account/lib/account-actions";
+import { updateProfile } from "@/app/(dashboard)/account/lib/account-actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -16,9 +16,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
-import type { Profile, ProfileUpdate } from "@/types";
+import type { profiles } from "@/drizzle/schema";
 
-const ProfileForm = (props: { user?: Profile | null }) => {
+const ProfileForm = (props: { profile?: typeof profiles.$inferSelect | null }) => {
 	const formSchema = z.object({
 		firstName: z.string().optional(),
 		lastName: z.string().optional(),
@@ -28,15 +28,15 @@ const ProfileForm = (props: { user?: Profile | null }) => {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			firstName: props.user?.firstName ?? "",
-			lastName: props.user?.lastName ?? "",
-			email: props.user?.email ?? "",
+			firstName: props.profile?.firstName ?? "",
+			lastName: props.profile?.lastName ?? "",
+			email: props.profile?.email ?? "",
 		},
 		mode: "onChange",
 	});
 
-	function handleSubmit(user: ProfileUpdate) {
-		return updateAccount(user);
+	function handleSubmit(updatedProfile: typeof profiles.$inferInsert) {
+		return updateProfile(updatedProfile);
 	}
 
 	return (

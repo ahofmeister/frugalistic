@@ -1,6 +1,6 @@
-import { dbTransaction } from "@/db";
-import { categories, transactionSchema } from "@/db/migrations/schema";
-import type { TransactionType } from "@/types";
+import { dbTransaction } from "@/drizzle/client";
+import { categories } from "@/drizzle/schema/category-schema";
+import { type TransactionType, transactions } from "@/drizzle/schema/transaction-schema";
 
 export interface CategoryRow {
 	id: string;
@@ -18,11 +18,11 @@ export interface TotalsRow {
 }
 
 export async function getRawTransactionsAndCategories() {
-	const [transactions, cats] = await Promise.all([
-		dbTransaction((tx) => tx.select().from(transactionSchema)),
+	const [foundTransactions, foundCategories] = await Promise.all([
+		dbTransaction((tx) => tx.select().from(transactions)),
 		dbTransaction((tx) => tx.select().from(categories)),
 	]);
-	return { transactions, categories: cats };
+	return { transactions: foundTransactions, categories: foundCategories };
 }
 
 export function buildComparisonTable(
@@ -39,21 +39,29 @@ export function buildComparisonTable(
 		pivot[cat.id] = { name: cat.name, color: cat.color, years: {} };
 	});
 
-	transactions.forEach((t) => {
-		if (!t.datetime) return;
-		const key = getKey(t.datetime);
-		if (key === null) return;
+	transactions.forEach((transaction) => {
+		const { datetime, categoryId, type, amount, costType } = transaction;
 
-		if (t.type === "income" || t.type === "savings") {
-			totals[t.type][key] = (totals[t.type][key] || 0) + t.amount;
+		if (!datetime) {
+			return;
 		}
 
-		if (t.type === "expense" && t.category) {
-			if (!pivot[t.category]) pivot[t.category] = { name: "", color: "", years: {} };
-			pivot[t.category].years[key] = (pivot[t.category].years[key] || 0) + t.amount;
+		const key = getKey(datetime);
 
-			if (t.costType === "fixed") {
-				fixedExpenses[key] = (fixedExpenses[key] || 0) + t.amount;
+		if (key === null) {
+			return;
+		}
+
+		if (type === "income" || type === "savings") {
+			totals[type][key] = (totals[type][key] || 0) + amount;
+		}
+
+		if (type === "expense" && categoryId) {
+			if (!pivot[categoryId]) pivot[categoryId] = { name: "", color: "", years: {} };
+			pivot[categoryId].years[key] = (pivot[categoryId].years[key] || 0) + amount;
+
+			if (costType === "fixed") {
+				fixedExpenses[key] = (fixedExpenses[key] || 0) + amount;
 			}
 		}
 	});

@@ -1,5 +1,5 @@
+import type { TransactionTypeWithLeftover } from "@/drizzle/schema";
 import { cn } from "@/lib/utils";
-import type { TransactionTypeWithLeftover } from "@/types";
 
 export const formatAmount = (input: number) => {
 	if (input === 0) {

@@ -11,7 +11,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import type { transactionsRecurring } from "@/db/migrations/schema";
+import type { transactionsRecurring } from "@/db/schema/schema";
 
 const RecurringTransactionCard = (props: {
 	transaction: typeof transactionsRecurring.$inferSelect;

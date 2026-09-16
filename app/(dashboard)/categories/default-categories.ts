@@ -1,6 +1,6 @@
-import type { NewCategory } from "@/types";
+import type { categories } from "@/drizzle/schema";
 
-export const defaultCategories: NewCategory[] = [
+export const defaultCategories: (typeof categories.$inferInsert)[] = [
 	{
 		name: "Clothing",
 		description: "Essentials for comfort and style.",

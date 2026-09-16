@@ -10,8 +10,8 @@ import {
 	ChartTooltip,
 	ChartTooltipContent,
 } from "@/components/ui/chart";
+import type { categories, transactions } from "@/drizzle/schema";
 import { shortAmount } from "@/lib/utils";
-import type { TransactionWithCategory } from "@/types";
 
 interface MonthCategoryTotals {
 	month: number;
@@ -20,10 +20,14 @@ interface MonthCategoryTotals {
 	[category: string]: number;
 }
 
-const transformData = (transactions: TransactionWithCategory[]): MonthCategoryTotals[] => {
+const transformData = (
+	allTransactions: (typeof transactions.$inferSelect & {
+		category: typeof categories.$inferSelect;
+	})[],
+): MonthCategoryTotals[] => {
 	const monthlyTotals: Record<number, MonthCategoryTotals> = {};
 
-	transactions.forEach(({ datetime, category, amount }) => {
+	allTransactions.forEach(({ datetime, category, amount }) => {
 		const month = new Date(datetime).getMonth();
 
 		if (!monthlyTotals[month]) {
@@ -47,21 +51,23 @@ const onlyUnique = (value: string, index: number, array: string[]) =>
 	array.indexOf(value) === index;
 
 const TransactionCategoryDistributionChart = ({
-	transactions,
+	allTransactions,
 }: {
-	transactions: TransactionWithCategory[];
+	allTransactions: (typeof transactions.$inferSelect & {
+		category: typeof categories.$inferSelect;
+	})[];
 }) => {
-	const names = transactions
+	const names = allTransactions
 		.map((transaction) => transaction.category?.name)
 		.filter((name): name is string => name !== null)
 		.filter(onlyUnique);
 
-	const colors = transactions
+	const colors = allTransactions
 		.map((transaction) => transaction.category?.color)
 		.filter((color): color is string => color !== null)
 		.filter(onlyUnique);
 
-	const dataTransformed = transformData(transactions);
+	const dataTransformed = transformData(allTransactions);
 	const renderLegend = (props: Props) => {
 		return (
 			<div className="flex gap-5 justify-center">

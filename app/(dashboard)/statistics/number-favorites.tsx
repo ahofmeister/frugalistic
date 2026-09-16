@@ -1,11 +1,10 @@
-import { count } from "drizzle-orm";
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { dbTransaction } from "@/db";
-import { favoriteSchema } from "@/db/migrations/schema";
+import { dbTransaction } from "@/drizzle/client";
+import { favoriteSchema } from "@/drizzle/schema";
 
 export const NumberFavorites = async () => {
-	const [{ count: favoritesCount }] = await dbTransaction((tx) => {
-		return tx.select({ count: count() }).from(favoriteSchema);
+	const count = await dbTransaction((tx) => {
+		return tx.$count(favoriteSchema);
 	});
 
 	return (
@@ -15,7 +14,7 @@ export const NumberFavorites = async () => {
 					<div className="text-xl">Favorites</div>
 				</CardTitle>
 			</CardHeader>
-			<CardFooter>{favoritesCount}</CardFooter>
+			<CardFooter>{count}</CardFooter>
 		</Card>
 	);
 };

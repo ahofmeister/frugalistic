@@ -38,25 +38,23 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
-import type { TransactionWithRecurringCategory } from "@/db/migrations/schema";
+import type { categories, favoriteSchema, transactionAutoSuggest } from "@/drizzle/schema";
+import type { TransactionWithRecurringCategory } from "@/drizzle/schema/transaction-recurring-schema";
+import type { transactions } from "@/drizzle/schema/transaction-schema";
 import { cn } from "@/lib/utils";
-import type {
-	Category,
-	FavoriteWithCategory,
-	NewTransaction,
-	TransactionAutoSuggest,
-} from "@/types";
 
 const TransactionForm = ({
 	transaction,
 	autoSuggests,
-	categories,
+	allCategories,
 	favorites,
 }: {
-	transaction?: TransactionWithRecurringCategory;
-	autoSuggests?: TransactionAutoSuggest[];
-	categories?: Category[];
-	favorites?: FavoriteWithCategory[];
+	transaction?: TransactionWithRecurringCategory | undefined;
+	autoSuggests?: (typeof transactionAutoSuggest.$inferSelect)[];
+	allCategories?: (typeof categories.$inferSelect)[];
+	favorites?: (typeof favoriteSchema.$inferSelect & {
+		category: typeof categories.$inferSelect;
+	})[];
 }) => {
 	const formSchema = z.object({
 		description: z.string().min(1),
@@ -94,7 +92,7 @@ const TransactionForm = ({
 	const categoryValue = form.watch("category");
 	const costTypeValue = form.watch("costType");
 
-	async function handleSubmit(newTransaction: NewTransaction) {
+	async function handleSubmit(newTransaction: typeof transactions.$inferInsert) {
 		const { error } = await upsertTransaction({
 			...newTransaction,
 			id: transaction ? transaction.id : undefined,
@@ -125,6 +123,7 @@ const TransactionForm = ({
 							...transaction,
 							amount: Number(transaction.amount.replace(/\D/g, "")),
 							datetime: format(transaction.datetime, "yyyy-MM-dd"),
+							categoryId: categoryValue,
 						}),
 					)}
 					className="space-y-6"
@@ -168,8 +167,8 @@ const TransactionForm = ({
 											<div className="flex flex-col">
 												<span className={getTextColor(item.type)}>{item.description}</span>
 												<div>
-													<span style={{ color: item.category.color ?? "" }}>
-														{item.category.name}
+													<span style={{ color: item.category?.color ?? "" }}>
+														{item.category?.name}
 													</span>{" "}
 													in <span>{item.type}</span>
 												</div>
@@ -214,7 +213,7 @@ const TransactionForm = ({
 														l.category === transaction.category?.id,
 												)}
 												placeholder="Enter or choose description"
-												onValueChange={(e: TransactionAutoSuggest) => {
+												onValueChange={(e: typeof transactionAutoSuggest.$inferSelect) => {
 													field.onChange(e.description);
 													if (e.type) {
 														form.setValue("type", e.type);
@@ -289,7 +288,7 @@ const TransactionForm = ({
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
-											{categories?.map((category) => (
+											{allCategories?.map((category) => (
 												<SelectItem key={category.id} value={category.id}>
 													<div className="flex items-center gap-2">
 														<div
@@ -400,7 +399,7 @@ const TransactionForm = ({
 									variant="outline"
 									disabled={
 										transaction.recurringTransaction !== null &&
-										transaction.recurringTransaction === "annually"
+										transaction.recurringTransaction.interval === "annually"
 									}
 									onClick={() => makeTransactionRecurring(transaction, "annually")}
 								>

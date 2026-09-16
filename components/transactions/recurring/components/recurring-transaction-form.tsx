@@ -27,9 +27,13 @@ import {
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 import { Switch } from "@/components/ui/switch";
-import type { RecurringTransaction } from "@/types";
+import type { transactionsRecurring } from "@/drizzle/schema";
 
-const RecurringTransactionForm = ({ transaction }: { transaction: RecurringTransaction }) => {
+const RecurringTransactionForm = ({
+	transaction,
+}: {
+	transaction: typeof transactionsRecurring.$inferSelect;
+}) => {
 	const formSchema = z.object({
 		description: z.string().min(1),
 		amount: z.coerce.string(),
@@ -54,9 +58,10 @@ const RecurringTransactionForm = ({ transaction }: { transaction: RecurringTrans
 
 	async function handleSubmit(values: z.infer<typeof formSchema>) {
 		const result = await updateRecurringTransaction({
-			id: transaction.id,
 			...values,
+			id: transaction.id,
 			amount: Number(values.amount.replace(/\D/g, "")),
+			categoryId: transaction.categoryId,
 		});
 
 		if (result?.success) {
@@ -161,7 +166,7 @@ const RecurringTransactionForm = ({ transaction }: { transaction: RecurringTrans
 								<FormControl>
 									<Input
 										value={
-											transaction.next_run ? format(new Date(transaction.next_run), "PPP") : "N/A"
+											transaction.nextRun ? format(new Date(transaction.nextRun), "PPP") : "N/A"
 										}
 										disabled
 									/>

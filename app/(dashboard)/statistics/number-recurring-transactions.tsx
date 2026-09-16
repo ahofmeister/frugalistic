@@ -1,13 +1,9 @@
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { createClient } from "@/utils/supabase/server";
+import { dbTransaction } from "@/drizzle/client";
+import { transactionsRecurring } from "@/drizzle/schema";
 
 export const NumberRecurringTransactions = async () => {
-	const supabase = await createClient();
-
-	const { count } = await supabase
-		.from("transactions_recurring")
-		.select("id", { count: "exact", head: true });
-
+	const count = await dbTransaction((tx) => tx.$count(transactionsRecurring));
 	return (
 		<Card>
 			<CardHeader>

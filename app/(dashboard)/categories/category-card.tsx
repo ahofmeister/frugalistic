@@ -3,10 +3,13 @@ import { useRouter } from "next/navigation";
 
 import AddCategory from "@/components/categories/add-category";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import type { categories } from "@/drizzle/schema";
 import { cn } from "@/lib/utils";
-import type { Category, NewCategory } from "@/types";
 
-export function CategoryCard(props: { category: Category | NewCategory; exists: boolean }) {
+export function CategoryCard(props: {
+	category: typeof categories.$inferSelect | typeof categories.$inferInsert;
+	exists: boolean;
+}) {
 	const category = props.category;
 	const router = useRouter();
 	return (

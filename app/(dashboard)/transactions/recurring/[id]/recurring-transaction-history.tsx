@@ -1,25 +1,29 @@
-import { desc, eq } from "drizzle-orm";
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
 import TransactionList from "@/components/transactions/components/transaction-list";
-import { dbTransaction } from "@/db";
-import { transactionSchema } from "@/db/migrations/schema";
+import { dbTransaction } from "@/drizzle/client";
 
 export async function RecurringTransactionHistory(props: {
 	recurringTransactionId: Promise<string>;
 }) {
 	const id = await props.recurringTransactionId;
 
-	const transactions = await dbTransaction((tx) => {
-		return tx.query.transactionSchema.findMany({
-			where: eq(transactionSchema.recurringTransaction, id),
+	const foundTransactions = await dbTransaction((tx) => {
+		return tx.query.transactions.findMany({
+			where: {
+				recurringTransactionId: {
+					eq: id,
+				},
+			},
 			with: {
 				category: true,
 				recurringTransaction: true,
 			},
-			orderBy: [desc(transactionSchema.datetime)],
+			orderBy: {
+				datetime: "desc",
+			},
 		});
 	});
 
 	const settings = await getSettings();
-	return <TransactionList transactions={transactions} dateFormat={settings.date_format} />;
+	return <TransactionList transactions={foundTransactions} dateFormat={settings.dateFormat} />;
 }

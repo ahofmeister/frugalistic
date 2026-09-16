@@ -8,7 +8,8 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import type { Transaction } from "@/types";
+
+import type { transactions } from "@/drizzle/schema/transaction-schema";
 
 const SearchSortBy = () => {
 	const [sortBy, setSortBy] = useQueryState(
@@ -18,13 +19,17 @@ const SearchSortBy = () => {
 		}),
 	);
 
-	const transactionKeys = ["amount", "datetime", "description"] as (keyof Transaction)[];
+	const transactionKeys = [
+		"amount",
+		"datetime",
+		"description",
+	] as (keyof typeof transactions.$inferSelect)[];
 
 	return (
 		<Select
 			value={sortBy}
 			onValueChange={async (value: string) => {
-				await setSortBy(value as keyof Transaction);
+				await setSortBy(value as keyof typeof transactions.$inferSelect);
 			}}
 		>
 			<SelectTrigger>

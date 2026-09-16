@@ -8,7 +8,7 @@ const TransactionsSearchResult = async (props: { filter: Promise<SearchFilter> }
 	const data = await searchTransactions(filter);
 	const settings = await getSettings();
 
-	return <TransactionList transactions={data} dateFormat={settings.date_format} />;
+	return <TransactionList transactions={data} dateFormat={settings.dateFormat} />;
 };
 
 export default TransactionsSearchResult;

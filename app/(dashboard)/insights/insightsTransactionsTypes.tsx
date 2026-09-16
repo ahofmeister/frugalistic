@@ -1,24 +1,30 @@
 import type { SearchParams } from "nuqs/server";
 import { TransactionsChart } from "@/app/(dashboard)/insights/transactions-chart";
+import { dbTransaction } from "@/drizzle/client";
 import { getDateRange, loadYearSearchParam } from "@/lib/utils";
-import type { TransactionWithCategory } from "@/types";
-import { createClient } from "@/utils/supabase/server";
 
 export async function InsightsTransactionsTypes({
 	searchParams,
 }: {
 	searchParams: Promise<SearchParams>;
 }) {
-	const supabase = await createClient();
-
 	const { year } = await loadYearSearchParam(searchParams);
 
-	const { data: transactions = [] } = await supabase
-		.from("transactions")
-		.select("*, category(*)")
-		.gte("datetime", getDateRange("year", year, 1).dateFrom)
-		.lte("datetime", getDateRange("year", year, 1).dateTo)
-		.returns<TransactionWithCategory[]>();
+	const { dateFrom, dateTo } = getDateRange("year", year, 1);
 
-	return <TransactionsChart transactions={transactions ?? []} />;
+	const transactions = await dbTransaction((tx) => {
+		return tx.query.transactions.findMany({
+			where: {
+				datetime: {
+					gte: dateFrom,
+					lte: dateTo,
+				},
+			},
+			with: {
+				category: true,
+			},
+		});
+	});
+
+	return <TransactionsChart transactions={transactions} />;
 }

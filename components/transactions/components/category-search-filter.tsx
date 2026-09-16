@@ -1,7 +1,7 @@
 "use client";
 import { useQueryState } from "nuqs";
 import { useEffect, useState } from "react";
-
+import { getCategories } from "@/components/categories/categories-api";
 import CategoryColor from "@/components/categories/category-color";
 import {
 	Select,
@@ -10,11 +10,12 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import type { Category } from "@/types";
-import { createClient } from "@/utils/supabase/client";
+import type { categories } from "@/drizzle/schema";
 
 const CategorySearchFilter = () => {
-	const [categories, setCategories] = useState<Category[]>([]);
+	const [selectedCategories, setSelectedCategories] = useState<(typeof categories.$inferSelect)[]>(
+		[],
+	);
 
 	const [category, setCategoryId] = useQueryState("category", {
 		shallow: false,
@@ -22,9 +23,8 @@ const CategorySearchFilter = () => {
 
 	useEffect(() => {
 		const fetchCategories = async () => {
-			const supabase = createClient();
-			const { data } = await supabase.from("categories").select("*").order("name");
-			setCategories(data ?? []);
+			const data = await getCategories();
+			setSelectedCategories(data);
 		};
 		void fetchCategories();
 	}, []);
@@ -41,7 +41,7 @@ const CategorySearchFilter = () => {
 			</SelectTrigger>
 			<SelectContent>
 				<SelectItem value={null as unknown as string}>Select Category</SelectItem>
-				{categories?.map((category) => (
+				{selectedCategories?.map((category) => (
 					<SelectItem key={category.id} value={category.name}>
 						<div className="flex gap-x-2 items-center">
 							<CategoryColor color={category.color} />

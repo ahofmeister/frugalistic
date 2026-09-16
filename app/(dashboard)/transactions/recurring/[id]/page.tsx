@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { RecurringTransactionHistory } from "@/app/(dashboard)/transactions/recurring/[id]/recurring-transaction-history";
 import DeleteRecurringTransaction from "@/app/(dashboard)/transactions/recurring/delete-recurring-transaction";
 import RecurringTransactionForm from "@/components/transactions/recurring/components/recurring-transaction-form";
+import { dbTransaction } from "@/drizzle/client";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function TransactionEditPage(props: { params: Promise<{ id: string }> }) {
@@ -33,12 +34,15 @@ export default async function TransactionEditPage(props: { params: Promise<{ id:
 }
 
 const RecurringTransactionWrapper = async ({ id }: { id: Promise<string> }) => {
-	const supabase = await createClient();
-	const { data: transaction } = await supabase
-		.from("transactions_recurring")
-		.select("*")
-		.eq("id", await id)
-		.single();
+	const transaction = await dbTransaction(async (tx) => {
+		return tx.query.transactionsRecurring.findFirst({
+			where: {
+				id: {
+					eq: await id,
+				},
+			},
+		});
+	});
 
 	if (!transaction) {
 		notFound();

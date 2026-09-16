@@ -1,35 +1,43 @@
 "use server";
+
+import { sql } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
 import { getCurrentUser } from "@/components/auth/auth-actions";
-import type { ProfileUpdate } from "@/types";
+import { dbTransaction } from "@/drizzle/client";
+import { profiles } from "@/drizzle/schema";
 import { createClient } from "@/utils/supabase/server";
 
-export async function updateAccount(account: ProfileUpdate) {
+export async function updateProfile(account: typeof profiles.$inferInsert) {
 	const user = await getCurrentUser();
-	const supabase = await createClient();
-	if (user) {
-		const { error } = await supabase
-			.from("profile")
-			.upsert({
+
+	if (!user) {
+		return;
+	}
+
+	await dbTransaction((tx) => {
+		return tx
+			.insert(profiles)
+			.values({
+				...account,
 				id: user.id,
 				email: user.email,
-				...account,
 			})
-			.eq("id", user.id);
+			.onConflictDoUpdate({
+				target: profiles.id,
+				set: {
+					...account,
+					email: user.email,
+				},
+			});
+	});
 
-		if (error) {
-			console.log(error);
-		}
-		revalidateTag("profile", { expire: 10 });
-	}
+	revalidateTag("profile", { expire: 10 });
 }
 
 export async function deleteAccount() {
-	const supabase = await createClient();
-
-	const { error } = await supabase.rpc("delete_user");
-
-	if (error) {
+	try {
+		await dbTransaction((tx) => tx.execute(sql`select delete_user()`));
+	} catch (error) {
 		console.log(error);
 	}
 }
@@ -37,24 +45,35 @@ export async function deleteAccount() {
 export async function updatePassword(
 	passwordData: UpdatePasswordFormData,
 ): Promise<ActionResponse> {
-	const supabase = await createClient();
-	const { data } = await supabase.rpc("verify_user_password", {
-		password: passwordData.currentPassword,
-	});
+	const [{ verify_user_password: isCorrect }] = await dbTransaction((tx) =>
+		tx.execute<{ verify_user_password: boolean }>(
+			sql`select verify_user_password(${passwordData.currentPassword})`,
+		),
+	);
 
-	if (!data) {
-		return { success: false, message: "Current password is not correct" };
+	if (!isCorrect) {
+		return {
+			success: false,
+			message: "Current password is not correct",
+		};
 	}
 
+	const supabase = await createClient();
 	const { error } = await supabase.auth.updateUser({
 		password: passwordData.newPassword,
 	});
 
 	if (error) {
-		return { success: false, message: error.message };
+		return {
+			success: false,
+			message: error.message,
+		};
 	}
 
-	return { success: true, message: "" };
+	return {
+		success: true,
+		message: "",
+	};
 }
 
 export interface ActionResponse {

@@ -1,19 +1,14 @@
-import { count, isNotNull } from "drizzle-orm";
+import { isNotNull } from "drizzle-orm";
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { dbTransaction } from "@/db";
-import { transactionSchema } from "@/db/migrations/schema";
+import { dbTransaction } from "@/drizzle/client";
+import { transactions } from "@/drizzle/schema/transaction-schema";
 
 export const NumberTransactions = async () => {
-	const [{ count: totalCount }] = await dbTransaction((tx) => {
-		return tx.select({ count: count() }).from(transactionSchema);
-	});
+	const totalCount = await dbTransaction((tx) => tx.$count(transactions));
 
-	const [{ count: recurringCount }] = await dbTransaction((tx) => {
-		return tx
-			.select({ count: count() })
-			.from(transactionSchema)
-			.where(isNotNull(transactionSchema.recurringTransaction));
-	});
+	const recurringCount = await dbTransaction((tx) =>
+		tx.$count(transactions, isNotNull(transactions.recurringTransactionId)),
+	);
 
 	return (
 		<Card>

@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { AccountProfileSection } from "@/app/(dashboard)/account/accountProfileSection";
+import { AccountProfileSection } from "@/app/(dashboard)/account/account-profile-section";
 import DeleteAccount from "@/app/(dashboard)/account/components/delete-account";
 import UpdatePassword from "@/app/(dashboard)/account/components/update-password-form";
 

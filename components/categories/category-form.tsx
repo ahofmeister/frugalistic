@@ -19,9 +19,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
-import type { Category, NewCategory } from "@/types";
+import type { categories } from "@/drizzle/schema";
 
-const CategoryForm = (props: { category?: Category }) => {
+const CategoryForm = (props: { category?: typeof categories.$inferSelect }) => {
 	const formSchema = z.object({
 		name: z.string().min(2),
 		color: z.string(),
@@ -38,7 +38,7 @@ const CategoryForm = (props: { category?: Category }) => {
 		mode: "onBlur",
 	});
 
-	async function handleSubmit(newCategory: NewCategory) {
+	async function handleSubmit(newCategory: typeof categories.$inferInsert) {
 		await createCategory({
 			...newCategory,
 			id: props.category ? props.category.id : undefined,
@@ -104,7 +104,7 @@ const CategoryForm = (props: { category?: Category }) => {
 						/>
 
 						<div className="flex flex-col gap-y-4">
-							{props.category && <DeleteCategory category={props.category} />}
+							{props.category && <DeleteCategory id={props.category.id} />}
 
 							<Button
 								type="submit"
