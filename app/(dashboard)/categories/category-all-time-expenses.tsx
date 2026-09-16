@@ -1,7 +1,7 @@
 import { and, eq, sql } from "drizzle-orm";
 import { CategorySpendingChart } from "@/app/(dashboard)/categories/category-spending-chart";
 import { dbTransaction } from "@/drizzle/client";
-import { categories } from "@/drizzle/schema/category-schema";
+import { categories } from "@/drizzle/schema/categories";
 import { transactions } from "@/drizzle/schema/transaction-schema";
 
 const CategoryAllTimeExpenses = async ({ categoryId }: { categoryId: Promise<string> }) => {

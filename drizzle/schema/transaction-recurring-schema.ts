@@ -15,11 +15,11 @@ import {
 	uuid,
 	varchar,
 } from "drizzle-orm/pg-core";
-import { categories } from "@/drizzle/schema/category-schema";
+import { categories } from "@/drizzle/schema/categories";
 import type { TransactionType, transactions } from "@/drizzle/schema/transaction-schema";
 import { users } from "@/drizzle/schema/users-schema";
 
-const recurringIntervals = ["monthly", "annually"] as const;
+export const recurringIntervals = ["monthly", "annually"] as const;
 export type RecurringInterval = (typeof recurringIntervals)[number];
 
 export type TransactionWithRecurringCategory = Omit<

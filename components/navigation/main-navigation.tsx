@@ -12,6 +12,7 @@ import {
 	type LucideIcon,
 	Menu,
 	MessageSquareText,
+	PiggyBankIcon,
 	Repeat2,
 	SettingsIcon,
 	SquarePlus,
@@ -135,6 +136,9 @@ export default function MainNavigation() {
 								<div className="space-y-1">
 									<NavItem href="/dashboard" icon={LayoutDashboard}>
 										Dashboard
+									</NavItem>
+									<NavItem href="/budgets" icon={PiggyBankIcon}>
+										Budgets
 									</NavItem>
 									<NavItem href="/insights" icon={LineChart}>
 										Insights

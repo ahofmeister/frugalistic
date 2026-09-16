@@ -39,7 +39,6 @@ const DateSearchFilter = (props: { paramName: string; label: string }) => {
 								await setValue(null);
 							}
 						}}
-						initialFocus
 					/>
 				</PopoverContent>
 			</Popover>

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { dbTransaction } from "@/drizzle/client";
-import { categories } from "@/drizzle/schema/category-schema";
+import { categories } from "@/drizzle/schema/categories";
 
 export const NumberCategories = async () => {
 	const count = await dbTransaction((tx) => tx.$count(categories));

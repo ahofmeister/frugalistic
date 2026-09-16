@@ -6,7 +6,7 @@ import type { SearchFilter } from "@/app/(dashboard)/transactions/search-filter"
 import { calculateNextRun } from "@/components/transactions/recurring/recurring-transactions-calculator";
 import { dbTransaction } from "@/drizzle/client";
 import type { RecurringInterval, TransactionType } from "@/drizzle/schema";
-import { categories } from "@/drizzle/schema/category-schema";
+import { categories } from "@/drizzle/schema/categories";
 import {
 	type TransactionWithRecurringCategory,
 	transactionsRecurring,

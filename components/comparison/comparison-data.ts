@@ -1,5 +1,5 @@
 import { dbTransaction } from "@/drizzle/client";
-import { categories } from "@/drizzle/schema/category-schema";
+import { categories } from "@/drizzle/schema/categories";
 import { type TransactionType, transactions } from "@/drizzle/schema/transaction-schema";
 
 export interface CategoryRow {

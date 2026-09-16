@@ -10,7 +10,7 @@ import {
 	uuid,
 	varchar,
 } from "drizzle-orm/pg-core";
-import { categories } from "@/drizzle/schema/category-schema";
+import { categories } from "@/drizzle/schema/categories";
 import type { TransactionType } from "@/drizzle/schema/transaction-schema";
 import { users } from "@/drizzle/schema/users-schema";
 

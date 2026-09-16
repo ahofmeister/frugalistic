@@ -3,7 +3,7 @@ import type { SearchParams } from "nuqs/server";
 import { loadDashboardParams } from "@/app/(dashboard)/search-params";
 import DashboardCard from "@/components/dashboard/dashboard-card";
 import { dbTransaction } from "@/drizzle/client";
-import { categories } from "@/drizzle/schema/category-schema";
+import { categories } from "@/drizzle/schema/categories";
 import { transactions } from "@/drizzle/schema/transaction-schema";
 import { getPeriodDates } from "@/utils/transaction/dates";
 

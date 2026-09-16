@@ -11,7 +11,7 @@ import {
 	uuid,
 	varchar,
 } from "drizzle-orm/pg-core";
-import { categories } from "@/drizzle/schema/category-schema";
+import { categories } from "@/drizzle/schema/categories";
 import { transactionsRecurring } from "@/drizzle/schema/transaction-recurring-schema";
 import { users } from "@/drizzle/schema/users-schema";
 

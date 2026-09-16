@@ -1,15 +1,11 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { SearchParams } from "nuqs/server";
 import { Suspense } from "react";
+import { MonthYearStepperPeriod } from "@/app/(dashboard)/budgets/monthYearStepperPeriod";
 import { CategoriesBanner } from "@/app/(dashboard)/categories/categories-banner";
-import { DashboardDateLabel } from "@/app/(dashboard)/dashboard/dashboard-date-label";
 import DashboardCards from "@/components/dashboard/dashboard-cards";
 import { DashboardCategories } from "@/components/dashboard/dashboard-categories";
 import DashboardTransactions from "@/components/dashboard/dashboard-transactions";
-import { PeriodSelector } from "@/components/dashboard/period-selector";
-import { SelectNow } from "@/components/dashboard/select-now";
 import NextRecurringTransactions from "@/components/transactions/recurring/components/next-recurring-transactions";
-import { MonthYearStepper } from "../../month-year-stepper";
 
 export default async function DashboardPage({
 	searchParams,
@@ -21,24 +17,7 @@ export default async function DashboardPage({
 			<Suspense>
 				<CategoriesBanner />
 			</Suspense>
-			<div className={"flex-col flex sm:flex-row sm:justify-between gap-4"}>
-				<div className="flex font-semibold text-2xl items-center gap-x-4">
-					<Suspense>
-						<MonthYearStepper amount={-1} icon={<ChevronLeft />} />
-						<DashboardDateLabel />
-						<MonthYearStepper amount={1} icon={<ChevronRight />} />
-					</Suspense>
-				</div>
-
-				<Suspense>
-					<div className="flex gap-4">
-						<div className="flex font-semibold text-xl justify-center gap-x-2">
-							<SelectNow />
-						</div>
-						<PeriodSelector />
-					</div>
-				</Suspense>
-			</div>
+			<MonthYearStepperPeriod />
 
 			<Suspense>
 				<DashboardCards searchParams={searchParams} />
