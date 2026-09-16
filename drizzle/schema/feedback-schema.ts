@@ -1,6 +1,5 @@
 import { sql } from "drizzle-orm";
 import { check, foreignKey, pgPolicy, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
-import { costTypes } from "@/drizzle/schema/transaction-schema";
 import { users } from "@/drizzle/schema/users-schema";
 
 export const feedbackStatuses = ["New", "In Progress", "Resolved", "Closed"] as const;

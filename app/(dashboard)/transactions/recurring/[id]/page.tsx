@@ -4,7 +4,6 @@ import { RecurringTransactionHistory } from "@/app/(dashboard)/transactions/recu
 import DeleteRecurringTransaction from "@/app/(dashboard)/transactions/recurring/delete-recurring-transaction";
 import RecurringTransactionForm from "@/components/transactions/recurring/components/recurring-transaction-form";
 import { dbTransaction } from "@/drizzle/client";
-import { createClient } from "@/utils/supabase/server";
 
 export default async function TransactionEditPage(props: { params: Promise<{ id: string }> }) {
 	return (

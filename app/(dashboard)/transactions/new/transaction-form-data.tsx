@@ -1,5 +1,4 @@
 import { asc, desc } from "drizzle-orm";
-import { red } from "next/dist/lib/picocolors";
 import { notFound } from "next/navigation";
 import TransactionForm from "@/components/transactions/components/transaction-form";
 import { dbTransaction } from "@/drizzle/client";
