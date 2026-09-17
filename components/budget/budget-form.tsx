@@ -54,7 +54,7 @@ const BudgetForm = ({
 			type: z.enum(budgetTypes),
 			amount: z.coerce.number(),
 			flow: z.enum(transactionTypes),
-			interval: z.enum(recurringIntervals),
+			interval: z.enum(recurringIntervals).nullable().optional(),
 			startDate: z.date(),
 			targetDate: z.date().optional(),
 		})
@@ -67,16 +67,15 @@ const BudgetForm = ({
 				});
 			}
 		});
-
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			name: budget?.name ?? undefined,
 			categoryId: budget?.categoryId ?? undefined,
-			type: budget?.type ?? "recurring",
+			type: budget?.type ?? "month",
 			amount: budget?.amount ?? undefined,
 			flow: budget?.flow ?? "expense",
-			interval: budget?.interval ?? "monthly",
+			interval: budget?.interval ?? undefined,
 			startDate: budget?.startDate ? new Date(budget.startDate) : undefined,
 			targetDate: budget?.targetDate ? new Date(budget.targetDate) : undefined,
 		},
@@ -163,7 +162,6 @@ const BudgetForm = ({
 						<FormField
 							control={form.control}
 							name="type"
-							defaultValue="recurring"
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel required>Type</FormLabel>
@@ -201,11 +199,11 @@ const BudgetForm = ({
 							defaultValue="monthly"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel required={currentType !== "manual"}>Interval</FormLabel>
+									<FormLabel required={currentType !== "manual"}>Recurring Interval</FormLabel>
 									<Select
-										value={field.value}
-										onValueChange={field.onChange}
-										defaultValue={field.value}
+										value={field.value ?? "none"}
+										onValueChange={(value) => field.onChange(value === "none" ? null : value)}
+										defaultValue={field.value ?? "none"}
 										disabled={currentType === "manual"}
 									>
 										<FormControl>
@@ -214,6 +212,7 @@ const BudgetForm = ({
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
+											<SelectItem value="none">No Interval</SelectItem>
 											{recurringIntervals.map((type) => (
 												<SelectItem key={type} value={type}>
 													<div className="flex items-center gap-2">
@@ -311,7 +310,7 @@ const BudgetForm = ({
 							disabled={currentType !== "manual"}
 							render={({ field }) => (
 								<FormItem className="flex flex-col">
-									<FormLabel required={currentType !== "recurring"}>End Date</FormLabel>
+									<FormLabel required={currentType === "manual"}>End Date</FormLabel>
 									<Popover>
 										<PopoverTrigger asChild>
 											<FormControl>

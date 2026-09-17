@@ -7,7 +7,7 @@ import type { RecurringInterval } from "@/drizzle/schema/transaction-recurring-s
 import type { TransactionType } from "@/drizzle/schema/transaction-schema";
 import { categories } from "./categories";
 
-export const budgetTypes = ["recurring", "manual"] as const;
+export const budgetTypes = ["month", "year", "manual"] as const;
 export type BudgetType = (typeof budgetTypes)[number];
 
 export const budgetSchema = pgTable(

@@ -1,5 +1,5 @@
-import { endOfMonth, format, startOfMonth } from "date-fns";
-import { and, eq, gte, isNull, lte, or, sql } from "drizzle-orm";
+import { endOfMonth, endOfYear, format, startOfMonth, startOfYear } from "date-fns";
+import { and, eq, gte, lte, or, sql } from "drizzle-orm";
 import Link from "next/link";
 import { formatAmount } from "@/components/transactions/components/transaction-amount";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,6 +19,8 @@ export async function BudgetList({
 	const periodDate = new Date(year, month, 1);
 	const startOfMonthStr = format(startOfMonth(periodDate), "yyyy-MM-dd");
 	const endOfMonthStr = format(endOfMonth(periodDate), "yyyy-MM-dd");
+	const startOfYearStr = format(startOfYear(periodDate), "yyyy-MM-dd");
+	const endOfYearStr = format(endOfYear(periodDate), "yyyy-MM-dd");
 
 	const rows = await dbTransaction((tx) => {
 		return tx
@@ -36,18 +38,18 @@ export async function BudgetList({
 					gte(
 						transactions.datetime,
 						sql`CASE
-                            WHEN ${budgetSchema.type} = 'manual'
-                            THEN ${budgetSchema.startDate}
-                            ELSE ${startOfMonthStr}
-                        END`,
+                            WHEN ${budgetSchema.type} = 'manual' THEN ${budgetSchema.startDate}
+						WHEN ${budgetSchema.type} = 'year' THEN ${startOfYearStr}
+						ELSE ${startOfMonthStr}
+						END`,
 					),
 					lte(
 						transactions.datetime,
 						sql`CASE
-                            WHEN ${budgetSchema.type} = 'manual'
-                            THEN COALESCE(${budgetSchema.targetDate}, ${endOfMonthStr})
-                            ELSE ${endOfMonthStr}
-                        END`,
+                            WHEN ${budgetSchema.type} = 'manual' THEN ${budgetSchema.targetDate}
+						WHEN ${budgetSchema.type} = 'year' THEN ${endOfYearStr}
+						ELSE ${endOfMonthStr}
+						END`,
 					),
 				),
 			)
@@ -55,19 +57,35 @@ export async function BudgetList({
 				or(
 					and(
 						eq(budgetSchema.type, "manual"),
+						gte(budgetSchema.targetDate, startOfMonthStr),
 						lte(budgetSchema.startDate, endOfMonthStr),
-						or(isNull(budgetSchema.targetDate), gte(budgetSchema.targetDate, startOfMonthStr)),
 					),
 					and(
-						eq(budgetSchema.type, "recurring"),
+						eq(budgetSchema.type, "month"),
+						sql`${budgetSchema.interval} IS NULL`,
+						sql`EXTRACT(YEAR FROM ${budgetSchema.startDate}) = ${year}`,
+						sql`EXTRACT(MONTH FROM ${budgetSchema.startDate}) = ${month + 1}`,
+					),
+					and(
+						eq(budgetSchema.type, "month"),
 						eq(budgetSchema.interval, "monthly"),
 						lte(budgetSchema.startDate, endOfMonthStr),
 					),
 					and(
-						eq(budgetSchema.type, "recurring"),
+						eq(budgetSchema.type, "month"),
 						eq(budgetSchema.interval, "annually"),
 						lte(budgetSchema.startDate, endOfMonthStr),
 						sql`EXTRACT(MONTH FROM ${budgetSchema.startDate}) = ${month + 1}`,
+					),
+					and(
+						eq(budgetSchema.type, "year"),
+						sql`${budgetSchema.interval} IS NULL`,
+						sql`EXTRACT(YEAR FROM ${budgetSchema.startDate}) = ${year}`,
+					),
+					and(
+						eq(budgetSchema.type, "year"),
+						eq(budgetSchema.interval, "annually"),
+						lte(budgetSchema.startDate, endOfYearStr),
 					),
 				),
 			)
@@ -98,7 +116,7 @@ export async function BudgetList({
 							</CardHeader>
 
 							<CardContent className="text-sm text-gray-400 flex justify-between">
-								<p>{capitalize(budget.interval)}</p>
+								<p>{budget.interval ? capitalize(budget.interval) : capitalize(budget.type)}</p>
 							</CardContent>
 						</Card>
 					</Link>
