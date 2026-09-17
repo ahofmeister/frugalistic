@@ -1,12 +1,21 @@
 import { endOfMonth, format, startOfMonth } from "date-fns";
 import { and, eq, gte, isNull, lte, or, sql } from "drizzle-orm";
+import Link from "next/link";
 import { formatAmount } from "@/components/transactions/components/transaction-amount";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { dbTransaction } from "@/drizzle/client";
 import { budgetSchema, categories, transactions } from "@/drizzle/schema";
 import { capitalize } from "@/lib/utils";
 
-export async function BudgetList({ year, month }: { year: number; month: number }) {
+export async function BudgetList({
+	yearPromise,
+	monthPromise,
+}: {
+	yearPromise: Promise<number>;
+	monthPromise: Promise<number>;
+}) {
+	const year = await yearPromise;
+	const month = await monthPromise;
 	const periodDate = new Date(year, month, 1);
 	const startOfMonthStr = format(startOfMonth(periodDate), "yyyy-MM-dd");
 	const endOfMonthStr = format(endOfMonth(periodDate), "yyyy-MM-dd");
@@ -74,21 +83,25 @@ export async function BudgetList({ year, month }: { year: number; month: number 
 		<ol className="grid grid-cols-1 md:grid-cols-2 gap-x-2 gap-y-2 lg:grid-cols-4">
 			{rows.map(({ budget, category, transactionAmount }) => {
 				return (
-					<Card key={budget.id}>
-						<CardHeader>
-							<CardTitle className="flex justify-between">
-								<p style={{ color: category?.color }}>{budget.name}</p>
-								<p>
-									{formatAmount(transactionAmount)} / {formatAmount(budget.amount)}
-								</p>
-							</CardTitle>
-							<CardDescription style={{ color: category?.color }}>{category?.name}</CardDescription>
-						</CardHeader>
+					<Link key={budget.id} href={`/budgets/${budget.id}`}>
+						<Card className="h-full">
+							<CardHeader>
+								<CardTitle className="flex justify-between">
+									<p style={{ color: category?.color }}>{budget.name}</p>
+									<p>
+										{formatAmount(transactionAmount)} / {formatAmount(budget.amount)}
+									</p>
+								</CardTitle>
+								<CardDescription style={{ color: category?.color }}>
+									{category?.name}
+								</CardDescription>
+							</CardHeader>
 
-						<CardContent className="text-sm text-gray-400 flex justify-between">
-							<p>{capitalize(budget.interval)}</p>
-						</CardContent>
-					</Card>
+							<CardContent className="text-sm text-gray-400 flex justify-between">
+								<p>{capitalize(budget.interval)}</p>
+							</CardContent>
+						</Card>
+					</Link>
 				);
 			})}
 		</ol>

@@ -1,21 +1,24 @@
 import Link from "next/link";
+import { createSearchParamsCache, parseAsInteger } from "nuqs/server";
 import { Suspense } from "react";
 import { BudgetList } from "@/app/(dashboard)/budgets/budget-list";
 import { MonthYearStepperPeriod } from "@/app/(dashboard)/budgets/monthYearStepperPeriod";
 import { Button } from "@/components/ui/button";
 
-export default async function BudgetsPage({
+const searchParamsCache = createSearchParamsCache({
+	year: parseAsInteger.withDefault(new Date().getFullYear()),
+	month: parseAsInteger.withDefault(new Date().getMonth()),
+});
+
+export default function BudgetsPage({
 	searchParams,
 }: {
-	searchParams: Promise<{ month?: string; year?: string }>;
+	searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-	const params = await searchParams;
-	const now = new Date();
-	const year = params.year ? Number(params.year) : now.getFullYear();
-	const month = params.month !== undefined ? Number(params.month) : now.getMonth(); // 0-indexed
+	const parsedSearchParams = searchParamsCache.parse(searchParams);
 
 	return (
-		<div className="space-y-6 ">
+		<div className="space-y-6">
 			<div className="flex justify-between items-center">
 				<div className="text-2xl font-semibold">Budgets</div>
 				<Link href="/budgets/new">
@@ -23,10 +26,15 @@ export default async function BudgetsPage({
 				</Link>
 			</div>
 
-			<MonthYearStepperPeriod />
+			<Suspense>
+				<MonthYearStepperPeriod />
+			</Suspense>
 
-			<Suspense key={`${year}-${month}`}>
-				<BudgetList year={year} month={month} />
+			<Suspense>
+				<BudgetList
+					yearPromise={parsedSearchParams.then((params) => params.year)}
+					monthPromise={parsedSearchParams.then((params) => params.month)}
+				/>
 			</Suspense>
 		</div>
 	);
