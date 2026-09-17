@@ -17,7 +17,10 @@ export const shortAmount = (amount: number) => {
 	return isNegative ? `-${formatted}` : formatted;
 };
 
-export function capitalize(value: string) {
+export function capitalize(value?: string | null) {
+	if (!value) {
+		return;
+	}
 	return String(value).charAt(0).toUpperCase() + String(value).slice(1);
 }
 

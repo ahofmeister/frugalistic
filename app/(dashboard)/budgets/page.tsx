@@ -1,49 +1,19 @@
-import { sql } from "drizzle-orm";
 import Link from "next/link";
 import { Suspense } from "react";
+import { BudgetList } from "@/app/(dashboard)/budgets/budget-list";
 import { MonthYearStepperPeriod } from "@/app/(dashboard)/budgets/monthYearStepperPeriod";
-import { formatAmount } from "@/components/transactions/components/transaction-amount";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { dbTransaction } from "@/drizzle/client";
-import { capitalize } from "@/lib/utils";
 
-async function BudgetList() {
-	const budgets = await dbTransaction((tx) => {
-		return tx.query.budgetSchema.findMany({
-			with: {
-				category: true,
-			},
-			orderBy: (t) => sql`lower(${t.name}) asc`,
-		});
-	});
-	return (
-		<ol className="grid grid-cols-1 md:grid-cols-2 gap-x-2 gap-y-2 lg:grid-cols-4">
-			{budgets.map((budget) => {
-				return (
-					<Card key={budget.id}>
-						<CardHeader>
-							<CardTitle className="flex justify-between">
-								<p style={{ color: budget.category.color }}>{budget.name}</p>
-								<p>{formatAmount(budget.amount)}</p>
-							</CardTitle>
-							<CardDescription style={{ color: budget.category.color }}>
-								{budget.category.name}
-							</CardDescription>
-						</CardHeader>
+export default async function BudgetsPage({
+	searchParams,
+}: {
+	searchParams: Promise<{ month?: string; year?: string }>;
+}) {
+	const params = await searchParams;
+	const now = new Date();
+	const year = params.year ? Number(params.year) : now.getFullYear();
+	const month = params.month !== undefined ? Number(params.month) : now.getMonth(); // 0-indexed
 
-						<CardContent className="text-sm text-gray-400 flex justify-between ">
-							<p>{capitalize(budget.interval ?? "-")}</p>
-							<p>{capitalize(budget.type)}</p>
-						</CardContent>
-					</Card>
-				);
-			})}
-		</ol>
-	);
-}
-
-export default function BudgetsPage() {
 	return (
 		<div className="space-y-6 ">
 			<div className="flex justify-between items-center">
@@ -55,8 +25,8 @@ export default function BudgetsPage() {
 
 			<MonthYearStepperPeriod />
 
-			<Suspense>
-				<BudgetList />
+			<Suspense key={`${year}-${month}`}>
+				<BudgetList year={year} month={month} />
 			</Suspense>
 		</div>
 	);

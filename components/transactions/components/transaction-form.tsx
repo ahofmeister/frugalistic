@@ -210,11 +210,10 @@ const TransactionForm = ({
 													(l) =>
 														l.type === transaction?.type &&
 														l.description === transaction?.description &&
-														l.category === transaction.category?.id,
+														l.category === transaction?.category?.id,
 												)}
 												placeholder="Enter or choose description"
 												onValueChange={(e: typeof transactionAutoSuggest.$inferSelect) => {
-													field.onChange(e.description);
 													if (e.type) {
 														form.setValue("type", e.type);
 													}

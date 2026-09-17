@@ -5,9 +5,9 @@ import { revalidatePath } from "next/cache";
 import { dbTransaction } from "@/drizzle/client";
 import { budgetSchema } from "@/drizzle/schema";
 
-export async function createBudget(newCategory: typeof budgetSchema.$inferInsert) {
+export async function createBudget(newBudget: typeof budgetSchema.$inferInsert) {
 	await dbTransaction((tx) => {
-		return tx.insert(budgetSchema).values(newCategory);
+		return tx.insert(budgetSchema).values({ ...newBudget, amount: newBudget.amount * 100 });
 	});
 
 	revalidatePath("budgets");
