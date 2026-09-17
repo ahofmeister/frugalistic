@@ -60,7 +60,7 @@ export default function MainNavigation() {
 		if (noLink || onClick) {
 			return (
 				<button
-					type={"button"}
+					type="button"
 					onClick={onClick}
 					className="flex items-center px-3 py-2 text-sm rounded-md transition-colors text-muted-foreground hover:text-foreground hover:bg-accent cursor-pointer"
 				>
@@ -105,11 +105,11 @@ export default function MainNavigation() {
 
 			<nav
 				className={`
-          fixed inset-y-0 left-0 z-65 w-64 bg-background transform transition-transform duration-200 ease-in-out
-          md:translate-x-0 md:static md:w-64 border-r border-border
-          md:top-0 top-16
-          ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
-        `}
+fixed inset-y-0 left-0 z-65 w-64 bg-background transform transition-transform duration-200 ease-in-out
+md:translate-x-0 md:static md:w-64 border-r border-border
+md:top-0 top-16
+${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
+`}
 			>
 				<div className="h-full flex flex-col">
 					<Link href="/dashboard" className="h-16 px-6 flex items-center border-b border-border">
@@ -131,26 +131,22 @@ export default function MainNavigation() {
 						<div className="space-y-6">
 							<div>
 								<div className="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-									Overview
+									Dashboard
 								</div>
 								<div className="space-y-1">
 									<NavItem href="/dashboard" icon={LayoutDashboard}>
 										Dashboard
 									</NavItem>
+								</div>
+							</div>
+
+							<div>
+								<div className="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+									Planning
+								</div>
+								<div className="space-y-1">
 									<NavItem href="/budgets" icon={PiggyBankIcon}>
 										Budgets
-									</NavItem>
-									<NavItem href="/insights" icon={LineChart}>
-										Insights
-									</NavItem>
-									<NavItem href="/statistics" icon={BarChartBig}>
-										Statistics
-									</NavItem>
-									<NavItem href="/annual" icon={CalendarDays}>
-										Annual
-									</NavItem>
-									<NavItem href="/monthly" icon={Calendar1Icon}>
-										Monthly
 									</NavItem>
 								</div>
 							</div>
@@ -174,6 +170,34 @@ export default function MainNavigation() {
 											<span>Favorites</span>
 										</div>
 									</NavItem>
+								</div>
+							</div>
+
+							<div>
+								<div className="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+									Analysis
+								</div>
+								<div className="space-y-1">
+									<NavItem href="/monthly" icon={Calendar1Icon}>
+										Monthly
+									</NavItem>
+									<NavItem href="/annual" icon={CalendarDays}>
+										Annual
+									</NavItem>
+									<NavItem href="/insights" icon={LineChart}>
+										Insights
+									</NavItem>
+									<NavItem href="/statistics" icon={BarChartBig}>
+										Statistics
+									</NavItem>
+								</div>
+							</div>
+
+							<div>
+								<div className="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+									Setup
+								</div>
+								<div className="space-y-1">
 									<NavItem href="/categories" icon={Tags}>
 										Categories
 									</NavItem>
@@ -190,6 +214,7 @@ export default function MainNavigation() {
 									</NavItem>
 								</div>
 							</div>
+
 							<div>
 								<div className="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
 									Account
@@ -201,10 +226,10 @@ export default function MainNavigation() {
 									<NavItem href="/settings" icon={SettingsIcon}>
 										Settings
 									</NavItem>
+									<NavItem icon={LogOutIcon} onClick={() => signOut()}>
+										Sign Out
+									</NavItem>
 								</div>
-								<NavItem icon={LogOutIcon} onClick={() => signOut()}>
-									Sign Out
-								</NavItem>
 							</div>
 						</div>
 					</div>
