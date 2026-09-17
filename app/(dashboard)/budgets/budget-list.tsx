@@ -24,8 +24,22 @@ export async function BudgetList({ year, month }: { year: number; month: number 
 				transactions,
 				and(
 					eq(transactions.categoryId, budgetSchema.categoryId),
-					gte(transactions.datetime, startOfMonthStr),
-					lte(transactions.datetime, endOfMonthStr),
+					gte(
+						transactions.datetime,
+						sql`CASE
+                            WHEN ${budgetSchema.type} = 'manual'
+                            THEN ${budgetSchema.startDate}
+                            ELSE ${startOfMonthStr}
+                        END`,
+					),
+					lte(
+						transactions.datetime,
+						sql`CASE
+                            WHEN ${budgetSchema.type} = 'manual'
+                            THEN COALESCE(${budgetSchema.targetDate}, ${endOfMonthStr})
+                            ELSE ${endOfMonthStr}
+                        END`,
+					),
 				),
 			)
 			.where(
@@ -55,6 +69,7 @@ export async function BudgetList({ year, month }: { year: number; month: number 
 	if (rows.length === 0) {
 		return <p className="text-sm text-gray-400">No budgets for this period.</p>;
 	}
+
 	return (
 		<ol className="grid grid-cols-1 md:grid-cols-2 gap-x-2 gap-y-2 lg:grid-cols-4">
 			{rows.map(({ budget, category, transactionAmount }) => {

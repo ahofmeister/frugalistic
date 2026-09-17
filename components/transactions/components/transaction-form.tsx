@@ -200,7 +200,7 @@ const TransactionForm = ({
 							<FormField
 								control={form.control}
 								name="description"
-								render={({ field }) => (
+								render={() => (
 									<FormItem>
 										<FormLabel>Description</FormLabel>
 										<FormControl>
