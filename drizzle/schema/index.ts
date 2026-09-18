@@ -1,3 +1,4 @@
+export * from "./api-key-schema";
 export * from "./budget-schema";
 export * from "./categories";
 export * from "./favorite-schema";
