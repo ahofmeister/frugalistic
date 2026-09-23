@@ -72,6 +72,9 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: ^1.1.4
         version: 1.1.4(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@scalar/nextjs-api-reference':
+        specifier: ^0.12.2
+        version: 0.12.2(next@16.1.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
       '@supabase/auth-js':
         specifier: 2.69.1
         version: 2.69.1
@@ -119,7 +122,7 @@ importers:
         version: 1.0.0-rc.4
       drizzle-orm:
         specifier: 1.0.0-rc.4
-        version: 1.0.0-rc.4(postgres@3.4.7)(zod@3.23.8)
+        version: 1.0.0-rc.4(postgres@3.4.7)(zod@4.6.5)
       framer-motion:
         specifier: ^11.13.5
         version: 11.13.5(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -187,8 +190,11 @@ importers:
         specifier: ^1.1.1
         version: 1.1.1(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       zod:
-        specifier: ^3.23.8
-        version: 3.23.8
+        specifier: 4.6.5
+        version: 4.6.5
+      zod-openapi:
+        specifier: ^6.0.2
+        version: 6.0.2(zod@4.6.5)
     devDependencies:
       '@biomejs/biome':
         specifier: 2.5.14
@@ -1424,6 +1430,33 @@ packages:
   '@radix-ui/rect@1.1.0':
     resolution: {integrity: sha512-A9+lCBZoaMJlVKcRBz2YByCG+Cp2t6nAnMnNba+XiWxnj6r4JUFqfsgwocMBZU9LPtdxC6wB56ySYpc7LQIoJg==}
 
+  '@scalar/client-side-rendering@0.4.3':
+    resolution: {integrity: sha512-a7Hs+YpaT3CEtJcx6pJS/1XMhV/cCGmheYrwuCd51LvrnJLluVqq7ID6F9xWqPnc7Y0E3vs6XZcz+h3exjUFdg==}
+    engines: {node: '>=22'}
+
+  '@scalar/helpers@0.13.0':
+    resolution: {integrity: sha512-1vB6AZXCQZPb+MApSrso6ss+rbLuiI/vGe+PmiXm8Cnt6B+10JeacDPoPr51EgSwltSfH2hZhJ7hHjW2pSg+bQ==}
+    engines: {node: '>=22'}
+
+  '@scalar/nextjs-api-reference@0.12.2':
+    resolution: {integrity: sha512-fJJy2SI7emKLFUagSKsgAZEbSMNaDP+HFkq1AltHW4UYl/slTIK0OW15C6uYfHgKsLyFASnrCFRWo5Wv0cG8WQ==}
+    engines: {node: '>=22'}
+    peerDependencies:
+      next: ^15.0.0 || ^16.0.0
+      react: ^19.0.0
+
+  '@scalar/schemas@0.11.0':
+    resolution: {integrity: sha512-rtvZSsL7IFcHLB1j0VJIgW2MJ702NPOvlhRoRWU4gDK4rGDRmy58BzXtF7gbKOm8vA8aX24NIMr7itwc1Pp6AQ==}
+    engines: {node: '>=22'}
+
+  '@scalar/types@0.21.0':
+    resolution: {integrity: sha512-kl/GSKZ2DynaaP1LxnyXxopgoIYrtUI95cOeG3KYkdGJ6pEn3MJ6PDmWfRQNj3gH/ZRx2UuNIf3jVvtMNrlrKA==}
+    engines: {node: '>=22'}
+
+  '@scalar/validation@0.6.4':
+    resolution: {integrity: sha512-s93HFX0+N6bLwGjZPKFGVHq/gWiZy1YQkR2+dSflbUdYp+4j2Pg+WDA0gwbFrsOlgtkEjwQbjXtbmBiFTtPYUg==}
+    engines: {node: '>=20'}
+
   '@supabase/auth-js@2.66.1':
     resolution: {integrity: sha512-kOW+04SuDXmP2jRX9JL1Rgzduj8BcOG1qC3RaWdZsxnv89svNCdLRv8PfXW3QPKJdw0k1jF30OlQDPkzbDEL9w==}
 
@@ -2244,6 +2277,11 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
+  nanoid@5.1.16:
+    resolution: {integrity: sha512-kVrnsrJqMR8+oLJnGEmSWw9BivK5mt7H3FZatVRjrc5wGqFYuBxX1yG7+A7Gi5AefkX6t/oCkizcQgpu0cY1dQ==}
+    engines: {node: ^18 || >=20}
+    hasBin: true
+
   next-themes@0.4.4:
     resolution: {integrity: sha512-LDQ2qIOJF0VnuVrrMSMLrWGjRMkq+0mpgl6e0juCLqdJ+oo8Q84JRWT6Wh11VDQKkMMe+dVzDKLWs5n87T+PkQ==}
     peerDependencies:
@@ -2484,6 +2522,10 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
+  tagged-tag@1.0.0:
+    resolution: {integrity: sha512-yEFYrVhod+hdNyx7g5Bnkkb0G6si8HJurOoOEgC8B/O0uXLHlaey/65KRv6cuWBNhBgHKAROVpc7QyYqE5gFng==}
+    engines: {node: '>=20'}
+
   tailwind-merge@2.4.0:
     resolution: {integrity: sha512-49AwoOQNKdqKPd9CViyH5wJoSKsCDjUlzL8DxuGp3P1FsGY36NJDAa18jLZcaHAUUuTj+JB8IAo8zWgBNvBF7A==}
 
@@ -2513,6 +2555,10 @@ packages:
 
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
+
+  type-fest@5.10.0:
+    resolution: {integrity: sha512-NoSdpq/WEiAg5sjmBkmV/hfxv6HJH4NqPNrqjtSO5CwRmpsDfaf4begxW34KdJykH/l1yHtwBWQkCRdoXO8mPA==}
+    engines: {node: '>=20'}
 
   typescript@5.7.2:
     resolution: {integrity: sha512-i5t66RHxDvVN40HfDd1PsEThGNnlMCMT3jMUuoh9/0TaqWevNontacunWyN02LA9/fIbEWlcHZcgTKb9QoaLfg==}
@@ -2593,8 +2639,14 @@ packages:
     resolution: {integrity: sha512-vIYeF1u3CjlhAFekPPAk2h/Kv4T3mAkMox5OymRiJQB0spDP10LHvt+K7G9Ny6NuuMAb25/6n1qyUjAcGNf/AA==}
     engines: {node: '>= 6'}
 
-  zod@3.23.8:
-    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
+  zod-openapi@6.0.2:
+    resolution: {integrity: sha512-SwC5Ppi2ov8WimzNWP/XK95VqPyLDzxPYj10HgNPzhZH9gO7zx0sxdYL9eq7wOADHx1JddOApjhYDmMWQvnVnw==}
+    engines: {node: '>=22.14.0'}
+    peerDependencies:
+      zod: ^4.0.0
+
+  zod@4.6.5:
+    resolution: {integrity: sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q==}
 
 snapshots:
 
@@ -3697,6 +3749,34 @@ snapshots:
 
   '@radix-ui/rect@1.1.0': {}
 
+  '@scalar/client-side-rendering@0.4.3':
+    dependencies:
+      '@scalar/schemas': 0.11.0
+      '@scalar/types': 0.21.0
+      '@scalar/validation': 0.6.4
+
+  '@scalar/helpers@0.13.0': {}
+
+  '@scalar/nextjs-api-reference@0.12.2(next@16.1.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)':
+    dependencies:
+      '@scalar/client-side-rendering': 0.4.3
+      next: 16.1.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      react: 19.2.0
+
+  '@scalar/schemas@0.11.0':
+    dependencies:
+      '@scalar/helpers': 0.13.0
+      '@scalar/validation': 0.6.4
+
+  '@scalar/types@0.21.0':
+    dependencies:
+      '@scalar/helpers': 0.13.0
+      nanoid: 5.1.16
+      type-fest: 5.10.0
+      zod: 4.6.5
+
+  '@scalar/validation@0.6.4': {}
+
   '@supabase/auth-js@2.66.1':
     dependencies:
       '@supabase/node-fetch': 2.6.15
@@ -4178,10 +4258,10 @@ snapshots:
       get-tsconfig: 4.14.3
       jiti: 2.6.1
 
-  drizzle-orm@1.0.0-rc.4(postgres@3.4.7)(zod@3.23.8):
+  drizzle-orm@1.0.0-rc.4(postgres@3.4.7)(zod@4.6.5):
     optionalDependencies:
       postgres: 3.4.7
-      zod: 3.23.8
+      zod: 4.6.5
 
   encoding@0.1.13:
     dependencies:
@@ -4378,6 +4458,8 @@ snapshots:
   ms@2.1.3: {}
 
   nanoid@3.3.7: {}
+
+  nanoid@5.1.16: {}
 
   next-themes@0.4.4(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
@@ -4618,6 +4700,8 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
+  tagged-tag@1.0.0: {}
+
   tailwind-merge@2.4.0: {}
 
   tailwindcss-animate@1.0.7(tailwindcss@4.1.17):
@@ -4637,6 +4721,10 @@ snapshots:
   tslib@2.7.0: {}
 
   tslib@2.8.1: {}
+
+  type-fest@5.10.0:
+    dependencies:
+      tagged-tag: 1.0.0
 
   typescript@5.7.2: {}
 
@@ -4708,4 +4796,8 @@ snapshots:
 
   yaml@1.10.3: {}
 
-  zod@3.23.8: {}
+  zod-openapi@6.0.2(zod@4.6.5):
+    dependencies:
+      zod: 4.6.5
+
+  zod@4.6.5: {}

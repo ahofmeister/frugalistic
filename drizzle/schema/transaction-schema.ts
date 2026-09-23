@@ -4,10 +4,12 @@ import {
 	date,
 	foreignKey,
 	integer,
+	pgEnum,
 	pgPolicy,
 	pgTable,
 	text,
 	timestamp,
+	uniqueIndex,
 	uuid,
 	varchar,
 } from "drizzle-orm/pg-core";
@@ -22,6 +24,9 @@ export const transactionTypes = ["income", "expense", "savings"] as const;
 export type TransactionType = (typeof transactionTypes)[number];
 export type TransactionTypeWithLeftover = TransactionType | "leftover";
 
+export const transactionTypeEnum = pgEnum("transaction_type", transactionTypes);
+export const costTypeEnum = pgEnum("cost_type", costTypes);
+
 export const transactions = pgTable(
 	"transactions",
 	{
@@ -30,14 +35,15 @@ export const transactions = pgTable(
 			mode: "string",
 		}).defaultNow(),
 		description: varchar().notNull(),
-		datetime: date().defaultNow().notNull(),
+		datetime: date().notNull(),
 		userId: uuid("user_id").default(sql`auth.uid()`).notNull(),
 		amount: integer().notNull(),
-		type: text("type").$type<TransactionType>().notNull(),
+		type: transactionTypeEnum("type").notNull(),
 		id: uuid().defaultRandom().primaryKey().notNull(),
 		categoryId: uuid("category_id").notNull(),
 		recurringTransactionId: uuid("recurring_transaction_id"),
-		costType: text("cost_type").$type<CostType>().notNull().default("variable"),
+		costType: costTypeEnum("cost_type").notNull().default("variable"),
+		externalId: text("external_id"),
 	},
 	(table) => [
 		foreignKey({
@@ -55,27 +61,20 @@ export const transactions = pgTable(
 			foreignColumns: [users.id],
 			name: "transactions_user_id_fkey",
 		}).onDelete("cascade"),
+		uniqueIndex("transactions_user_external_id_idx")
+			.on(table.userId, table.externalId)
+			.where(sql`external_id IS NOT NULL`),
 		pgPolicy("user's transaction only", {
 			as: "permissive",
 			for: "all",
 			to: ["public"],
-			using: sql`(auth.uid()
-                       = user_id)`,
-			withCheck: sql`(auth.uid()
-                           = user_id)`,
+			using: sql`(auth.uid() = user_id)`,
+			withCheck: sql`(auth.uid() = user_id)`,
 		}),
 		check(
 			"disallow_empty",
 			sql`(description)
                 ::text <> ''::text`,
-		),
-		check(
-			"cost_type_check",
-			sql`${table.costType}
-            IN ('fixed', 'variable') OR
-            ${table.costType}
-            IS
-            NULL`,
 		),
 	],
 );

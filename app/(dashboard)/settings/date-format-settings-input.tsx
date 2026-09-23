@@ -3,9 +3,10 @@ import { format } from "date-fns";
 import { useState, useTransition } from "react";
 import { updateSettings } from "@/app/(dashboard)/settings/settings-actions";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
 
-export function SettingsForm({
+export function DateFormatSettingsInput({
 	initialDateFormat,
 	settingsId,
 }: {
@@ -45,7 +46,8 @@ export function SettingsForm({
 	};
 
 	return (
-		<>
+		<div>
+			<Label className="text-sm font-medium">Date Format</Label>
 			<div className="relative">
 				<Input
 					value={dateFormat}
@@ -58,8 +60,8 @@ export function SettingsForm({
 			</div>
 			<div className="text-xs text-muted-foreground">
 				{error && <span className="text-destructive">{error}</span>}
-				{preview && preview}
+				{preview}
 			</div>
-		</>
+		</div>
 	);
 }
