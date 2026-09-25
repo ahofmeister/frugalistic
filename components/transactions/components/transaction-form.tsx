@@ -58,7 +58,7 @@ const TransactionForm = ({
 }) => {
 	const formSchema = z.object({
 		description: z.string().min(1),
-		amount: z.coerce.string(),
+		amount: z.string(),
 		type: z.enum(["income", "expense", "savings"]),
 		category: z.string(),
 		datetime: z.date(),
@@ -70,10 +70,10 @@ const TransactionForm = ({
 		type: transaction ? transaction.type : "expense",
 		amount: transaction ? transaction.amount.toString() : "0",
 		datetime: transaction ? new Date(transaction.datetime) : new Date(),
-		category: transaction?.category ? transaction.category.id : undefined,
+		category: transaction?.category ? transaction.category.id : "",
 		costType: transaction?.costType ?? "variable",
 	};
-	const form = useForm<z.infer<typeof formSchema>>({
+	const form = useForm({
 		resolver: zodResolver(formSchema),
 		defaultValues: defaultValues,
 		mode: "onChange",
@@ -214,6 +214,9 @@ const TransactionForm = ({
 												)}
 												placeholder="Enter or choose description"
 												onValueChange={(e: typeof transactionAutoSuggest.$inferSelect) => {
+													form.setValue("description", e.description ?? "", {
+														shouldValidate: true,
+													});
 													if (e.type) {
 														form.setValue("type", e.type);
 													}

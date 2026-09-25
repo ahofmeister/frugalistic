@@ -36,7 +36,7 @@ export const transactions = pgTable(
 		createdAt,
 		updatedAt,
 		userId,
-		accountId: uuid("account_id"),
+		accountId: uuid("account_id").default(sql`public.active_account_id()`).notNull(),
 		description: varchar().notNull(),
 		datetime: date().notNull(),
 		amount: integer().notNull(),
