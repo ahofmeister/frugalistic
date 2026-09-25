@@ -16,7 +16,7 @@ import {
 	varchar,
 } from "drizzle-orm/pg-core";
 import { categories } from "@/drizzle/schema/categories";
-import { createdAt, id, updatedAt, userId } from "@/drizzle/schema/schema-commons";
+import { accountId, createdAt, id, updatedAt, userId } from "@/drizzle/schema/schema-commons";
 import type { TransactionType, transactions } from "@/drizzle/schema/transaction-schema";
 import { users } from "@/drizzle/schema/users-schema";
 
@@ -38,7 +38,7 @@ export const transactionsRecurring = pgTable(
 		createdAt,
 		updatedAt,
 		userId,
-		accountId: uuid("account_id"),
+		accountId,
 		description: varchar().notNull(),
 		nextRun: date("next_run"),
 		amount: doublePrecision().notNull(),

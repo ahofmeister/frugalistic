@@ -19,3 +19,5 @@ export const updatedAt = timestamp("updated_at", {
 	.$onUpdate(() => new Date().toISOString());
 
 export const userId = uuid("user_id").default(sql`auth.uid()`).notNull();
+
+export const accountId = uuid("account_id").default(sql`public.active_account_id()`).notNull();

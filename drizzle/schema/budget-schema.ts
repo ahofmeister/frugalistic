@@ -2,7 +2,7 @@ import { sql } from "drizzle-orm";
 import { foreignKey, index, integer, pgPolicy, pgTable } from "drizzle-orm/pg-core";
 import { date, text, uuid } from "drizzle-orm/pg-core/columns";
 import { profiles } from "@/drizzle/schema/profile-schema";
-import { createdAt, id, updatedAt, userId } from "@/drizzle/schema/schema-commons";
+import { accountId, createdAt, id, updatedAt, userId } from "@/drizzle/schema/schema-commons";
 import type { RecurringInterval } from "@/drizzle/schema/transaction-recurring-schema";
 import type { TransactionType } from "@/drizzle/schema/transaction-schema";
 import { categories } from "./categories";
@@ -13,11 +13,11 @@ export type BudgetType = (typeof budgetTypes)[number];
 export const budgetSchema = pgTable(
 	"budget",
 	{
-		id: id,
-		userId: userId,
-		createdAt: createdAt,
-		updatedAt: updatedAt,
-		accountId: uuid("account_id"),
+		id,
+		userId,
+		createdAt,
+		updatedAt,
+		accountId,
 		name: text("name"),
 		categoryId: uuid("category_id").notNull(),
 		type: text().$type<BudgetType>().notNull(),

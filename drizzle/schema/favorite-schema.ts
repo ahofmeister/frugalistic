@@ -11,7 +11,7 @@ import {
 	varchar,
 } from "drizzle-orm/pg-core";
 import { categories } from "@/drizzle/schema/categories";
-import { createdAt, id, updatedAt, userId } from "@/drizzle/schema/schema-commons";
+import { accountId, createdAt, id, updatedAt, userId } from "@/drizzle/schema/schema-commons";
 import type { TransactionType } from "@/drizzle/schema/transaction-schema";
 import { users } from "@/drizzle/schema/users-schema";
 
@@ -22,7 +22,7 @@ export const favoriteSchema = pgTable(
 		createdAt,
 		updatedAt,
 		userId,
-		accountId: uuid("account_id"),
+		accountId,
 		description: varchar().notNull(),
 		amount: integer().notNull(),
 		type: text("type").$type<TransactionType>().notNull(),

@@ -52,7 +52,7 @@ const BudgetForm = ({
 			name: z.string().min(3),
 			categoryId: z.string(),
 			type: z.enum(budgetTypes),
-			amount: z.coerce.number(),
+			amount: z.number(),
 			flow: z.enum(transactionTypes),
 			interval: z.enum(recurringIntervals).nullable().optional(),
 			startDate: z.date(),
@@ -67,7 +67,7 @@ const BudgetForm = ({
 				});
 			}
 		});
-	const form = useForm<z.infer<typeof formSchema>>({
+	const form = useForm({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			name: budget?.name ?? undefined,
