@@ -1,0 +1,1 @@
+ALTER TABLE "profile" DROP CONSTRAINT "profiles_id_fkey";
