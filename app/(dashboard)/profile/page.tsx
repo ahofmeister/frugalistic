@@ -1,8 +1,8 @@
 import { Suspense } from "react";
-import { AccountApiKeys } from "@/app/(dashboard)/account/account-api-keys";
-import { AccountProfileSection } from "@/app/(dashboard)/account/account-profile-section";
-import DeleteAccount from "@/app/(dashboard)/account/components/delete-account";
-import UpdatePassword from "@/app/(dashboard)/account/components/update-password-form";
+import { AccountApiKeys } from "@/components/profile/account-api-keys";
+import { AccountProfileSection } from "@/components/profile/account-profile-section";
+import DeleteAccount from "@/components/profile/delete-account";
+import UpdatePasswordForm from "@/components/profile/update-password-form";
 
 export default async function AccountPage() {
 	return (
@@ -13,7 +13,7 @@ export default async function AccountPage() {
 				<Suspense>
 					<AccountProfileSection />
 				</Suspense>
-				<UpdatePassword />
+				<UpdatePasswordForm />
 
 				<Suspense>
 					<AccountApiKeys />

@@ -3,6 +3,7 @@ import {
 	check,
 	date,
 	foreignKey,
+	index,
 	integer,
 	pgEnum,
 	pgPolicy,
@@ -13,7 +14,9 @@ import {
 	uuid,
 	varchar,
 } from "drizzle-orm/pg-core";
+import { accountSchema } from "@/drizzle/schema/account-schema";
 import { categories } from "@/drizzle/schema/categories";
+import { createdAt, id, updatedAt, userId } from "@/drizzle/schema/schema-commons";
 import { transactionsRecurring } from "@/drizzle/schema/transaction-recurring-schema";
 import { users } from "@/drizzle/schema/users-schema";
 
@@ -30,26 +33,31 @@ export const costTypeEnum = pgEnum("cost_type", costTypes);
 export const transactions = pgTable(
 	"transactions",
 	{
-		createdAt: timestamp("created_at", {
-			withTimezone: true,
-			mode: "string",
-		}).defaultNow(),
+		id,
+		createdAt,
+		updatedAt,
+		userId,
+		accountId: uuid("account_id"),
 		description: varchar().notNull(),
 		datetime: date().notNull(),
-		userId: uuid("user_id").default(sql`auth.uid()`).notNull(),
 		amount: integer().notNull(),
 		type: transactionTypeEnum("type").notNull(),
-		id: uuid().defaultRandom().primaryKey().notNull(),
 		categoryId: uuid("category_id").notNull(),
 		recurringTransactionId: uuid("recurring_transaction_id"),
 		costType: costTypeEnum("cost_type").notNull().default("variable"),
 		externalId: text("external_id"),
 	},
 	(table) => [
+		index("transactions_account_id_idx").on(table.accountId),
 		foreignKey({
 			columns: [table.categoryId],
 			foreignColumns: [categories.id],
 			name: "transactions_category_fkey",
+		}),
+		foreignKey({
+			columns: [table.accountId],
+			foreignColumns: [accountSchema.id],
+			name: "categories_account_id_fkey",
 		}),
 		foreignKey({
 			columns: [table.recurringTransactionId],
@@ -64,12 +72,32 @@ export const transactions = pgTable(
 		uniqueIndex("transactions_user_external_id_idx")
 			.on(table.userId, table.externalId)
 			.where(sql`external_id IS NOT NULL`),
-		pgPolicy("user's transaction only", {
+		pgPolicy("account members can select", {
+			as: "permissive",
+			for: "select",
+			to: ["public"],
+			using: sql`EXISTS (
+				SELECT 1 FROM account_member
+				WHERE account_member.account_id = transactions.account_id
+				AND account_member.member_id = (SELECT auth.uid())
+			)`,
+		}),
+		pgPolicy("account write members can manage rows", {
 			as: "permissive",
 			for: "all",
 			to: ["public"],
-			using: sql`(auth.uid() = user_id)`,
-			withCheck: sql`(auth.uid() = user_id)`,
+			using: sql`EXISTS (
+				SELECT 1 FROM account_member
+				WHERE account_member.account_id = transactions.account_id
+				AND account_member.member_id = (SELECT auth.uid())
+				AND account_member.role IN ('owner', 'write')
+			)`,
+			withCheck: sql`EXISTS (
+				SELECT 1 FROM account_member
+				WHERE account_member.account_id = transactions.account_id
+				AND account_member.member_id = (SELECT auth.uid())
+				AND account_member.role IN ('owner', 'write')
+			)`,
 		}),
 		check(
 			"disallow_empty",

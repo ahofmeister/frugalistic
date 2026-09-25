@@ -1,4 +1,4 @@
-import ProfileForm from "@/app/(dashboard)/account/components/profile-form";
+import ProfileForm from "@/components/profile/profile-form";
 import { dbTransaction } from "@/drizzle/client";
 
 export async function AccountProfileSection() {

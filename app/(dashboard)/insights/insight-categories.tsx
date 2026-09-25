@@ -29,7 +29,7 @@ export async function InsightCategories({ searchParams }: { searchParams: Promis
 						lte(transactions.datetime, currentYear.endDate),
 					),
 				)
-				.groupBy(categories.name, categories.color),
+				.groupBy(categories.id, categories.name, categories.color),
 
 			tx
 				.select({

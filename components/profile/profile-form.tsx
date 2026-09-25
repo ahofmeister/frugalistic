@@ -2,8 +2,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
-import { updateProfile } from "@/app/(dashboard)/account/lib/account-actions";
+import { updateProfile } from "@/components/profile/profile-actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {

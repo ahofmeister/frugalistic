@@ -20,12 +20,46 @@ export const relations = defineRelations(schema, (r) => ({
 			from: r.profiles.id,
 			to: r.users.id,
 		}),
+
+		accountMemberships: r.many.accountMemberSchema({
+			from: r.profiles.id,
+			to: r.accountMemberSchema.memberId,
+		}),
+	},
+
+	accountSchema: {
+		members: r.many.accountMemberSchema(),
+		categories: r.many.categories(),
+		transactions: r.many.transactions(),
+		budgets: r.many.budgetSchema(),
+		recurringTransactions: r.many.transactionsRecurring(),
+		favorites: r.many.favoriteSchema(),
+	},
+
+	accountMemberSchema: {
+		account: r.one.accountSchema({
+			from: r.accountMemberSchema.accountId,
+			to: r.accountSchema.id,
+			optional: false,
+		}),
+
+		member: r.one.profiles({
+			from: r.accountMemberSchema.memberId,
+			to: r.profiles.id,
+			optional: false,
+		}),
 	},
 
 	categories: {
 		user: r.one.users({
 			from: r.categories.userId,
 			to: r.users.id,
+		}),
+
+		account: r.one.accountSchema({
+			from: r.categories.accountId,
+			to: r.accountSchema.id,
+			optional: false,
 		}),
 
 		favorites: r.many.favoriteSchema(),
@@ -39,6 +73,12 @@ export const relations = defineRelations(schema, (r) => ({
 			to: r.users.id,
 		}),
 
+		account: r.one.accountSchema({
+			from: r.favoriteSchema.accountId,
+			to: r.accountSchema.id,
+			optional: false,
+		}),
+
 		category: r.one.categories({
 			from: r.favoriteSchema.categoryId,
 			to: r.categories.id,
@@ -50,6 +90,12 @@ export const relations = defineRelations(schema, (r) => ({
 		user: r.one.users({
 			from: r.transactions.userId,
 			to: r.users.id,
+		}),
+
+		account: r.one.accountSchema({
+			from: r.transactions.accountId,
+			to: r.accountSchema.id,
+			optional: false,
 		}),
 
 		category: r.one.categories({
@@ -68,6 +114,12 @@ export const relations = defineRelations(schema, (r) => ({
 		user: r.one.users({
 			from: r.transactionsRecurring.userId,
 			to: r.users.id,
+		}),
+
+		account: r.one.accountSchema({
+			from: r.transactionsRecurring.accountId,
+			to: r.accountSchema.id,
+			optional: false,
 		}),
 
 		category: r.one.categories({
@@ -94,6 +146,12 @@ export const relations = defineRelations(schema, (r) => ({
 	},
 
 	budgetSchema: {
+		account: r.one.accountSchema({
+			from: r.budgetSchema.accountId,
+			to: r.accountSchema.id,
+			optional: false,
+		}),
+
 		category: r.one.categories({
 			from: r.budgetSchema.categoryId,
 			to: r.categories.id,

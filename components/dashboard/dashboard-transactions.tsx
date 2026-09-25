@@ -1,6 +1,7 @@
 import type { SearchParams } from "nuqs/server";
 import { loadDashboardParams } from "@/app/(dashboard)/search-params";
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
+import { getActiveAccountId } from "@/components/account/account-actions";
 import TransactionList from "@/components/transactions/components/transaction-list";
 import { dbTransaction } from "@/drizzle/client";
 import { getPeriodDates } from "@/utils/transaction/dates";
@@ -18,6 +19,8 @@ export default async function DashboardTransactions({
 		awaitedParams.period,
 	);
 
+	const accountId = await getActiveAccountId();
+
 	const transactionsWithRecurring = await dbTransaction((tx) => {
 		return tx.query.transactions.findMany({
 			where: {
@@ -25,6 +28,7 @@ export default async function DashboardTransactions({
 					gte: startDate,
 					lte: endDate,
 				},
+				accountId: accountId,
 			},
 			with: {
 				category: true,
@@ -36,6 +40,7 @@ export default async function DashboardTransactions({
 			},
 		});
 	});
+
 	const settings = await getSettings();
 
 	return (

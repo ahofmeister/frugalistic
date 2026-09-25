@@ -1,6 +1,6 @@
+import { getActiveAccountId } from "@/components/account/account-actions";
 import { dbTransaction } from "@/drizzle/client";
-import { categories } from "@/drizzle/schema/categories";
-import { type TransactionType, transactions } from "@/drizzle/schema/transaction-schema";
+import type { TransactionType } from "@/drizzle/schema/transaction-schema";
 
 export interface CategoryRow {
 	id: string;
@@ -18,9 +18,22 @@ export interface TotalsRow {
 }
 
 export async function getRawTransactionsAndCategories() {
+	const activeAccountId = await getActiveAccountId();
 	const [foundTransactions, foundCategories] = await Promise.all([
-		dbTransaction((tx) => tx.select().from(transactions)),
-		dbTransaction((tx) => tx.select().from(categories)),
+		dbTransaction((tx) =>
+			tx.query.transactions.findMany({
+				where: {
+					accountId: activeAccountId,
+				},
+			}),
+		),
+		dbTransaction((tx) =>
+			tx.query.categories.findMany({
+				where: {
+					accountId: activeAccountId,
+				},
+			}),
+		),
 	]);
 	return { transactions: foundTransactions, categories: foundCategories };
 }

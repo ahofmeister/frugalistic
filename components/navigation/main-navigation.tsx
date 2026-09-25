@@ -27,7 +27,7 @@ import { useState } from "react";
 import { signOut } from "@/components/auth/auth-actions";
 import FeedbackCard from "@/components/feedback/feedback-card";
 
-export default function MainNavigation() {
+export default function MainNavigation({ accountName }: { accountName?: string }) {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 	const pathname = usePathname();
 
@@ -217,11 +217,21 @@ ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
 
 							<div>
 								<div className="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-									Account
+									Account & Profile
 								</div>
 								<div className="space-y-1">
-									<NavItem href="/account" icon={UserCogIcon}>
-										Account
+									<NavItem href="/accounts" icon={UserCogIcon}>
+										<div className="flex flex-col items-start">
+											<span>Accounts</span>
+											{accountName && (
+												<span className="text-xs text-muted-foreground font-normal truncate max-w-40 italic">
+													{accountName}
+												</span>
+											)}
+										</div>
+									</NavItem>
+									<NavItem href="/profile" icon={UserCogIcon}>
+										Profile
 									</NavItem>
 									<NavItem href="/settings" icon={SettingsIcon}>
 										Settings

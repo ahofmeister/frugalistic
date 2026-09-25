@@ -4,11 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-
-import {
-	type UpdatePasswordFormData,
-	updatePassword,
-} from "@/app/(dashboard)/account/lib/account-actions";
+import { type UpdatePasswordFormData, updatePassword } from "@/components/profile/profile-actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -22,7 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 
-export default function PasswordChangeForm() {
+export default function UpdatePasswordForm() {
 	const formSchema = z
 		.object({
 			currentPassword: z.string(),

@@ -34,6 +34,10 @@ export async function updateProfile(account: typeof profiles.$inferInsert) {
 	revalidateTag("profile", { expire: 10 });
 }
 
+export async function getProfile() {
+	return dbTransaction((tx) => tx.query.profiles.findFirst());
+}
+
 export async function deleteAccount() {
 	try {
 		await dbTransaction((tx) => tx.execute(sql`select delete_user()`));

@@ -17,6 +17,7 @@ export const budgetSchema = pgTable(
 		userId: userId,
 		createdAt: createdAt,
 		updatedAt: updatedAt,
+		accountId: uuid("account_id"),
 		name: text("name"),
 		categoryId: uuid("category_id").notNull(),
 		type: text().$type<BudgetType>().notNull(),
@@ -38,6 +39,7 @@ export const budgetSchema = pgTable(
 			name: "budget_user_id_fkey",
 		}).onDelete("cascade"),
 		index("budget_user_category_idx").on(table.userId, table.categoryId),
+		index("budget_account_id_idx").on(table.accountId),
 		pgPolicy("User can manage their budgets", {
 			as: "permissive",
 			for: "all",

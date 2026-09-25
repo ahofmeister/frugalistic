@@ -2,7 +2,7 @@
 import { Shield } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-import { deleteAccount } from "@/app/(dashboard)/account/lib/account-actions";
+import { deleteAccount } from "@/components/profile/profile-actions";
 import {
 	AlertDialog,
 	AlertDialogAction,

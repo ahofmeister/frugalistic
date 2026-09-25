@@ -6,6 +6,7 @@ import {
 	date,
 	doublePrecision,
 	foreignKey,
+	index,
 	numeric,
 	pgPolicy,
 	pgTable,
@@ -16,6 +17,7 @@ import {
 	varchar,
 } from "drizzle-orm/pg-core";
 import { categories } from "@/drizzle/schema/categories";
+import { createdAt, id, updatedAt, userId } from "@/drizzle/schema/schema-commons";
 import type { TransactionType, transactions } from "@/drizzle/schema/transaction-schema";
 import { users } from "@/drizzle/schema/users-schema";
 
@@ -33,20 +35,21 @@ export type TransactionWithRecurringCategory = Omit<
 export const transactionsRecurring = pgTable(
 	"transactions_recurring",
 	{
-		createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
-			.defaultNow()
-			.notNull(),
+		id,
+		createdAt,
+		updatedAt,
+		userId,
+		accountId: uuid("account_id"),
 		description: varchar().notNull(),
 		nextRun: date("next_run"),
-		userId: uuid("user_id").default(sql`auth.uid()`).notNull(),
 		amount: doublePrecision().notNull(),
 		type: text("type").$type<TransactionType>().notNull(),
-		id: uuid().defaultRandom().primaryKey().notNull(),
 		enabled: boolean().default(true).notNull(),
 		interval: text().$type<RecurringInterval>().notNull(),
 		categoryId: uuid("category_id").notNull(),
 	},
 	(table) => [
+		index("transactions_recurring_account_id_idx").on(table.accountId),
 		foreignKey({
 			columns: [table.categoryId],
 			foreignColumns: [categories.id],
@@ -57,26 +60,32 @@ export const transactionsRecurring = pgTable(
 			foreignColumns: [users.id],
 			name: "transactions_recurring_user_id_fkey",
 		}).onDelete("cascade"),
-		pgPolicy("Allow users to delete their own entries", {
-			as: "permissive",
-			for: "delete",
-			to: ["public"],
-			using: sql`(user_id = auth.uid())`,
-		}),
-		pgPolicy("Allow users to insert a new entry", {
-			as: "permissive",
-			for: "insert",
-			to: ["public"],
-		}),
-		pgPolicy("Allow users to read their own entries", {
+		pgPolicy("account members can select", {
 			as: "permissive",
 			for: "select",
 			to: ["public"],
+			using: sql`EXISTS (
+				SELECT 1 FROM account_member
+				WHERE account_member.account_id = transactions_recurring.account_id
+				AND account_member.member_id = (SELECT auth.uid())
+			)`,
 		}),
-		pgPolicy("Allow users to update their own entries", {
+		pgPolicy("account write members can manage rows", {
 			as: "permissive",
-			for: "update",
+			for: "all",
 			to: ["public"],
+			using: sql`EXISTS (
+				SELECT 1 FROM account_member
+				WHERE account_member.account_id = transactions_recurring.account_id
+				AND account_member.member_id = (SELECT auth.uid())
+				AND account_member.role IN ('owner', 'write')
+			)`,
+			withCheck: sql`EXISTS (
+				SELECT 1 FROM account_member
+				WHERE account_member.account_id = transactions_recurring.account_id
+				AND account_member.member_id = (SELECT auth.uid())
+				AND account_member.role IN ('owner', 'write')
+			)`,
 		}),
 		check(
 			"disallow_empty",

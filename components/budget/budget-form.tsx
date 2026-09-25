@@ -61,7 +61,7 @@ const BudgetForm = ({
 		.superRefine((data, ctx) => {
 			if (data.type === "manual" && !data.targetDate) {
 				ctx.addIssue({
-					code: z.ZodIssueCode.custom,
+					code: "custom",
 					message: "Target date is required for manual budgets",
 					path: ["targetDate"],
 				});
