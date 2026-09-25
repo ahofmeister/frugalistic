@@ -10,7 +10,7 @@ export const accountSchema = pgTable(
 		updatedAt,
 		name: text().notNull(),
 	},
-	(table) => [
+	(_) => [
 		pgPolicy("account members can view", {
 			as: "permissive",
 			for: "select",

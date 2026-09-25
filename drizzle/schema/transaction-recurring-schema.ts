@@ -12,7 +12,6 @@ import {
 	pgTable,
 	pgView,
 	text,
-	timestamp,
 	uuid,
 	varchar,
 } from "drizzle-orm/pg-core";

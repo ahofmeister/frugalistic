@@ -3,7 +3,7 @@ import { getActiveAccountId } from "@/components/account/account-actions";
 import TransactionAmount from "@/components/transactions/components/transaction-amount";
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { dbTransaction } from "@/drizzle/client";
-import { accountSchema, type TransactionType, transactions } from "@/drizzle/schema";
+import { type TransactionType, transactions } from "@/drizzle/schema";
 import { capitalize } from "@/lib/utils";
 
 export async function TotalTransactionAmount(props: { type: TransactionType }) {

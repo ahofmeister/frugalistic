@@ -9,7 +9,6 @@ import {
 	pgPolicy,
 	pgTable,
 	text,
-	timestamp,
 	uniqueIndex,
 	uuid,
 	varchar,

@@ -5,7 +5,6 @@ import { getActiveAccountId } from "@/components/account/account-actions";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { dbTransaction } from "@/drizzle/client";
-import { transactionsRecurring } from "@/drizzle/schema/transaction-recurring-schema";
 
 const RecurringTransactions = async () => {
 	const activeAccountId = await getActiveAccountId();
