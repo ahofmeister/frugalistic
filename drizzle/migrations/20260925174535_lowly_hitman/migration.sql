@@ -1,1 +1,1 @@
-ALTER TABLE "profile" DROP CONSTRAINT "profiles_id_fkey";
+-- empty on purpose to overcome some drizzle issues

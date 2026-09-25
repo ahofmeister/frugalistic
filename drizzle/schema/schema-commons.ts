@@ -19,9 +19,6 @@ export const updatedAt = timestamp("updated_at", {
 	.defaultNow()
 	.$onUpdate(() => new Date().toISOString());
 
-export const userId = uuid("user_id")
-	.default(sql`auth.uid()`)
-	.notNull()
-	.references(() => profiles.id);
+export const userId = uuid("user_id").default(sql`auth.uid()`).notNull();
 
 export const accountId = uuid("account_id").default(sql`public.active_account_id()`).notNull();
