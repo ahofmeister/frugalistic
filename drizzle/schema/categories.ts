@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { foreignKey, index, pgPolicy, pgTable, text, uuid } from "drizzle-orm/pg-core";
+import { foreignKey, index, pgPolicy, pgTable, text } from "drizzle-orm/pg-core";
 import { accountSchema } from "@/drizzle/schema/account-schema";
 import { accountId, createdAt, id, updatedAt, userId } from "@/drizzle/schema/schema-commons";
 import { users } from "@/drizzle/schema/users-schema";
