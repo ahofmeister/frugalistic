@@ -1,6 +1,5 @@
 import { sql } from "drizzle-orm";
 import { timestamp, uuid } from "drizzle-orm/pg-core";
-import { profiles } from "@/drizzle/schema/profile-schema";
 
 export const id = uuid().defaultRandom().primaryKey().notNull();
 
