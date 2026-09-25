@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import { check, foreignKey, pgPolicy, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { createdAt, id, updatedAt, userId } from "@/drizzle/schema/schema-commons";
 import { users } from "@/drizzle/schema/users-schema";
 
 export const feedbackStatuses = ["New", "In Progress", "Resolved", "Closed"] as const;
@@ -8,10 +9,11 @@ export type FeedBackStatus = (typeof feedbackStatuses)[number];
 export const feedback = pgTable(
 	"feedback",
 	{
-		id: uuid().default(sql`uuid_generate_v4()`).primaryKey().notNull(),
-		userId: uuid("user_id").default(sql`auth.uid()`).notNull(),
+		id,
+		createdAt,
+		updatedAt,
+		userId,
 		text: text().notNull(),
-		createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
 		status: text().$type<FeedBackStatus>().default("New"),
 		response: text(),
 	},

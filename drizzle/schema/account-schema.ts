@@ -1,16 +1,22 @@
-import { sql } from "drizzle-orm";
-import { pgPolicy, pgTable, text } from "drizzle-orm/pg-core";
-import { createdAt, id, updatedAt } from "@/drizzle/schema/schema-commons";
+import { foreignKey, pgTable, text, uuid } from "drizzle-orm/pg-core";
+import { profiles } from "@/drizzle/schema/profile-schema";
+import { createdAt, updatedAt } from "@/drizzle/schema/schema-commons";
 
 export const accountSchema = pgTable(
 	"account",
 	{
-		id,
+		id: uuid().primaryKey().defaultRandom(),
 		createdAt,
 		updatedAt,
+		userId,
 		name: text().notNull(),
 	},
 	(_) => [
+		foreignKey({
+			columns: [table.userId],
+			foreignColumns: [profiles.id],
+			name: "profile_user_id_fk",
+		}),
 		pgPolicy("account members can view", {
 			as: "permissive",
 			for: "select",

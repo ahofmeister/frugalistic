@@ -25,6 +25,11 @@ export const relations = defineRelations(schema, (r) => ({
 			from: r.profiles.id,
 			to: r.accountMemberSchema.memberId,
 		}),
+
+		account: r.many.accountSchema({
+			from: r.profiles.id,
+			to: r.accountSchema.userId,
+		}),
 	},
 
 	accountSchema: {

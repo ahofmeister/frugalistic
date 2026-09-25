@@ -1,7 +1,6 @@
 import { sql } from "drizzle-orm";
 import { foreignKey, pgPolicy, pgTable, text, unique, uuid } from "drizzle-orm/pg-core";
 import { accountSchema } from "@/drizzle/schema/account-schema";
-import { users } from "@/drizzle/schema/users-schema";
 
 export const profiles = pgTable(
 	"profile",
@@ -13,11 +12,6 @@ export const profiles = pgTable(
 		activeAccountId: uuid("active_account_id"),
 	},
 	(table) => [
-		foreignKey({
-			columns: [table.id],
-			foreignColumns: [users.id],
-			name: "profiles_id_fkey",
-		}).onDelete("cascade"),
 		foreignKey({
 			columns: [table.activeAccountId],
 			foreignColumns: [accountSchema.id],

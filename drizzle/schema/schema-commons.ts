@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import { timestamp, uuid } from "drizzle-orm/pg-core";
+import { profiles } from "@/drizzle/schema/profile-schema";
 
 export const id = uuid().defaultRandom().primaryKey().notNull();
 
@@ -18,6 +19,9 @@ export const updatedAt = timestamp("updated_at", {
 	.defaultNow()
 	.$onUpdate(() => new Date().toISOString());
 
-export const userId = uuid("user_id").default(sql`auth.uid()`).notNull();
+export const userId = uuid("user_id")
+	.default(sql`auth.uid()`)
+	.notNull()
+	.references(() => profiles.id);
 
 export const accountId = uuid("account_id").default(sql`public.active_account_id()`).notNull();
