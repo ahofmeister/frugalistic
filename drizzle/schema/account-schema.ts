@@ -11,7 +11,7 @@ export const accountSchema = pgTable(
 		userId,
 		name: text().notNull(),
 	},
-	(table) => [
+	() => [
 		pgPolicy("account members can view", {
 			as: "permissive",
 			for: "select",

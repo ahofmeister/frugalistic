@@ -4,7 +4,6 @@ import { getActiveAccountId } from "@/components/account/account-actions";
 import TransactionForm from "@/components/transactions/components/transaction-form";
 import { dbTransaction } from "@/drizzle/client";
 import { transactionAutoSuggest } from "@/drizzle/schema";
-import { categories } from "@/drizzle/schema/categories";
 
 export const TransactionFormData = async ({
 	transactionId,

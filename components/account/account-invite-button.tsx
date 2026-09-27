@@ -1,5 +1,4 @@
 "use client";
-import { Plus } from "lucide-react";
 import { useActionState, useState } from "react";
 import { toast } from "sonner";
 import { shareAccount } from "@/components/account/account-actions";
