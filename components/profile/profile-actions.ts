@@ -35,6 +35,7 @@ export async function updateProfile(account: typeof profiles.$inferInsert) {
 }
 
 export async function getProfile() {
+	// TODO Double check if this is still working with account sharing
 	return dbTransaction((tx) => tx.query.profiles.findFirst());
 }
 

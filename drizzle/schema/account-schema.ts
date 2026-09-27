@@ -16,11 +16,7 @@ export const accountSchema = pgTable(
 			as: "permissive",
 			for: "select",
 			to: ["public"],
-			using: sql`EXISTS (
-				SELECT 1 FROM account_member AS am
-				WHERE am.account_id = account.id
-				AND am.member_id = (SELECT auth.uid())
-			)`,
+			using: sql`is_account_member(id)`,
 		}),
 		pgPolicy("authenticated users can create accounts", {
 			as: "permissive",
@@ -32,18 +28,8 @@ export const accountSchema = pgTable(
 			as: "permissive",
 			for: "all",
 			to: ["public"],
-			using: sql`EXISTS (
-				SELECT 1 FROM account_member AS am
-				WHERE am.account_id = account.id
-				AND am.member_id = (SELECT auth.uid())
-				AND am.role = 'owner'
-			)`,
-			withCheck: sql`EXISTS (
-				SELECT 1 FROM account_member AS am
-				WHERE am.account_id = account.id
-				AND am.member_id = (SELECT auth.uid())
-				AND am.role = 'owner'
-			)`,
+			using: sql`is_account_owner(id)`,
+			withCheck: sql`is_account_owner(id)`,
 		}),
 	],
 );

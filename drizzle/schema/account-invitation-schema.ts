@@ -5,7 +5,7 @@ import { profiles } from "@/drizzle/schema/profile-schema";
 import { accountId, createdAt, id, updatedAt } from "./schema-commons";
 
 export const accountInvitationSchema = pgTable(
-	"accountInvitation",
+	"account_invitation",
 	{
 		id,
 		createdAt,
@@ -37,11 +37,11 @@ export const accountInvitationSchema = pgTable(
 			to: ["public"],
 			using: sql`auth.uid() = ${table.toMemberId} OR auth.uid() = ${table.fromMemberId}`,
 		}),
-		pgPolicy("recipient can delete to decline", {
+		pgPolicy("Both can delete to decline or withdraw", {
 			as: "permissive",
 			for: "delete",
 			to: ["public"],
-			using: sql`auth.uid() = ${table.toMemberId}`,
+			using: sql`auth.uid() = ${table.toMemberId} OR auth.uid() = ${table.fromMemberId}`,
 		}),
 	],
 );

@@ -33,25 +33,23 @@ const TransactionTypeSearchFilter = () => {
 	const [isPending, startTransition] = useTransition();
 
 	return (
-		<div>
-			<Select
-				value={type}
-				onValueChange={(value) => {
-					startTransition(async () => {
-						await setType(value === TYPE_ALL_VALUE ? null : (value as TransactionType));
-					});
-				}}
-				disabled={isPending}
-			>
-				<SelectTrigger>
-					<SelectValue placeholder="Select a type" />
-				</SelectTrigger>
-				<SelectContent>
-					<SelectItem value={TYPE_ALL_VALUE}>Select Type</SelectItem>
-					<TransactionSelectItems />
-				</SelectContent>
-			</Select>
-		</div>
+		<Select
+			value={type}
+			onValueChange={(value) => {
+				startTransition(async () => {
+					await setType(value === TYPE_ALL_VALUE ? null : (value as TransactionType));
+				});
+			}}
+			disabled={isPending}
+		>
+			<SelectTrigger>
+				<SelectValue placeholder="Select a type" />
+			</SelectTrigger>
+			<SelectContent>
+				<SelectItem value={TYPE_ALL_VALUE}>Select Type</SelectItem>
+				<TransactionSelectItems />
+			</SelectContent>
+		</Select>
 	);
 };
 

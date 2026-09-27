@@ -63,33 +63,19 @@ export const transactionsRecurring = pgTable(
 			as: "permissive",
 			for: "select",
 			to: ["public"],
-			using: sql`EXISTS (
-				SELECT 1 FROM account_member
-				WHERE account_member.account_id = transactions_recurring.account_id
-				AND account_member.member_id = (SELECT auth.uid())
-			)`,
+			using: sql`is_account_member(account_id)`,
 		}),
 		pgPolicy("account write members can manage rows", {
 			as: "permissive",
 			for: "all",
 			to: ["public"],
-			using: sql`EXISTS (
-				SELECT 1 FROM account_member
-				WHERE account_member.account_id = transactions_recurring.account_id
-				AND account_member.member_id = (SELECT auth.uid())
-				AND account_member.role IN ('owner', 'write')
-			)`,
-			withCheck: sql`EXISTS (
-				SELECT 1 FROM account_member
-				WHERE account_member.account_id = transactions_recurring.account_id
-				AND account_member.member_id = (SELECT auth.uid())
-				AND account_member.role IN ('owner', 'write')
-			)`,
+			using: sql`is_account_writer(account_id)`,
+			withCheck: sql`is_account_writer(account_id)`,
 		}),
 		check(
 			"disallow_empty",
 			sql`(description)
-                ::text <> ''::text`,
+			    ::text <> ''::text`,
 		),
 	],
 );
@@ -105,29 +91,29 @@ export const transactionAutoSuggest = pgView("transaction_auto_suggest", {
 })
 	.with({ securityInvoker: true })
 	.as(sql`WITH category_counts
-				 AS (SELECT TRIM(BOTH FROM t_1.description) AS description,
-							t_1.type,
-							c.id                            AS category,
-							c.name,
-							c.color,
-							count(*)                        AS frequency,
-							row_number()                       OVER (PARTITION BY (TRIM(BOTH FROM t_1.description)), t_1.type ORDER BY (count(*)) DESC) AS rn
-					 FROM transactions t_1
-							  JOIN categories c ON c.id = t_1.category
-					 GROUP BY (TRIM(BOTH FROM t_1.description)), t_1.type, c.id,
-							  c.name, c.color),
-			 totals AS (SELECT category_counts.description,
-							   category_counts.type,
-							   sum(category_counts.frequency) AS total_frequency
-						FROM category_counts
-						GROUP BY category_counts.description, category_counts.type)
-		SELECT row_number()         OVER (ORDER BY t.total_frequency DESC, cc.description) AS unique_id, cc.description,
-			   cc.type,
-			   cc.category,
-			   cc.name,
-			   cc.color,
-			   t.total_frequency AS frequency
-		FROM category_counts cc
-				 JOIN totals t ON cc.description = t.description AND cc.type = t.type
-		WHERE cc.rn = 1
-		ORDER BY t.total_frequency DESC, cc.description`);
+					 AS (SELECT TRIM(BOTH FROM t_1.description) AS description,
+		                        t_1.type,
+		                        c.id                            AS category,
+		                        c.name,
+		                        c.color,
+		                        count(*)                        AS frequency,
+		                        row_number()                       OVER (PARTITION BY (TRIM(BOTH FROM t_1.description)), t_1.type ORDER BY (count(*)) DESC) AS rn
+		                 FROM transactions t_1
+								  JOIN categories c ON c.id = t_1.category
+		                 GROUP BY (TRIM(BOTH FROM t_1.description)), t_1.type, c.id,
+		                          c.name, c.color),
+	             totals AS (SELECT category_counts.description,
+	                               category_counts.type,
+	                               sum(category_counts.frequency) AS total_frequency
+	                        FROM category_counts
+	                        GROUP BY category_counts.description, category_counts.type)
+	        SELECT row_number()         OVER (ORDER BY t.total_frequency DESC, cc.description) AS unique_id, cc.description,
+	               cc.type,
+	               cc.category,
+	               cc.name,
+	               cc.color,
+	               t.total_frequency AS frequency
+	        FROM category_counts cc
+					 JOIN totals t ON cc.description = t.description AND cc.type = t.type
+	        WHERE cc.rn = 1
+	        ORDER BY t.total_frequency DESC, cc.description`);

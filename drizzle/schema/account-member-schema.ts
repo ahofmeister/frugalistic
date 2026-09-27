@@ -1,17 +1,20 @@
 import { sql } from "drizzle-orm";
 import {
+	check,
 	foreignKey,
 	index,
 	pgEnum,
 	pgPolicy,
 	pgTable,
 	primaryKey,
+	text,
 	uuid,
 } from "drizzle-orm/pg-core";
 import { accountSchema } from "@/drizzle/schema/account-schema";
 import { profiles } from "@/drizzle/schema/profile-schema";
+import { createdAt } from "@/drizzle/schema/schema-commons";
 
-export const accountRoles = ["owner", "write", "read"] as const;
+export const accountRoles = ["read", "write"] as const;
 export type AccountRole = (typeof accountRoles)[number];
 
 export const accountRoleEnum = pgEnum("account_role", accountRoles);
@@ -19,11 +22,19 @@ export const accountRoleEnum = pgEnum("account_role", accountRoles);
 export const accountMemberSchema = pgTable(
 	"account_member",
 	{
+		createdAt,
 		accountId: uuid("account_id").notNull(),
 		memberId: uuid("member_id").notNull(),
-		role: accountRoleEnum().$type<AccountRole>().notNull(),
+		role: text().$type<AccountRole>().notNull(),
 	},
 	(table) => [
+		check(
+			"account_member_role_check",
+			sql`role = ANY (ARRAY[${sql.join(
+				accountRoles.map((r) => sql`${r}`),
+				sql`, `,
+			)}])`,
+		),
 		primaryKey({ columns: [table.accountId, table.memberId] }),
 		index("account_member_member_id_idx").on(table.memberId),
 		foreignKey({
@@ -40,52 +51,26 @@ export const accountMemberSchema = pgTable(
 			as: "permissive",
 			for: "select",
 			to: ["public"],
-			using: sql`(auth.uid() = member_id)`,
+			using: sql`member_id = (SELECT auth.uid()) OR is_account_member(account_id)`,
 		}),
 		pgPolicy("account owner can add members", {
 			as: "permissive",
 			for: "insert",
 			to: ["public"],
-			withCheck: sql`
-				NOT EXISTS (
-					SELECT 1 FROM account_member AS am
-					WHERE am.account_id = account_member.account_id
-				)
-				OR EXISTS (
-					SELECT 1 FROM account_member AS am
-					WHERE am.account_id = account_member.account_id
-					AND am.member_id = (SELECT auth.uid())
-					AND am.role = 'owner'
-				)
-			`,
+			withCheck: sql`is_account_owner(account_id)`,
 		}),
 		pgPolicy("account owner can update members", {
 			as: "permissive",
 			for: "update",
 			to: ["public"],
-			using: sql`EXISTS (
-				SELECT 1 FROM account_member AS am
-				WHERE am.account_id = account_member.account_id
-				AND am.member_id = (SELECT auth.uid())
-				AND am.role = 'owner'
-			)`,
-			withCheck: sql`EXISTS (
-				SELECT 1 FROM account_member AS am
-				WHERE am.account_id = account_member.account_id
-				AND am.member_id = (SELECT auth.uid())
-				AND am.role = 'owner'
-			)`,
+			using: sql`is_account_owner(account_id)`,
+			withCheck: sql`is_account_owner(account_id)`,
 		}),
 		pgPolicy("account owner can delete members", {
 			as: "permissive",
 			for: "delete",
 			to: ["public"],
-			using: sql`EXISTS (
-				SELECT 1 FROM account_member AS am
-				WHERE am.account_id = account_member.account_id
-				AND am.member_id = (SELECT auth.uid())
-				AND am.role = 'owner'
-			)`,
+			using: sql`is_account_owner(account_id)`,
 		}),
 	],
 );

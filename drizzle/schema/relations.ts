@@ -163,4 +163,24 @@ export const relations = defineRelations(schema, (r) => ({
 			optional: false,
 		}),
 	},
+
+	accountInvitationSchema: {
+		account: r.one.accountSchema({
+			from: r.accountInvitationSchema.accountId,
+			to: r.accountSchema.id,
+			optional: false,
+		}),
+
+		fromMember: r.one.profiles({
+			from: r.accountInvitationSchema.fromMemberId,
+			to: r.profiles.id,
+			optional: false,
+		}),
+
+		toMember: r.one.profiles({
+			from: r.accountInvitationSchema.toMemberId,
+			to: r.profiles.id,
+			optional: false,
+		}),
+	},
 }));

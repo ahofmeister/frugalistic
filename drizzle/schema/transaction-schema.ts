@@ -75,33 +75,19 @@ export const transactions = pgTable(
 			as: "permissive",
 			for: "select",
 			to: ["public"],
-			using: sql`EXISTS (
-				SELECT 1 FROM account_member
-				WHERE account_member.account_id = transactions.account_id
-				AND account_member.member_id = (SELECT auth.uid())
-			)`,
+			using: sql`is_account_member(account_id)`,
 		}),
 		pgPolicy("account write members can manage rows", {
 			as: "permissive",
 			for: "all",
 			to: ["public"],
-			using: sql`EXISTS (
-				SELECT 1 FROM account_member
-				WHERE account_member.account_id = transactions.account_id
-				AND account_member.member_id = (SELECT auth.uid())
-				AND account_member.role IN ('owner', 'write')
-			)`,
-			withCheck: sql`EXISTS (
-				SELECT 1 FROM account_member
-				WHERE account_member.account_id = transactions.account_id
-				AND account_member.member_id = (SELECT auth.uid())
-				AND account_member.role IN ('owner', 'write')
-			)`,
+			using: sql`is_account_writer(account_id)`,
+			withCheck: sql`is_account_writer(account_id)`,
 		}),
 		check(
 			"disallow_empty",
 			sql`(description)
-                ::text <> ''::text`,
+			    ::text <> ''::text`,
 		),
 	],
 );
