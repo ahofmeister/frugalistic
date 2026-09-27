@@ -33,57 +33,49 @@ const AccountList = async () => {
 
 	const setting = await getSettings();
 
-	const myAccounts = memberships.filter(({ account }) => account.userId === profile.id);
-	const sharedAccounts = memberships.filter(({ account }) => account.userId !== profile.id);
-
-	const renderRows = (rows: typeof memberships) =>
-		rows.map(({ account, role }) => (
-			<TableRow key={account.id}>
-				<TableCell>{account.name}</TableCell>
-				<TableCell>{role}</TableCell>
-				<TableCell>{formatDate(account.createdAt, setting.dateFormat)}</TableCell>
-				<TableCell>
-					{profile.activeAccountId !== account.id && (
-						<SwitchActiveAccountButton accountId={account.id} />
-					)}
-					{profile.activeAccountId === account.id && <Badge variant="secondary">Current</Badge>}
-				</TableCell>
-			</TableRow>
-		));
+	const sortedMemberships = [...memberships].sort((a, b) => {
+		const aOwned = a.account.userId === profile.id;
+		const bOwned = b.account.userId === profile.id;
+		return aOwned === bOwned ? 0 : aOwned ? -1 : 1;
+	});
 
 	return (
-		<div className="flex flex-col gap-y-8">
-			<div>
-				<h2>My Accounts</h2>
-				<Table>
-					<TableHeader>
-						<TableRow>
-							<TableHead>Account</TableHead>
-							<TableHead>Role</TableHead>
-							<TableHead>Created</TableHead>
-							<TableHead>Actions</TableHead>
-						</TableRow>
-					</TableHeader>
-					<TableBody>{renderRows(myAccounts)}</TableBody>
-				</Table>
-			</div>
-
-			{sharedAccounts.length > 0 && (
-				<div>
-					<h2>Shared With Me</h2>
-					<Table>
-						<TableHeader>
-							<TableRow>
-								<TableHead>Account</TableHead>
-								<TableHead>Role</TableHead>
-								<TableHead>Created</TableHead>
-								<TableHead>Actions</TableHead>
+		<div>
+			<h2>Accounts</h2>
+			<Table>
+				<TableHeader>
+					<TableRow>
+						<TableHead>Account</TableHead>
+						<TableHead>Role</TableHead>
+						<TableHead>Owner</TableHead>
+						<TableHead>Created</TableHead>
+						<TableHead>Actions</TableHead>
+					</TableRow>
+				</TableHeader>
+				<TableBody>
+					{sortedMemberships.map(({ account, role }) => {
+						const isOwner = account.userId === profile.id;
+						return (
+							<TableRow key={account.id}>
+								<TableCell>{account.name}</TableCell>
+								<TableCell>{role}</TableCell>
+								<TableCell>
+									{isOwner ? <Badge>You</Badge> : <Badge variant="outline">Shared</Badge>}
+								</TableCell>
+								<TableCell>{formatDate(account.createdAt, setting.dateFormat)}</TableCell>
+								<TableCell>
+									{profile.activeAccountId !== account.id && (
+										<SwitchActiveAccountButton accountId={account.id} />
+									)}
+									{profile.activeAccountId === account.id && (
+										<Badge variant="secondary">Current</Badge>
+									)}
+								</TableCell>
 							</TableRow>
-						</TableHeader>
-						<TableBody>{renderRows(sharedAccounts)}</TableBody>
-					</Table>
-				</div>
-			)}
+						);
+					})}
+				</TableBody>
+			</Table>
 		</div>
 	);
 };
