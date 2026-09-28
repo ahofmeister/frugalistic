@@ -19,7 +19,7 @@ const intervalLabels = {
 	annually: "Every year",
 } as const;
 
-export async function BudgetInformation(props: { budgetId: Promise<string> }) {
+export async function BudgetOverview(props: { budgetId: Promise<string> }) {
 	const budgetId = await props.budgetId;
 
 	if (!validate(budgetId)) {
