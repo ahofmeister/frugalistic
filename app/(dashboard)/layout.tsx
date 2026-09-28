@@ -3,7 +3,6 @@ import "../globals.css";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import type React from "react";
 import { Suspense } from "react";
-import { getActiveAccountName } from "@/components/account/account-actions";
 import { DashboardMobileNavigation } from "@/components/navigation/dashboard-mobile-navigation";
 import MainNavigation from "@/components/navigation/main-navigation";
 
