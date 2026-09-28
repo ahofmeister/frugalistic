@@ -56,7 +56,7 @@ export default function ShareAccountButton() {
 						<div className="space-y-2">
 							<Input name="email" type="email" placeholder="Email" required />
 						</div>
-						<Select name="role" required>
+						<Select name="role" required defaultValue="read">
 							<SelectTrigger>
 								<SelectValue placeholder="Account Role" />
 							</SelectTrigger>
