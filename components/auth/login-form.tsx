@@ -23,7 +23,10 @@ export function LoginForm() {
 	}, [step]);
 
 	const handleEmailContinue = () => {
-		if (!email.trim()) return;
+		if (!email.trim()) {
+			return;
+		}
+
 		setStep("transitioning");
 		setTimeout(() => setStep("password"), 700);
 	};
