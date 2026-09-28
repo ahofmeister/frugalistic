@@ -4,6 +4,7 @@ import {
 	addYears,
 	differenceInCalendarDays,
 	format,
+	formatDate,
 	isAfter,
 	parseISO,
 } from "date-fns";
@@ -21,7 +22,6 @@ import { type budgetSchema, categories, transactionsRecurring } from "@/drizzle/
 import { transactions } from "@/drizzle/schema/transaction-schema";
 import { capitalize } from "@/lib/utils";
 
-const DATE_FORMAT = "dd.MM.yyyy";
 const DB_DATE_FORMAT = "yyyy-MM-dd";
 
 const typeLabels = {
@@ -34,14 +34,6 @@ const intervalLabels = {
 	monthly: "Every month",
 	annually: "Every year",
 } as const;
-
-function formatDate(value: string | null | undefined) {
-	if (!value) {
-		return "—";
-	}
-
-	return format(parseISO(value), DATE_FORMAT);
-}
 
 function getPeriod(
 	startDate: string,
@@ -166,7 +158,7 @@ export async function BudgetInformation(props: { budgetId: Promise<string> }) {
 			<header className="flex flex-col gap-1">
 				<div className="flex flex-col items-start gap-2">
 					<h1 className="text-2xl font-bold">{budget.name}</h1>
-					<BudgetSubtitle budget={budget} />
+					<BudgetSubtitle budget={budget} format={settings.dateFormat} />
 					<p
 						style={{
 							color: budget.category.color,
@@ -252,11 +244,18 @@ export async function BudgetInformation(props: { budgetId: Promise<string> }) {
 	);
 }
 
-function BudgetSubtitle({ budget }: { budget: typeof budgetSchema.$inferSelect }) {
+function BudgetSubtitle({
+	budget,
+	format,
+}: {
+	budget: typeof budgetSchema.$inferSelect;
+	format: string;
+}) {
 	if (budget.type === "manual") {
 		return (
 			<p className="text-sm text-muted-foreground">
-				{formatDate(budget.startDate)} – {formatDate(budget.targetDate)}
+				{formatDate(budget.startDate, format)} –{" "}
+				{budget.targetDate && formatDate(budget.targetDate, format)}
 			</p>
 		);
 	}
