@@ -1,4 +1,4 @@
-import { getBgColor } from "@/components/transactions/components/transaction-amount";
+import { getBgColor } from "@/components/transactions/colors";
 import { SelectItem } from "@/components/ui/select";
 import { transactionTypes } from "@/drizzle/schema";
 import { capitalize } from "@/lib/utils";

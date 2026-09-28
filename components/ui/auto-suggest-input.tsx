@@ -8,7 +8,7 @@ import React, {
 	useRef,
 	useState,
 } from "react";
-import { getTextColor } from "@/components/transactions/components/transaction-amount";
+import { getTextColor } from "@/components/transactions/colors";
 import {
 	Command,
 	CommandGroup,

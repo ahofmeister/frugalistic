@@ -1,6 +1,6 @@
+import { getTextColor } from "@/components/transactions/colors";
 import TransactionAmount, {
 	formatAmount,
-	getTextColor,
 } from "@/components/transactions/components/transaction-amount";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import type { TransactionTypeWithLeftover } from "@/drizzle/schema";
