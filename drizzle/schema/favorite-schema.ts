@@ -2,33 +2,34 @@ import { sql } from "drizzle-orm";
 import {
 	check,
 	foreignKey,
+	index,
 	integer,
 	pgPolicy,
 	pgTable,
 	text,
-	timestamp,
 	uuid,
 	varchar,
 } from "drizzle-orm/pg-core";
 import { categories } from "@/drizzle/schema/categories";
+import { accountId, createdAt, id, updatedAt, userId } from "@/drizzle/schema/schema-commons";
 import type { TransactionType } from "@/drizzle/schema/transaction-schema";
 import { users } from "@/drizzle/schema/users-schema";
 
 export const favoriteSchema = pgTable(
 	"favorite",
 	{
-		createdAt: timestamp("created_at", {
-			withTimezone: true,
-			mode: "string",
-		}).defaultNow(),
+		id,
+		createdAt,
+		updatedAt,
+		userId,
+		accountId,
 		description: varchar().notNull(),
-		userId: uuid("user_id").default(sql`auth.uid()`).notNull(),
 		amount: integer().notNull(),
 		type: text("type").$type<TransactionType>().notNull(),
-		id: uuid().defaultRandom().primaryKey().notNull(),
 		categoryId: uuid("category_id").notNull(),
 	},
 	(table) => [
+		index("favorite_account_id_idx").on(table.accountId),
 		foreignKey({
 			columns: [table.categoryId],
 			foreignColumns: [categories.id],
@@ -39,19 +40,23 @@ export const favoriteSchema = pgTable(
 			foreignColumns: [users.id],
 			name: "favorite_user_id_fkey",
 		}).onDelete("cascade"),
-		pgPolicy("User can see favorites", {
+		pgPolicy("account members can select", {
+			as: "permissive",
+			for: "select",
+			to: ["public"],
+			using: sql`is_account_member(account_id)`,
+		}),
+		pgPolicy("account write members can manage rows", {
 			as: "permissive",
 			for: "all",
 			to: ["public"],
-			using: sql`(auth.uid()
-                       = user_id)`,
-			withCheck: sql`(auth.uid()
-                           = user_id)`,
+			using: sql`is_account_writer(account_id)`,
+			withCheck: sql`is_account_writer(account_id)`,
 		}),
 		check(
 			"disallow_empty",
 			sql`(description)
-                ::text <> ''::text`,
+			    ::text <> ''::text`,
 		),
 	],
 );

@@ -1,0 +1,2 @@
+DROP POLICY "recipient can delete to decline" ON "account_invitation";--> statement-breakpoint
+CREATE POLICY "Both can delete to decline or withdraw" ON "account_invitation" AS PERMISSIVE FOR DELETE TO public USING (auth.uid() = "account_invitation"."to_member_id" OR auth.uid() = "account_invitation"."from_member_id");

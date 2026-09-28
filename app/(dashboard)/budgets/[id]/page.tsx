@@ -24,7 +24,11 @@ async function BudgetTransactions(props: { budgetId: Promise<string> }) {
 		notFound();
 	}
 
-	const { start, end } = getBudgetDateRange(budget);
+	const now = new Date();
+	const { start, end } = getBudgetDateRange(budget, {
+		year: now.getFullYear(),
+		month: now.getMonth(),
+	});
 
 	const transactions = await dbTransaction((tx) => {
 		return tx.query.transactions.findMany({
@@ -32,7 +36,7 @@ async function BudgetTransactions(props: { budgetId: Promise<string> }) {
 				categoryId: budget.categoryId,
 				datetime: {
 					gte: start,
-					lte: end ?? undefined,
+					lte: end,
 				},
 			},
 			orderBy: {

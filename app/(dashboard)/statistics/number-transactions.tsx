@@ -1,13 +1,23 @@
-import { isNotNull } from "drizzle-orm";
+import { and, eq, isNotNull } from "drizzle-orm";
+import { getActiveAccountId } from "@/components/account/account-actions";
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { dbTransaction } from "@/drizzle/client";
 import { transactions } from "@/drizzle/schema/transaction-schema";
 
 export const NumberTransactions = async () => {
-	const totalCount = await dbTransaction((tx) => tx.$count(transactions));
+	const activeAccountId = await getActiveAccountId();
 
-	const recurringCount = await dbTransaction((tx) =>
-		tx.$count(transactions, isNotNull(transactions.recurringTransactionId)),
+	const [totalCount, recurringCount] = await dbTransaction((tx) =>
+		Promise.all([
+			tx.$count(transactions, eq(transactions.accountId, activeAccountId)),
+			tx.$count(
+				transactions,
+				and(
+					eq(transactions.accountId, activeAccountId),
+					isNotNull(transactions.recurringTransactionId),
+				),
+			),
+		]),
 	);
 
 	return (

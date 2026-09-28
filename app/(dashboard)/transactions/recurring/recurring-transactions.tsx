@@ -1,14 +1,19 @@
 import Link from "next/link";
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
 import RecurringTransactionCard from "@/app/(dashboard)/transactions/recurring/recurring-transaction-card";
+import { getActiveAccountId } from "@/components/account/account-actions";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { dbTransaction } from "@/drizzle/client";
-import { transactionsRecurring } from "@/drizzle/schema/transaction-recurring-schema";
 
 const RecurringTransactions = async () => {
+	const activeAccountId = await getActiveAccountId();
 	const transactions = await dbTransaction((tx) => {
-		return tx.select().from(transactionsRecurring);
+		return tx.query.transactionsRecurring.findMany({
+			where: {
+				accountId: activeAccountId,
+			},
+		});
 	});
 
 	const typeOrder = { expense: 1, savings: 2, income: 3 };

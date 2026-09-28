@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getCurrentUser } from "@/components/auth/auth-actions";
+import LogoutButton from "@/components/auth/logout-button";
 import { Button } from "@/components/ui/button";
 
 export default async function AppButton() {
@@ -8,7 +9,7 @@ export default async function AppButton() {
 	if (!user) {
 		return (
 			<Link href="/login">
-				<Button variant="default" size="sm" className="w-full">
+				<Button size="sm" className="w-full">
 					Sign Up
 				</Button>
 			</Link>
@@ -16,10 +17,14 @@ export default async function AppButton() {
 	}
 
 	return (
-		<Link href="/dashboard">
-			<Button variant="default" className="w-full" size="sm">
-				Dashboard
-			</Button>
-		</Link>
+		<div className="flex gap-x-2">
+			<Link href="/dashboard">
+				<Button className="w-full" size="sm">
+					Dashboard
+				</Button>
+			</Link>
+
+			<LogoutButton />
+		</div>
 	);
 }

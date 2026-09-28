@@ -52,7 +52,7 @@ const BudgetForm = ({
 			name: z.string().min(3),
 			categoryId: z.string(),
 			type: z.enum(budgetTypes),
-			amount: z.coerce.number(),
+			amount: z.number(),
 			flow: z.enum(transactionTypes),
 			interval: z.enum(recurringIntervals).nullable().optional(),
 			startDate: z.date(),
@@ -61,13 +61,13 @@ const BudgetForm = ({
 		.superRefine((data, ctx) => {
 			if (data.type === "manual" && !data.targetDate) {
 				ctx.addIssue({
-					code: z.ZodIssueCode.custom,
+					code: "custom",
 					message: "Target date is required for manual budgets",
 					path: ["targetDate"],
 				});
 			}
 		});
-	const form = useForm<z.infer<typeof formSchema>>({
+	const form = useForm({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			name: budget?.name ?? undefined,
@@ -234,7 +234,17 @@ const BudgetForm = ({
 								<FormItem>
 									<FormLabel required>Amount</FormLabel>
 									<FormControl>
-										<Input type="number" placeholder="Amount" {...field} />
+										<Input
+											type="number"
+											placeholder="Amount"
+											{...field}
+											value={field.value ?? ""}
+											onChange={(event) =>
+												field.onChange(
+													event.target.value === "" ? undefined : event.target.valueAsNumber,
+												)
+											}
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>

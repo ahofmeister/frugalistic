@@ -217,11 +217,16 @@ ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
 
 							<div>
 								<div className="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-									Account
+									Account & Profile
 								</div>
 								<div className="space-y-1">
-									<NavItem href="/account" icon={UserCogIcon}>
-										Account
+									<NavItem href="/accounts" icon={UserCogIcon}>
+										<div className="flex flex-col items-start">
+											<span>Accounts</span>
+										</div>
+									</NavItem>
+									<NavItem href="/profile" icon={UserCogIcon}>
+										Profile
 									</NavItem>
 									<NavItem href="/settings" icon={SettingsIcon}>
 										Settings

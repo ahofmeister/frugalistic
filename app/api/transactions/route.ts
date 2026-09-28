@@ -14,21 +14,73 @@ type RowResult = {
 	error?: string;
 };
 
-async function getImportDefaultCategoryId(userId: string): Promise<string | null> {
-	const category = await db.transaction((tx) => {
-		return tx.query.settingSchema.findFirst({
-			columns: {
-				importDefaultCategory: true,
-			},
-			where: {
-				userId: {
-					eq: userId,
-				},
-			},
-		});
+type ImportTargetResult =
+	| { ok: true; accountId: string; categoryId: string }
+	| { ok: false; error: string; status: number };
+
+async function canWriteToAccount(userId: string, accountId: string): Promise<boolean> {
+	const account = await db.query.accountSchema.findFirst({
+		columns: { userId: true },
+		where: { id: accountId },
 	});
 
-	return category?.importDefaultCategory ?? null;
+	if (!account) {
+		return false;
+	}
+
+	if (account.userId === userId) {
+		return true;
+	}
+
+	const membership = await db.query.accountMemberSchema.findFirst({
+		columns: { role: true },
+		where: { accountId, memberId: userId },
+	});
+
+	return membership?.role === "write";
+}
+
+async function resolveImportTarget(userId: string): Promise<ImportTargetResult> {
+	const profile = await db.query.profiles.findFirst({
+		columns: { activeAccountId: true },
+		where: { id: userId },
+	});
+
+	const accountId = profile?.activeAccountId;
+
+	if (!accountId) {
+		return { ok: false, error: "No active account selected", status: 400 };
+	}
+
+	if (!(await canWriteToAccount(userId, accountId))) {
+		return { ok: false, error: "No write access to the active account", status: 403 };
+	}
+
+	const setting = await db.query.settingSchema.findFirst({
+		columns: { importDefaultCategory: true },
+		where: { userId },
+	});
+
+	const categoryId = setting?.importDefaultCategory;
+
+	if (!categoryId) {
+		return { ok: false, error: "Please set default import category in settings", status: 400 };
+	}
+
+	const category = await db.query.categories.findFirst({
+		columns: { id: true },
+		where: { id: categoryId, accountId },
+	});
+
+	if (!category) {
+		return {
+			ok: false,
+			error: "The default import category does not belong to the active account",
+			status: 400,
+		};
+	}
+
+	return { ok: true, accountId, categoryId };
 }
 
 async function parseRequestBody(request: NextRequest): Promise<unknown | null> {
@@ -44,11 +96,16 @@ function parseTransactions(body: unknown) {
 	return transactionInsertSchema.safeParse(body);
 }
 
-async function findAlreadyImportedIds(userId: string, externalIds: string[]): Promise<Set<string>> {
+async function findAlreadyImportedIds(
+	accountId: string,
+	externalIds: string[],
+): Promise<Set<string>> {
 	const existingTransactions = await db
 		.select({ externalId: transactions.externalId })
 		.from(transactions)
-		.where(and(eq(transactions.userId, userId), inArray(transactions.externalId, externalIds)));
+		.where(
+			and(eq(transactions.accountId, accountId), inArray(transactions.externalId, externalIds)),
+		);
 
 	const ids = existingTransactions
 		.map((transaction) => transaction.externalId)
@@ -61,6 +118,7 @@ function buildImportRows(
 	incoming: z.infer<typeof transactionInsertSchema>,
 	alreadyImported: Set<string>,
 	userId: string,
+	accountId: string,
 	categoryId: string,
 ) {
 	const rowResults: RowResult[] = [];
@@ -74,6 +132,7 @@ function buildImportRows(
 
 		toInsert.push({
 			userId,
+			accountId,
 			externalId: row.externalId,
 			description: row.description,
 			datetime: row.datetime,
@@ -95,9 +154,7 @@ async function insertTransactionRows(
 
 	for (const row of toInsert) {
 		try {
-			await db.transaction((tx) => {
-				return tx.insert(transactions).values(row);
-			});
+			await db.insert(transactions).values(row);
 		} catch (error) {
 			console.error(error);
 			errors.set(row.externalId, "Database error");
@@ -108,14 +165,10 @@ async function insertTransactionRows(
 }
 
 export const POST = withApiAuth(async (request: NextRequest, userId: string) => {
-	const categoryId = await getImportDefaultCategoryId(userId);
+	const target = await resolveImportTarget(userId);
 
-	if (!categoryId) {
-		console.error("Import category not found.");
-		return Response.json(
-			{ error: "Please set default import category in settings" },
-			{ status: 400 },
-		);
+	if (!target.ok) {
+		return Response.json({ error: target.error }, { status: target.status });
 	}
 
 	const body = await parseRequestBody(request);
@@ -132,7 +185,7 @@ export const POST = withApiAuth(async (request: NextRequest, userId: string) => 
 	}
 
 	const alreadyImported = await findAlreadyImportedIds(
-		userId,
+		target.accountId,
 		parsed.data.map((t) => t.externalId),
 	);
 
@@ -140,7 +193,8 @@ export const POST = withApiAuth(async (request: NextRequest, userId: string) => 
 		parsed.data,
 		alreadyImported,
 		userId,
-		categoryId,
+		target.accountId,
+		target.categoryId,
 	);
 
 	const insertErrors = await insertTransactionRows(toInsert);

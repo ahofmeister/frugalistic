@@ -10,8 +10,6 @@ export const signOut = async () => {
 };
 
 export const signIn = async (formData: FormData) => {
-	"use server";
-
 	const email = formData.get("email") as string;
 	const password = formData.get("password") as string;
 	const supabase = await createClient();
@@ -30,8 +28,6 @@ export const signIn = async (formData: FormData) => {
 };
 
 export const signUp = async (formData: FormData) => {
-	"use server";
-
 	const origin = (await headers()).get("origin");
 	const email = formData.get("email") as string;
 	const password = formData.get("password") as string;

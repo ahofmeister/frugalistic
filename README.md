@@ -57,6 +57,6 @@ WIP
 5. You can now run the Next.js local development server:
 
    ```bash
-   npm run dev
+   pnpm run dev
    ```
 

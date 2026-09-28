@@ -1,5 +1,6 @@
 import type { SearchParams } from "nuqs/server";
 import { loadDashboardParams } from "@/app/(dashboard)/search-params";
+import { getActiveAccountId } from "@/components/account/account-actions";
 import { DashboardCategoryCard } from "@/components/dashboard/dashboard-category-card";
 import { dbTransaction } from "@/drizzle/client";
 import { getPeriodDates } from "@/utils/transaction/dates";
@@ -19,6 +20,8 @@ export async function DashboardCategories({
 
 	const { startDate, endDate } = getPeriodDates(params.year, params.month, params.period);
 
+	const accountId = await getActiveAccountId();
+
 	const expenses = await dbTransaction((tx) => {
 		return tx.query.transactions.findMany({
 			where: {
@@ -26,6 +29,7 @@ export async function DashboardCategories({
 					gte: startDate,
 					lte: endDate,
 				},
+				accountId: accountId,
 				type: {
 					eq: "expense",
 				},

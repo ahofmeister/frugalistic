@@ -104,9 +104,14 @@ export const AutoComplete = forwardRef<AutoCompleteRef, AutoCompleteProps>(
 			[onValueChange],
 		);
 
+		const onValueChangeRef = useRef(onValueChange);
 		useEffect(() => {
-			if (onValueChange && inputValue) {
-				onValueChange({
+			onValueChangeRef.current = onValueChange;
+		});
+
+		useEffect(() => {
+			if (inputValue) {
+				onValueChangeRef.current?.({
 					category: null,
 					color: null,
 					frequency: null,
@@ -116,7 +121,7 @@ export const AutoComplete = forwardRef<AutoCompleteRef, AutoCompleteProps>(
 					description: inputValue,
 				});
 			}
-		}, [inputValue, onValueChange]);
+		}, [inputValue]);
 
 		return (
 			<Command onKeyDown={handleKeyDown}>

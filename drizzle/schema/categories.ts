@@ -1,34 +1,46 @@
 import { sql } from "drizzle-orm";
-import { foreignKey, pgPolicy, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { foreignKey, index, pgPolicy, pgTable, text } from "drizzle-orm/pg-core";
+import { accountSchema } from "@/drizzle/schema/account-schema";
+import { accountId, createdAt, id, updatedAt, userId } from "@/drizzle/schema/schema-commons";
 import { users } from "@/drizzle/schema/users-schema";
 
 export const categories = pgTable(
 	"categories",
 	{
-		createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
-			.defaultNow()
-			.notNull(),
+		id,
+		createdAt,
+		updatedAt,
+		userId,
+		accountId,
 		name: text().notNull(),
 		color: text().notNull(),
-		userId: uuid("user_id").default(sql`auth.uid()`).notNull(),
-		id: uuid().defaultRandom().primaryKey().notNull(),
 		description: text(),
 		icon: text(),
 	},
 	(table) => [
+		index("categories_account_id_idx").on(table.accountId),
 		foreignKey({
 			columns: [table.userId],
 			foreignColumns: [users.id],
 			name: "categories_user_id_fkey",
 		}).onDelete("cascade"),
-		pgPolicy("user's categories", {
+		foreignKey({
+			columns: [table.accountId],
+			foreignColumns: [accountSchema.id],
+			name: "categories_account_id_fkey",
+		}).onDelete("cascade"),
+		pgPolicy("account members can select", {
+			as: "permissive",
+			for: "select",
+			to: ["public"],
+			using: sql`is_account_member(account_id)`,
+		}),
+		pgPolicy("account write members can manage rows", {
 			as: "permissive",
 			for: "all",
 			to: ["public"],
-			using: sql`(auth.uid()
-                       = user_id)`,
-			withCheck: sql`(auth.uid()
-                           = user_id)`,
+			using: sql`is_account_writer(account_id)`,
+			withCheck: sql`is_account_writer(account_id)`,
 		}),
 	],
 );

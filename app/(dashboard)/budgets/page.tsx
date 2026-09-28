@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { createSearchParamsCache, parseAsInteger } from "nuqs/server";
 import { Suspense } from "react";
-import { BudgetList } from "@/app/(dashboard)/budgets/budget-list";
 import { MonthYearStepperPeriod } from "@/app/(dashboard)/budgets/monthYearStepperPeriod";
+import { BudgetList } from "@/components/budget/budget-list";
 import { Button } from "@/components/ui/button";
 
 const searchParamsCache = createSearchParamsCache({

@@ -1,9 +1,9 @@
-import { asc, desc } from "drizzle-orm";
+import { asc, desc, sql } from "drizzle-orm";
 import { notFound } from "next/navigation";
+import { getActiveAccountId } from "@/components/account/account-actions";
 import TransactionForm from "@/components/transactions/components/transaction-form";
 import { dbTransaction } from "@/drizzle/client";
 import { transactionAutoSuggest } from "@/drizzle/schema";
-import { categories } from "@/drizzle/schema/categories";
 
 export const TransactionFormData = async ({
 	transactionId,
@@ -20,7 +20,14 @@ export const TransactionFormData = async ({
 			.from(transactionAutoSuggest)
 			.orderBy(desc(transactionAutoSuggest.frequency), asc(transactionAutoSuggest.description));
 
-		const categoryList = await tx.select().from(categories).orderBy(asc(categories.name));
+		const activeAccountId = await getActiveAccountId();
+
+		const categoryList = await tx.query.categories.findMany({
+			where: {
+				accountId: activeAccountId,
+			},
+			orderBy: (t) => sql`lower(${t.name}) asc`,
+		});
 
 		const favorites = await tx.query.favoriteSchema.findMany({
 			with: { category: true },

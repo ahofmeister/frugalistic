@@ -1,10 +1,8 @@
-import { and, desc, eq, gte, lte } from "drizzle-orm";
 import type { SearchParams } from "nuqs/server";
 import { loadDashboardParams } from "@/app/(dashboard)/search-params";
+import { getActiveAccountId } from "@/components/account/account-actions";
 import DashboardCard from "@/components/dashboard/dashboard-card";
 import { dbTransaction } from "@/drizzle/client";
-import { categories } from "@/drizzle/schema/categories";
-import { transactions } from "@/drizzle/schema/transaction-schema";
 import { getPeriodDates } from "@/utils/transaction/dates";
 
 const DashboardCards = async ({ searchParams }: { searchParams: Promise<SearchParams> }) => {
@@ -21,19 +19,26 @@ const DashboardCards = async ({ searchParams }: { searchParams: Promise<SearchPa
 		awaitedParams.period,
 	);
 
-	const fetchedTransactions = await dbTransaction((tx) => {
-		return tx
-			.select()
-			.from(transactions)
-			.leftJoin(categories, eq(transactions.categoryId, categories.id))
-			.where(and(gte(transactions.datetime, startDate), lte(transactions.datetime, endDate)))
-			.orderBy(desc(transactions.datetime), desc(transactions.createdAt));
-	});
+	const accountId = await getActiveAccountId();
 
-	const transactionsWithCategory = fetchedTransactions.map((row) => ({
-		...row.transactions,
-		category: row.categories,
-	}));
+	const transactionsWithCategory = await dbTransaction((tx) => {
+		return tx.query.transactions.findMany({
+			where: {
+				datetime: {
+					gte: startDate,
+					lte: endDate,
+				},
+				accountId: accountId,
+			},
+			orderBy: {
+				datetime: "desc",
+				createdAt: "desc",
+			},
+			with: {
+				category: true,
+			},
+		});
+	});
 
 	transactionsWithCategory?.forEach((transaction) => {
 		const amount = transaction.amount;

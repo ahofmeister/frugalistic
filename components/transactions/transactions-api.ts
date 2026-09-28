@@ -1,8 +1,9 @@
 "use server";
-import { endOfMonth, format, startOfMonth } from "date-fns";
-import { and, asc, between, desc, eq, gte, ilike, lte, or, sql } from "drizzle-orm";
+import { addYears, endOfMonth, format, startOfMonth, startOfYear } from "date-fns";
+import { and, asc, between, desc, eq, gte, ilike, lt, lte, or, sum } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import type { SearchFilter } from "@/app/(dashboard)/transactions/search-filter";
+import { getActiveAccountId } from "@/components/account/account-actions";
 import { calculateNextRun } from "@/components/transactions/recurring/recurring-transactions-calculator";
 import { dbTransaction } from "@/drizzle/client";
 import type { RecurringInterval, TransactionType } from "@/drizzle/schema";
@@ -101,6 +102,8 @@ export const searchTransactions = async (filter: SearchFilter) => {
 		const amountMin = filter.amountMin ? Number(filter.amountMin) : undefined;
 		const amountMax = filter.amountMax ? Number(filter.amountMax) : undefined;
 
+		const activeAccountId = await getActiveAccountId();
+
 		const conditions = [
 			filter.category ? eq(categories.name, filter.category) : undefined,
 			filter.dateFrom ? gte(transactions.datetime, filter.dateFrom) : undefined,
@@ -109,6 +112,7 @@ export const searchTransactions = async (filter: SearchFilter) => {
 			Number.isFinite(amountMax) ? lte(transactions.amount, amountMax as number) : undefined,
 			filter.description ? ilike(transactions.description, `%${filter.description}%`) : undefined,
 			filter.type ? eq(transactions.type, filter.type) : undefined,
+			eq(transactions.accountId, activeAccountId),
 		].filter((c): c is NonNullable<typeof c> => c !== undefined);
 
 		const rows = await tx
@@ -184,11 +188,14 @@ export async function getRecurringTransactionsForMonth(year: number, month: numb
 		year > today.getFullYear() || (year === today.getFullYear() && month > today.getMonth());
 
 	return await dbTransaction(async (tx) => {
+		const activeAccountId = await getActiveAccountId();
+
 		return tx
 			.select()
 			.from(transactionsRecurring)
 			.where(
 				and(
+					eq(transactionsRecurring.accountId, activeAccountId),
 					eq(transactionsRecurring.enabled, true),
 					isFutureMonth
 						? or(
@@ -218,16 +225,23 @@ export async function getTotalByTypeAndYear(
 	transactionType: TransactionType,
 	transactionYear: number,
 ) {
+	const activeAccountId = await getActiveAccountId();
+
+	const start = startOfYear(new Date(transactionYear, 0, 1));
+	const end = addYears(start, 1);
+
 	const [{ total }] = await dbTransaction((tx) =>
 		tx
 			.select({
-				total: sql<string | null>`sum(${transactions.amount})`,
+				total: sum(transactions.amount),
 			})
 			.from(transactions)
 			.where(
 				and(
+					eq(transactions.accountId, activeAccountId),
 					eq(transactions.type, transactionType),
-					sql`extract(year from ${transactions.datetime}) = ${transactionYear}`,
+					gte(transactions.datetime, start.toISOString()),
+					lt(transactions.datetime, end.toISOString()),
 				),
 			),
 	);
