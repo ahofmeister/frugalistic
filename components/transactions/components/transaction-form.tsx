@@ -10,8 +10,8 @@ import { z } from "zod";
 
 import DeleteTransaction from "@/app/(dashboard)/transactions/edit/[id]/delete-transaction";
 import { addFavorite, removeFavorite } from "@/components/favorite/favorite-actions";
+import { getTextColor } from "@/components/transactions/colors";
 import AmountInput from "@/components/transactions/components/amount-input";
-import { getTextColor } from "@/components/transactions/components/transaction-amount";
 import { TransactionSelectItems } from "@/components/transactions/components/transaction-select-items";
 import {
 	makeTransactionRecurring,

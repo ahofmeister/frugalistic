@@ -1,10 +1,10 @@
 import { and, eq, gte, lte, sql } from "drizzle-orm";
 import type { SearchParams } from "nuqs/server";
 import InsightCategoryCard from "@/app/(dashboard)/insights/insight-category-card";
+import { getYearBoundaries } from "@/components/transactions/dates";
 import { dbTransaction } from "@/drizzle/client";
 import { categories, transactions } from "@/drizzle/schema";
 import { loadYearSearchParam } from "@/lib/utils";
-import { getYearBoundaries } from "@/utils/transaction/dates";
 
 export async function InsightCategories({ searchParams }: { searchParams: Promise<SearchParams> }) {
 	const { year } = await loadYearSearchParam(searchParams);

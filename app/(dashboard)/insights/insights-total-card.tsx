@@ -1,9 +1,9 @@
 import { ArrowDown, ArrowUp } from "lucide-react";
 import Link from "next/link";
 import { AverageAmount } from "@/app/(dashboard)/insights/average-amount";
-import TransactionAmount, {
-	getTextColor,
-} from "@/components/transactions/components/transaction-amount";
+import { getTextColor } from "@/components/transactions/colors";
+import TransactionAmount from "@/components/transactions/components/transaction-amount";
+import { getYearBoundaries } from "@/components/transactions/dates";
 import {
 	Card,
 	CardContent,
@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/card";
 import type { TransactionType } from "@/drizzle/schema";
 import { capitalize, cn } from "@/lib/utils";
-import { getYearBoundaries } from "@/utils/transaction/dates";
 
 function InsightsTotalCard(props: {
 	year: number;

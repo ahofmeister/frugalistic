@@ -3,8 +3,8 @@ import { loadDashboardParams } from "@/app/(dashboard)/search-params";
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
 import { getActiveAccountId } from "@/components/account/account-actions";
 import TransactionList from "@/components/transactions/components/transaction-list";
+import { getPeriodDates } from "@/components/transactions/dates";
 import { dbTransaction } from "@/drizzle/client";
-import { getPeriodDates } from "@/utils/transaction/dates";
 
 export default async function DashboardTransactions({
 	searchParams,

@@ -5,8 +5,8 @@ import { AverageAmount } from "@/app/(dashboard)/insights/average-amount";
 import TransactionAmount, {
 	formatAmount,
 } from "@/components/transactions/components/transaction-amount";
+import { getYearBoundaries } from "@/components/transactions/dates";
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { getYearBoundaries } from "@/utils/transaction/dates";
 
 function InsightCategoryCard({
 	category,
