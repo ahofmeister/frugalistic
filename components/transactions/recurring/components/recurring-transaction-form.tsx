@@ -50,7 +50,7 @@ const RecurringTransactionForm = ({
 		enabled: transaction.enabled,
 	};
 
-	const form = useForm<z.infer<typeof formSchema>>({
+	const form = useForm({
 		resolver: zodResolver(formSchema),
 		defaultValues: defaultValues,
 		mode: "onChange",
@@ -102,7 +102,7 @@ const RecurringTransactionForm = ({
 								<FormItem>
 									<FormLabel>Amount</FormLabel>
 									<FormControl>
-										<AmountInput value={field.value} onChange={field.onChange} />
+										<AmountInput value={field.value as string} onChange={field.onChange} />
 									</FormControl>
 									<FormMessage />
 								</FormItem>
