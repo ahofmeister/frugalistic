@@ -4,6 +4,8 @@ import { createLoader, parseAsInteger, parseAsStringEnum } from "nuqs/server";
 import { twMerge } from "tailwind-merge";
 import type { Period } from "@/components/dashboard/period-selector";
 
+export const DB_DATE_FORMAT = "yyyy-MM-dd";
+
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }

@@ -20,9 +20,7 @@ import TransactionList from "@/components/transactions/components/transaction-li
 import { dbTransaction } from "@/drizzle/client";
 import { type budgetSchema, categories, transactionsRecurring } from "@/drizzle/schema";
 import { transactions } from "@/drizzle/schema/transaction-schema";
-import { capitalize } from "@/lib/utils";
-
-const DB_DATE_FORMAT = "yyyy-MM-dd";
+import { capitalize, DB_DATE_FORMAT } from "@/lib/utils";
 
 const typeLabels = {
 	month: "Monthly budget",
