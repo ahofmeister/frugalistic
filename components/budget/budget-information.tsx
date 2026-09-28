@@ -1,26 +1,12 @@
-import {
-	addDays,
-	addMonths,
-	addYears,
-	differenceInCalendarDays,
-	format,
-	formatDate,
-	isAfter,
-	parseISO,
-} from "date-fns";
-import { and, desc, eq, gte, inArray, lt } from "drizzle-orm";
+import { differenceInCalendarDays, formatDate, parseISO } from "date-fns";
 import { notFound } from "next/navigation";
 import { validate } from "uuid";
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
-import { getActiveAccountId } from "@/components/account/account-actions";
-import { findBudgetById } from "@/components/budget/budget-actions";
+import { findBudgetById, findBudgetTransactions } from "@/components/budget/budget-actions";
 import { getTextColor } from "@/components/transactions/colors";
 import { formatAmount } from "@/components/transactions/components/transaction-amount";
-import TransactionList from "@/components/transactions/components/transaction-list";
-import { dbTransaction } from "@/drizzle/client";
-import { type budgetSchema, categories, transactionsRecurring } from "@/drizzle/schema";
-import { transactions } from "@/drizzle/schema/transaction-schema";
-import { capitalize, DB_DATE_FORMAT } from "@/lib/utils";
+import type { budgetSchema } from "@/drizzle/schema";
+import { capitalize } from "@/lib/utils";
 
 const typeLabels = {
 	month: "Monthly budget",
@@ -32,74 +18,6 @@ const intervalLabels = {
 	monthly: "Every month",
 	annually: "Every year",
 } as const;
-
-function getPeriod(
-	startDate: string,
-	interval: string | null,
-	targetDate: string | null,
-	now: Date,
-) {
-	const start = parseISO(startDate);
-
-	if (!interval) {
-		return targetDate ? { start, end: parseISO(targetDate), endInclusive: true } : null;
-	}
-
-	const step = interval === "annually" ? addYears : addMonths;
-	let index = 1;
-	let periodStart = start;
-	let periodEnd = step(start, index);
-
-	while (!isAfter(periodEnd, now)) {
-		index += 1;
-		periodStart = periodEnd;
-		periodEnd = step(start, index);
-	}
-
-	return {
-		start: periodStart,
-		end: periodEnd,
-		endInclusive: false,
-	};
-}
-
-async function findBudgetTransactions(params: { categoryId: string; from: Date; to: Date | null }) {
-	const activeAccountId = await getActiveAccountId();
-
-	const conditions = [
-		eq(transactions.categoryId, params.categoryId),
-		eq(transactions.accountId, activeAccountId),
-		inArray(transactions.type, ["expense", "income", "savings"]),
-		gte(transactions.datetime, format(params.from, DB_DATE_FORMAT)),
-	];
-
-	if (params.to) {
-		conditions.push(lt(transactions.datetime, format(params.to, DB_DATE_FORMAT)));
-	}
-
-	return dbTransaction(async (tx) => {
-		const rows = await tx
-			.select({
-				transaction: transactions,
-				category: categories,
-				recurringTransaction: transactionsRecurring,
-			})
-			.from(transactions)
-			.innerJoin(categories, eq(transactions.categoryId, categories.id))
-			.leftJoin(
-				transactionsRecurring,
-				eq(transactions.recurringTransactionId, transactionsRecurring.id),
-			)
-			.where(and(...conditions))
-			.orderBy(desc(transactions.datetime), desc(transactions.createdAt));
-
-		return rows.map(({ transaction, category, recurringTransaction }) => ({
-			...transaction,
-			category,
-			recurringTransaction,
-		}));
-	});
-}
 
 export async function BudgetInformation(props: { budgetId: Promise<string> }) {
 	const budgetId = await props.budgetId;
@@ -114,18 +32,11 @@ export async function BudgetInformation(props: { budgetId: Promise<string> }) {
 		notFound();
 	}
 
-	const now = new Date();
-
-	const period = getPeriod(budget.startDate, budget.interval, budget.targetDate, now);
-
-	const rangeStart = period?.start ?? parseISO(budget.startDate);
-	const rangeEnd = period ? (period.endInclusive ? addDays(period.end, 1) : period.end) : null;
-
-	const budgetTransactions = await findBudgetTransactions({
-		categoryId: budget.categoryId,
-		from: rangeStart,
-		to: rangeEnd,
-	});
+	const budgetTransactions = await findBudgetTransactions(
+		budget.categoryId,
+		budget.startDate,
+		budget.targetDate,
+	);
 
 	const expenses = budgetTransactions
 		.filter((transaction) => transaction.type === "expense")
@@ -147,7 +58,9 @@ export async function BudgetInformation(props: { budgetId: Promise<string> }) {
 	const barColor =
 		isOver || (budget.flow === "expense" && usedPercent >= 80) ? "bg-red-400" : "bg-primary";
 
-	const daysLeft = period ? Math.max(0, differenceInCalendarDays(period.end, now)) : null;
+	const daysLeft = budget.targetDate
+		? Math.max(0, differenceInCalendarDays(parseISO(budget.targetDate), new Date()) + 1)
+		: null;
 
 	const settings = await getSettings();
 
@@ -231,12 +144,6 @@ export async function BudgetInformation(props: { budgetId: Promise<string> }) {
 						</div>
 					)}
 				</div>
-			</section>
-
-			<section className="flex flex-col gap-3">
-				<h2 className="text-lg font-medium">Transactions</h2>
-
-				<TransactionList transactions={budgetTransactions} dateFormat={settings.dateFormat} />
 			</section>
 		</div>
 	);
