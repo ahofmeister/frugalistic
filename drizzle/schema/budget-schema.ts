@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
 import { foreignKey, index, integer, pgPolicy, pgTable } from "drizzle-orm/pg-core";
 import { date, text, uuid } from "drizzle-orm/pg-core/columns";
+import { accountSchema } from "@/drizzle/schema/account-schema";
 import { profiles } from "@/drizzle/schema/profile-schema";
 import { accountId, createdAt, id, updatedAt, userId } from "@/drizzle/schema/schema-commons";
 import type { RecurringInterval } from "@/drizzle/schema/transaction-recurring-schema";
@@ -38,14 +39,25 @@ export const budgetSchema = pgTable(
 			foreignColumns: [profiles.id],
 			name: "budget_user_id_fkey",
 		}).onDelete("cascade"),
+		foreignKey({
+			columns: [table.accountId],
+			foreignColumns: [accountSchema.id],
+			name: "budget_account_id_fkey",
+		}).onDelete("cascade"),
 		index("budget_user_category_idx").on(table.userId, table.categoryId),
 		index("budget_account_id_idx").on(table.accountId),
-		pgPolicy("User can manage their budgets", {
+		pgPolicy("account members can select", {
+			as: "permissive",
+			for: "select",
+			to: ["public"],
+			using: sql`is_account_member(account_id)`,
+		}),
+		pgPolicy("account write members can manage rows", {
 			as: "permissive",
 			for: "all",
 			to: ["public"],
-			using: sql`(auth.uid() = user_id)`,
-			withCheck: sql`(auth.uid() = user_id)`,
+			using: sql`is_account_writer(account_id)`,
+			withCheck: sql`is_account_writer(account_id)`,
 		}),
 	],
 );

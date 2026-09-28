@@ -105,6 +105,7 @@ export async function shareAccount(email: string, role: AccountRole) {
 		});
 	});
 
+	revalidatePath("/accounts");
 	return { error: null };
 }
 

@@ -234,7 +234,17 @@ const BudgetForm = ({
 								<FormItem>
 									<FormLabel required>Amount</FormLabel>
 									<FormControl>
-										<Input type="number" placeholder="Amount" {...field} />
+										<Input
+											type="number"
+											placeholder="Amount"
+											{...field}
+											value={field.value ?? ""}
+											onChange={(event) =>
+												field.onChange(
+													event.target.value === "" ? undefined : event.target.valueAsNumber,
+												)
+											}
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
