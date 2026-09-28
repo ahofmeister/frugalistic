@@ -1,5 +1,3 @@
-export * from "./account-invitation-schema";
-
 export * from "./account-member-schema";
 export * from "./account-schema";
 export * from "./api-key-schema";

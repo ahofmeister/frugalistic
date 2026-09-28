@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgPolicy, pgTable, text } from "drizzle-orm/pg-core";
+import { pgPolicy, pgTable, text, unique } from "drizzle-orm/pg-core";
 import { createdAt, id, updatedAt, userId } from "@/drizzle/schema/schema-commons";
 
 export const accountSchema = pgTable(
@@ -11,7 +11,8 @@ export const accountSchema = pgTable(
 		userId,
 		name: text().notNull(),
 	},
-	() => [
+	(table) => [
+		unique("account_user_id_key").on(table.userId),
 		pgPolicy("account members can view", {
 			as: "permissive",
 			for: "select",

@@ -1,10 +1,8 @@
+import { getProfile } from "@/components/profile/profile-actions";
 import ProfileForm from "@/components/profile/profile-form";
-import { dbTransaction } from "@/drizzle/client";
 
 export async function AccountProfileSection() {
-	const profile = await dbTransaction((tx) => {
-		return tx.query.profiles.findFirst();
-	});
+	const profile = await getProfile();
 
 	return <ProfileForm profile={profile} />;
 }

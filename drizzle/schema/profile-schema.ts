@@ -26,5 +26,15 @@ export const profiles = pgTable(
 			using: sql`(auth.uid() = id)`,
 			withCheck: sql`(auth.uid() = id)`,
 		}),
+		pgPolicy("account co-members can view each other's profile", {
+			as: "permissive",
+			for: "select",
+			to: ["public"],
+			using: sql`EXISTS (
+				SELECT 1 FROM account_member
+				WHERE account_member.member_id = profile.id
+				AND is_account_member(account_member.account_id)
+			)`,
+		}),
 	],
 );

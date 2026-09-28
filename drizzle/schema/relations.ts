@@ -39,6 +39,10 @@ export const relations = defineRelations(schema, (r) => ({
 		budgets: r.many.budgetSchema(),
 		recurringTransactions: r.many.transactionsRecurring(),
 		favorites: r.many.favoriteSchema(),
+		owner: r.one.profiles({
+			from: r.accountSchema.userId,
+			to: r.profiles.id,
+		}),
 	},
 
 	accountMemberSchema: {
@@ -160,26 +164,6 @@ export const relations = defineRelations(schema, (r) => ({
 		category: r.one.categories({
 			from: r.budgetSchema.categoryId,
 			to: r.categories.id,
-			optional: false,
-		}),
-	},
-
-	accountInvitationSchema: {
-		account: r.one.accountSchema({
-			from: r.accountInvitationSchema.accountId,
-			to: r.accountSchema.id,
-			optional: false,
-		}),
-
-		fromMember: r.one.profiles({
-			from: r.accountInvitationSchema.fromMemberId,
-			to: r.profiles.id,
-			optional: false,
-		}),
-
-		toMember: r.one.profiles({
-			from: r.accountInvitationSchema.toMemberId,
-			to: r.profiles.id,
 			optional: false,
 		}),
 	},

@@ -1,15 +1,10 @@
 "use server";
 
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/components/auth/auth-actions";
 import { db, dbTransaction } from "@/drizzle/client";
-import {
-	type AccountRole,
-	accountInvitationSchema,
-	accountMemberSchema,
-	profiles,
-} from "@/drizzle/schema";
+import { type AccountRole, accountMemberSchema, profiles } from "@/drizzle/schema";
 
 // TODO proper error handling
 export async function switchActiveAccount(accountId: string) {
@@ -102,46 +97,40 @@ export async function shareAccount(email: string, role: AccountRole) {
 		return { error: "You can't invite yourself" };
 	}
 
-	const { error } = await dbTransaction(async (tx) => {
-		try {
-			await tx.insert(accountInvitationSchema).values({
-				accountId,
-				fromMemberId: currentUser.id,
-				toMemberId: invitee.id,
-				accountRole: role,
-			});
-			return { error: null };
-		} catch (err) {
-			console.error(err);
-			return { error: "Failed to send invitation" };
-		}
-	});
-
-	return { error };
-}
-
-export async function deleteAccountInvitation(id: string) {
-	await dbTransaction(async (tx) => {
-		await tx.delete(accountInvitationSchema).where(eq(accountInvitationSchema.id, id));
-	});
-	revalidatePath("accounts");
-}
-
-export async function acceptAccountInvitation(
-	accountId: string,
-	memberId: string,
-	role: AccountRole,
-	invitationId: string,
-) {
 	await dbTransaction((tx) => {
 		return tx.insert(accountMemberSchema).values({
 			accountId,
 			role,
-			memberId,
+			memberId: invitee.id,
 		});
 	});
 
-	await deleteAccountInvitation(invitationId);
+	return { error: null };
+}
 
-	revalidatePath("accounts");
+export async function removeAccountSharing(accountId: string, memberId: string) {
+	const otherAccount = await db.query.accountSchema.findFirst({
+		where: {
+			userId: memberId,
+		},
+	});
+
+	if (!otherAccount) {
+		throw new Error("Not authenticated");
+	}
+
+	await db
+		.update(profiles)
+		.set({
+			activeAccountId: otherAccount.id,
+		})
+		.where(eq(profiles.id, memberId));
+
+	await db
+		.delete(accountMemberSchema)
+		.where(
+			and(eq(accountMemberSchema.accountId, accountId), eq(accountMemberSchema.memberId, memberId)),
+		);
+
+	revalidatePath("/accounts");
 }

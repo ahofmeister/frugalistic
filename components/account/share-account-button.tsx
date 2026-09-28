@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import { type AccountRole, accountRoles } from "@/drizzle/schema";
 
-export default function AccountInviteButton() {
+export default function ShareAccountButton() {
 	const [open, setOpen] = useState(false);
 	const [, formAction, isPending] = useActionState(async (_: void, formData: FormData) => {
 		const selectedRole = formData.get("role") as AccountRole;
