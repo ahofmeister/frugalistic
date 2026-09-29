@@ -206,12 +206,13 @@ const TransactionForm = ({
 										<FormControl>
 											<AutoComplete
 												ref={autoCompleteRef}
-												value={autoSuggests?.find(
-													(l) =>
-														l.type === transaction?.type &&
-														l.description === transaction?.description &&
-														l.category === transaction?.category?.id,
-												)}
+												value={autoSuggests?.find((autoSuggest) => {
+													return (
+														autoSuggest.type === transaction?.type &&
+														autoSuggest.description === transaction?.description &&
+														autoSuggest.category === transaction?.category.id
+													);
+												})}
 												placeholder="Enter or choose description"
 												onValueChange={(e: typeof transactionAutoSuggest.$inferSelect) => {
 													form.setValue("description", e.description ?? "", {

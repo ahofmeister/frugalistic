@@ -119,6 +119,7 @@ export const AutoComplete = forwardRef<AutoCompleteRef, AutoCompleteProps>(
 					type: null,
 					uniqueId: null,
 					description: inputValue,
+					accountId: null,
 				});
 			}
 		}, [inputValue]);

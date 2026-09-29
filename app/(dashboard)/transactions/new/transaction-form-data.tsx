@@ -14,13 +14,13 @@ export const TransactionFormData = async ({
 }) => {
 	const id = await transactionId;
 
+	const activeAccountId = await getActiveAccountId();
+
 	const { autoSuggests, categoryList, favorites, transaction } = await dbTransaction(async (tx) => {
 		const autoSuggests = await tx
 			.select()
 			.from(transactionAutoSuggest)
 			.orderBy(desc(transactionAutoSuggest.frequency), asc(transactionAutoSuggest.description));
-
-		const activeAccountId = await getActiveAccountId();
 
 		const categoryList = await tx.query.categories.findMany({
 			where: {
@@ -34,16 +34,15 @@ export const TransactionFormData = async ({
 			orderBy: { description: "asc" },
 		});
 
-		const [transaction] = id
-			? await tx.query.transactions.findMany({
-					where: { id: { eq: id } },
+		const transaction = id
+			? await tx.query.transactions.findFirst({
+					where: { id: id, accountId: activeAccountId },
 					with: {
 						recurringTransaction: true,
 						category: true,
 					},
-					limit: 1,
 				})
-			: [undefined];
+			: undefined;
 
 		return { autoSuggests, categoryList, favorites, transaction };
 	});
