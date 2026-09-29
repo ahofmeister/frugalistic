@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import CategoryForm from "@/components/categories/category-form";
+import CategoryForm from "@/features/categories/category-form";
 import { dbTransaction } from "@/drizzle/client";
 
 export async function CategoryFormWithData(props: { categoryId: Promise<string> }) {

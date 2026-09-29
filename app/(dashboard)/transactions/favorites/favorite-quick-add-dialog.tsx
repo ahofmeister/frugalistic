@@ -5,8 +5,8 @@ import { Plus } from "lucide-react";
 import { parseAsBoolean, useQueryState } from "nuqs";
 import { useActionState, useState } from "react";
 import { toast } from "sonner";
-import { formatAmount } from "@/components/transactions/components/transaction-amount";
-import { insertTransaction } from "@/components/transactions/transactions-api";
+import { formatAmount } from "@/features/transactions/components/transaction-amount";
+import { insertTransaction } from "@/features/transactions/transactions-api";
 import {
 	AlertDialog,
 	AlertDialogCancel,
@@ -16,11 +16,11 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 	AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Label } from "@/components/ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+} from "@/features/ui/alert-dialog";
+import { Button } from "@/features/ui/button";
+import { Calendar } from "@/features/ui/calendar";
+import { Label } from "@/features/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/features/ui/popover";
 import type { favoriteSchema } from "@/drizzle/schema";
 import { cn } from "@/lib/utils";
 

@@ -2,7 +2,7 @@
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { parseAsString, useQueryState } from "nuqs";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/ui/button";
 
 export type SortDirection = "asc" | "desc";
 

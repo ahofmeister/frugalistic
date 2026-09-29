@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import Link from "next/link";
-import { getActiveAccountId } from "@/components/account/account-actions";
-import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { getActiveAccountId } from "@/features/account/account-actions";
+import { Card, CardFooter, CardHeader, CardTitle } from "@/features/ui/card";
 import { dbTransaction } from "@/drizzle/client";
 import { categories } from "@/drizzle/schema/categories";
 

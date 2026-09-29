@@ -1,6 +1,6 @@
 import type { SearchParams } from "nuqs/server";
 import InsightsTotalCard from "@/app/(dashboard)/insights/insights-total-card";
-import { getTotalByTypeAndYear } from "@/components/transactions/transactions-api";
+import { getTotalByTypeAndYear } from "@/features/transactions/transactions-api";
 import type { TransactionType } from "@/drizzle/schema";
 import { loadYearSearchParam } from "@/lib/utils";
 

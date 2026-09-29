@@ -4,9 +4,9 @@ import { useRouter } from "next/navigation";
 import { AverageAmount } from "@/app/(dashboard)/insights/average-amount";
 import TransactionAmount, {
 	formatAmount,
-} from "@/components/transactions/components/transaction-amount";
-import { getYearBoundaries } from "@/components/transactions/dates";
-import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+} from "@/features/transactions/components/transaction-amount";
+import { getYearBoundaries } from "@/features/transactions/dates";
+import { Card, CardFooter, CardHeader, CardTitle } from "@/features/ui/card";
 
 function InsightCategoryCard({
 	category,

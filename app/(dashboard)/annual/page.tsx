@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import AnnuallyComparison from "@/components/comparison/annual-comparison";
+import AnnuallyComparison from "@/features/comparison/annual-comparison";
 
 const AnnualPage = () => {
 	return (

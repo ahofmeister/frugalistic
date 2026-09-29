@@ -3,9 +3,9 @@ import { format } from "date-fns";
 import { useState } from "react";
 import { Area, AreaChart, XAxis, YAxis } from "recharts";
 
-import TransactionAmount from "@/components/transactions/components/transaction-amount";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import TransactionAmount from "@/features/transactions/components/transaction-amount";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/features/ui/chart";
+import { ToggleGroup, ToggleGroupItem } from "@/features/ui/toggle-group";
 import type {
 	TransactionType,
 	TransactionTypeWithLeftover,

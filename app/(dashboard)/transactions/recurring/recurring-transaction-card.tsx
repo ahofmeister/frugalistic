@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 import FormattedDate from "@/app/(dashboard)/dashboard/formatted-date";
-import TransactionAmount from "@/components/transactions/components/transaction-amount";
-import { Badge } from "@/components/ui/badge";
+import TransactionAmount from "@/features/transactions/components/transaction-amount";
+import { Badge } from "@/features/ui/badge";
 import {
 	Card,
 	CardContent,
@@ -10,7 +10,7 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card";
+} from "@/features/ui/card";
 import type { transactionsRecurring } from "@/drizzle/schema";
 
 const RecurringTransactionCard = (props: {

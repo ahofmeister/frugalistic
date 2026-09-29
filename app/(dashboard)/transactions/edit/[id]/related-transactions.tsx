@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
-import TransactionList from "@/components/transactions/components/transaction-list";
+import TransactionList from "@/features/transactions/components/transaction-list";
 import { dbTransaction } from "@/drizzle/client";
 
 import { transactions } from "@/drizzle/schema/transaction-schema";

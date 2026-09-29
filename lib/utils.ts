@@ -2,7 +2,7 @@ import { type ClassValue, clsx } from "clsx";
 import { endOfMonth, endOfYear, format as formatDate, startOfMonth, startOfYear } from "date-fns";
 import { createLoader, parseAsInteger, parseAsStringEnum } from "nuqs/server";
 import { twMerge } from "tailwind-merge";
-import type { Period } from "@/components/dashboard/period-selector";
+import type { Period } from "@/features/dashboard/period-selector";
 
 export const DB_DATE_FORMAT = "yyyy-MM-dd";
 

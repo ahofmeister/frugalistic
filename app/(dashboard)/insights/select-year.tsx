@@ -1,7 +1,7 @@
 "use client";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { parseAsInteger, useQueryState } from "nuqs";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/ui/button";
 
 const SelectYear = (props: { min?: number; max?: number }) => {
 	const [year, setYear] = useQueryState(

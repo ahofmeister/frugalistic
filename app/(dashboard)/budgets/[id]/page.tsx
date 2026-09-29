@@ -1,6 +1,7 @@
 import { Suspense } from "react";
-import { BudgetOverview } from "@/components/budget/budget-overview";
-import { BudgetTransactions } from "@/components/budget/budget-transactions";
+import { BudgetOverview } from "@/features/budget/budget-overview";
+import { BudgetTransactions } from "@/features/budget/budget-transactions";
+import DeleteBudget from "@/features/budget/delete-budget";
 
 export default async function BudgetPage({ params }: { params: Promise<{ id: string }> }) {
 	return (

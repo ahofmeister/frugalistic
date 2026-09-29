@@ -1,7 +1,7 @@
 import { AlertCircle } from "lucide-react";
 import { Suspense } from "react";
-import AppButton from "@/components/auth/app-button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import AppButton from "@/features/auth/app-button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/features/ui/card";
 
 export default function NotFound() {
 	return (

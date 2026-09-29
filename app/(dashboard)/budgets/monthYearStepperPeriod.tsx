@@ -2,8 +2,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Suspense } from "react";
 import { DashboardDateLabel } from "@/app/(dashboard)/dashboard/dashboard-date-label";
 import { MonthYearStepper } from "@/app/month-year-stepper";
-import { PeriodSelector } from "@/components/dashboard/period-selector";
-import { SelectNow } from "@/components/dashboard/select-now";
+import { PeriodSelector } from "@/features/dashboard/period-selector";
+import { SelectNow } from "@/features/dashboard/select-now";
 
 export function MonthYearStepperPeriod() {
 	return (

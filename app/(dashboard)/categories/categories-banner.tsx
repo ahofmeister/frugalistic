@@ -1,7 +1,7 @@
 import { TriangleAlert } from "lucide-react";
 import Link from "next/link";
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/features/ui/alert";
 import { dbTransaction } from "@/drizzle/client";
 import { categories } from "@/drizzle/schema";
 

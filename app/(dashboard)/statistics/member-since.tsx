@@ -1,8 +1,8 @@
 import { differenceInDays } from "date-fns";
 import FormattedDate from "@/app/(dashboard)/dashboard/formatted-date";
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
-import { getCurrentUser } from "@/components/auth/auth-actions";
-import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { getCurrentUser } from "@/features/auth/auth-actions";
+import { Card, CardFooter, CardHeader, CardTitle } from "@/features/ui/card";
 
 export const MemberSince = async () => {
 	const user = await getCurrentUser();

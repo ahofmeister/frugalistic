@@ -1,4 +1,4 @@
-import CategoryForm from "@/components/categories/category-form";
+import CategoryForm from "@/features/categories/category-form";
 
 export default function NewCategoryPage() {
 	return (

@@ -1,0 +1,428 @@
+"use client";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CalendarIcon } from "@radix-ui/react-icons";
+import { format, startOfYesterday } from "date-fns";
+import { HeartIcon } from "lucide-react";
+import { useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
+
+import DeleteTransaction from "@/app/(dashboard)/transactions/edit/[id]/delete-transaction";
+import { addFavorite, removeFavorite } from "@/features/favorite/favorite-actions";
+import { getTextColor } from "@/features/transactions/colors";
+import AmountInput from "@/features/transactions/components/amount-input";
+import { TransactionSelectItems } from "@/features/transactions/components/transaction-select-items";
+import {
+	makeTransactionRecurring,
+	upsertTransaction,
+} from "@/features/transactions/transactions-api";
+import { AutoComplete, type AutoCompleteRef } from "@/features/ui/auto-suggest-input";
+import { Button } from "@/features/ui/button";
+import { Calendar } from "@/features/ui/calendar";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/dialog";
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/features/ui/form";
+import { Popover, PopoverContent, PopoverTrigger } from "@/features/ui/popover";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/features/ui/select";
+import { Spinner } from "@/features/ui/spinner";
+import type { categories, favoriteSchema, transactionAutoSuggest } from "@/drizzle/schema";
+import type { TransactionWithRecurringCategory } from "@/drizzle/schema/transaction-recurring-schema";
+import type { transactions } from "@/drizzle/schema/transaction-schema";
+import { cn } from "@/lib/utils";
+
+const TransactionForm = ({
+	transaction,
+	autoSuggests,
+	allCategories,
+	favorites,
+}: {
+	transaction?: TransactionWithRecurringCategory | undefined;
+	autoSuggests?: (typeof transactionAutoSuggest.$inferSelect)[];
+	allCategories?: (typeof categories.$inferSelect)[];
+	favorites?: (typeof favoriteSchema.$inferSelect & {
+		category: typeof categories.$inferSelect;
+	})[];
+}) => {
+	const formSchema = z.object({
+		description: z.string().min(1),
+		amount: z.string(),
+		type: z.enum(["income", "expense", "savings"]),
+		category: z.string(),
+		datetime: z.date(),
+		costType: z.enum(["fixed", "variable"]).optional(),
+	});
+
+	const defaultValues = {
+		description: transaction ? transaction.description : "",
+		type: transaction ? transaction.type : "expense",
+		amount: transaction ? transaction.amount.toString() : "0",
+		datetime: transaction ? new Date(transaction.datetime) : new Date(),
+		category: transaction?.category ? transaction.category.id : "",
+		costType: transaction?.costType ?? "variable",
+	};
+	const form = useForm({
+		resolver: zodResolver(formSchema),
+		defaultValues: defaultValues,
+		mode: "onChange",
+	});
+
+	const autoCompleteRef = useRef<AutoCompleteRef>(null);
+
+	function resetForm() {
+		form.reset(defaultValues);
+		if (autoCompleteRef?.current) {
+			autoCompleteRef.current.clearInput();
+		}
+	}
+
+	const typeValue = form.watch("type");
+	const categoryValue = form.watch("category");
+	const costTypeValue = form.watch("costType");
+
+	async function handleSubmit(newTransaction: typeof transactions.$inferInsert) {
+		const { error } = await upsertTransaction({
+			...newTransaction,
+			id: transaction ? transaction.id : undefined,
+		});
+
+		if (error) {
+			console.error(error);
+			toast.error(`Failed to ${transaction ? "save" : "create"} transaction`);
+		} else if (!transaction) {
+			toast.success("Transaction created successfully!");
+			resetForm();
+		} else {
+			toast.success(`Transaction saved successfully`);
+		}
+	}
+
+	const favorite = favorites?.find((favorite) => transaction?.description === favorite.description);
+	const isFavorite = transaction && favorite;
+
+	const [favoriteOpen, setFavoriteOpen] = useState<boolean>(false);
+
+	return (
+		<div className="max-w-2xl mx-auto px-2">
+			<Form {...form}>
+				<form
+					onSubmit={form.handleSubmit((transaction) =>
+						handleSubmit({
+							...transaction,
+							amount: Number(transaction.amount.replace(/\D/g, "")),
+							datetime: format(transaction.datetime, "yyyy-MM-dd"),
+							categoryId: categoryValue,
+						}),
+					)}
+					className="space-y-6"
+				>
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+						<div className="col-span-2 flex justify-between">
+							<Button
+								disabled={!transaction}
+								variant="outline"
+								type="button"
+								className="w-fit"
+								onClick={() => {
+									if (isFavorite) {
+										return removeFavorite(favorite?.id);
+									}
+									if (transaction) {
+										return addFavorite(transaction);
+									}
+								}}
+							>
+								<HeartIcon
+									color={isFavorite ? "#FF00FF" : "#FFFFFF"}
+									fill={isFavorite ? "#FF00FF" : "#FFFFFF"}
+								/>
+							</Button>
+							<Button
+								disabled={!favorites || favorites.length <= 0}
+								variant="outline"
+								type="button"
+								onClick={() => setFavoriteOpen(true)}
+							>
+								Favorites
+							</Button>
+							<Dialog open={favoriteOpen} onOpenChange={setFavoriteOpen}>
+								<DialogContent>
+									<DialogHeader>
+										<DialogTitle>Favorites</DialogTitle>
+									</DialogHeader>
+									{favorites?.map((item) => (
+										<div key={item.id} className="flex justify-between">
+											<div className="flex flex-col">
+												<span className={getTextColor(item.type)}>{item.description}</span>
+												<div>
+													<span style={{ color: item.category?.color ?? "" }}>
+														{item.category?.name}
+													</span>{" "}
+													in <span>{item.type}</span>
+												</div>
+											</div>
+											<Button
+												variant="outline"
+												type="button"
+												className="flex  self-center"
+												onClick={() => {
+													form.setValue("description", item.description);
+													form.setValue("type", item.type);
+													form.setValue("amount", item.amount.toString());
+													if (item.category) {
+														form.setValue("category", item.category.id);
+													}
+
+													autoCompleteRef.current?.setInputValue(item.description);
+													setFavoriteOpen(false);
+												}}
+											>
+												Apply
+											</Button>
+										</div>
+									))}
+								</DialogContent>
+							</Dialog>
+						</div>
+						<div className="col-span-2">
+							<FormField
+								control={form.control}
+								name="description"
+								render={() => (
+									<FormItem>
+										<FormLabel>Description</FormLabel>
+										<FormControl>
+											<AutoComplete
+												ref={autoCompleteRef}
+												value={autoSuggests?.find((autoSuggest) => {
+													return (
+														autoSuggest.type === transaction?.type &&
+														autoSuggest.description === transaction?.description &&
+														autoSuggest.category === transaction?.category.id
+													);
+												})}
+												placeholder="Enter or choose description"
+												onValueChange={(e: typeof transactionAutoSuggest.$inferSelect) => {
+													form.setValue("description", e.description ?? "", {
+														shouldValidate: true,
+													});
+													if (e.type) {
+														form.setValue("type", e.type);
+													}
+													if (e.category) {
+														form.setValue("category", e.category);
+													}
+												}}
+												options={autoSuggests ?? []}
+											/>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						</div>
+
+						<Controller
+							name="amount"
+							control={form.control}
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Amount</FormLabel>
+									<FormControl>
+										<AmountInput value={field.value} onChange={field.onChange} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+
+						<FormField
+							control={form.control}
+							name="type"
+							defaultValue="expense"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Type</FormLabel>
+									<Select
+										value={typeValue}
+										onValueChange={field.onChange}
+										defaultValue={field.value}
+									>
+										<FormControl>
+											<SelectTrigger>
+												<SelectValue />
+											</SelectTrigger>
+										</FormControl>
+										<SelectContent>
+											<TransactionSelectItems />
+										</SelectContent>
+									</Select>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+
+						<FormField
+							control={form.control}
+							name="category"
+							render={({ field }) => (
+								<FormItem
+									className={cn({
+										"col-span-2": typeValue !== "expense",
+									})}
+								>
+									<FormLabel>Category</FormLabel>
+									<Select onValueChange={field.onChange} value={categoryValue}>
+										<FormControl>
+											<SelectTrigger>
+												<SelectValue placeholder="Select category" />
+											</SelectTrigger>
+										</FormControl>
+										<SelectContent>
+											{allCategories?.map((category) => (
+												<SelectItem key={category.id} value={category.id}>
+													<div className="flex items-center gap-2">
+														<div
+															className="w-3 h-3 rounded-full"
+															style={{ backgroundColor: category.color }}
+														/>
+														<span>{category.name}</span>
+													</div>
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+
+						{typeValue === "expense" && (
+							<FormField
+								control={form.control}
+								name="costType"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Cost Type</FormLabel>
+										<Select onValueChange={field.onChange} value={costTypeValue}>
+											<FormControl>
+												<SelectTrigger>
+													<SelectValue placeholder="Select cost type" />
+												</SelectTrigger>
+											</FormControl>
+											<SelectContent>
+												<SelectItem value="fixed">Fixed</SelectItem>
+												<SelectItem value="variable">Variable</SelectItem>
+											</SelectContent>
+										</Select>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						)}
+
+						<FormField
+							control={form.control}
+							name="datetime"
+							render={({ field }) => (
+								<FormItem className="flex flex-col">
+									<FormLabel>Date</FormLabel>
+									<Popover>
+										<PopoverTrigger asChild>
+											<FormControl>
+												<Button
+													variant="outline"
+													className={cn(
+														"w-full pl-3 text-left font-normal",
+														!field.value && "text-muted-foreground",
+													)}
+												>
+													{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+													<CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+												</Button>
+											</FormControl>
+										</PopoverTrigger>
+										<PopoverContent className="w-auto p-0" align="start">
+											<Calendar
+												weekStartsOn={1}
+												mode="single"
+												selected={field.value}
+												onSelect={field.onChange}
+												disabled={(date) => date < new Date("1900-01-01")}
+												required
+											/>
+										</PopoverContent>
+									</Popover>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormItem className="flex flex-col">
+							<FormLabel>&nbsp;</FormLabel>
+							<Button
+								type="button"
+								onClick={() => form.setValue("datetime", startOfYesterday())}
+								variant="outline"
+							>
+								Yesterday
+							</Button>
+						</FormItem>
+					</div>
+
+					{transaction && (
+						<div className="flex flex-col gap-y-2 mt-2">
+							<div className="flex gap-x-2">
+								<Button
+									type="button"
+									variant="outline"
+									disabled={
+										transaction.recurringTransaction !== null &&
+										transaction.recurringTransaction.interval === "monthly"
+									}
+									onClick={() => makeTransactionRecurring(transaction, "monthly")}
+								>
+									Monthly Recurring
+								</Button>
+
+								<Button
+									type="button"
+									variant="outline"
+									disabled={
+										transaction.recurringTransaction !== null &&
+										transaction.recurringTransaction.interval === "annually"
+									}
+									onClick={() => makeTransactionRecurring(transaction, "annually")}
+								>
+									Annually Recurring
+								</Button>
+							</div>
+						</div>
+					)}
+					<Button
+						type="submit"
+						className="w-full"
+						disabled={form.formState.isSubmitting || !form.formState.isValid}
+					>
+						{form.formState.isSubmitting ? <Spinner /> : transaction ? "Save" : "Add Transaction"}
+					</Button>
+
+					{transaction && <DeleteTransaction id={transaction.id} />}
+				</form>
+			</Form>
+		</div>
+	);
+};
+
+export default TransactionForm;

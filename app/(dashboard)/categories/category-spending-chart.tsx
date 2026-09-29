@@ -11,8 +11,8 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
-import { formatAmount } from "@/components/transactions/components/transaction-amount";
-import { Card } from "@/components/ui/card";
+import { formatAmount } from "@/features/transactions/components/transaction-amount";
+import { Card } from "@/features/ui/card";
 
 export type MonthlyCategoryRow = {
 	yearMonth: string;

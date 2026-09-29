@@ -3,7 +3,7 @@
 import { parseAsString, useQueryState } from "nuqs";
 import { parseAsInteger } from "nuqs/server";
 import type { ReactElement } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/ui/button";
 import { parseMonth } from "@/lib/utils";
 
 export function MonthYearStepper({ amount, icon }: { amount: number; icon: ReactElement }) {

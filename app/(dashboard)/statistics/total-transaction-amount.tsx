@@ -1,7 +1,7 @@
 import { and, eq, sum } from "drizzle-orm";
-import { getActiveAccountId } from "@/components/account/account-actions";
-import TransactionAmount from "@/components/transactions/components/transaction-amount";
-import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { getActiveAccountId } from "@/features/account/account-actions";
+import TransactionAmount from "@/features/transactions/components/transaction-amount";
+import { Card, CardFooter, CardHeader, CardTitle } from "@/features/ui/card";
 import { dbTransaction } from "@/drizzle/client";
 import { type TransactionType, transactions } from "@/drizzle/schema";
 import { capitalize } from "@/lib/utils";

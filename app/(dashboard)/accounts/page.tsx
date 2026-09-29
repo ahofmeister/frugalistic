@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import AccountList from "@/app/(dashboard)/accounts/account-list";
-import ShareAccountButton from "@/components/account/share-account-button";
+import ShareAccountButton from "@/features/account/share-account-button";
 
 const AccountPage = async () => {
 	return (

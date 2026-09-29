@@ -6,11 +6,11 @@ import type { SearchFilter } from "@/app/(dashboard)/transactions/search-filter"
 import SearchSortBy from "@/app/(dashboard)/transactions/search-sort-by";
 import SearchSortDirection from "@/app/(dashboard)/transactions/search-sort-direction";
 import TransactionTypeSearchFilter from "@/app/(dashboard)/transactions/transaction-type-search-filter";
-import CategorySearchFilter from "@/components/transactions/components/category-search-filter";
-import TransactionSearchInput from "@/components/transactions/components/transaction-search-input";
-import TransactionsSearchResult from "@/components/transactions/components/transactions-search-result";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import CategorySearchFilter from "@/features/transactions/components/category-search-filter";
+import TransactionSearchInput from "@/features/transactions/components/transaction-search-input";
+import TransactionsSearchResult from "@/features/transactions/components/transactions-search-result";
+import { Card, CardHeader, CardTitle } from "@/features/ui/card";
+import { Skeleton } from "@/features/ui/skeleton";
 
 export default async function TransactionSearchPage({
 	searchParams,

@@ -1,8 +1,8 @@
 import { and, eq, inArray } from "drizzle-orm";
 import type { NextRequest } from "next/server";
 import { z } from "zod";
-import { apiTransactionInsertSchema } from "@/components/api/api-transaction-type";
-import { withApiAuth } from "@/components/api/api-utils";
+import { apiTransactionInsertSchema } from "@/features/api/api-transaction-type";
+import { withApiAuth } from "@/features/api/api-utils";
 import { db } from "@/drizzle/client";
 import { transactions } from "@/drizzle/schema";
 

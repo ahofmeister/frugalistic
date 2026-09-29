@@ -2,9 +2,9 @@
 import { format } from "date-fns";
 import { useState, useTransition } from "react";
 import { updateSettings } from "@/app/(dashboard)/settings/settings-actions";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Spinner } from "@/components/ui/spinner";
+import { Input } from "@/features/ui/input";
+import { Label } from "@/features/ui/label";
+import { Spinner } from "@/features/ui/spinner";
 
 export function DateFormatSettingsInput({
 	initialDateFormat,

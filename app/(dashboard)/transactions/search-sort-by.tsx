@@ -7,7 +7,7 @@ import {
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
+} from "@/features/ui/select";
 
 import type { transactions } from "@/drizzle/schema/transaction-schema";
 

@@ -1,5 +1,5 @@
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
-import TransactionList from "@/components/transactions/components/transaction-list";
+import TransactionList from "@/features/transactions/components/transaction-list";
 import { dbTransaction } from "@/drizzle/client";
 
 export async function RecurringTransactionHistory(props: {

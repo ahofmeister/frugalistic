@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { isFilterEmpty, type SearchFilter } from "@/app/(dashboard)/transactions/search-filter";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/ui/button";
 
 const ResetQueryParam = async ({ searchParams }: { searchParams: Promise<SearchFilter> }) => {
 	const params = await searchParams;
