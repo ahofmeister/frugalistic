@@ -2,15 +2,14 @@
 import { format } from "date-fns";
 import { useState } from "react";
 import { Area, AreaChart, XAxis, YAxis } from "recharts";
-
-import TransactionAmount from "@/features/transactions/components/transaction-amount";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/features/ui/chart";
-import { ToggleGroup, ToggleGroupItem } from "@/features/ui/toggle-group";
 import type {
 	TransactionType,
 	TransactionTypeWithLeftover,
 	transactions,
 } from "@/drizzle/schema/transaction-schema";
+import TransactionAmount from "@/features/transactions/components/transaction-amount";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/features/ui/chart";
+import { ToggleGroup, ToggleGroupItem } from "@/features/ui/toggle-group";
 import { capitalize, shortAmount } from "@/lib/utils";
 
 export function TransactionsChart(props: { transactions: (typeof transactions.$inferSelect)[] }) {

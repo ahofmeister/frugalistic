@@ -1,7 +1,6 @@
 import { CircleSlash2 } from "lucide-react";
-
-import TransactionAmount from "@/features/transactions/components/transaction-amount";
 import type { TransactionType } from "@/drizzle/schema";
+import TransactionAmount from "@/features/transactions/components/transaction-amount";
 
 export function AverageAmount(props: { amount: number; type?: TransactionType }) {
 	return (

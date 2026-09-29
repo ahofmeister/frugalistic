@@ -1,6 +1,7 @@
 "use client";
 import { useActionState, useState } from "react";
 import { toast } from "sonner";
+import { type AccountRole, accountRoles } from "@/drizzle/schema";
 import { shareAccount } from "@/features/account/account-actions";
 import {
 	AlertDialog,
@@ -21,23 +22,27 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/features/ui/select";
-import { type AccountRole, accountRoles } from "@/drizzle/schema";
 
 export default function ShareAccountButton() {
 	const [open, setOpen] = useState(false);
-	const [, formAction, isPending] = useActionState(async (_: void, formData: FormData) => {
-		const selectedRole = formData.get("role") as AccountRole;
-		const selectedEmail = formData.get("email") as string;
+	const [, formAction, isPending] = useActionState(
+		async (_previousState: null, formData: FormData) => {
+			const selectedRole = formData.get("role") as AccountRole;
+			const selectedEmail = formData.get("email") as string;
 
-		const { error } = await shareAccount(selectedEmail, selectedRole);
+			const { error } = await shareAccount(selectedEmail, selectedRole);
 
-		if (!error) {
+			if (error) {
+				toast.error(error);
+				return null;
+			}
+
 			toast.success("Account invitation successfully");
-			void setOpen(false);
-		} else {
-			toast.error(error);
-		}
-	}, undefined);
+			setOpen(false);
+			return null;
+		},
+		null,
+	);
 
 	return (
 		<AlertDialog open={open} onOpenChange={setOpen}>

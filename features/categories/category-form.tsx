@@ -4,22 +4,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { redirect } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
+import type { categories } from "@/drizzle/schema";
 import { createCategory } from "@/features/categories/categories-api";
 import DeleteCategory from "@/features/categories/delete-category";
 import { Button } from "@/features/ui/button";
 import { ColorPicker } from "@/features/ui/color-picker";
-import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "@/features/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/features/ui/form";
 import { Input } from "@/features/ui/input";
 import { Spinner } from "@/features/ui/spinner";
-import type { categories } from "@/drizzle/schema";
 
 const CategoryForm = (props: { category?: typeof categories.$inferSelect }) => {
 	const formSchema = z.object({

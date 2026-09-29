@@ -1,6 +1,6 @@
 "use client";
-import { TransactionCard } from "@/features/transactions/components/transaction-card";
 import type { TransactionWithRecurringCategory } from "@/drizzle/schema";
+import { TransactionCard } from "@/features/transactions/components/transaction-card";
 
 export default function TransactionList({
 	transactions,

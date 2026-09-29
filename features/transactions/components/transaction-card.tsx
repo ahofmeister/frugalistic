@@ -1,10 +1,10 @@
 import Link from "next/link";
 import FormattedDate from "@/app/(dashboard)/dashboard/formatted-date";
+import type { TransactionWithRecurringCategory } from "@/drizzle/schema";
 import CategoryColor from "@/features/categories/category-color";
 import TransactionAmount from "@/features/transactions/components/transaction-amount";
 import { Badge } from "@/features/ui/badge";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/features/ui/card";
-import type { TransactionWithRecurringCategory } from "@/drizzle/schema";
 
 export function TransactionCard({
 	transaction,

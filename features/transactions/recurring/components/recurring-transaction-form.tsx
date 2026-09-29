@@ -4,18 +4,12 @@ import { format } from "date-fns";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import type { transactionsRecurring } from "@/drizzle/schema";
 import AmountInput from "@/features/transactions/components/amount-input";
 import { TransactionSelectItems } from "@/features/transactions/components/transaction-select-items";
 import { updateRecurringTransaction } from "@/features/transactions/transactions-api";
 import { Button } from "@/features/ui/button";
-import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "@/features/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/features/ui/form";
 import { Input } from "@/features/ui/input";
 import { Label } from "@/features/ui/label";
 import {
@@ -27,7 +21,6 @@ import {
 } from "@/features/ui/select";
 import { Spinner } from "@/features/ui/spinner";
 import { Switch } from "@/features/ui/switch";
-import type { transactionsRecurring } from "@/drizzle/schema";
 
 const RecurringTransactionForm = ({
 	transaction,

@@ -1,9 +1,9 @@
 import type { SearchParams } from "nuqs/server";
 import { loadDashboardParams } from "@/app/(dashboard)/search-params";
+import { dbTransaction } from "@/drizzle/client";
 import { getActiveAccountId } from "@/features/account/account-actions";
 import { DashboardCategoryCard } from "@/features/dashboard/dashboard-category-card";
 import { getPeriodDates } from "@/features/transactions/dates";
-import { dbTransaction } from "@/drizzle/client";
 
 interface CategoryData {
 	category: string;

@@ -1,7 +1,7 @@
 import type { SearchParams } from "nuqs/server";
 import TransactionCategoryDistributionChart from "@/app/(dashboard)/insights/transaction-category-distribution-chart";
-import { getActiveAccountId } from "@/features/account/account-actions";
 import { dbTransaction } from "@/drizzle/client";
+import { getActiveAccountId } from "@/features/account/account-actions";
 import { getDateRange, loadYearSearchParam } from "@/lib/utils";
 
 export async function TransactionCategoryDistribution({

@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
 import RecurringTransactionCard from "@/app/(dashboard)/transactions/recurring/recurring-transaction-card";
+import { dbTransaction } from "@/drizzle/client";
 import { getActiveAccountId } from "@/features/account/account-actions";
 import { Button } from "@/features/ui/button";
 import { Card } from "@/features/ui/card";
-import { dbTransaction } from "@/drizzle/client";
 
 const RecurringTransactions = async () => {
 	const activeAccountId = await getActiveAccountId();

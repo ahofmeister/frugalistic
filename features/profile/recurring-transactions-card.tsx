@@ -1,8 +1,7 @@
 import Link from "next/link";
-
-import { Card } from "@/features/ui/card";
 import { dbTransaction } from "@/drizzle/client";
 import { transactionsRecurring } from "@/drizzle/schema/transaction-recurring-schema";
+import { Card } from "@/features/ui/card";
 
 const RecurringTransactionsCard = async () => {
 	const recurringCount = await dbTransaction((tx) => tx.$count(transactionsRecurring));

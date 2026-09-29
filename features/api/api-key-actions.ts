@@ -3,9 +3,9 @@
 import { and, desc, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { generateApiKey } from "@/features/api/api-utils";
 import { dbTransaction } from "@/drizzle/client";
 import { apiKeySchema } from "@/drizzle/schema/api-key-schema";
+import { generateApiKey } from "@/features/api/api-utils";
 
 const createApiKeySchema = z.object({
 	name: z.string().min(1),

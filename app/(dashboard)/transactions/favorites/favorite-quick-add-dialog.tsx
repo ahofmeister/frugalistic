@@ -5,6 +5,7 @@ import { Plus } from "lucide-react";
 import { parseAsBoolean, useQueryState } from "nuqs";
 import { useActionState, useState } from "react";
 import { toast } from "sonner";
+import type { favoriteSchema } from "@/drizzle/schema";
 import { formatAmount } from "@/features/transactions/components/transaction-amount";
 import { insertTransaction } from "@/features/transactions/transactions-api";
 import {
@@ -21,7 +22,6 @@ import { Button } from "@/features/ui/button";
 import { Calendar } from "@/features/ui/calendar";
 import { Label } from "@/features/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/features/ui/popover";
-import type { favoriteSchema } from "@/drizzle/schema";
 import { cn } from "@/lib/utils";
 
 type QuickAddState = {

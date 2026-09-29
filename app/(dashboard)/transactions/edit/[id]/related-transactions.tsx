@@ -1,9 +1,8 @@
 import { eq } from "drizzle-orm";
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
-import TransactionList from "@/features/transactions/components/transaction-list";
 import { dbTransaction } from "@/drizzle/client";
-
 import { transactions } from "@/drizzle/schema/transaction-schema";
+import TransactionList from "@/features/transactions/components/transaction-list";
 
 export async function RelatedTransactions(props: { id: Promise<string> }) {
 	const id = await props.id;

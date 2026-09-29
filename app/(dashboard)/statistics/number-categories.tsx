@@ -1,9 +1,9 @@
 import { eq } from "drizzle-orm";
 import Link from "next/link";
-import { getActiveAccountId } from "@/features/account/account-actions";
-import { Card, CardFooter, CardHeader, CardTitle } from "@/features/ui/card";
 import { dbTransaction } from "@/drizzle/client";
 import { categories } from "@/drizzle/schema/categories";
+import { getActiveAccountId } from "@/features/account/account-actions";
+import { Card, CardFooter, CardHeader, CardTitle } from "@/features/ui/card";
 
 export const NumberCategories = async () => {
 	const activeAccountId = await getActiveAccountId();

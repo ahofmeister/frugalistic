@@ -7,14 +7,7 @@ import { z } from "zod";
 import { type UpdatePasswordFormData, updatePassword } from "@/features/profile/profile-actions";
 import { Button } from "@/features/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/features/ui/card";
-import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "@/features/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/features/ui/form";
 import { Input } from "@/features/ui/input";
 import { Spinner } from "@/features/ui/spinner";
 

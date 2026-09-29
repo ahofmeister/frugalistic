@@ -1,9 +1,9 @@
 import type { SearchParams } from "nuqs/server";
 import { loadDashboardParams } from "@/app/(dashboard)/search-params";
+import { dbTransaction } from "@/drizzle/client";
 import { getActiveAccountId } from "@/features/account/account-actions";
 import DashboardCard from "@/features/dashboard/dashboard-card";
 import { getPeriodDates } from "@/features/transactions/dates";
-import { dbTransaction } from "@/drizzle/client";
 
 const DashboardCards = async ({ searchParams }: { searchParams: Promise<SearchParams> }) => {
 	let income = 0;

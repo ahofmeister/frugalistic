@@ -9,6 +9,9 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import DeleteTransaction from "@/app/(dashboard)/transactions/edit/[id]/delete-transaction";
+import type { categories, favoriteSchema, transactionAutoSuggest } from "@/drizzle/schema";
+import type { TransactionWithRecurringCategory } from "@/drizzle/schema/transaction-recurring-schema";
+import type { transactions } from "@/drizzle/schema/transaction-schema";
 import { addFavorite, removeFavorite } from "@/features/favorite/favorite-actions";
 import { getTextColor } from "@/features/transactions/colors";
 import AmountInput from "@/features/transactions/components/amount-input";
@@ -21,14 +24,7 @@ import { AutoComplete, type AutoCompleteRef } from "@/features/ui/auto-suggest-i
 import { Button } from "@/features/ui/button";
 import { Calendar } from "@/features/ui/calendar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/dialog";
-import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "@/features/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/features/ui/form";
 import { Popover, PopoverContent, PopoverTrigger } from "@/features/ui/popover";
 import {
 	Select,
@@ -38,9 +34,6 @@ import {
 	SelectValue,
 } from "@/features/ui/select";
 import { Spinner } from "@/features/ui/spinner";
-import type { categories, favoriteSchema, transactionAutoSuggest } from "@/drizzle/schema";
-import type { TransactionWithRecurringCategory } from "@/drizzle/schema/transaction-recurring-schema";
-import type { transactions } from "@/drizzle/schema/transaction-schema";
 import { cn } from "@/lib/utils";
 
 const TransactionForm = ({

@@ -7,6 +7,7 @@ import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import type { apiKeySchema } from "@/drizzle/schema/api-key-schema";
 import { createApiKey, revokeApiKey } from "@/features/api/api-key-actions";
 import {
 	AlertDialog,
@@ -30,24 +31,9 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/features/ui/dialog";
-import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "@/features/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/features/ui/form";
 import { Input } from "@/features/ui/input";
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "@/features/ui/table";
-import type { apiKeySchema } from "@/drizzle/schema/api-key-schema";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/features/ui/table";
 
 const createApiKeyFormSchema = z.object({
 	name: z.string().min(1),

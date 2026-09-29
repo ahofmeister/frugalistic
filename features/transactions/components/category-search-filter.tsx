@@ -1,6 +1,7 @@
 "use client";
 import { useQueryState } from "nuqs";
 import { useEffect, useState } from "react";
+import type { categories } from "@/drizzle/schema";
 import { getCategories } from "@/features/categories/categories-api";
 import CategoryColor from "@/features/categories/category-color";
 import {
@@ -10,7 +11,6 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/features/ui/select";
-import type { categories } from "@/drizzle/schema";
 
 const CategorySearchFilter = () => {
 	const [selectedCategories, setSelectedCategories] = useState<(typeof categories.$inferSelect)[]>(

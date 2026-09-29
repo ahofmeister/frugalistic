@@ -1,6 +1,6 @@
+import { transactionTypes } from "@/drizzle/schema";
 import { getBgColor } from "@/features/transactions/colors";
 import { SelectItem } from "@/features/ui/select";
-import { transactionTypes } from "@/drizzle/schema";
 import { capitalize } from "@/lib/utils";
 
 export function TransactionSelectItems() {

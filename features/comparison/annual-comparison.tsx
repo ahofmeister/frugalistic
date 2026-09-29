@@ -1,13 +1,6 @@
 import { TotalsRows } from "@/features/comparison/comparison-total-rows";
 import TransactionAmount from "@/features/transactions/components/transaction-amount";
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "@/features/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/features/ui/table";
 import { buildComparisonTable, getRawTransactionsAndCategories } from "./comparison-data";
 
 async function getAnnualComparisonData() {

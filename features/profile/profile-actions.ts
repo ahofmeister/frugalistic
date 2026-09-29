@@ -2,9 +2,9 @@
 
 import { sql } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
-import { getCurrentUser } from "@/features/auth/auth-actions";
 import { dbTransaction } from "@/drizzle/client";
 import { profiles } from "@/drizzle/schema";
+import { getCurrentUser } from "@/features/auth/auth-actions";
 import { createClient } from "@/utils/supabase/server";
 
 export async function updateProfile(account: typeof profiles.$inferInsert) {

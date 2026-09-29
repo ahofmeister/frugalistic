@@ -1,9 +1,9 @@
+import type { TransactionTypeWithLeftover } from "@/drizzle/schema";
 import { getTextColor } from "@/features/transactions/colors";
 import TransactionAmount, {
 	formatAmount,
 } from "@/features/transactions/components/transaction-amount";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/features/ui/card";
-import type { TransactionTypeWithLeftover } from "@/drizzle/schema";
 import { capitalize } from "@/lib/utils";
 
 const DashboardCard = ({

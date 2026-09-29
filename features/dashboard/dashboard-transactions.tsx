@@ -1,10 +1,10 @@
 import type { SearchParams } from "nuqs/server";
 import { loadDashboardParams } from "@/app/(dashboard)/search-params";
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
+import { dbTransaction } from "@/drizzle/client";
 import { getActiveAccountId } from "@/features/account/account-actions";
 import TransactionList from "@/features/transactions/components/transaction-list";
 import { getPeriodDates } from "@/features/transactions/dates";
-import { dbTransaction } from "@/drizzle/client";
 
 export default async function DashboardTransactions({
 	searchParams,

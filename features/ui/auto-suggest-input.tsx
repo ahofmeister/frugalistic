@@ -8,6 +8,7 @@ import React, {
 	useRef,
 	useState,
 } from "react";
+import type { transactionAutoSuggest } from "@/drizzle/schema";
 import { getTextColor } from "@/features/transactions/colors";
 import {
 	Command,
@@ -17,7 +18,6 @@ import {
 	CommandList,
 } from "@/features/ui/command";
 import { Skeleton } from "@/features/ui/skeleton";
-import type { transactionAutoSuggest } from "@/drizzle/schema";
 import { cn } from "@/lib/utils";
 
 type AutoCompleteProps = {

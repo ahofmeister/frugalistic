@@ -2,20 +2,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import type { profiles } from "@/drizzle/schema";
 import { updateProfile } from "@/features/profile/profile-actions";
 import { Button } from "@/features/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/features/ui/card";
-import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "@/features/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/features/ui/form";
 import { Input } from "@/features/ui/input";
 import { Spinner } from "@/features/ui/spinner";
-import type { profiles } from "@/drizzle/schema";
 
 const ProfileForm = (props: { profile?: typeof profiles.$inferSelect | null }) => {
 	const formSchema = z.object({

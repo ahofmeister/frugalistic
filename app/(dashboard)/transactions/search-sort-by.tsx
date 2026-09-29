@@ -1,6 +1,6 @@
 "use client";
 import { parseAsString, useQueryState } from "nuqs";
-
+import type { transactions } from "@/drizzle/schema/transaction-schema";
 import {
 	Select,
 	SelectContent,
@@ -8,8 +8,6 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/features/ui/select";
-
-import type { transactions } from "@/drizzle/schema/transaction-schema";
 
 const SearchSortBy = () => {
 	const [sortBy, setSortBy] = useQueryState(

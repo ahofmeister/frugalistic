@@ -2,7 +2,7 @@
 import { format } from "date-fns";
 import { Bar, BarChart, LabelList, XAxis, YAxis } from "recharts";
 import type { Props } from "recharts/types/component/DefaultLegendContent";
-
+import type { categories, transactions } from "@/drizzle/schema";
 import TransactionAmount from "@/features/transactions/components/transaction-amount";
 import {
 	ChartContainer,
@@ -10,7 +10,6 @@ import {
 	ChartTooltip,
 	ChartTooltipContent,
 } from "@/features/ui/chart";
-import type { categories, transactions } from "@/drizzle/schema";
 import { shortAmount } from "@/lib/utils";
 
 interface MonthCategoryTotals {

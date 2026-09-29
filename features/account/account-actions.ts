@@ -2,9 +2,9 @@
 
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { getCurrentUser } from "@/features/auth/auth-actions";
 import { db, dbTransaction } from "@/drizzle/client";
 import { type AccountRole, accountMemberSchema, profiles } from "@/drizzle/schema";
+import { getCurrentUser } from "@/features/auth/auth-actions";
 
 // TODO proper error handling
 export async function switchActiveAccount(accountId: string) {

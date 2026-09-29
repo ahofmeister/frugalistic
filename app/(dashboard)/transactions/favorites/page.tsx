@@ -2,8 +2,8 @@ import { Star } from "lucide-react";
 import { Suspense } from "react";
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
 import { FavoriteCard } from "@/app/(dashboard)/transactions/favorites/favorite-card";
-import { getActiveAccountId } from "@/features/account/account-actions";
 import { dbTransaction } from "@/drizzle/client";
+import { getActiveAccountId } from "@/features/account/account-actions";
 
 async function FavoritesList() {
 	const activeAccountId = await getActiveAccountId();

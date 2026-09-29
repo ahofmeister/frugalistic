@@ -1,6 +1,6 @@
+import { dbTransaction } from "@/drizzle/client";
 import { getActiveAccountId } from "@/features/account/account-actions";
 import BudgetForm from "@/features/budget/budget-form";
-import { dbTransaction } from "@/drizzle/client";
 
 const BudgetFormWithData = async () => {
 	const activeAccountId = await getActiveAccountId();

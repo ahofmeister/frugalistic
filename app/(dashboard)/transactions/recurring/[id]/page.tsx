@@ -2,8 +2,8 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { RecurringTransactionHistory } from "@/app/(dashboard)/transactions/recurring/[id]/recurring-transaction-history";
 import DeleteRecurringTransaction from "@/app/(dashboard)/transactions/recurring/delete-recurring-transaction";
-import RecurringTransactionForm from "@/features/transactions/recurring/components/recurring-transaction-form";
 import { dbTransaction } from "@/drizzle/client";
+import RecurringTransactionForm from "@/features/transactions/recurring/components/recurring-transaction-form";
 
 export default async function TransactionEditPage(props: { params: Promise<{ id: string }> }) {
 	return (
