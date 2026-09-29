@@ -24,12 +24,10 @@ export function TransactionCard({
 
 					<CardDescription className="flex justify-between ">
 						<span>
-							{!transaction.category && <>? Uncategorized</>}
-
 							{transaction.category && (
 								<>
-									<CategoryColor color={transaction.category?.color} />
-									{transaction.category?.name ?? "-"}
+									<CategoryColor color={transaction.category.color} />
+									{transaction.category.name}
 								</>
 							)}
 						</span>

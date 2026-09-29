@@ -82,6 +82,7 @@ export const transactionsRecurring = pgTable(
 
 export const transactionAutoSuggest = pgView("transaction_auto_suggest", {
 	uniqueId: bigint("unique_id", { mode: "number" }),
+	accountId: uuid("account_id"),
 	description: text(),
 	type: text("type").$type<TransactionType>(),
 	category: uuid(),
@@ -90,30 +91,39 @@ export const transactionAutoSuggest = pgView("transaction_auto_suggest", {
 	frequency: numeric(),
 })
 	.with({ securityInvoker: true })
-	.as(sql`WITH category_counts
-					 AS (SELECT TRIM(BOTH FROM t_1.description) AS description,
-		                        t_1.type,
-		                        c.id                            AS category,
-		                        c.name,
-		                        c.color,
-		                        count(*)                        AS frequency,
-		                        row_number()                       OVER (PARTITION BY (TRIM(BOTH FROM t_1.description)), t_1.type ORDER BY (count(*)) DESC) AS rn
-		                 FROM transactions t_1
-								  JOIN categories c ON c.id = t_1.category
-		                 GROUP BY (TRIM(BOTH FROM t_1.description)), t_1.type, c.id,
-		                          c.name, c.color),
-	             totals AS (SELECT category_counts.description,
-	                               category_counts.type,
-	                               sum(category_counts.frequency) AS total_frequency
-	                        FROM category_counts
-	                        GROUP BY category_counts.description, category_counts.type)
-	        SELECT row_number()         OVER (ORDER BY t.total_frequency DESC, cc.description) AS unique_id, cc.description,
-	               cc.type,
-	               cc.category,
-	               cc.name,
-	               cc.color,
-	               t.total_frequency AS frequency
-	        FROM category_counts cc
-					 JOIN totals t ON cc.description = t.description AND cc.type = t.type
-	        WHERE cc.rn = 1
-	        ORDER BY t.total_frequency DESC, cc.description`);
+	.as(sql`WITH category_counts AS (
+  SELECT t.account_id,
+         TRIM(BOTH FROM t.description) AS description,
+         t.type,
+         c.id AS category,
+         c.name,
+         c.color,
+         count(*) AS frequency,
+         row_number() OVER (
+           PARTITION BY t.account_id, TRIM(BOTH FROM t.description), t.type
+           ORDER BY count(*) DESC, max(t.updated_at) DESC, c.id
+         ) AS rn
+  FROM transactions t
+  JOIN categories c ON c.id = t.category_id AND c.account_id = t.account_id
+  WHERE t.account_id = public.active_account_id()
+  GROUP BY t.account_id, TRIM(BOTH FROM t.description), t.type, c.id, c.name, c.color
+),
+totals AS (
+  SELECT account_id, description, type, sum(frequency) AS total_frequency
+  FROM category_counts
+  GROUP BY account_id, description, type
+)
+	SELECT row_number() OVER (ORDER BY t.total_frequency DESC, cc.description) AS unique_id,
+		cc.account_id,
+		   cc.description,
+		   cc.type,
+		   cc.category,
+		   cc.name,
+		   cc.color,
+		   t.total_frequency AS frequency
+	FROM category_counts cc
+			 JOIN totals t ON cc.account_id = t.account_id
+		AND cc.description = t.description
+		AND cc.type = t.type
+	WHERE cc.rn = 1
+	ORDER BY t.total_frequency DESC, cc.description`);
