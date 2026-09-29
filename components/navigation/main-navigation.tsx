@@ -192,7 +192,18 @@ export default function MainNavigation() {
 			>
 				<div className="h-full flex flex-col">
 					<Link href="/dashboard" className="h-16 px-6 flex items-center border-b border-border">
-						...
+						<div className="flex items-center gap-3">
+							<Image
+								src="/icon-192x192.png"
+								alt="Frugalistic"
+								width={32}
+								height={32}
+								className="shrink-0"
+							/>
+							<span className="text-lg font-semibold hover:cursor-pointer text-primary">
+								Frugalistic
+							</span>
+						</div>
 					</Link>
 
 					<div className="flex-1 overflow-y-auto py-4 px-4">
