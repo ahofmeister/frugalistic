@@ -4,7 +4,7 @@ import type { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
 import type React from "react";
 
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@/features/ui/sonner";
 
 const poppinsFont = Poppins({
 	subsets: ["latin"],

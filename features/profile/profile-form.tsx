@@ -1,0 +1,109 @@
+"use client";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import type { profiles } from "@/drizzle/schema";
+import { updateProfile } from "@/features/profile/profile-actions";
+import { Button } from "@/features/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/features/ui/card";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/features/ui/form";
+import { Input } from "@/features/ui/input";
+import { Spinner } from "@/features/ui/spinner";
+
+const ProfileForm = (props: { profile?: typeof profiles.$inferSelect | null }) => {
+	const formSchema = z.object({
+		firstName: z.string().optional(),
+		lastName: z.string().optional(),
+		email: z.string().readonly().optional(),
+	});
+
+	const form = useForm<z.infer<typeof formSchema>>({
+		resolver: zodResolver(formSchema),
+		defaultValues: {
+			firstName: props.profile?.firstName ?? "",
+			lastName: props.profile?.lastName ?? "",
+			email: props.profile?.email ?? "",
+		},
+		mode: "onChange",
+	});
+
+	function handleSubmit(updatedProfile: typeof profiles.$inferInsert) {
+		return updateProfile(updatedProfile);
+	}
+
+	return (
+		<div className="w-full">
+			<Form {...form}>
+				<form onSubmit={form.handleSubmit((user) => handleSubmit({ ...user }))}>
+					<Card>
+						<CardHeader>
+							<CardTitle>Personal Information</CardTitle>
+							<CardDescription>
+								Update your personal details and contact information.
+							</CardDescription>
+						</CardHeader>
+						<CardContent className="space-y-6">
+							<div className="space-y-4">
+								<FormField
+									disabled={true}
+									control={form.control}
+									name="email"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Email</FormLabel>
+											<FormControl>
+												<Input placeholder="Email" {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+
+								<div className="grid grid-cols-2 gap-4">
+									<div className="gap-2">
+										<FormField
+											control={form.control}
+											name="firstName"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>First Name</FormLabel>
+													<FormControl>
+														<Input placeholder="First Name" {...field} />
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+									</div>
+									<FormField
+										control={form.control}
+										name="lastName"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>Last Name</FormLabel>
+												<FormControl>
+													<Input placeholder="Last Name" {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+								</div>
+							</div>
+
+							<Button
+								type="submit"
+								disabled={form.formState.isSubmitting || !form.formState.isValid}
+								className="w-full"
+							>
+								{form.formState.isSubmitting ? <Spinner /> : "Save"}
+							</Button>
+						</CardContent>
+					</Card>
+				</form>
+			</Form>
+		</div>
+	);
+};
+
+export default ProfileForm;

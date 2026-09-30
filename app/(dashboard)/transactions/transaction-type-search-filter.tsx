@@ -1,16 +1,15 @@
 "use client";
 import { createParser, useQueryState } from "nuqs";
 import { useTransition } from "react";
-import { TransactionSelectItems } from "@/components/transactions/components/transaction-select-items";
+import type { TransactionType } from "@/drizzle/schema";
+import { TransactionSelectItems } from "@/features/transactions/components/transaction-select-items";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
-
-import type { TransactionType } from "@/drizzle/schema";
+} from "@/features/ui/select";
 
 const TYPE_ALL_VALUE = "all";
 

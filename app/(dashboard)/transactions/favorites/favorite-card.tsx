@@ -2,9 +2,9 @@ import { formatDate } from "date-fns";
 import { Star } from "lucide-react";
 import { DeleteFavoriteTransactionButton } from "@/app/(dashboard)/transactions/favorites/delete-favorite-transaction-button";
 import { FavoriteQuickAddDialog } from "@/app/(dashboard)/transactions/favorites/favorite-quick-add-dialog";
-import TransactionAmount from "@/components/transactions/components/transaction-amount";
-import { Card } from "@/components/ui/card";
 import type { favoriteSchema } from "@/drizzle/schema";
+import TransactionAmount from "@/features/transactions/components/transaction-amount";
+import { Card } from "@/features/ui/card";
 
 export function FavoriteCard({
 	favorite,

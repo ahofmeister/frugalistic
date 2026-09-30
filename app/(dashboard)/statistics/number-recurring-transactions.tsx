@@ -1,8 +1,8 @@
 import { eq } from "drizzle-orm";
-import { getActiveAccountId } from "@/components/account/account-actions";
-import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { dbTransaction } from "@/drizzle/client";
 import { transactionsRecurring } from "@/drizzle/schema";
+import { getActiveAccountId } from "@/features/account/account-actions";
+import { Card, CardFooter, CardHeader, CardTitle } from "@/features/ui/card";
 
 export const NumberRecurringTransactions = async () => {
 	const activeAccountId = await getActiveAccountId();

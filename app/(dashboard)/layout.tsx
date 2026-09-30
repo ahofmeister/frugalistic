@@ -3,8 +3,8 @@ import "../globals.css";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import type React from "react";
 import { Suspense } from "react";
-import { DashboardMobileNavigation } from "@/components/navigation/dashboard-mobile-navigation";
-import MainNavigation from "@/components/navigation/main-navigation";
+import { DashboardMobileNavigation } from "@/features/navigation/dashboard-mobile-navigation";
+import MainNavigation from "@/features/navigation/main-navigation";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
 	return (

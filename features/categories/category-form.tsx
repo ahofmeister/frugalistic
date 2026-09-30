@@ -1,0 +1,122 @@
+"use client";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { redirect } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import type { categories } from "@/drizzle/schema";
+import { createCategory } from "@/features/categories/categories-api";
+import DeleteCategory from "@/features/categories/delete-category";
+import { Button } from "@/features/ui/button";
+import { ColorPicker } from "@/features/ui/color-picker";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/features/ui/form";
+import { Input } from "@/features/ui/input";
+import { Spinner } from "@/features/ui/spinner";
+
+const CategoryForm = (props: { category?: typeof categories.$inferSelect }) => {
+	const formSchema = z.object({
+		name: z.string().min(2),
+		color: z.string(),
+		description: z.string().optional(),
+	});
+
+	const form = useForm<z.infer<typeof formSchema>>({
+		resolver: zodResolver(formSchema),
+		defaultValues: {
+			name: props.category?.name ?? "",
+			color: props.category?.color ?? "",
+			description: props.category?.description ?? "",
+		},
+		mode: "onBlur",
+	});
+
+	async function handleSubmit(newCategory: typeof categories.$inferInsert) {
+		await createCategory({
+			...newCategory,
+			id: props.category ? props.category.id : undefined,
+		});
+		redirect("/categories");
+	}
+
+	return (
+		<div className="max-w-2xl mx-auto px-2 py-4">
+			<Form {...form}>
+				<form
+					onSubmit={form.handleSubmit((newCategory) => {
+						return handleSubmit({ ...newCategory });
+					})}
+				>
+					<div className="flex flex-col gap-y-10">
+						<div className="flex gap-x-10 ">
+							<FormField
+								control={form.control}
+								name="name"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Name</FormLabel>
+										<FormControl>
+											<Input placeholder="Name" {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+
+							<FormField
+								control={form.control}
+								name="color"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Color</FormLabel>
+										<FormControl>
+											<div>
+												<ColorPicker {...field} onBlur={field.onBlur} />
+											</div>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						</div>
+
+						<FormField
+							control={form.control}
+							name="description"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Description</FormLabel>
+									<FormControl>
+										<div>
+											<Input {...field} onBlur={field.onBlur} />
+										</div>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+
+						<div className="flex flex-col gap-y-4">
+							{props.category && <DeleteCategory id={props.category.id} />}
+
+							<Button
+								type="submit"
+								disabled={form.formState.isSubmitting || !form.formState.isValid}
+								className="w-full"
+							>
+								{form.formState.isSubmitting ? (
+									<Spinner />
+								) : props.category ? (
+									"Save"
+								) : (
+									"Create Category"
+								)}
+							</Button>
+						</div>
+					</div>
+				</form>
+			</Form>
+		</div>
+	);
+};
+
+export default CategoryForm;

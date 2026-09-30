@@ -1,16 +1,16 @@
 "use client";
 import { useState, useTransition } from "react";
 import { updateSettings } from "@/app/(dashboard)/settings/settings-actions";
-import { Label } from "@/components/ui/label";
+import type { categories } from "@/drizzle/schema";
+import { Label } from "@/features/ui/label";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
-import { Spinner } from "@/components/ui/spinner";
-import type { categories } from "@/drizzle/schema";
+} from "@/features/ui/select";
+import { Spinner } from "@/features/ui/spinner";
 
 export function ImportCategorySettingsInput({
 	initialCategoryId,

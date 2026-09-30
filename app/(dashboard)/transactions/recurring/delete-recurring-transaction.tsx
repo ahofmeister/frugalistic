@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { use } from "react";
 
-import { deleteRecurringTransaction } from "@/components/transactions/transactions-api";
+import { deleteRecurringTransaction } from "@/features/transactions/transactions-api";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -12,8 +12,8 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 	AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+} from "@/features/ui/alert-dialog";
+import { Button } from "@/features/ui/button";
 
 const DeleteRecurringTransaction = (props: { id: Promise<string> }) => {
 	const router = useRouter();

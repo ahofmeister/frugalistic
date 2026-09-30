@@ -1,9 +1,8 @@
 "use client";
 import { useRouter } from "next/navigation";
-
-import AddCategory from "@/components/categories/add-category";
-import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import type { categories } from "@/drizzle/schema";
+import AddCategory from "@/features/categories/add-category";
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/features/ui/card";
 import { cn } from "@/lib/utils";
 
 export function CategoryCard(props: {

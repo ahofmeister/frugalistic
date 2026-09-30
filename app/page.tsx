@@ -12,10 +12,10 @@ import Link from "next/link";
 import type React from "react";
 import { type ReactNode, Suspense } from "react";
 import GitHub from "@/app/git-hub";
-import AppButton from "@/components/auth/app-button";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import AppButton from "@/features/auth/app-button";
+import { Badge } from "@/features/ui/badge";
+import { Button } from "@/features/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/features/ui/card";
 
 export default function LandingPage() {
 	const features = [

@@ -3,8 +3,8 @@ import { useRouter } from "next/navigation";
 import { parseAsBoolean, useQueryState } from "nuqs";
 import { useTransition } from "react";
 import { toast } from "sonner";
-import { deleteTransaction } from "@/components/transactions/transactions-api";
-import { Button } from "@/components/ui/button";
+import { deleteTransaction } from "@/features/transactions/transactions-api";
+import { Button } from "@/features/ui/button";
 import {
 	Dialog,
 	DialogContent,
@@ -12,8 +12,8 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
-import { Spinner } from "@/components/ui/spinner";
+} from "@/features/ui/dialog";
+import { Spinner } from "@/features/ui/spinner";
 
 const DeleteTransaction = (props: { id: string }) => {
 	const [isDialogOpen, setIsDialogOpen] = useQueryState(

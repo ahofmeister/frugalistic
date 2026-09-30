@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
 import RecurringTransactions from "@/app/(dashboard)/transactions/recurring/recurring-transactions";
-import { Spinner } from "@/components/ui/spinner";
+import { Spinner } from "@/features/ui/spinner";
 
 export default function TransactionsPage() {
 	return (

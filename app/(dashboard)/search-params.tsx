@@ -1,6 +1,6 @@
 import { createLoader, createParser, parseAsInteger } from "nuqs/server";
 
-import type { Period } from "@/components/dashboard/period-selector";
+import type { Period } from "@/features/dashboard/period-selector";
 
 const parsePeriod = createParser({
 	parse(queryValue) {

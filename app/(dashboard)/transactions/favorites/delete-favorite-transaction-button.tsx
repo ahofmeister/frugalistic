@@ -1,8 +1,8 @@
 "use client";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import { removeFavorite } from "@/components/favorite/favorite-actions";
-import { Button } from "@/components/ui/button";
+import { removeFavorite } from "@/features/favorite/favorite-actions";
+import { Button } from "@/features/ui/button";
 
 export function DeleteFavoriteTransactionButton({ favoriteId }: { favoriteId: string }) {
 	return (

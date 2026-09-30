@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 import CategoryList from "@/app/(dashboard)/categories/category-list";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/ui/button";
 
 export default function CategoriesPage() {
 	return (

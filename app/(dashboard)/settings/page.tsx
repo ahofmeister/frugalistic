@@ -2,9 +2,9 @@ import { Suspense } from "react";
 import { DateFormatSettingsInput } from "@/app/(dashboard)/settings/date-format-settings-input";
 import { ImportCategorySettingsInput } from "@/app/(dashboard)/settings/import-category-settings-input";
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
-import { getCategories } from "@/components/categories/categories-api";
-import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
+import { getCategories } from "@/features/categories/categories-api";
+import { Separator } from "@/features/ui/separator";
+import { Skeleton } from "@/features/ui/skeleton";
 
 async function DateFormatSettings() {
 	const settings = await getSettings();

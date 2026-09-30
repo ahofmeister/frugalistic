@@ -1,7 +1,7 @@
 import type { SearchParams } from "nuqs/server";
 import { TransactionsChart } from "@/app/(dashboard)/insights/transactions-chart";
-import { getActiveAccountId } from "@/components/account/account-actions";
 import { dbTransaction } from "@/drizzle/client";
+import { getActiveAccountId } from "@/features/account/account-actions";
 import { getDateRange, loadYearSearchParam } from "@/lib/utils";
 
 export async function InsightsTransactionsTypes({

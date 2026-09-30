@@ -1,18 +1,11 @@
 import { formatDate } from "date-fns";
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
-import { RemoveAccountSharingButton } from "@/components/account/remove-account-sharing-button";
-import SwitchActiveAccountButton from "@/components/account/switch-active-account-button";
-import { getProfile } from "@/components/profile/profile-actions";
-import { Badge } from "@/components/ui/badge";
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "@/components/ui/table";
 import { dbTransaction } from "@/drizzle/client";
+import { RemoveAccountSharingButton } from "@/features/account/remove-account-sharing-button";
+import SwitchActiveAccountButton from "@/features/account/switch-active-account-button";
+import { getProfile } from "@/features/profile/profile-actions";
+import { Badge } from "@/features/ui/badge";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/features/ui/table";
 
 const AccountList = async () => {
 	const profile = await getProfile();

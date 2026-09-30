@@ -1,9 +1,9 @@
 import { asc, desc, sql } from "drizzle-orm";
 import { notFound } from "next/navigation";
-import { getActiveAccountId } from "@/components/account/account-actions";
-import TransactionForm from "@/components/transactions/components/transaction-form";
 import { dbTransaction } from "@/drizzle/client";
 import { transactionAutoSuggest } from "@/drizzle/schema";
+import { getActiveAccountId } from "@/features/account/account-actions";
+import TransactionForm from "@/features/transactions/components/transaction-form";
 
 export const TransactionFormData = async ({
 	transactionId,

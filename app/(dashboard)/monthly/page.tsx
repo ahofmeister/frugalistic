@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { MinMaxSelectYear } from "@/app/(dashboard)/insights/minMaxSelectYear";
-import MonthlyComparison from "@/components/comparison/monthly-comparison";
+import MonthlyComparison from "@/features/comparison/monthly-comparison";
 
 const MonthlyPage = ({ searchParams }: { searchParams: Promise<{ year: string }> }) => {
 	return (

@@ -1,0 +1,52 @@
+import type { TransactionTypeWithLeftover } from "@/drizzle/schema";
+import { getTextColor } from "@/features/transactions/colors";
+import TransactionAmount, {
+	formatAmount,
+} from "@/features/transactions/components/transaction-amount";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/features/ui/card";
+import { capitalize } from "@/lib/utils";
+
+const DashboardCard = ({
+	amount,
+	type,
+	total,
+	label,
+	ofLabel,
+	fixed,
+}: {
+	amount: number;
+	type: TransactionTypeWithLeftover;
+	total?: number;
+	label?: string;
+	ofLabel?: string;
+	fixed?: number;
+}) => {
+	return (
+		<Card className={`w-full`}>
+			<CardHeader>
+				<CardTitle className={getTextColor(type)}>{capitalize(type as string)}</CardTitle>
+				<div className="text-2xl">
+					<TransactionAmount amount={amount} type={type} />
+				</div>
+				<CardDescription>
+					{total !== undefined && total > 0 && (
+						<span className="text-sm text-gray-400">
+							{`${((amount / (total || 1)) * 100).toFixed(0)}% of ${ofLabel}`}
+							{label}
+
+							{fixed && (
+								<span className={"flex"}>
+									<span className="text-xs text-muted-foreground mt-1">
+										Fixed: {formatAmount(fixed)} ({Math.round((fixed / amount) * 100)}
+										%)
+									</span>
+								</span>
+							)}
+						</span>
+					)}
+				</CardDescription>
+			</CardHeader>
+		</Card>
+	);
+};
+export default DashboardCard;

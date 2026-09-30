@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { apiTransactionInsertSchema } from "@/components/api/api-transaction-type";
+import { apiTransactionInsertSchema } from "@/features/api/api-transaction-type";
 
 const transactionInsertSchema = apiTransactionInsertSchema.array().min(1).max(500);
 

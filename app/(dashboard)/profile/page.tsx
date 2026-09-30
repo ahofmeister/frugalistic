@@ -1,8 +1,8 @@
 import { Suspense } from "react";
-import { AccountApiKeys } from "@/components/profile/account-api-keys";
-import { AccountProfileSection } from "@/components/profile/account-profile-section";
-import DeleteAccount from "@/components/profile/delete-account";
-import UpdatePasswordForm from "@/components/profile/update-password-form";
+import { AccountApiKeys } from "@/features/profile/account-api-keys";
+import { AccountProfileSection } from "@/features/profile/account-profile-section";
+import DeleteAccount from "@/features/profile/delete-account";
+import UpdatePasswordForm from "@/features/profile/update-password-form";
 
 export default async function AccountPage() {
 	return (

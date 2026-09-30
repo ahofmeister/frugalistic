@@ -1,9 +1,8 @@
 import { TriangleAlert } from "lucide-react";
 import Link from "next/link";
-
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { dbTransaction } from "@/drizzle/client";
 import { categories } from "@/drizzle/schema";
+import { Alert, AlertDescription, AlertTitle } from "@/features/ui/alert";
 
 export async function CategoriesBanner() {
 	const count = await dbTransaction((tx) => tx.$count(categories));
