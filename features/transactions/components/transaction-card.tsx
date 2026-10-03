@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { FileUpIcon, PencilIcon } from "lucide-react";
+import { FileUpIcon, HandIcon, PencilIcon } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import FormattedDate from "@/app/(dashboard)/dashboard/formatted-date";
@@ -38,7 +38,7 @@ function ImportIndicator({
 	) : null;
 
 	const manualIndicator = importedAt ? null : (
-		<IndicatorTooltip icon={<PencilIcon size={10} />} text="Added manually" />
+		<IndicatorTooltip icon={<HandIcon size={10} />} text="Added manually" />
 	);
 
 	switch (settings.importIndicator) {
