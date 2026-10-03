@@ -1,0 +1,1 @@
+ALTER TABLE "transaction" ALTER COLUMN "imported_at" SET DATA TYPE timestamp with time zone USING "imported_at"::timestamp with time zone;

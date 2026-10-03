@@ -1,3 +1,4 @@
+import { formatDate } from "date-fns";
 import { and, eq, inArray } from "drizzle-orm";
 import type { NextRequest } from "next/server";
 import { z } from "zod";
@@ -5,6 +6,7 @@ import { db } from "@/drizzle/client";
 import { transactions } from "@/drizzle/schema";
 import { apiTransactionInsertSchema } from "@/features/api/api-transaction-type";
 import { withApiAuth } from "@/features/api/api-utils";
+import { DB_DATE_FORMAT } from "@/lib/utils";
 
 const transactionInsertSchema = apiTransactionInsertSchema.array().min(1).max(500);
 
@@ -140,6 +142,7 @@ function buildImportRows(
 			type: row.type,
 			categoryId,
 			costType: row.costType ?? "variable",
+			importedAt: new Date().toISOString(),
 		});
 		rowResults.push({ externalId: row.externalId, status: "created" });
 	}

@@ -32,7 +32,11 @@ export function ImportCategorySettingsInput({
 					onValueChange={async (value) => {
 						setCategoryId(value);
 						startTransition(async () => {
-							await updateSettings({ importDefaultCategory: value, id: settingsId });
+							try {
+								await updateSettings({ importDefaultCategory: value, id: settingsId });
+							} catch (error) {
+								console.error(error);
+							}
 						});
 					}}
 					value={categoryId ?? ""}

@@ -1,3 +1,5 @@
+import { formatDate } from "date-fns";
+import { FileUpIcon } from "lucide-react";
 import Link from "next/link";
 import FormattedDate from "@/app/(dashboard)/dashboard/formatted-date";
 import type { TransactionWithRecurringCategory } from "@/drizzle/schema";
@@ -5,6 +7,7 @@ import CategoryColor from "@/features/categories/category-color";
 import TransactionAmount from "@/features/transactions/components/transaction-amount";
 import { Badge } from "@/features/ui/badge";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/features/ui/card";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/features/ui/tooltip";
 
 export function TransactionCard({
 	transaction,
@@ -18,7 +21,21 @@ export function TransactionCard({
 			<Card key={transaction.id}>
 				<CardHeader>
 					<CardTitle className="flex justify-between">
-						<div>{transaction.description}</div>
+						<div className="flex gap-x-1.5 items-center">
+							<div>{transaction.description}</div>
+							{transaction.importedAt && (
+								<TooltipProvider>
+									<Tooltip>
+										<TooltipTrigger>
+											<FileUpIcon size={10} />
+										</TooltipTrigger>
+										<TooltipContent>
+											Imported from {formatDate(transaction.importedAt, dateFormat)}
+										</TooltipContent>
+									</Tooltip>
+								</TooltipProvider>
+							)}
+						</div>
 						<TransactionAmount amount={transaction.amount} type={transaction.type} />
 					</CardTitle>
 
