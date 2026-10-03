@@ -42,7 +42,7 @@ export function ImportIndicatorSettingsInput({
 
 	return (
 		<div>
-			<Label className="text-sm font-medium">Show indicator for</Label>
+			<Label className="text-sm font-medium">Show import indicator for</Label>
 			<div className="relative">
 				<Select value={importIndicator} onValueChange={handleChange}>
 					<SelectTrigger>
