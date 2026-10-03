@@ -1,6 +1,6 @@
 "use server";
 
-import { asc, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { dbTransaction } from "@/drizzle/client";
 import { categories } from "@/drizzle/schema";
