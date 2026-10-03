@@ -1,0 +1,2 @@
+ALTER TABLE "setting" ADD COLUMN "import_indicator" text DEFAULT 'none' NOT NULL;--> statement-breakpoint
+ALTER TABLE "setting" ADD CONSTRAINT "setting_import_indicator_check" CHECK (import_indicator = ANY (ARRAY['none', 'both', 'manual', 'imported']));

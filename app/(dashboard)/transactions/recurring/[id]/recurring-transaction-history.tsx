@@ -25,5 +25,5 @@ export async function RecurringTransactionHistory(props: {
 	});
 
 	const settings = await getSettings();
-	return <TransactionList transactions={foundTransactions} dateFormat={settings.dateFormat} />;
+	return <TransactionList transactions={foundTransactions} settings={settings} />;
 }

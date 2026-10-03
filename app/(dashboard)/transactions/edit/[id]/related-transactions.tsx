@@ -41,5 +41,5 @@ export async function RelatedTransactions(props: { id: Promise<string> }) {
 
 	const settings = await getSettings();
 
-	return <TransactionList transactions={foundTransactions} dateFormat={settings.dateFormat} />;
+	return <TransactionList transactions={foundTransactions} settings={settings} />;
 }
