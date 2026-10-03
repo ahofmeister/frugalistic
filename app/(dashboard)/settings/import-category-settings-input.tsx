@@ -14,11 +14,9 @@ import { Spinner } from "@/features/ui/spinner";
 
 export function ImportCategorySettingsInput({
 	initialCategoryId,
-	settingsId,
 	allCategories,
 }: {
 	initialCategoryId?: string | null;
-	settingsId: string;
 	allCategories: (typeof categories.$inferSelect)[];
 }) {
 	const [categoryId, setCategoryId] = useState(initialCategoryId);
@@ -33,7 +31,7 @@ export function ImportCategorySettingsInput({
 						setCategoryId(value);
 						startTransition(async () => {
 							try {
-								await updateSettings({ importDefaultCategory: value, id: settingsId });
+								await updateSettings({ importDefaultCategory: value });
 							} catch (error) {
 								console.error(error);
 							}

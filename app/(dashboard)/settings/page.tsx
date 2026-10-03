@@ -9,9 +9,7 @@ import { Skeleton } from "@/features/ui/skeleton";
 async function DateFormatSettings() {
 	const settings = await getSettings();
 
-	return (
-		<DateFormatSettingsInput initialDateFormat={settings.dateFormat} settingsId={settings.id} />
-	);
+	return <DateFormatSettingsInput initialDateFormat={settings.dateFormat} />;
 }
 
 async function ImportCategorySettings() {
@@ -21,7 +19,6 @@ async function ImportCategorySettings() {
 	return (
 		<ImportCategorySettingsInput
 			initialCategoryId={settings.importDefaultCategory}
-			settingsId={settings.id}
 			allCategories={categories}
 		/>
 	);
