@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { FileUpIcon, HandIcon, PencilIcon } from "lucide-react";
+import { FileUpIcon, HandIcon } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import FormattedDate from "@/app/(dashboard)/dashboard/formatted-date";
