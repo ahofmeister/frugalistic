@@ -1,9 +1,10 @@
 "use server";
 
-import { asc, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { dbTransaction } from "@/drizzle/client";
 import { categories } from "@/drizzle/schema";
+import { getActiveAccountId } from "@/features/account/account-actions";
 
 export async function createCategory(newCategory: typeof categories.$inferInsert) {
 	await dbTransaction((tx) => {
@@ -26,7 +27,16 @@ export async function deleteCategory(id: string) {
 }
 
 export async function getCategories() {
-	return dbTransaction((tx) => {
-		return tx.select().from(categories).orderBy(asc(categories.name));
+	return dbTransaction(async (tx) => {
+		const activeAccountID = await getActiveAccountId();
+
+		return tx.query.categories.findMany({
+			orderBy: {
+				name: "asc",
+			},
+			where: {
+				accountId: activeAccountID,
+			},
+		});
 	});
 }

@@ -9,6 +9,7 @@ import {
 	pgPolicy,
 	pgTable,
 	text,
+	timestamp,
 	uniqueIndex,
 	uuid,
 	varchar,
@@ -30,7 +31,7 @@ export const transactionTypeEnum = pgEnum("transaction_type", transactionTypes);
 export const costTypeEnum = pgEnum("cost_type", costTypes);
 
 export const transactions = pgTable(
-	"transactions",
+	"transaction",
 	{
 		id,
 		createdAt,
@@ -45,6 +46,7 @@ export const transactions = pgTable(
 		recurringTransactionId: uuid("recurring_transaction_id"),
 		costType: costTypeEnum("cost_type").notNull().default("variable"),
 		externalId: text("external_id"),
+		importedAt: timestamp("imported_at", { withTimezone: true, mode: "string" }),
 	},
 	(table) => [
 		index("transactions_account_id_idx").on(table.accountId),

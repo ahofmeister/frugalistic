@@ -140,6 +140,7 @@ function buildImportRows(
 			type: row.type,
 			categoryId,
 			costType: row.costType ?? "variable",
+			importedAt: new Date().toISOString(),
 		});
 		rowResults.push({ externalId: row.externalId, status: "created" });
 	}

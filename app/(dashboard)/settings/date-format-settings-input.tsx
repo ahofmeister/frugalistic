@@ -6,13 +6,7 @@ import { Input } from "@/features/ui/input";
 import { Label } from "@/features/ui/label";
 import { Spinner } from "@/features/ui/spinner";
 
-export function DateFormatSettingsInput({
-	initialDateFormat,
-	settingsId,
-}: {
-	initialDateFormat: string;
-	settingsId: string;
-}) {
+export function DateFormatSettingsInput({ initialDateFormat }: { initialDateFormat: string }) {
 	const [dateFormat, setDateFormat] = useState(initialDateFormat);
 	const [isPending, startTransition] = useTransition();
 
@@ -41,7 +35,7 @@ export function DateFormatSettingsInput({
 		}
 
 		startTransition(async () => {
-			await updateSettings({ dateFormat: dateFormat, id: settingsId });
+			await updateSettings({ dateFormat: dateFormat });
 		});
 	};
 
