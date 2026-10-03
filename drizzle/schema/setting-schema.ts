@@ -1,9 +1,21 @@
 import { sql } from "drizzle-orm";
-import { foreignKey, index, pgPolicy, pgTable, text, unique, uuid } from "drizzle-orm/pg-core";
+import {
+	check,
+	foreignKey,
+	index,
+	pgPolicy,
+	pgTable,
+	text,
+	unique,
+	uuid,
+} from "drizzle-orm/pg-core";
 import { accountSchema } from "@/drizzle/schema/account-schema";
 import { categories } from "@/drizzle/schema/categories";
 import { accountId, id, userId } from "@/drizzle/schema/schema-commons";
 import { users } from "@/drizzle/schema/users-schema";
+
+export const importIndicators = ["none", "both", "manual", "imported"] as const;
+export type ImportIndicator = (typeof importIndicators)[number];
 
 export const settingSchema = pgTable(
 	"setting",
@@ -13,10 +25,18 @@ export const settingSchema = pgTable(
 		accountId,
 		dateFormat: text("date_format").default("dd.MM.yyyy").notNull(),
 		importDefaultCategory: uuid("import_default_category"),
+		importIndicator: text("import_indicator").$type<ImportIndicator>().default("none").notNull(),
 	},
 	(table) => [
 		index("setting_account_id_idx").on(table.accountId),
 		unique("setting_user_account_key").on(table.userId, table.accountId),
+		check(
+			"setting_import_indicator_check",
+			sql`import_indicator = ANY (ARRAY[${sql.join(
+				importIndicators.map((i) => sql`${i}`),
+				sql`, `,
+			)}])`,
+		),
 		foreignKey({
 			columns: [table.userId],
 			foreignColumns: [users.id],

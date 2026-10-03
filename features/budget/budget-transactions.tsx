@@ -18,7 +18,7 @@ export async function BudgetTransactions({ budgetId }: { budgetId: Promise<strin
 
 	return (
 		<section className="flex flex-col gap-2">
-			<TransactionList transactions={transactions} dateFormat={settings.dateFormat} />
+			<TransactionList transactions={transactions} settings={settings} />
 		</section>
 	);
 }

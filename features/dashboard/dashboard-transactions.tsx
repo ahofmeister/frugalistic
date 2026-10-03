@@ -43,10 +43,5 @@ export default async function DashboardTransactions({
 
 	const settings = await getSettings();
 
-	return (
-		<TransactionList
-			transactions={transactionsWithRecurring ?? []}
-			dateFormat={settings.dateFormat}
-		/>
-	);
+	return <TransactionList transactions={transactionsWithRecurring ?? []} settings={settings} />;
 }
