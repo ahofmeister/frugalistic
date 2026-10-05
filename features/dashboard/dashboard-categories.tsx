@@ -46,11 +46,6 @@ export async function DashboardCategories({
 
 	const groupedCategories = Object.values(
 		expenses.reduce<Record<string, CategoryData>>((acc, transaction) => {
-			if (!transaction.category) {
-				// TODO fix category not in the json
-				console.log(transaction);
-			}
-
 			const { name, color } = transaction.category;
 			const amount = transaction.amount;
 

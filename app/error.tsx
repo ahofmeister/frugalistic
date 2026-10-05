@@ -1,0 +1,30 @@
+"use client";
+import { AlertCircle } from "lucide-react";
+import { Suspense } from "react";
+import AppButton from "@/features/auth/app-button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/features/ui/card";
+
+export default function ErrorPage() {
+	return (
+		<div className="flex items-center justify-center min-h-screen bg-background">
+			<Card className="w-full max-w-md">
+				<CardHeader>
+					<div className="flex items-center justify-center w-20 h-20 rounded-full bg-muted mx-auto mb-4">
+						<AlertCircle className="w-10 h-10 text-muted-foreground" />
+					</div>
+					<CardTitle className="text-3xl font-bold text-center">Application Error</CardTitle>
+				</CardHeader>
+				<CardContent className="text-center">
+					<p className="text-muted-foreground mb-4">
+						Oops! We have detected an error. A log has been written. We'll investigate the issue!
+					</p>
+				</CardContent>
+				<CardFooter className="flex justify-center space-x-4">
+					<Suspense>
+						<AppButton />
+					</Suspense>
+				</CardFooter>
+			</Card>
+		</div>
+	);
+}
