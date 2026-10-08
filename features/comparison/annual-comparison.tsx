@@ -39,7 +39,7 @@ export default async function AnnualComparison() {
 					</TableRow>
 				</TableHeader>
 				<TableBody>
-					<TotalsRows totals={totals} />
+					<TotalsRows totals={totals} showAverage />
 					<TableRow className="bg-border">
 						<TableCell colSpan={columns.length + 1} />
 					</TableRow>
