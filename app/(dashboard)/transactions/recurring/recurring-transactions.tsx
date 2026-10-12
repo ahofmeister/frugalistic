@@ -13,6 +13,9 @@ const RecurringTransactions = async () => {
 			where: {
 				accountId: activeAccountId,
 			},
+			with: {
+				category: true,
+			},
 		});
 	});
 

@@ -3,7 +3,7 @@ import { useQueryState } from "nuqs";
 import { useEffect, useState } from "react";
 import type { categories } from "@/drizzle/schema";
 import { getCategories } from "@/features/categories/categories-api";
-import CategoryColor from "@/features/categories/category-color";
+import CategoryNameColor from "@/features/transactions/components/category-name-color";
 import {
 	Select,
 	SelectContent,
@@ -43,10 +43,7 @@ const CategorySearchFilter = () => {
 				<SelectItem value={null as unknown as string}>Select Category</SelectItem>
 				{selectedCategories?.map((category) => (
 					<SelectItem key={category.id} value={category.name}>
-						<div className="flex gap-x-2 items-center">
-							<CategoryColor color={category.color} />
-							{category.name}
-						</div>
+						<CategoryNameColor name={category.name} color={category.color} />
 					</SelectItem>
 				))}
 			</SelectContent>

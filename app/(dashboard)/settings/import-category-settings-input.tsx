@@ -2,6 +2,7 @@
 import { useState, useTransition } from "react";
 import { updateSettings } from "@/app/(dashboard)/settings/settings-actions";
 import type { categories } from "@/drizzle/schema";
+import CategoryNameColor from "@/features/transactions/components/category-name-color";
 import { Label } from "@/features/ui/label";
 import {
 	Select,
@@ -45,13 +46,7 @@ export function ImportCategorySettingsInput({
 					<SelectContent>
 						{allCategories?.map((category) => (
 							<SelectItem key={category.id} value={category.id}>
-								<div className="flex items-center gap-2">
-									<div
-										className="w-3 h-3 rounded-full"
-										style={{ backgroundColor: category.color }}
-									/>
-									<span>{category.name}</span>
-								</div>
+								<CategoryNameColor name={category.name} color={category.color} />
 							</SelectItem>
 						))}
 					</SelectContent>

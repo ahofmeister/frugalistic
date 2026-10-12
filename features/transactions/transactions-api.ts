@@ -1,6 +1,6 @@
 "use server";
 import { addYears, endOfMonth, format, startOfMonth, startOfYear } from "date-fns";
-import { and, asc, between, desc, eq, gte, ilike, lt, lte, or, sum } from "drizzle-orm";
+import { and, asc, desc, eq, gte, ilike, lt, lte, sum } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import type { SearchFilter } from "@/app/(dashboard)/transactions/search-filter";
 import { dbTransaction } from "@/drizzle/client";
@@ -190,34 +190,23 @@ export async function getRecurringTransactionsForMonth(year: number, month: numb
 	return await dbTransaction(async (tx) => {
 		const activeAccountId = await getActiveAccountId();
 
-		return tx
-			.select()
-			.from(transactionsRecurring)
-			.where(
-				and(
-					eq(transactionsRecurring.accountId, activeAccountId),
-					eq(transactionsRecurring.enabled, true),
-					isFutureMonth
-						? or(
-								eq(transactionsRecurring.interval, "monthly"),
-								and(
-									eq(transactionsRecurring.interval, "annually"),
-									between(transactionsRecurring.nextRun, from, to),
-								),
-							)
-						: or(
-								and(
-									eq(transactionsRecurring.interval, "monthly"),
-									lte(transactionsRecurring.nextRun, to),
-								),
-								and(
-									eq(transactionsRecurring.interval, "annually"),
-									between(transactionsRecurring.nextRun, from, to),
-								),
-							),
-				),
-			)
-			.orderBy(transactionsRecurring.nextRun);
+		return tx.query.transactionsRecurring.findMany({
+			where: {
+				accountId: activeAccountId,
+				enabled: true,
+				OR: [
+					isFutureMonth ? { interval: "monthly" } : { interval: "monthly", nextRun: { lte: to } },
+					{
+						interval: "annually",
+						nextRun: { gte: from, lte: to },
+					},
+				],
+			},
+			with: {
+				category: true,
+			},
+			orderBy: { nextRun: "asc" },
+		});
 	});
 }
 

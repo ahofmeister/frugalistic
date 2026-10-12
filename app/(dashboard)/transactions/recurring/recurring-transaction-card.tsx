@@ -1,7 +1,8 @@
 import Link from "next/link";
 
 import FormattedDate from "@/app/(dashboard)/dashboard/formatted-date";
-import type { transactionsRecurring } from "@/drizzle/schema";
+import type { categories, transactionsRecurring } from "@/drizzle/schema";
+import CategoryNameColor from "@/features/transactions/components/category-name-color";
 import TransactionAmount from "@/features/transactions/components/transaction-amount";
 import { Badge } from "@/features/ui/badge";
 import {
@@ -13,11 +14,16 @@ import {
 	CardTitle,
 } from "@/features/ui/card";
 
-const RecurringTransactionCard = (props: {
-	transaction: typeof transactionsRecurring.$inferSelect;
+const RecurringTransactionCard = ({
+	transaction,
+	dateFormat,
+}: {
+	transaction: typeof transactionsRecurring.$inferSelect & {
+		category: typeof categories.$inferSelect;
+	};
 	dateFormat: string;
 }) => {
-	const transaction = props.transaction;
+	const category = transaction.category;
 
 	return (
 		<Link href={`/transactions/recurring/${transaction.id}`}>
@@ -29,8 +35,9 @@ const RecurringTransactionCard = (props: {
 							<TransactionAmount amount={transaction.amount} type={transaction.type} />
 						</div>
 					</CardTitle>
-					<CardDescription>
-						<FormattedDate date={transaction.nextRun ?? "-"} format={props.dateFormat} />
+					<CardDescription className="flex justify-between">
+						<CategoryNameColor name={category.name} color={category.color} />
+						<FormattedDate date={transaction.nextRun ?? "-"} format={dateFormat} />
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="flex justify-end"></CardContent>

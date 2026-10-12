@@ -1,4 +1,5 @@
 import { TotalsRows } from "@/features/comparison/comparison-total-rows";
+import CategoryNameColor from "@/features/transactions/components/category-name-color";
 import TransactionAmount from "@/features/transactions/components/transaction-amount";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/features/ui/table";
 import { buildComparisonTable, getRawTransactionsAndCategories } from "./comparison-data";
@@ -68,10 +69,7 @@ export default async function MonthlyComparison({
 					{categories.map((category) => (
 						<TableRow key={category.id} className="hover:bg-card">
 							<TableCell className="border border-border p-3 font-medium">
-								<div className="flex items-center gap-2">
-									<div className="w-4 h-4 rounded" style={{ backgroundColor: category.color }} />
-									{category.name}
-								</div>
+								<CategoryNameColor name={category.name} color={category.color} />
 							</TableCell>
 							{category.amounts.map((amount, idx) => (
 								<TableCell key={idx} className="border border-border p-3 text-right">

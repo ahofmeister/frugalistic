@@ -16,6 +16,7 @@ import {
 } from "@/drizzle/schema";
 import { createBudget } from "@/features/budget/budget-actions";
 import DeleteBudget from "@/features/budget/delete-budget";
+import CategoryNameColor from "@/features/transactions/components/category-name-color";
 import { TransactionSelectItems } from "@/features/transactions/components/transaction-select-items";
 import { Button } from "@/features/ui/button";
 import { Calendar } from "@/features/ui/calendar";
@@ -134,13 +135,7 @@ const BudgetForm = ({
 											<SelectContent>
 												{fetchedCategories.map((category) => (
 													<SelectItem key={category.id} value={category.id}>
-														<div className="flex items-center gap-2">
-															<div
-																className="w-3 h-3 rounded-full"
-																style={{ backgroundColor: category.color }}
-															/>
-															<span>{category.name}</span>
-														</div>
+														<CategoryNameColor name={category.name} color={category.color} />
 													</SelectItem>
 												))}
 											</SelectContent>

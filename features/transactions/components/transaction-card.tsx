@@ -4,7 +4,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import FormattedDate from "@/app/(dashboard)/dashboard/formatted-date";
 import type { settingSchema, TransactionWithRecurringCategory } from "@/drizzle/schema";
-import CategoryColor from "@/features/categories/category-color";
+import CategoryNameColor from "@/features/transactions/components/category-name-color";
 import TransactionAmount from "@/features/transactions/components/transaction-amount";
 import { Badge } from "@/features/ui/badge";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/features/ui/card";
@@ -59,6 +59,7 @@ export function TransactionCard({
 	transaction: TransactionWithRecurringCategory;
 	settings: typeof settingSchema.$inferSelect;
 }) {
+	const category = transaction.category;
 	return (
 		<Link href={`/transactions/edit/${transaction.id}`}>
 			<Card key={transaction.id}>
@@ -71,16 +72,8 @@ export function TransactionCard({
 						<TransactionAmount amount={transaction.amount} type={transaction.type} />
 					</CardTitle>
 
-					<CardDescription className="flex justify-between ">
-						<span>
-							{transaction.category && (
-								<>
-									<CategoryColor color={transaction.category.color} />
-									{transaction.category.name}
-								</>
-							)}
-						</span>
-
+					<CardDescription className="flex justify-between">
+						<CategoryNameColor name={category.name} color={category.color} />
 						<FormattedDate date={transaction.datetime} format={settings.dateFormat} />
 					</CardDescription>
 				</CardHeader>
