@@ -1,9 +1,9 @@
 const CategoryNameColor = ({ name, color }: { name: string; color: string }) => {
 	return (
-		<div className="flex gap-x-1.5 items-center">
-			<div className="w-3 h-3 rounded" style={{ backgroundColor: color }} />
+		<span className="flex gap-x-1.5 items-center">
+			<span className="w-3 h-3 rounded" style={{ backgroundColor: color }} />
 			{name}
-		</div>
+		</span>
 	);
 };
 

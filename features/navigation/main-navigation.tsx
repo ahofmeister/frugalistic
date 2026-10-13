@@ -1,25 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import {
-	BarChartBig,
-	Calendar1Icon,
-	CalendarDays,
-	Heart,
-	LayoutDashboard,
-	LineChart,
-	ListOrdered,
-	LogOutIcon,
-	type LucideIcon,
-	Menu,
-	MessageSquareText,
-	PiggyBankIcon,
-	Repeat2,
-	SettingsIcon,
-	SquarePlus,
-	Tags,
-	UserCogIcon,
-} from "lucide-react";
+import { LogOutIcon, type LucideIcon, Menu, MessageSquareText } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -27,60 +9,9 @@ import type React from "react";
 import { createContext, useContext, useState, ViewTransition } from "react";
 import { signOut } from "@/features/auth/auth-actions";
 import FeedbackCard from "@/features/feedback/feedback-card";
+import { mainNavSections, type NavLinkItem } from "@/features/navigation/nav-config";
 
-type NavLinkItem = {
-	href: string;
-	label: string;
-	icon: LucideIcon;
-};
-
-type NavSection = {
-	title: string;
-	items: NavLinkItem[];
-};
-
-const navSections: NavSection[] = [
-	{
-		title: "Dashboard",
-		items: [{ href: "/dashboard", label: "Dashboard", icon: LayoutDashboard }],
-	},
-	{
-		title: "Planning",
-		items: [{ href: "/budgets", label: "Budgets", icon: PiggyBankIcon }],
-	},
-	{
-		title: "Transactions",
-		items: [
-			{ href: "/transactions/new", label: "New transaction", icon: SquarePlus },
-			{ href: "/transactions", label: "Transactions", icon: ListOrdered },
-			{ href: "/transactions/recurring", label: "Recurring", icon: Repeat2 },
-			{ href: "/transactions/favorites", label: "Favorites", icon: Heart },
-		],
-	},
-	{
-		title: "Analysis",
-		items: [
-			{ href: "/monthly", label: "Monthly", icon: Calendar1Icon },
-			{ href: "/annual", label: "Annual", icon: CalendarDays },
-			{ href: "/insights", label: "Insights", icon: LineChart },
-			{ href: "/statistics", label: "Statistics", icon: BarChartBig },
-		],
-	},
-	{
-		title: "Setup",
-		items: [{ href: "/categories", label: "Categories", icon: Tags }],
-	},
-	{
-		title: "Account & Profile",
-		items: [
-			{ href: "/accounts", label: "Accounts", icon: UserCogIcon },
-			{ href: "/profile", label: "Profile", icon: UserCogIcon },
-			{ href: "/settings", label: "Settings", icon: SettingsIcon },
-		],
-	},
-];
-
-const allHrefs = navSections.flatMap((section) => section.items.map((item) => item.href));
+const allHrefs = mainNavSections.flatMap((section) => section.items.map((item) => item.href));
 
 function getActiveHref(pathname: string) {
 	return allHrefs
@@ -208,7 +139,7 @@ export default function MainNavigation() {
 
 					<div className="flex-1 overflow-y-auto py-4 px-4">
 						<div className="space-y-6">
-							{navSections.map((section) => (
+							{mainNavSections.map((section) => (
 								<div key={section.title}>
 									<SectionTitle>{section.title}</SectionTitle>
 									<div className="space-y-1">
