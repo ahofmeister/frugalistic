@@ -13,11 +13,12 @@ export function PeriodSelector() {
 			type="single"
 			value={period}
 			className="justify-start"
-			onValueChange={(newPeriod: Period) => {
-				if (!newPeriod) {
+			onValueChange={(newPeriod: string) => {
+				const castedPeriod = newPeriod as Period;
+				if (!castedPeriod) {
 					return;
 				}
-				void setPeriod(newPeriod);
+				void setPeriod(castedPeriod);
 			}}
 		>
 			<ToggleGroupItem value="month">Month</ToggleGroupItem>
