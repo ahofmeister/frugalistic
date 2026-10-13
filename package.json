@@ -78,6 +78,7 @@
 		"encoding": "^0.1.13",
 		"vitest": "^5.0.4"
 	},
+	"packageManager": "pnpm@12.11.2",
 	"engines": {
 		"node": ">=24"
 	}
