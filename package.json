@@ -78,15 +78,6 @@
 		"encoding": "^0.1.13",
 		"vitest": "^5.0.4"
 	},
-	"overrides": {
-		"react-is": "^19.0.0"
-	},
-	"pnpm": {
-		"overrides": {
-			"@types/react": "19.2.2",
-			"@types/react-dom": "19.2.2"
-		}
-	},
 	"engines": {
 		"node": ">=24"
 	}
