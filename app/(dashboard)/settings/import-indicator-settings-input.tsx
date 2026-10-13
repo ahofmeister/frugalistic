@@ -28,15 +28,16 @@ export function ImportIndicatorSettingsInput({
 	const [importIndicator, setImportIndicator] = useState(initialImportIndicator);
 	const [isPending, startTransition] = useTransition();
 
-	const handleChange = (value: ImportIndicator) => {
-		if (value === importIndicator) {
+	const handleChange = (value: string) => {
+		const castedValue = value as ImportIndicator;
+		if (castedValue === importIndicator) {
 			return;
 		}
 
-		setImportIndicator(value);
+		setImportIndicator(castedValue);
 
 		startTransition(async () => {
-			await updateSettings({ importIndicator: value });
+			await updateSettings({ importIndicator: castedValue });
 		});
 	};
 

@@ -3,7 +3,8 @@
 	"scripts": {
 		"dev": "next dev --experimental-https",
 		"build": "next build",
-		"start": "next start"
+		"start": "next start",
+		"test:unit": "vitest run"
 	},
 	"dependencies": {
 		"@hookform/resolvers": "5.9.1",
@@ -74,15 +75,11 @@
 		"@types/node": "22.10.1",
 		"@types/react": "19.2.2",
 		"@types/react-dom": "19.2.2",
-		"encoding": "^0.1.13"
+		"encoding": "^0.1.13",
+		"vitest": "^5.0.4"
 	},
-	"overrides": {
-		"react-is": "^19.0.0"
-	},
-	"pnpm": {
-		"overrides": {
-			"@types/react": "19.2.2",
-			"@types/react-dom": "19.2.2"
-		}
+	"packageManager": "pnpm@12.11.2",
+	"engines": {
+		"node": ">=24"
 	}
 }
