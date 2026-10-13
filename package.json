@@ -87,5 +87,7 @@
 			"@types/react-dom": "19.2.2"
 		}
 	},
-	"packageManager": "pnpm@12.11.2\"pnpm approve-build"
+	"engines": {
+		"node": ">=24"
+	}
 }
