@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { differenceInCalendarDays, format, parseISO } from "date-fns";
 import { FileUpIcon, HandIcon } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -9,6 +9,7 @@ import TransactionAmount from "@/features/transactions/components/transaction-am
 import { Badge } from "@/features/ui/badge";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/features/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/features/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 function IndicatorTooltip({ icon, text }: { icon: ReactNode; text: string }) {
 	return (
@@ -52,6 +53,23 @@ function ImportIndicator({
 			return importedIndicator ?? manualIndicator;
 	}
 }
+
+function PlannedBadge({ daysUntil }: { daysUntil: number }) {
+	if (daysUntil <= 0) {
+		return (
+			<Badge variant="outline" className="border-dashed border-amber-400 text-amber-400">
+				Due
+			</Badge>
+		);
+	}
+
+	return (
+		<Badge variant="outline" className="border-dashed text-muted-foreground">
+			Planned
+		</Badge>
+	);
+}
+
 export function TransactionCard({
 	transaction,
 	settings,
@@ -60,21 +78,33 @@ export function TransactionCard({
 	settings: typeof settingSchema.$inferSelect;
 }) {
 	const category = transaction.category;
+	const isPlanned = transaction.status === "planned";
+	const daysUntil = differenceInCalendarDays(parseISO(transaction.datetime), new Date());
+
 	return (
 		<Link href={`/transactions/edit/${transaction.id}`}>
-			<Card key={transaction.id}>
+			<Card
+				key={transaction.id}
+				className={cn(isPlanned && "border-dashed border-muted-foreground/40")}
+			>
 				<CardHeader>
 					<CardTitle className="flex justify-between">
 						<div className="flex gap-x-1.5 items-center">
 							<div>{transaction.description}</div>
 							<ImportIndicator settings={settings} importedAt={transaction.importedAt} />
+							{isPlanned && <PlannedBadge daysUntil={daysUntil} />}
 						</div>
 						<TransactionAmount amount={transaction.amount} type={transaction.type} />
 					</CardTitle>
 
 					<CardDescription className="flex justify-between">
 						<CategoryNameColor name={category.name} color={category.color} />
-						<FormattedDate date={transaction.datetime} format={settings.dateFormat} />
+						<span>
+							<FormattedDate date={transaction.datetime} format={settings.dateFormat} />
+							{isPlanned && daysUntil > 0
+								? ` · in ${daysUntil} ${daysUntil === 1 ? "day" : "days"}`
+								: ""}
+						</span>
 					</CardDescription>
 				</CardHeader>
 
