@@ -1,14 +1,14 @@
 "use server";
 
 import { endOfMonth, endOfYear, format, parseISO, startOfMonth, startOfYear } from "date-fns";
-import { and, desc, eq, gte, lte, sql } from "drizzle-orm";
+import { and, desc, eq, gte, lte } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { dbTransaction } from "@/drizzle/client";
 import { budgetSchema, categories, transactions, transactionsRecurring } from "@/drizzle/schema";
 import { getActiveAccountId } from "@/features/account/account-actions";
 
 function normalizeBudgetDates(
-	type: typeof budgetSchema.$inferInsert.type,
+	type: typeof budgetSchema.$inferInsert.period,
 	startDate: string,
 	targetDate?: string | null,
 ) {
@@ -35,7 +35,7 @@ function normalizeBudgetDates(
 }
 
 export async function createBudget(newBudget: typeof budgetSchema.$inferInsert) {
-	const dates = normalizeBudgetDates(newBudget.type, newBudget.startDate, newBudget.targetDate);
+	const dates = normalizeBudgetDates(newBudget.period, newBudget.startDate, newBudget.targetDate);
 
 	await dbTransaction((tx) => {
 		return tx.insert(budgetSchema).values({
@@ -74,29 +74,6 @@ export async function findBudgetById(budgetId: string) {
 			},
 		});
 	});
-}
-
-export async function findBudgetTotals(categoryId: string, from: string, to: string | null) {
-	const accountId = await getActiveAccountId();
-
-	const rows = await dbTransaction((tx) =>
-		tx
-			.select({
-				type: transactions.type,
-				total: sql<number>`coalesce(sum(${transactions.amount}), 0)::int`,
-			})
-			.from(transactions)
-			.where(budgetConditions(accountId, categoryId, from, to))
-			.groupBy(transactions.type),
-	);
-
-	const totals = { expense: 0, income: 0, savings: 0 };
-
-	for (const row of rows) {
-		totals[row.type] = row.total;
-	}
-
-	return totals;
 }
 
 export async function findBudgetTransactions(categoryId: string, from: string, to: string | null) {

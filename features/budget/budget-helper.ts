@@ -5,7 +5,7 @@ export function getBudgetDateRange(
 	budget: typeof budgetSchema.$inferSelect,
 	viewedPeriod: { year: number; month: number },
 ) {
-	if (budget.type === "manual") {
+	if (budget.period === "manual") {
 		return {
 			start: budget.startDate,
 			end: budget.targetDate ?? budget.startDate,
@@ -13,11 +13,11 @@ export function getBudgetDateRange(
 	}
 
 	const periodDate =
-		budget.interval === "monthly" || (budget.type === "month" && budget.interval == null)
+		budget.repeating === "monthly" || (budget.period === "month" && budget.repeating == null)
 			? new Date(viewedPeriod.year, viewedPeriod.month, 1)
 			: new Date(budget.startDate);
 
-	if (budget.type === "month") {
+	if (budget.period === "month") {
 		return {
 			start: format(startOfMonth(periodDate), "yyyy-MM-dd"),
 			end: format(endOfMonth(periodDate), "yyyy-MM-dd"),

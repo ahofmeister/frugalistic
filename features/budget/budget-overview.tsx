@@ -161,7 +161,7 @@ function BudgetSubtitle({
 	budget: typeof budgetSchema.$inferSelect;
 	format: string;
 }) {
-	if (budget.type === "manual") {
+	if (budget.period === "manual") {
 		return (
 			<p className="text-sm text-muted-foreground">
 				{formatDate(budget.startDate, format)} –{" "}
@@ -172,8 +172,8 @@ function BudgetSubtitle({
 
 	return (
 		<p className="text-sm text-muted-foreground">
-			{typeLabels[budget.type]}
-			{budget.interval ? `, ${intervalLabels[budget.interval].toLowerCase()}` : ""}
+			{typeLabels[budget.period]}
+			{budget.repeating ? `, ${intervalLabels[budget.repeating].toLowerCase()}` : ""}
 		</p>
 	);
 }
