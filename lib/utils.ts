@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { endOfMonth, endOfYear, format as formatDate, startOfMonth, startOfYear } from "date-fns";
+import { redirect } from "next/navigation";
 import { createLoader, parseAsInteger, parseAsStringEnum } from "nuqs/server";
 import { twMerge } from "tailwind-merge";
 import type { Period } from "@/features/dashboard/period-selector";
@@ -64,3 +65,7 @@ export const parseYear = parseAsInteger
 export const loadYearSearchParam = createLoader({
 	year: parseAsInteger.withDefault(new Date().getFullYear()),
 });
+
+export function encodedRedirect(type: "error" | "success", path: string, message: string): never {
+	return redirect(`${path}?${type}=${encodeURIComponent(message)}`);
+}
