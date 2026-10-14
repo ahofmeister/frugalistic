@@ -1,17 +1,21 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon } from "@radix-ui/react-icons";
-import { format, startOfYesterday } from "date-fns";
+import { format, parseISO, startOfYesterday } from "date-fns";
+import { createInsertSchema } from "drizzle-orm/zod";
 import { HeartIcon } from "lucide-react";
 import { useRef, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
-
+import type { z } from "zod";
 import DeleteTransaction from "@/app/(dashboard)/transactions/edit/[id]/delete-transaction";
-import type { categories, favoriteSchema, transactionAutoSuggest } from "@/drizzle/schema";
+import {
+	type categories,
+	type favoriteSchema,
+	type transactionAutoSuggest,
+	transactions,
+} from "@/drizzle/schema";
 import type { TransactionWithRecurringCategory } from "@/drizzle/schema/transaction-recurring-schema";
-import type { transactions } from "@/drizzle/schema/transaction-schema";
 import { addFavorite, removeFavorite } from "@/features/favorite/favorite-actions";
 import { getTextColor } from "@/features/transactions/colors";
 import AmountInput from "@/features/transactions/components/amount-input";
@@ -35,7 +39,22 @@ import {
 	SelectValue,
 } from "@/features/ui/select";
 import { Spinner } from "@/features/ui/spinner";
-import { cn } from "@/lib/utils";
+import { Switch } from "@/features/ui/switch";
+import { cn, DB_DATE_FORMAT } from "@/lib/utils";
+
+const formSchema = createInsertSchema(transactions, {
+	description: (schema) => schema.min(1),
+}).pick({
+	description: true,
+	type: true,
+	costType: true,
+	categoryId: true,
+	amount: true,
+	datetime: true,
+	status: true,
+});
+
+type FormValues = z.infer<typeof formSchema>;
 
 const TransactionForm = ({
 	transaction,
@@ -50,26 +69,18 @@ const TransactionForm = ({
 		category: typeof categories.$inferSelect;
 	})[];
 }) => {
-	const formSchema = z.object({
-		description: z.string().min(1),
-		amount: z.string(),
-		type: z.enum(["income", "expense", "savings"]),
-		category: z.string(),
-		datetime: z.date(),
-		costType: z.enum(["fixed", "variable"]).optional(),
-	});
-
-	const defaultValues = {
-		description: transaction ? transaction.description : "",
-		type: transaction ? transaction.type : "expense",
-		amount: transaction ? transaction.amount.toString() : "0",
-		datetime: transaction ? new Date(transaction.datetime) : new Date(),
-		category: transaction?.category ? transaction.category.id : "",
+	const defaultValues: FormValues = {
+		description: transaction?.description ?? "",
+		type: transaction?.type ?? "expense",
+		amount: transaction?.amount ?? 0,
+		datetime: transaction?.datetime ?? format(new Date(), DB_DATE_FORMAT),
+		categoryId: transaction?.category.id ?? "",
 		costType: transaction?.costType ?? "variable",
 	};
-	const form = useForm({
+
+	const form = useForm<FormValues>({
 		resolver: zodResolver(formSchema),
-		defaultValues: defaultValues,
+		defaultValues,
 		mode: "onChange",
 	});
 
@@ -83,13 +94,14 @@ const TransactionForm = ({
 	}
 
 	const typeValue = form.watch("type");
-	const categoryValue = form.watch("category");
+	const categoryValue = form.watch("categoryId");
 	const costTypeValue = form.watch("costType");
 
-	async function handleSubmit(newTransaction: typeof transactions.$inferInsert) {
+	async function handleSubmit(values: FormValues) {
 		const { error } = await upsertTransaction({
-			...newTransaction,
-			id: transaction ? transaction.id : undefined,
+			...values,
+			id: transaction?.id,
+			status: values?.status ? "planned" : "booked",
 		});
 
 		if (error) {
@@ -99,7 +111,7 @@ const TransactionForm = ({
 			toast.success("Transaction created successfully!");
 			resetForm();
 		} else {
-			toast.success(`Transaction saved successfully`);
+			toast.success("Transaction saved successfully");
 		}
 	}
 
@@ -111,17 +123,7 @@ const TransactionForm = ({
 	return (
 		<div className="max-w-2xl mx-auto px-2">
 			<Form {...form}>
-				<form
-					onSubmit={form.handleSubmit((transaction) =>
-						handleSubmit({
-							...transaction,
-							amount: Number(transaction.amount.replace(/\D/g, "")),
-							datetime: format(transaction.datetime, "yyyy-MM-dd"),
-							categoryId: categoryValue,
-						}),
-					)}
-					className="space-y-6"
-				>
+				<form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 						<div className="col-span-2 flex justify-between">
 							<Button
@@ -174,9 +176,10 @@ const TransactionForm = ({
 												onClick={() => {
 													form.setValue("description", item.description);
 													form.setValue("type", item.type);
-													form.setValue("amount", item.amount.toString());
+													form.setValue("amount", item.amount);
+
 													if (item.category) {
-														form.setValue("category", item.category.id);
+														form.setValue("categoryId", item.category.id);
 													}
 
 													autoCompleteRef.current?.setInputValue(item.description);
@@ -216,7 +219,7 @@ const TransactionForm = ({
 														form.setValue("type", e.type);
 													}
 													if (e.category) {
-														form.setValue("category", e.category);
+														form.setValue("categoryId", e.category);
 													}
 												}}
 												options={autoSuggests ?? []}
@@ -228,9 +231,9 @@ const TransactionForm = ({
 							/>
 						</div>
 
-						<Controller
-							name="amount"
+						<FormField
 							control={form.control}
+							name="amount"
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Amount</FormLabel>
@@ -270,7 +273,7 @@ const TransactionForm = ({
 
 						<FormField
 							control={form.control}
-							name="category"
+							name="categoryId"
 							render={({ field }) => (
 								<FormItem
 									className={cn({
@@ -337,7 +340,11 @@ const TransactionForm = ({
 														!field.value && "text-muted-foreground",
 													)}
 												>
-													{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+													{field.value ? (
+														format(parseISO(field.value), "PPP")
+													) : (
+														<span>Pick a date</span>
+													)}
 													<CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
 												</Button>
 											</FormControl>
@@ -346,9 +353,13 @@ const TransactionForm = ({
 											<Calendar
 												weekStartsOn={1}
 												mode="single"
-												selected={field.value}
-												onSelect={field.onChange}
-												disabled={(date) => date < new Date("1900-01-01")}
+												selected={parseISO(field.value)}
+												onSelect={(date) => {
+													if (date) {
+														field.onChange(format(date, DB_DATE_FORMAT));
+													}
+												}}
+												disabled={(date) => date < new Date("2000-01-01")}
 												required
 											/>
 										</PopoverContent>
@@ -357,17 +368,39 @@ const TransactionForm = ({
 								</FormItem>
 							)}
 						/>
+
 						<FormItem className="flex flex-col">
 							<FormLabel>&nbsp;</FormLabel>
 							<Button
 								type="button"
-								onClick={() => form.setValue("datetime", startOfYesterday())}
+								onClick={() =>
+									form.setValue("datetime", format(startOfYesterday(), DB_DATE_FORMAT), {
+										shouldValidate: true,
+									})
+								}
 								variant="outline"
 							>
 								Yesterday
 							</Button>
 						</FormItem>
 					</div>
+
+					<FormField
+						control={form.control}
+						name="status"
+						render={({ field }) => (
+							<FormItem className="flex justify-between">
+								<FormLabel>Planned?</FormLabel>
+								<Switch
+									checked={field.value === "planned"}
+									onCheckedChange={(value) => {
+										field.onChange(value ? "planned" : "booked");
+									}}
+								></Switch>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
 
 					{transaction && (
 						<div className="flex flex-col gap-y-2 mt-2">

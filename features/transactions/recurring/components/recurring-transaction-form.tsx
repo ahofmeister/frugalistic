@@ -95,7 +95,7 @@ const RecurringTransactionForm = ({
 								<FormItem>
 									<FormLabel>Amount</FormLabel>
 									<FormControl>
-										<AmountInput value={field.value as string} onChange={field.onChange} />
+										<AmountInput value={field.value as number} onChange={field.onChange} />
 									</FormControl>
 									<FormMessage />
 								</FormItem>
