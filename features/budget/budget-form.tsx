@@ -4,12 +4,13 @@ import { DevTool } from "@hookform/devtools";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
+import { createInsertSchema } from "drizzle-orm/zod";
 import { redirect } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
-	type budgetSchema,
-	budgetTypes,
+	budgetPeriods,
+	budgetSchema,
 	type categories,
 	recurringIntervals,
 	transactionTypes,
@@ -33,6 +34,66 @@ import {
 import { Spinner } from "@/features/ui/spinner";
 import { capitalize, cn } from "@/lib/utils";
 
+const scheduleDescription = (
+	type: (typeof budgetPeriods)[number],
+	startDate: Date | undefined,
+	targetDate: Date | undefined,
+	interval: (typeof recurringIntervals)[number] | null | undefined,
+) => {
+	if (type === "manual") {
+		const start = startDate ? format(startDate, "PPP") : "your start date";
+		const end = targetDate ? format(targetDate, "PPP") : "your end date";
+		return `Runs from ${start} to ${end} and does not repeat.`;
+	}
+
+	const intro = startDate
+		? `Starts in ${format(startDate, "MMMM yyyy")} and covers one ${type}.`
+		: `Starts on your start date and covers one ${type}.`;
+
+	if (interval === "monthly") {
+		return `${intro} It repeats every month.`;
+	}
+
+	if (interval === "annually") {
+		const month = startDate ? ` in ${format(startDate, "MMMM")}` : "";
+		return `${intro} It repeats every year${month}.`;
+	}
+
+	return `${intro} It does not repeat.`;
+};
+
+const budgetFormSchema = createInsertSchema(budgetSchema, {
+	name: z.string().min(3),
+	period: z.enum(budgetPeriods),
+	flow: z.enum(transactionTypes),
+	repeating: z.enum(recurringIntervals).nullable().optional(),
+	startDate: z.date(),
+	targetDate: z.date().optional(),
+})
+	.omit({
+		id: true,
+		userId: true,
+		accountId: true,
+		createdAt: true,
+		updatedAt: true,
+	})
+	.superRefine((data, ctx) => {
+		if (data.period === "manual" && !data.targetDate) {
+			ctx.addIssue({
+				code: "custom",
+				message: "Target date is required for manual budgets",
+				path: ["targetDate"],
+			});
+		}
+		if (data.period === "year" && data.repeating === "monthly") {
+			ctx.addIssue({
+				code: "custom",
+				message: "A yearly budget can only repeat every year",
+				path: ["interval"],
+			});
+		}
+	});
+
 const BudgetForm = ({
 	budget,
 	fetchedCategories,
@@ -40,35 +101,15 @@ const BudgetForm = ({
 	budget?: typeof budgetSchema.$inferSelect;
 	fetchedCategories: (typeof categories.$inferSelect)[];
 }) => {
-	const formSchema = z
-		.object({
-			name: z.string().min(3),
-			categoryId: z.string(),
-			type: z.enum(budgetTypes),
-			amount: z.number(),
-			flow: z.enum(transactionTypes),
-			interval: z.enum(recurringIntervals).nullable().optional(),
-			startDate: z.date(),
-			targetDate: z.date().optional(),
-		})
-		.superRefine((data, ctx) => {
-			if (data.type === "manual" && !data.targetDate) {
-				ctx.addIssue({
-					code: "custom",
-					message: "Target date is required for manual budgets",
-					path: ["targetDate"],
-				});
-			}
-		});
 	const form = useForm({
-		resolver: zodResolver(formSchema),
+		resolver: zodResolver(budgetFormSchema),
 		defaultValues: {
 			name: budget?.name ?? undefined,
 			categoryId: budget?.categoryId ?? undefined,
-			type: budget?.type ?? "month",
+			period: budget?.period ?? "month",
 			amount: budget?.amount ?? undefined,
 			flow: budget?.flow ?? "expense",
-			interval: budget?.interval ?? undefined,
+			repeating: budget?.repeating ?? undefined,
 			startDate: budget?.startDate ? new Date(budget.startDate) : undefined,
 			targetDate: budget?.targetDate ? new Date(budget.targetDate) : undefined,
 		},
@@ -83,7 +124,10 @@ const BudgetForm = ({
 		redirect("/budgets");
 	}
 
-	const currentType = form.watch("type");
+	const currentPeriod = form.watch("period");
+	const currentStartDate = form.watch("startDate");
+	const currentTargetDate = form.watch("targetDate");
+	const currentRepeating = form.watch("repeating");
 
 	return (
 		<div className="max-w-2xl mx-auto px-2 py-4">
@@ -148,74 +192,6 @@ const BudgetForm = ({
 
 						<FormField
 							control={form.control}
-							name="type"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel required>Type</FormLabel>
-									<FormControl>
-										<Select
-											value={field.value}
-											onValueChange={field.onChange}
-											defaultValue={field.value}
-										>
-											<FormControl>
-												<SelectTrigger>
-													<SelectValue />
-												</SelectTrigger>
-											</FormControl>
-											<SelectContent>
-												{budgetTypes.map((type) => (
-													<SelectItem key={type} value={type}>
-														<div className="flex items-center gap-2">
-															<span>{capitalize(type)}</span>
-														</div>
-													</SelectItem>
-												))}
-											</SelectContent>
-										</Select>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-
-						<FormField
-							control={form.control}
-							name="interval"
-							disabled={currentType === "manual"}
-							defaultValue="monthly"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel required={currentType !== "manual"}>Recurring Interval</FormLabel>
-									<Select
-										value={field.value ?? "none"}
-										onValueChange={(value) => field.onChange(value === "none" ? null : value)}
-										defaultValue={field.value ?? "none"}
-										disabled={currentType === "manual"}
-									>
-										<FormControl>
-											<SelectTrigger>
-												<SelectValue />
-											</SelectTrigger>
-										</FormControl>
-										<SelectContent>
-											<SelectItem value="none">No Interval</SelectItem>
-											{recurringIntervals.map((type) => (
-												<SelectItem key={type} value={type}>
-													<div className="flex items-center gap-2">
-														<span>{capitalize(type)}</span>
-													</div>
-												</SelectItem>
-											))}
-										</SelectContent>
-									</Select>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-
-						<FormField
-							control={form.control}
 							name="amount"
 							render={({ field }) => (
 								<FormItem>
@@ -266,6 +242,81 @@ const BudgetForm = ({
 
 						<FormField
 							control={form.control}
+							name="period"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel required>Period</FormLabel>
+									<FormControl>
+										<Select
+											value={field.value}
+											onValueChange={(value) => {
+												field.onChange(value);
+												if (value === "year" && form.getValues("repeating") === "monthly") {
+													form.setValue("repeating", "annually", { shouldValidate: true });
+												}
+											}}
+											defaultValue={field.value}
+										>
+											<FormControl>
+												<SelectTrigger>
+													<SelectValue />
+												</SelectTrigger>
+											</FormControl>
+											<SelectContent>
+												{budgetPeriods.map((type) => (
+													<SelectItem key={type} value={type}>
+														<div className="flex items-center gap-2">
+															<span>{capitalize(type)}</span>
+														</div>
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+
+						<FormField
+							control={form.control}
+							name="repeating"
+							disabled={currentPeriod === "manual"}
+							defaultValue="monthly"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel required={currentPeriod !== "manual"}>Repeating</FormLabel>
+									<Select
+										value={field.value ?? "none"}
+										onValueChange={(value) => field.onChange(value === "none" ? null : value)}
+										defaultValue={field.value ?? "none"}
+										disabled={currentPeriod === "manual"}
+									>
+										<FormControl>
+											<SelectTrigger>
+												<SelectValue />
+											</SelectTrigger>
+										</FormControl>
+										<SelectContent>
+											<SelectItem value="none">No Repeating</SelectItem>
+											{recurringIntervals
+												.filter((type) => !(currentPeriod === "year" && type === "monthly"))
+												.map((type) => (
+													<SelectItem key={type} value={type}>
+														<div className="flex items-center gap-2">
+															<span>{capitalize(type)}</span>
+														</div>
+													</SelectItem>
+												))}
+										</SelectContent>
+									</Select>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+
+						<FormField
+							control={form.control}
 							name="startDate"
 							render={({ field }) => (
 								<FormItem className="flex flex-col">
@@ -304,10 +355,10 @@ const BudgetForm = ({
 						<FormField
 							control={form.control}
 							name="targetDate"
-							disabled={currentType !== "manual"}
+							disabled={currentPeriod !== "manual"}
 							render={({ field }) => (
 								<FormItem className="flex flex-col">
-									<FormLabel required={currentType === "manual"}>End Date</FormLabel>
+									<FormLabel required={currentPeriod === "manual"}>End Date</FormLabel>
 									<Popover>
 										<PopoverTrigger asChild>
 											<FormControl>
@@ -317,7 +368,7 @@ const BudgetForm = ({
 														"w-full pl-3 text-left font-normal",
 														!field.value && "text-muted-foreground",
 													)}
-													disabled={currentType !== "manual"}
+													disabled={currentPeriod !== "manual"}
 												>
 													{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
 													<CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
@@ -331,7 +382,7 @@ const BudgetForm = ({
 												selected={field.value}
 												onSelect={field.onChange}
 												disabled={(date) =>
-													date < new Date("1900-01-01") || currentType !== "manual"
+													date < new Date("1900-01-01") || currentPeriod !== "manual"
 												}
 												required
 											/>
@@ -341,6 +392,16 @@ const BudgetForm = ({
 								</FormItem>
 							)}
 						/>
+
+						<p className="text-sm text-muted-foreground md:col-span-2">
+							{scheduleDescription(
+								currentPeriod,
+								currentStartDate,
+								currentTargetDate,
+								currentRepeating,
+							)}
+						</p>
+
 						<div className="flex flex-col gap-y-4 col-span-2">
 							{budget && <DeleteBudget id={budget.id} />}
 

@@ -32,28 +32,28 @@ export async function BudgetList({
 				accountId: activeAccountId,
 				OR: [
 					{
-						type: "manual",
+						period: "manual",
 						startDate: { lte: endOfMonthStr },
 						targetDate: { gte: startOfMonthStr },
 					},
 					{
-						type: "month",
-						interval: "monthly",
+						period: "month",
+						repeating: "monthly",
 						startDate: { lte: endOfMonthStr },
 					},
 					{
-						type: "month",
-						interval: { isNull: true },
+						period: "month",
+						repeating: { isNull: true },
 						startDate: { gte: startOfMonthStr, lte: endOfMonthStr },
 					},
 					{
-						type: "year",
-						interval: "annually",
+						period: "year",
+						repeating: "annually",
 						startDate: { lte: endOfYearStr },
 					},
 					{
-						type: "year",
-						interval: { isNull: true },
+						period: "year",
+						repeating: { isNull: true },
 						startDate: { gte: startOfYearStr, lte: endOfYearStr },
 					},
 				],
@@ -125,7 +125,7 @@ export async function BudgetList({
 							</CardHeader>
 
 							<CardContent className="text-sm text-gray-400 flex justify-between">
-								<p>{budget.interval ? capitalize(budget.interval) : capitalize(budget.type)}</p>
+								<p>{budget.repeating ? capitalize(budget.repeating) : capitalize(budget.period)}</p>
 							</CardContent>
 						</Card>
 					</Link>

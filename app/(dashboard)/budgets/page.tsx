@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { createSearchParamsCache, parseAsInteger } from "nuqs/server";
 import { Suspense } from "react";
-import { MonthYearStepperPeriod } from "@/app/(dashboard)/budgets/monthYearStepperPeriod";
+import { MonthYearStepperPeriod } from "@/app/(dashboard)/budgets/month-year-stepper-period";
 import { BudgetList } from "@/features/budget/budget-list";
 import { Button } from "@/features/ui/button";
 

@@ -1,6 +1,6 @@
 import type { SearchParams } from "nuqs/server";
 import { Suspense } from "react";
-import { MonthYearStepperPeriod } from "@/app/(dashboard)/budgets/monthYearStepperPeriod";
+import { MonthYearStepperPeriod } from "@/app/(dashboard)/budgets/month-year-stepper-period";
 import { CategoriesBanner } from "@/app/(dashboard)/categories/categories-banner";
 import DashboardCards from "@/features/dashboard/dashboard-cards";
 import { DashboardCategories } from "@/features/dashboard/dashboard-categories";

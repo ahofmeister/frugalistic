@@ -8,8 +8,8 @@ import type { RecurringInterval } from "@/drizzle/schema/transaction-recurring-s
 import type { TransactionType } from "@/drizzle/schema/transaction-schema";
 import { categories } from "./categories";
 
-export const budgetTypes = ["month", "year", "manual"] as const;
-export type BudgetType = (typeof budgetTypes)[number];
+export const budgetPeriods = ["month", "year", "manual"] as const;
+export type BudgetType = (typeof budgetPeriods)[number];
 
 export const budgetSchema = pgTable(
 	"budget",
@@ -21,10 +21,10 @@ export const budgetSchema = pgTable(
 		accountId,
 		name: text("name"),
 		categoryId: uuid("category_id").notNull(),
-		type: text().$type<BudgetType>().notNull(),
+		period: text().$type<BudgetType>().notNull(),
 		amount: integer().notNull(),
 		flow: text().$type<TransactionType>().notNull(),
-		interval: text().$type<RecurringInterval>(),
+		repeating: text().$type<RecurringInterval>(),
 		startDate: date("start_date").notNull(),
 		targetDate: date("target_date"),
 	},
