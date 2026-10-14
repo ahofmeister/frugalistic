@@ -50,7 +50,10 @@ export const transactions = pgTable(
 		costType: costTypeEnum("cost_type").notNull().default("variable"),
 		externalId: text("external_id"),
 		importedAt: timestamp("imported_at", { withTimezone: true, mode: "string" }),
-		status: text().$type<TransactionStatus>(),
+		status: text("status", { enum: transactionStatuses })
+			.$type<TransactionStatus>()
+			.notNull()
+			.default("booked"),
 	},
 	(table) => [
 		index("transactions_account_id_idx").on(table.accountId),

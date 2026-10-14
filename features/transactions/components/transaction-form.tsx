@@ -76,6 +76,7 @@ const TransactionForm = ({
 		datetime: transaction?.datetime ?? format(new Date(), DB_DATE_FORMAT),
 		categoryId: transaction?.category.id ?? "",
 		costType: transaction?.costType ?? "variable",
+		status: transaction?.status ?? "booked",
 	};
 
 	const form = useForm<FormValues>({
@@ -101,7 +102,6 @@ const TransactionForm = ({
 		const { error } = await upsertTransaction({
 			...values,
 			id: transaction?.id,
-			status: values?.status ? "planned" : "booked",
 		});
 
 		if (error) {
