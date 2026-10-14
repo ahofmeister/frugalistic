@@ -4,6 +4,7 @@ import { validate } from "uuid";
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
 import type { budgetSchema } from "@/drizzle/schema";
 import { findBudgetById, findBudgetTransactions } from "@/features/budget/budget-actions";
+import { getBudgetDateRange } from "@/features/budget/budget-helper";
 import DeleteBudget from "@/features/budget/delete-budget";
 import { getTextColor } from "@/features/transactions/colors";
 import { formatAmount } from "@/features/transactions/components/transaction-amount";
@@ -33,42 +34,49 @@ export async function BudgetOverview(props: { budgetId: Promise<string> }) {
 		notFound();
 	}
 
+	const actualBudgetPeriod = getBudgetDateRange(budget, {
+		month: new Date().getMonth(),
+		year: new Date().getFullYear(),
+	});
+
 	const budgetTransactions = await findBudgetTransactions(
 		budget.categoryId,
-		budget.startDate,
-		budget.targetDate,
+		actualBudgetPeriod.start,
+		actualBudgetPeriod.end,
 	);
 
-	const expenses = budgetTransactions
-		.filter((transaction) => transaction.type === "expense")
-		.reduce((total, transaction) => total + transaction.amount, 0);
+	const signedAmount = (transaction: (typeof budgetTransactions)[number]) =>
+		transaction.type === "expense" ? transaction.amount : -transaction.amount;
 
-	const income = budgetTransactions
-		.filter((transaction) => transaction.type === "income")
-		.reduce((total, transaction) => total + transaction.amount, 0);
+	const bookedUsed = budgetTransactions
+		.filter((transaction) => transaction.status === "booked")
+		.reduce((total, transaction) => total + signedAmount(transaction), 0);
 
-	const savings = budgetTransactions
-		.filter((transaction) => transaction.type === "savings")
-		.reduce((total, transaction) => total + transaction.amount, 0);
+	const plannedUsed = budgetTransactions
+		.filter((transaction) => transaction.status === "planned")
+		.reduce((total, transaction) => total + signedAmount(transaction), 0);
 
-	const used = expenses - income - savings;
-	const remaining = budget.amount - used;
+	const remaining = budget.amount - bookedUsed - plannedUsed;
 	const isOver = remaining < 0;
-	const usedPercent = budget.amount > 0 ? (used / budget.amount) * 100 : 0;
-	const barPercent = Math.min(100, Math.max(0, usedPercent));
-	const barColor =
-		isOver || (budget.flow === "expense" && usedPercent >= 80) ? "bg-red-400" : "bg-primary";
 
-	const daysLeft = budget.targetDate
-		? Math.max(0, differenceInCalendarDays(parseISO(budget.targetDate), new Date()) + 1)
-		: null;
+	const bookedPercent =
+		budget.amount > 0 ? Math.min(100, Math.max(0, (bookedUsed / budget.amount) * 100)) : 0;
+	const plannedPercent =
+		budget.amount > 0
+			? Math.min(100 - bookedPercent, Math.max(0, (plannedUsed / budget.amount) * 100))
+			: 0;
+
+	const daysLeft = Math.max(
+		0,
+		differenceInCalendarDays(parseISO(actualBudgetPeriod.end), new Date()) + 1,
+	);
 
 	const settings = await getSettings();
 
 	return (
 		<div className="flex w-full flex-col gap-6">
 			<header className="flex flex-col gap-1">
-				<div className="flex  justify-between items-center">
+				<div className="flex items-center justify-between">
 					<div className="flex flex-col items-start gap-2">
 						<h1 className="text-2xl font-bold">{budget.name}</h1>
 						<BudgetSubtitle budget={budget} format={settings.dateFormat} />
@@ -85,70 +93,74 @@ export async function BudgetOverview(props: { budgetId: Promise<string> }) {
 				</div>
 			</header>
 
-			<section className="rounded-xl bg-card p-5">
-				<div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-					<div>
-						<p className="text-sm font-medium text-muted-foreground">Goal</p>
-
-						<p className="mt-1 text-2xl tabular-nums">{formatAmount(budget.amount)}</p>
-					</div>
-
-					<div>
-						<p className={`text-sm font-medium ${getTextColor(budget.flow)}`}>
-							{capitalize(budget.flow)}
-						</p>
-
-						<p className={`mt-1 text-2xl tabular-nums ${getTextColor(budget.flow)}`}>
-							{formatAmount(Math.max(0, used))}
-						</p>
-
-						<p className="mt-1 text-sm text-muted-foreground">
-							{Math.round(Math.max(0, usedPercent))}% used
-						</p>
-					</div>
-
-					<div>
-						<p className="text-sm font-medium text-muted-foreground">
-							{isOver ? "Over budget" : "Left"}
-						</p>
-
-						<p className={`mt-1 text-2xl tabular-nums ${isOver ? "text-red-400" : ""}`}>
-							{formatAmount(Math.abs(remaining))}
-						</p>
-
-						{!isOver && (
-							<p className="mt-1 text-sm text-muted-foreground">
-								{Math.round(Math.max(0, 100 - usedPercent))}% remaining
-							</p>
-						)}
-					</div>
-				</div>
-
-				<div className="mt-6">
+			<section className="flex flex-col gap-5 rounded-xl bg-card p-5">
+				<div className="flex flex-col gap-2">
 					<div
-						className="h-2 w-full overflow-hidden rounded-full bg-background"
+						className="flex h-2 w-full overflow-hidden rounded-full bg-background"
 						role="progressbar"
 						aria-valuemin={0}
 						aria-valuemax={100}
-						aria-valuenow={Math.round(barPercent)}
+						aria-valuenow={Math.round(bookedPercent + plannedPercent)}
 						aria-label="Budget progress"
 					>
 						<div
-							className={`h-full rounded-full ${barColor}`}
-							style={{ width: `${barPercent}%` }}
+							className="h-full"
+							style={{ backgroundColor: budget.category.color, width: `${bookedPercent}%` }}
+						/>
+						<div
+							className="h-full bg-[repeating-linear-gradient(45deg,currentColor_0,currentColor_3px,transparent_3px,transparent_6px)]"
+							style={{ width: `${plannedPercent}%`, color: budget.category.color }}
 						/>
 					</div>
 
-					{daysLeft !== null && (
-						<div className="mt-2 flex justify-between text-sm text-muted-foreground">
-							<span>{Math.round(Math.max(0, usedPercent))}% used</span>
+					<div className="flex justify-between text-sm text-muted-foreground">
+						<span>{Math.round(bookedPercent)}% booked</span>
+						<span>
+							{daysLeft} {daysLeft === 1 ? "day" : "days"} left
+						</span>
+					</div>
+				</div>
 
-							<span>
-								{daysLeft} {daysLeft === 1 ? "day" : "days"} left
-							</span>
+				<dl className="flex flex-col gap-3 tabular-nums">
+					<div className="flex items-center justify-between">
+						<dt className="text-muted-foreground">Goal</dt>
+						<dd>{formatAmount(budget.amount)}</dd>
+					</div>
+
+					<div className="flex items-center justify-between">
+						<dt className="flex items-center gap-2">
+							<span
+								className="h-3 w-3 rounded-sm"
+								style={{ backgroundColor: budget.category.color }}
+							/>
+							<span className={getTextColor(budget.flow)}>{capitalize(budget.flow)} booked</span>
+						</dt>
+						<dd className={getTextColor(budget.flow)}>{formatAmount(Math.max(0, bookedUsed))}</dd>
+					</div>
+
+					{plannedUsed !== 0 && (
+						<div className="flex items-center justify-between">
+							<dt className="flex items-center gap-2">
+								<span
+									className="h-3 w-3 rounded-sm bg-[repeating-linear-gradient(45deg,currentColor_0,currentColor_2px,transparent_2px,transparent_4px)]"
+									style={{ color: budget.category.color }}
+								/>
+								<span className={getTextColor(budget.flow)}>Planned</span>
+							</dt>
+							<dd className={getTextColor(budget.flow)}>
+								{plannedUsed < 0 ? "−" : ""}
+								{formatAmount(Math.abs(plannedUsed))}
+							</dd>
 						</div>
 					)}
-				</div>
+
+					<div className="flex items-center justify-between border-t border-border pt-3">
+						<dt className="font-medium">{isOver ? "Over budget" : "Left"}</dt>
+						<dd className={`text-xl font-medium ${isOver ? "text-red-400" : ""}`}>
+							{formatAmount(Math.abs(remaining))}
+						</dd>
+					</div>
+				</dl>
 			</section>
 		</div>
 	);

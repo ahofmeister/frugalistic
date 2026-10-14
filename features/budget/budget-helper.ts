@@ -1,5 +1,6 @@
 import { endOfMonth, endOfYear, format, startOfMonth, startOfYear } from "date-fns";
 import type { budgetSchema } from "@/drizzle/schema";
+import { DB_DATE_FORMAT } from "@/lib/utils";
 
 export function getBudgetDateRange(
 	budget: typeof budgetSchema.$inferSelect,
@@ -19,13 +20,13 @@ export function getBudgetDateRange(
 
 	if (budget.period === "month") {
 		return {
-			start: format(startOfMonth(periodDate), "yyyy-MM-dd"),
-			end: format(endOfMonth(periodDate), "yyyy-MM-dd"),
+			start: format(startOfMonth(periodDate), DB_DATE_FORMAT),
+			end: format(endOfMonth(periodDate), DB_DATE_FORMAT),
 		};
 	}
 
 	return {
-		start: format(startOfYear(periodDate), "yyyy-MM-dd"),
-		end: format(endOfYear(periodDate), "yyyy-MM-dd"),
+		start: format(startOfYear(periodDate), DB_DATE_FORMAT),
+		end: format(endOfYear(periodDate), DB_DATE_FORMAT),
 	};
 }
