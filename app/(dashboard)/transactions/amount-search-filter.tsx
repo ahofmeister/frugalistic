@@ -1,21 +1,21 @@
 "use client";
-import { parseAsString, useQueryState } from "nuqs";
+import { parseAsInteger, useQueryState } from "nuqs";
 
 import AmountInput from "@/features/transactions/components/amount-input";
 
 const AmountSearchFilter = (props: { paramName: string; placeholder: string; value?: string }) => {
 	const [value, setValue] = useQueryState(
 		props.paramName,
-		parseAsString.withOptions({
+		parseAsInteger.withOptions({
 			shallow: false,
 		}),
 	);
 
 	return (
 		<AmountInput
-			value={value ?? ""}
+			value={Number(value)}
 			onChange={async (val) => {
-				await setValue(val ?? null);
+				await setValue(val);
 			}}
 		/>
 	);

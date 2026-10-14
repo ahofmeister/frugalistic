@@ -30,6 +30,9 @@ export type TransactionTypeWithLeftover = TransactionType | "leftover";
 export const transactionTypeEnum = pgEnum("transaction_type", transactionTypes);
 export const costTypeEnum = pgEnum("cost_type", costTypes);
 
+export const transactionStatuses = ["planned", "booked"] as const;
+export type TransactionStatus = (typeof transactionStatuses)[number];
+
 export const transactions = pgTable(
 	"transaction",
 	{
@@ -47,6 +50,7 @@ export const transactions = pgTable(
 		costType: costTypeEnum("cost_type").notNull().default("variable"),
 		externalId: text("external_id"),
 		importedAt: timestamp("imported_at", { withTimezone: true, mode: "string" }),
+		status: text().$type<TransactionStatus>(),
 	},
 	(table) => [
 		index("transactions_account_id_idx").on(table.accountId),
