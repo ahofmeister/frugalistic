@@ -255,3 +255,16 @@ export async function bookTransaction(id: string) {
 		return { success: false, message: "Failed to book transaction" };
 	}
 }
+
+export async function declinePlannedTransaction(id: string) {
+	try {
+		await dbTransaction((tx) => {
+			return tx.delete(transactions).where(eq(transactions.id, id));
+		});
+		revalidatePath("/", "layout");
+		return { success: true, message: "Planned transaction declined" };
+	} catch (error) {
+		console.error(error);
+		return { success: false, message: "Failed to declined planned transaction" };
+	}
+}
