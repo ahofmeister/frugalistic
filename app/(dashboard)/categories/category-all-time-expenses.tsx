@@ -22,6 +22,10 @@ const CategoryAllTimeExpenses = async ({ categoryId }: { categoryId: Promise<str
 			.orderBy(sql`TO_CHAR(${transactions.datetime}, 'YYYY-MM')`),
 	);
 
+	if (!data.length) {
+		return;
+	}
+
 	return <CategorySpendingChart data={data} />;
 };
 

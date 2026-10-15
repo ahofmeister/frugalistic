@@ -101,14 +101,6 @@ const CustomTooltip = ({
 export function CategorySpendingChart({ data }: { data: MonthlyCategoryRow[] }) {
 	const { chartData, categories } = transformData(data);
 
-	if (!categories.length) {
-		return (
-			<div className="bg-card border border-border rounded-xl p-6 h-[360px] flex items-center justify-center text-muted-foreground text-sm">
-				No expense data available
-			</div>
-		);
-	}
-
 	return (
 		<Card>
 			<div className="mb-6">
