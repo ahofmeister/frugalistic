@@ -1,6 +1,7 @@
 import {
 	BarChartBig,
 	Calendar1Icon,
+	CalendarClockIcon,
 	CalendarDays,
 	ChartColumnDecreasing,
 	Heart,
@@ -86,7 +87,10 @@ export const mainNavSections: NavSection[] = [
 	},
 	{
 		title: "Planning",
-		items: [{ href: "/budgets", label: "Budgets", icon: PiggyBankIcon }],
+		items: [
+			{ href: "/budgets", label: "Budgets", icon: PiggyBankIcon },
+			{ href: "/planned-transactions", label: "Planned", icon: CalendarClockIcon },
+		],
 	},
 	{
 		title: "Transactions",

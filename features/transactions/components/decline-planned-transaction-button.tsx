@@ -1,3 +1,4 @@
+"use client";
 import { XIcon } from "lucide-react";
 import { toast } from "sonner";
 import { declinePlannedTransaction } from "@/features/transactions/transactions-api";

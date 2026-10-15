@@ -1,3 +1,4 @@
+"use client";
 import { CheckIcon } from "@radix-ui/react-icons";
 import { toast } from "sonner";
 import { bookTransaction } from "@/features/transactions/transactions-api";
