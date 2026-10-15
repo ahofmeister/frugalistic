@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import FormattedDate from "@/app/(dashboard)/dashboard/formatted-date";
 import type { settingSchema, TransactionWithRecurringCategory } from "@/drizzle/schema";
+import BookTransactionButton from "@/features/transactions/components/book-transaction-button";
 import CategoryNameColor from "@/features/transactions/components/category-name-color";
 import TransactionAmount from "@/features/transactions/components/transaction-amount";
 import { Badge } from "@/features/ui/badge";
@@ -85,7 +86,7 @@ export function TransactionCard({
 		<Link href={`/transactions/edit/${transaction.id}`}>
 			<Card
 				key={transaction.id}
-				className={cn(isPlanned && "border-dashed border-muted-foreground/40")}
+				className={cn(isPlanned && "border border-dashed border-muted-foreground/40")}
 			>
 				<CardHeader>
 					<CardTitle className="flex justify-between">
@@ -93,6 +94,7 @@ export function TransactionCard({
 							<div>{transaction.description}</div>
 							<ImportIndicator settings={settings} importedAt={transaction.importedAt} />
 							{isPlanned && <PlannedBadge daysUntil={daysUntil} />}
+							{isPlanned && <BookTransactionButton transactionId={transaction.id} />}
 						</div>
 						<TransactionAmount amount={transaction.amount} type={transaction.type} />
 					</CardTitle>

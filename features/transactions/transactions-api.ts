@@ -237,3 +237,21 @@ export async function getTotalByTypeAndYear(
 
 	return total !== null ? Number(total) : null;
 }
+
+export async function bookTransaction(id: string) {
+	try {
+		await dbTransaction((tx) => {
+			return tx
+				.update(transactions)
+				.set({
+					status: "booked",
+				})
+				.where(eq(transactions.id, id));
+		});
+		revalidatePath("/", "layout");
+		return { success: true, message: "Book transaction successfully" };
+	} catch (error) {
+		console.error(error);
+		return { success: false, message: "Failed to book transaction" };
+	}
+}
