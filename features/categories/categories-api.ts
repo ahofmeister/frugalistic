@@ -7,11 +7,21 @@ import { categories } from "@/drizzle/schema";
 import { getActiveAccountId } from "@/features/account/account-actions";
 
 export async function createCategory(newCategory: typeof categories.$inferInsert) {
-	await dbTransaction((tx) => {
-		return tx.insert(categories).values(newCategory);
-	});
+	const id = newCategory.id;
+	if (!id) {
+		await dbTransaction((tx) => {
+			return tx.insert(categories).values(newCategory);
+		});
+	} else {
+		await dbTransaction(async (tx) => {
+			return tx
+				.update(categories)
+				.set({ ...newCategory })
+				.where(eq(categories.id, id));
+		});
+	}
 
-	revalidatePath("categories");
+	revalidatePath("/", "layout");
 }
 
 export async function deleteCategory(id: string) {
