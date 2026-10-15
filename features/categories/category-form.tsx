@@ -7,8 +7,9 @@ import { z } from "zod";
 import type { categories } from "@/drizzle/schema";
 import { createCategory } from "@/features/categories/categories-api";
 import DeleteCategory from "@/features/categories/delete-category";
+import { categoryColours, defaultCategoryColours } from "@/features/transactions/colors";
 import { Button } from "@/features/ui/button";
-import { ColorPicker } from "@/features/ui/color-picker";
+import { ColourPicker } from "@/features/ui/colour-picker";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/features/ui/form";
 import { Input } from "@/features/ui/input";
 import { Spinner } from "@/features/ui/spinner";
@@ -16,7 +17,7 @@ import { Spinner } from "@/features/ui/spinner";
 const CategoryForm = (props: { category?: typeof categories.$inferSelect }) => {
 	const formSchema = z.object({
 		name: z.string().min(2),
-		color: z.string(),
+		color: z.string().min(1),
 		description: z.string().optional(),
 	});
 
@@ -24,7 +25,7 @@ const CategoryForm = (props: { category?: typeof categories.$inferSelect }) => {
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			name: props.category?.name ?? "",
-			color: props.category?.color ?? "",
+			color: props.category?.color ?? defaultCategoryColours,
 			description: props.category?.description ?? "",
 		},
 		mode: "onBlur",
@@ -67,11 +68,14 @@ const CategoryForm = (props: { category?: typeof categories.$inferSelect }) => {
 								name="color"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Color</FormLabel>
+										<FormLabel>Colour</FormLabel>
 										<FormControl>
-											<div>
-												<ColorPicker {...field} onBlur={field.onBlur} />
-											</div>
+											<ColourPicker
+												colours={categoryColours}
+												value={field.value}
+												onChangeAction={field.onChange}
+												onBlurAction={field.onBlur}
+											/>
 										</FormControl>
 										<FormMessage />
 									</FormItem>
