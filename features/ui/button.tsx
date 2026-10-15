@@ -19,15 +19,16 @@ const buttonVariants = cva(
 				success: "bg-emerald-600 text-white shadow-xs hover:bg-emerald-600",
 			},
 			size: {
-				default: "h-9 px-4 py-2",
-				sm: "h-8 rounded-md px-3 text-xs",
-				lg: "h-10 rounded-md px-8",
-				icon: "h-9 w-9",
+				sm: "px-3 py-1 !text-body-sm-600 h-8",
+				md: "px-3.5 py-1.5 !text-body-md-600 h-9",
+				lg: "px-4 py-2 !text-body-lg-600 h-10",
+				roundedIcon: "rounded-full size-9",
+				icon: "h-6 w-6 [&_svg]:size-3",
 			},
 		},
 		defaultVariants: {
 			variant: "default",
-			size: "default",
+			size: "sm",
 		},
 	},
 );
