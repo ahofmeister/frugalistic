@@ -38,6 +38,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/features/ui/select";
+import { Separator } from "@/features/ui/separator";
 import { Spinner } from "@/features/ui/spinner";
 import { Switch } from "@/features/ui/switch";
 import { cn, DB_DATE_FORMAT } from "@/lib/utils";
@@ -121,38 +122,41 @@ const TransactionForm = ({
 	const [favoriteOpen, setFavoriteOpen] = useState<boolean>(false);
 
 	return (
-		<div className="max-w-2xl mx-auto px-2">
+		<div>
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-						<div className="col-span-2 flex justify-between">
-							<Button
-								disabled={!transaction}
-								variant="outline"
-								type="button"
-								className="w-fit"
-								onClick={() => {
-									if (isFavorite) {
-										return removeFavorite(favorite?.id);
-									}
-									if (transaction) {
-										return addFavorite(transaction);
-									}
-								}}
-							>
-								<HeartIcon
-									color={isFavorite ? "#FF00FF" : "#FFFFFF"}
-									fill={isFavorite ? "#FF00FF" : "#FFFFFF"}
-								/>
-							</Button>
-							<Button
-								disabled={!favorites || favorites.length <= 0}
-								variant="outline"
-								type="button"
-								onClick={() => setFavoriteOpen(true)}
-							>
-								Favorites
-							</Button>
+						<div className="col-span-2 flex justify-between items-center">
+							<div className="flex gap-x-1 items-center">
+								<Button
+									disabled={!transaction}
+									variant="outline"
+									type="button"
+									onClick={() => {
+										if (isFavorite) {
+											return removeFavorite(favorite?.id);
+										}
+										if (transaction) {
+											return addFavorite(transaction);
+										}
+									}}
+								>
+									<HeartIcon
+										color={isFavorite ? "#FF00FF" : "#FFFFFF"}
+										fill={isFavorite ? "#FF00FF" : "#FFFFFF"}
+									/>
+								</Button>
+								<Button
+									disabled={!favorites || favorites.length <= 0}
+									variant="outline"
+									type="button"
+									onClick={() => setFavoriteOpen(true)}
+								>
+									Favorites
+								</Button>
+							</div>
+							{transaction && <DeleteTransaction id={transaction.id} />}
+
 							<Dialog open={favoriteOpen} onOpenChange={setFavoriteOpen}>
 								<DialogContent>
 									<DialogHeader>
@@ -390,7 +394,7 @@ const TransactionForm = ({
 						name="status"
 						render={({ field }) => (
 							<FormItem className="flex justify-between">
-								<FormLabel>Planned?</FormLabel>
+								<FormLabel>Planned Transaction</FormLabel>
 								<Switch
 									checked={field.value === "planned"}
 									onCheckedChange={(value) => {
@@ -402,6 +406,9 @@ const TransactionForm = ({
 						)}
 					/>
 
+					<Separator />
+
+					<p>Recurring</p>
 					{transaction && (
 						<div className="flex flex-col gap-y-2 mt-2">
 							<div className="flex gap-x-2">
@@ -438,8 +445,6 @@ const TransactionForm = ({
 					>
 						{form.formState.isSubmitting ? <Spinner /> : transaction ? "Save" : "Add Transaction"}
 					</Button>
-
-					{transaction && <DeleteTransaction id={transaction.id} />}
 				</form>
 			</Form>
 		</div>

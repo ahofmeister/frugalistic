@@ -1,4 +1,5 @@
 "use client";
+import { TrashIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { parseAsBoolean, useQueryState } from "nuqs";
 import { useTransition } from "react";
@@ -38,13 +39,9 @@ const DeleteTransaction = (props: { id: string }) => {
 
 	return (
 		<>
-			<Button
-				type="button"
-				className="w-full"
-				variant="destructive"
-				onClick={() => setIsDialogOpen(true)}
-			>
-				Delete Transaction
+			<Button variant="destructive" onClick={() => setIsDialogOpen(true)}>
+				<TrashIcon />
+				Delete
 			</Button>
 
 			<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

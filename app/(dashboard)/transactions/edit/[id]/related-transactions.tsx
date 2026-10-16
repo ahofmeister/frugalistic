@@ -41,5 +41,10 @@ export async function RelatedTransactions(props: { id: Promise<string> }) {
 
 	const settings = await getSettings();
 
-	return <TransactionList transactions={foundTransactions} settings={settings} />;
+	return (
+		<div>
+			<p className="mt-4 mb-2 text-xl">Related Transactions</p>
+			<TransactionList transactions={foundTransactions} settings={settings} />
+		</div>
+	);
 }

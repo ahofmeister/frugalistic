@@ -11,3 +11,5 @@ export * from "./setting-schema";
 export * from "./transaction-recurring-schema";
 export * from "./transaction-schema";
 export * from "./users-schema";
+export * from "./webhook-event-schema";
+export * from "./webhook-schema";
