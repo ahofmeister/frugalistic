@@ -56,6 +56,7 @@ export const transactions = pgTable(
 			.notNull()
 			.default("booked"),
 		webhookId: uuid("webhook_id"),
+		dueNotificationDays: integer(),
 	},
 	(table) => [
 		index("transactions_account_id_idx").on(table.accountId),

@@ -3,8 +3,10 @@ import { TransactionFormData } from "@/app/(dashboard)/transactions/new/transact
 
 export default async function NewTransactionPage() {
 	return (
-		<Suspense>
-			<TransactionFormData />
-		</Suspense>
+		<div className="max-w-2xl mx-auto px-2">
+			<Suspense>
+				<TransactionFormData />
+			</Suspense>
+		</div>
 	);
 }

@@ -125,7 +125,7 @@ export const AutoComplete = forwardRef<AutoCompleteRef, AutoCompleteProps>(
 		}, [inputValue]);
 
 		return (
-			<Command onKeyDown={handleKeyDown}>
+			<Command onKeyDown={handleKeyDown} className="bg-transparent">
 				<CommandInput
 					ref={inputRef}
 					value={inputValue}

@@ -1,5 +1,6 @@
 import { asc, desc, sql } from "drizzle-orm";
 import { notFound } from "next/navigation";
+import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
 import { dbTransaction } from "@/drizzle/client";
 import { transactionAutoSuggest } from "@/drizzle/schema";
 import { getActiveAccountId } from "@/features/account/account-actions";
@@ -51,12 +52,20 @@ export const TransactionFormData = async ({
 		return notFound();
 	}
 
+	const settings = await getSettings();
+
+	const webhooks = await dbTransaction(async (tx) => {
+		return tx.query.webhookSchema.findMany();
+	});
+
 	return (
 		<TransactionForm
 			transaction={transaction}
 			favorites={favorites ?? []}
 			autoSuggests={autoSuggests ?? []}
 			allCategories={categoryList ?? []}
+			settings={settings}
+			webhooks={webhooks}
 		/>
 	);
 };
