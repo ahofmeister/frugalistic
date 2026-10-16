@@ -2,7 +2,7 @@
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { dbTransaction } from "@/drizzle/client";
-import { webhookSchema } from "@/drizzle/schema";
+import { webhookEventSchema, webhookSchema } from "@/drizzle/schema";
 
 export async function upsertWebhook(webhook: typeof webhookSchema.$inferInsert) {
 	try {
@@ -18,6 +18,18 @@ export async function upsertWebhook(webhook: typeof webhookSchema.$inferInsert) 
 
 		revalidatePath("/");
 		return { error: null, success: true };
+	} catch (error) {
+		return { error, success: false };
+	}
+}
+
+export async function deleteWebhookEvent(id: string) {
+	try {
+		await dbTransaction(async (tx) => {
+			return tx.delete(webhookEventSchema).where(eq(webhookEventSchema.id, id));
+		});
+		revalidatePath("/", "page");
+		return { success: true };
 	} catch (error) {
 		return { error, success: false };
 	}

@@ -117,6 +117,12 @@ export const relations = defineRelations(schema, (r) => ({
 			from: r.transactions.recurringTransactionId,
 			to: r.transactionsRecurring.id,
 		}),
+
+		webhook: r.one.webhookSchema({
+			from: r.transactions.webhookId,
+			to: r.webhookSchema.id,
+			optional: true,
+		}),
 	},
 
 	transactionsRecurring: {
@@ -164,6 +170,14 @@ export const relations = defineRelations(schema, (r) => ({
 		category: r.one.categories({
 			from: r.budgetSchema.categoryId,
 			to: r.categories.id,
+			optional: false,
+		}),
+	},
+
+	webhookEventSchema: {
+		webhook: r.one.webhookSchema({
+			from: r.webhookEventSchema.webhookId,
+			to: r.webhookSchema.id,
 			optional: false,
 		}),
 	},
