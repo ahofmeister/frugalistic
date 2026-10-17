@@ -31,6 +31,7 @@ export async function makeTransactionRecurring(
 					type: transaction.type,
 					interval,
 					userId: transaction.userId,
+					startDate: transaction.datetime,
 				})
 				.onConflictDoUpdate({
 					target: transactionsRecurring.id,
