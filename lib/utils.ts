@@ -69,3 +69,9 @@ export const loadYearSearchParam = createLoader({
 export function encodedRedirect(type: "error" | "success", path: string, message: string): never {
 	return redirect(`${path}?${type}=${encodeURIComponent(message)}`);
 }
+
+export function generateRandomString(min = 2, max = 35) {
+	return Math.random()
+		.toString(36)
+		.substring(2, min + max);
+}

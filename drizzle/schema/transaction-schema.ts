@@ -19,6 +19,7 @@ import { categories } from "@/drizzle/schema/categories";
 import { accountId, createdAt, id, updatedAt, userId } from "@/drizzle/schema/schema-commons";
 import { transactionsRecurring } from "@/drizzle/schema/transaction-recurring-schema";
 import { users } from "@/drizzle/schema/users-schema";
+import { webhookSchema } from "@/drizzle/schema/webhook-schema";
 
 export const costTypes = ["fixed", "variable"] as const;
 export type CostType = (typeof costTypes)[number];
@@ -54,6 +55,8 @@ export const transactions = pgTable(
 			.$type<TransactionStatus>()
 			.notNull()
 			.default("booked"),
+		webhookId: uuid("webhook_id"),
+		dueNotificationDays: integer(),
 	},
 	(table) => [
 		index("transactions_account_id_idx").on(table.accountId),
@@ -77,6 +80,11 @@ export const transactions = pgTable(
 			foreignColumns: [users.id],
 			name: "transactions_user_id_fkey",
 		}).onDelete("cascade"),
+		foreignKey({
+			columns: [table.webhookId],
+			foreignColumns: [webhookSchema.id],
+			name: "transactions_webhook_fkey",
+		}).onDelete("set null"),
 		uniqueIndex("transactions_user_external_id_idx")
 			.on(table.userId, table.externalId)
 			.where(sql`external_id IS NOT NULL`),

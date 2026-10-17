@@ -1,0 +1,1 @@
+ALTER TABLE "webhook_event" ADD COLUMN "test" boolean DEFAULT false NOT NULL;

@@ -19,6 +19,7 @@ import {
 	Tags,
 	UserCogIcon,
 	UserIcon,
+	WebhookIcon,
 } from "lucide-react";
 import type { ForwardRefExoticComponent } from "react";
 
@@ -112,7 +113,10 @@ export const mainNavSections: NavSection[] = [
 	},
 	{
 		title: "Setup",
-		items: [{ href: "/categories", label: "Categories", icon: Tags }],
+		items: [
+			{ href: "/categories", label: "Categories", icon: Tags },
+			{ href: "/webhooks", label: "Webhooks", icon: WebhookIcon },
+		],
 	},
 	{
 		title: "Account & Profile",

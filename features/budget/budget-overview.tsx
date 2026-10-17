@@ -21,14 +21,14 @@ const intervalLabels = {
 	annually: "Every year",
 } as const;
 
-export async function BudgetOverview(props: { budgetId: Promise<string> }) {
-	const budgetId = await props.budgetId;
+export async function BudgetOverview({ budgetId }: { budgetId: Promise<string> }) {
+	const id = await budgetId;
 
-	if (!validate(budgetId)) {
+	if (!validate(id)) {
 		return notFound();
 	}
 
-	const budget = await findBudgetById(budgetId);
+	const budget = await findBudgetById(id);
 
 	if (!budget) {
 		notFound();

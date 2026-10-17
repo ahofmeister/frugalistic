@@ -1,6 +1,6 @@
 import { createHash, randomBytes } from "node:crypto";
 import { eq } from "drizzle-orm";
-import type { NextRequest } from "next/server";
+import type { NextRequest, NextResponse } from "next/server";
 import { db, dbTransaction } from "@/drizzle/client";
 import { apiKeySchema } from "@/drizzle/schema";
 
@@ -55,4 +55,20 @@ export function generateApiKey() {
 
 export function hashApiKey(key: string) {
 	return createHash("sha256").update(key).digest("hex");
+}
+
+export function withCronSecret(
+	handler: (request: NextRequest) => Promise<Response | NextResponse>,
+) {
+	return async (request: NextRequest): Promise<Response | NextResponse> => {
+		const authHeader = request.headers.get("authorization");
+
+		if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+			return new Response("Unauthorized", {
+				status: 401,
+			});
+		}
+
+		return handler(request);
+	};
 }

@@ -12,8 +12,10 @@ import DeleteTransaction from "@/app/(dashboard)/transactions/edit/[id]/delete-t
 import {
 	type categories,
 	type favoriteSchema,
+	type settingSchema,
 	type transactionAutoSuggest,
 	transactions,
+	type webhookSchema,
 } from "@/drizzle/schema";
 import type { TransactionWithRecurringCategory } from "@/drizzle/schema/transaction-recurring-schema";
 import { addFavorite, removeFavorite } from "@/features/favorite/favorite-actions";
@@ -30,6 +32,7 @@ import { Button } from "@/features/ui/button";
 import { Calendar } from "@/features/ui/calendar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/features/ui/form";
+import { Input } from "@/features/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/features/ui/popover";
 import {
 	Select,
@@ -52,6 +55,8 @@ const formSchema = createInsertSchema(transactions, {
 	amount: true,
 	datetime: true,
 	status: true,
+	dueNotificationDays: true,
+	webhookId: true,
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -61,6 +66,8 @@ const TransactionForm = ({
 	autoSuggests,
 	allCategories,
 	favorites,
+	settings,
+	webhooks,
 }: {
 	transaction?: TransactionWithRecurringCategory | undefined;
 	autoSuggests?: (typeof transactionAutoSuggest.$inferSelect)[];
@@ -68,6 +75,8 @@ const TransactionForm = ({
 	favorites?: (typeof favoriteSchema.$inferSelect & {
 		category: typeof categories.$inferSelect;
 	})[];
+	settings: typeof settingSchema.$inferSelect;
+	webhooks: (typeof webhookSchema.$inferSelect)[];
 }) => {
 	const defaultValues: FormValues = {
 		description: transaction?.description ?? "",
@@ -77,6 +86,8 @@ const TransactionForm = ({
 		categoryId: transaction?.category.id ?? "",
 		costType: transaction?.costType ?? "variable",
 		status: transaction?.status ?? "booked",
+		dueNotificationDays: transaction?.dueNotificationDays ?? settings.dueTransactionReminderDays,
+		webhookId: transaction?.webhookId ?? webhooks[0]?.id ?? "",
 	};
 
 	const form = useForm<FormValues>({
@@ -120,17 +131,18 @@ const TransactionForm = ({
 
 	const [favoriteOpen, setFavoriteOpen] = useState<boolean>(false);
 
+	const isPlanned = form.watch("status") === "planned";
+
 	return (
-		<div className="max-w-2xl mx-auto px-2">
+		<div>
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-						<div className="col-span-2 flex justify-between">
+					<div className="col-span-2 flex justify-between items-center">
+						<div className="flex gap-x-1 items-center">
 							<Button
 								disabled={!transaction}
 								variant="outline"
 								type="button"
-								className="w-fit"
 								onClick={() => {
 									if (isFavorite) {
 										return removeFavorite(favorite?.id);
@@ -153,83 +165,85 @@ const TransactionForm = ({
 							>
 								Favorites
 							</Button>
-							<Dialog open={favoriteOpen} onOpenChange={setFavoriteOpen}>
-								<DialogContent>
-									<DialogHeader>
-										<DialogTitle>Favorites</DialogTitle>
-									</DialogHeader>
-									{favorites?.map((item) => (
-										<div key={item.id} className="flex justify-between">
-											<div className="flex flex-col">
-												<span className={getTextColor(item.type)}>{item.description}</span>
-												<div>
-													<span style={{ color: item.category?.color ?? "" }}>
-														{item.category?.name}
-													</span>{" "}
-													in <span>{item.type}</span>
-												</div>
+						</div>
+						{transaction && <DeleteTransaction id={transaction.id} />}
+
+						<Dialog open={favoriteOpen} onOpenChange={setFavoriteOpen}>
+							<DialogContent>
+								<DialogHeader>
+									<DialogTitle>Favorites</DialogTitle>
+								</DialogHeader>
+								{favorites?.map((item) => (
+									<div key={item.id} className="flex justify-between">
+										<div className="flex flex-col">
+											<span className={getTextColor(item.type)}>{item.description}</span>
+											<div>
+												<span style={{ color: item.category?.color ?? "" }}>
+													{item.category?.name}
+												</span>{" "}
+												in <span>{item.type}</span>
 											</div>
-											<Button
-												variant="outline"
-												type="button"
-												className="flex  self-center"
-												onClick={() => {
-													form.setValue("description", item.description);
-													form.setValue("type", item.type);
-													form.setValue("amount", item.amount);
-
-													if (item.category) {
-														form.setValue("categoryId", item.category.id);
-													}
-
-													autoCompleteRef.current?.setInputValue(item.description);
-													setFavoriteOpen(false);
-												}}
-											>
-												Apply
-											</Button>
 										</div>
-									))}
-								</DialogContent>
-							</Dialog>
-						</div>
-						<div className="col-span-2">
-							<FormField
-								control={form.control}
-								name="description"
-								render={() => (
-									<FormItem>
-										<FormLabel>Description</FormLabel>
-										<FormControl>
-											<AutoComplete
-												ref={autoCompleteRef}
-												value={autoSuggests?.find((autoSuggest) => {
-													return (
-														autoSuggest.type === transaction?.type &&
-														autoSuggest.description === transaction?.description &&
-														autoSuggest.category === transaction?.category.id
-													);
-												})}
-												placeholder="Enter or choose description"
-												onValueChange={(e: typeof transactionAutoSuggest.$inferSelect) => {
-													form.setValue("description", e.description ?? "", {
-														shouldValidate: true,
-													});
-													if (e.type) {
-														form.setValue("type", e.type);
-													}
-													if (e.category) {
-														form.setValue("categoryId", e.category);
-													}
-												}}
-												options={autoSuggests ?? []}
-											/>
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-						</div>
+										<Button
+											variant="outline"
+											type="button"
+											className="flex  self-center"
+											onClick={() => {
+												form.setValue("description", item.description);
+												form.setValue("type", item.type);
+												form.setValue("amount", item.amount);
+
+												if (item.category) {
+													form.setValue("categoryId", item.category.id);
+												}
+
+												autoCompleteRef.current?.setInputValue(item.description);
+												setFavoriteOpen(false);
+											}}
+										>
+											Apply
+										</Button>
+									</div>
+								))}
+							</DialogContent>
+						</Dialog>
+					</div>
+					<div className=" grid grid-cols-1 md:grid-cols-2 gap-5 bg-card p-4">
+						<FormField
+							control={form.control}
+							name="description"
+							render={() => (
+								<FormItem className="col-span-2">
+									<FormLabel>Description</FormLabel>
+									<FormControl>
+										<AutoComplete
+											ref={autoCompleteRef}
+											value={autoSuggests?.find((autoSuggest) => {
+												return (
+													autoSuggest.type === transaction?.type &&
+													autoSuggest.description === transaction?.description &&
+													autoSuggest.category === transaction?.category.id
+												);
+											})}
+											placeholder="Enter or choose description"
+											onValueChange={(e: typeof transactionAutoSuggest.$inferSelect) => {
+												form.setValue("description", e.description ?? "", {
+													shouldValidate: true,
+												});
+												if (e.type) {
+													form.setValue("type", e.type);
+												}
+												if (e.category) {
+													form.setValue("categoryId", e.category);
+												}
+											}}
+											options={autoSuggests ?? []}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 
 						<FormField
 							control={form.control}
@@ -336,8 +350,8 @@ const TransactionForm = ({
 												<Button
 													variant="outline"
 													className={cn(
-														"w-full pl-3 text-left font-normal",
-														!field.value && "text-muted-foreground",
+														"w-full font-normal bg-transparent",
+														!field.value && "foreground",
 													)}
 												>
 													{field.value ? (
@@ -372,6 +386,7 @@ const TransactionForm = ({
 						<FormItem className="flex flex-col">
 							<FormLabel>&nbsp;</FormLabel>
 							<Button
+								className="bg-transparent"
 								type="button"
 								onClick={() =>
 									form.setValue("datetime", format(startOfYesterday(), DB_DATE_FORMAT), {
@@ -385,28 +400,81 @@ const TransactionForm = ({
 						</FormItem>
 					</div>
 
-					<FormField
-						control={form.control}
-						name="status"
-						render={({ field }) => (
-							<FormItem className="flex justify-between">
-								<FormLabel>Planned?</FormLabel>
-								<Switch
-									checked={field.value === "planned"}
-									onCheckedChange={(value) => {
-										field.onChange(value ? "planned" : "booked");
-									}}
-								></Switch>
-								<FormMessage />
-							</FormItem>
+					<div className="bg-card rounded-md p-4">
+						<FormField
+							control={form.control}
+							name="status"
+							render={({ field }) => (
+								<FormItem className="flex justify-between">
+									<FormLabel>Planned Transaction</FormLabel>
+									<Switch
+										checked={field.value === "planned"}
+										onCheckedChange={(value) => {
+											field.onChange(value ? "planned" : "booked");
+										}}
+									></Switch>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+
+						{isPlanned && (
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+								<FormField
+									control={form.control}
+									name="dueNotificationDays"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Due Notification Days</FormLabel>
+											<Input
+												{...field}
+												onChange={(event) => field.onChange(Number(event.target.value))}
+												type="number"
+												value={field.value ?? ""}
+											/>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+
+								<FormField
+									control={form.control}
+									name="webhookId"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Notification Webhook</FormLabel>
+											<Select {...field} value={field.value ?? ""}>
+												<FormControl>
+													<SelectTrigger>
+														<SelectValue placeholder="Select notification webhook" />
+													</SelectTrigger>
+												</FormControl>
+												<SelectContent>
+													{webhooks?.map((webhook) => {
+														return (
+															<SelectItem key={webhook.id} value={webhook.id}>
+																{webhook.name}
+															</SelectItem>
+														);
+													})}
+												</SelectContent>
+											</Select>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</div>
 						)}
-					/>
+					</div>
 
 					{transaction && (
-						<div className="flex flex-col gap-y-2 mt-2">
+						<div className="col-span-2 flex justify-between items-center bg-card p-4 rounded-md">
+							<p>Recurring</p>
+
 							<div className="flex gap-x-2">
 								<Button
 									type="button"
+									className="bg-transparent"
 									variant="outline"
 									disabled={
 										transaction.recurringTransaction !== null &&
@@ -420,6 +488,7 @@ const TransactionForm = ({
 								<Button
 									type="button"
 									variant="outline"
+									className="bg-transparent"
 									disabled={
 										transaction.recurringTransaction !== null &&
 										transaction.recurringTransaction.interval === "annually"
@@ -438,8 +507,6 @@ const TransactionForm = ({
 					>
 						{form.formState.isSubmitting ? <Spinner /> : transaction ? "Save" : "Add Transaction"}
 					</Button>
-
-					{transaction && <DeleteTransaction id={transaction.id} />}
 				</form>
 			</Form>
 		</div>
