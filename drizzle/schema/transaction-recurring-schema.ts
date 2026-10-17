@@ -50,6 +50,7 @@ export const transactionsRecurring = pgTable(
 		enabled: boolean().default(true).notNull(),
 		interval: text({ enum: recurringIntervals }).$type<RecurringInterval>().notNull(),
 		categoryId: uuid("category_id").notNull(),
+		startDate: date("start_date").notNull(),
 	},
 	(table) => [
 		index("transactions_recurring_account_id_idx").on(table.accountId),
