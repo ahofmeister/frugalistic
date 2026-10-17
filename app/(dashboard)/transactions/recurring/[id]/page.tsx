@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { RecurringTransactionHistory } from "@/app/(dashboard)/transactions/recurring/[id]/recurring-transaction-history";
 import DeleteRecurringTransaction from "@/app/(dashboard)/transactions/recurring/delete-recurring-transaction";
 import { dbTransaction } from "@/drizzle/client";
+import { getCategories } from "@/features/categories/categories-api";
 import RecurringTransactionForm from "@/features/transactions/recurring/components/recurring-transaction-form";
 
 export default async function TransactionEditPage(props: { params: Promise<{ id: string }> }) {
@@ -47,5 +48,7 @@ const RecurringTransactionWrapper = async ({ id }: { id: Promise<string> }) => {
 		notFound();
 	}
 
-	return <RecurringTransactionForm transaction={transaction} />;
+	const allCategories = await getCategories();
+
+	return <RecurringTransactionForm transaction={transaction} allCategories={allCategories} />;
 };
