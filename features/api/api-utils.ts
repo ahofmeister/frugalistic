@@ -63,9 +63,6 @@ export function withCronSecret(
 	return async (request: NextRequest): Promise<Response | NextResponse> => {
 		const authHeader = request.headers.get("Authorization");
 
-		console.log(authHeader);
-		console.log(`Bearer ${process.env.CRON_SECRET}`);
-
 		if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
 			return new Response("Unauthorized", {
 				status: 401,
