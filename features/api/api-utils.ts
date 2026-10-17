@@ -61,7 +61,7 @@ export function withCronSecret(
 	handler: (request: NextRequest) => Promise<Response | NextResponse>,
 ) {
 	return async (request: NextRequest): Promise<Response | NextResponse> => {
-		const authHeader = request.headers.get("authorization");
+		const authHeader = request.headers.get("Authorization");
 
 		console.log(authHeader);
 		console.log(`Bearer ${process.env.CRON_SECRET}`);
