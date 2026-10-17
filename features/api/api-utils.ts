@@ -24,11 +24,11 @@ export function withApiAuth<Context>(
 		});
 
 		if (!record || record.revoked) {
-			return Response.json({ error: "Invalid API key" }, { status: 401 });
+			return Response.json({ error: "Invalid API key" }, { status: 403 });
 		}
 
 		if (record.expiresAt && new Date(record.expiresAt) < new Date()) {
-			return Response.json({ error: "API key expired" }, { status: 401 });
+			return Response.json({ error: "API key expired" }, { status: 403 });
 		}
 
 		await dbTransaction((tx) => {
