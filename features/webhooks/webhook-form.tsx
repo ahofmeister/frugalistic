@@ -3,6 +3,7 @@
 import { DevTool } from "@hookform/devtools";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createInsertSchema } from "drizzle-orm/zod";
+import { redirect } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { webhookEventTypes, webhookHTTPMethods, webhookSchema } from "@/drizzle/schema";
 import { Button } from "@/features/ui/button";
@@ -37,10 +38,14 @@ const WebhookForm = ({ webhook }: { webhook?: typeof webhookSchema.$inferSelect 
 	});
 
 	async function handleSubmit(webhookUpdate: typeof webhookSchema.$inferInsert) {
-		await upsertWebhook({
+		const result = await upsertWebhook({
 			...webhookUpdate,
 			id: webhook ? webhook.id : undefined,
 		});
+
+		if (result.success && !webhook?.id) {
+			redirect("/webhooks");
+		}
 	}
 
 	return (
@@ -180,7 +185,7 @@ const WebhookForm = ({ webhook }: { webhook?: typeof webhookSchema.$inferSelect 
 								type="submit"
 								disabled={form.formState.isSubmitting || !form.formState.isValid}
 							>
-								{form.formState.isSubmitting ? <Spinner /> : webhook ? "Save" : "Create Budget"}
+								{form.formState.isSubmitting ? <Spinner /> : webhook ? "Save" : "Create Webhook"}
 							</Button>
 							{webhook && <WebhookTestButton webhook={webhook} />}
 						</div>

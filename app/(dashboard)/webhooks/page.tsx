@@ -3,6 +3,7 @@ import { PencilIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import { dbTransaction } from "@/drizzle/client";
+import { Button } from "@/features/ui/button";
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/features/ui/table";
 
 async function WebhooksList() {
@@ -10,37 +11,46 @@ async function WebhooksList() {
 		return tx.query.webhookSchema.findMany();
 	});
 
+	if (webhooks.length === 0) {
+		return;
+	}
+
 	return (
-		<Table>
-			<TableHeader>
-				<TableRow>
-					<TableCell>Name</TableCell>
-					<TableCell>URL</TableCell>
-					<TableCell>Description</TableCell>
-					<TableCell>HTTP Method</TableCell>
-					<TableCell>Event Type</TableCell>
-					<TableCell>Active</TableCell>
-					<TableCell></TableCell>
-				</TableRow>
-			</TableHeader>
-			<TableBody>
-				{webhooks.map((webhook) => (
-					<TableRow key={webhook.id}>
-						<TableCell>{webhook.name}</TableCell>
-						<TableCell>{webhook.url}</TableCell>
-						<TableCell>{webhook.description}</TableCell>
-						<TableCell>{webhook.httpMethod}</TableCell>
-						<TableCell>{webhook.eventType}</TableCell>
-						<TableCell>{webhook.active ? <CheckIcon /> : <XIcon />}</TableCell>
-						<TableCell>
-							<Link href={`/webhooks/${webhook.id}`}>
-								<PencilIcon size={14} />
-							</Link>
-						</TableCell>
+		<div className="flex flex-col space-y-4">
+			<Link href="/webhooks/new">
+				<Button>New Webhook</Button>
+			</Link>
+			<Table>
+				<TableHeader>
+					<TableRow>
+						<TableCell>Name</TableCell>
+						<TableCell>URL</TableCell>
+						<TableCell>Description</TableCell>
+						<TableCell>HTTP Method</TableCell>
+						<TableCell>Event Type</TableCell>
+						<TableCell>Active</TableCell>
+						<TableCell></TableCell>
 					</TableRow>
-				))}
-			</TableBody>
-		</Table>
+				</TableHeader>
+				<TableBody>
+					{webhooks.map((webhook) => (
+						<TableRow key={webhook.id}>
+							<TableCell>{webhook.name}</TableCell>
+							<TableCell>{webhook.url}</TableCell>
+							<TableCell>{webhook.description}</TableCell>
+							<TableCell>{webhook.httpMethod}</TableCell>
+							<TableCell>{webhook.eventType}</TableCell>
+							<TableCell>{webhook.active ? <CheckIcon /> : <XIcon />}</TableCell>
+							<TableCell>
+								<Link href={`/webhooks/${webhook.id}`}>
+									<PencilIcon size={14} />
+								</Link>
+							</TableCell>
+						</TableRow>
+					))}
+				</TableBody>
+			</Table>
+		</div>
 	);
 }
 
