@@ -1,6 +1,6 @@
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
 import { dbTransaction } from "@/drizzle/client";
-import { TransactionCard } from "@/features/transactions/components/transaction-card";
+import TransactionList from "@/features/transactions/components/transaction-list";
 
 const PlannedTransactions = async () => {
 	const transactions = await dbTransaction((tx) => {
@@ -17,13 +17,7 @@ const PlannedTransactions = async () => {
 
 	const settings = await getSettings();
 
-	return (
-		<div>
-			{transactions.map((transaction) => (
-				<TransactionCard key={transaction.id} transaction={transaction} settings={settings} />
-			))}
-		</div>
-	);
+	return <TransactionList transactions={transactions} settings={settings} />;
 };
 
 export default PlannedTransactions;
