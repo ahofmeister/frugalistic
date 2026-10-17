@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import { boolean, foreignKey, index, pgPolicy, pgTable, text } from "drizzle-orm/pg-core";
+import { v4 as uuid } from "uuid";
 import { accountSchema } from "@/drizzle/schema/account-schema";
 import { accountId, createdAt, id, updatedAt } from "@/drizzle/schema/schema-commons";
 

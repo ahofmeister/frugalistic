@@ -1,9 +1,7 @@
-import { formatDate, isSameDay, subDays } from "date-fns";
-import { and, eq } from "drizzle-orm";
+import { isSameDay, subDays } from "date-fns";
 import { db } from "@/drizzle/client";
-import { transactions, webhookEventSchema } from "@/drizzle/schema";
 import { withCronSecret } from "@/features/api/api-utils";
-import { DB_DATE_FORMAT } from "@/lib/utils";
+import { sendWebhook } from "@/features/webhooks/webhook-actions";
 
 export const GET = withCronSecret(async (_request) => {
 	try {
@@ -42,23 +40,7 @@ export const GET = withCronSecret(async (_request) => {
 			if (!webhook?.active) {
 				continue;
 			}
-
-			const result = await fetch(webhook.url, {
-				method: webhook.httpMethod,
-				body: JSON.stringify({
-					transaction,
-				}),
-			});
-
-			await db.insert(webhookEventSchema).values({
-				webhookId: webhook.id,
-				statusCode: result.status,
-				url: webhook.url,
-				executedAt: new Date().toISOString(),
-				accountId: transaction.accountId,
-				httpMethod: webhook.httpMethod,
-				type: webhook.eventType,
-			});
+			await sendWebhook(webhook, transaction, transaction.accountId);
 		}
 
 		return Response.json(

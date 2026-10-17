@@ -18,6 +18,7 @@ import {
 import { Spinner } from "@/features/ui/spinner";
 import { Switch } from "@/features/ui/switch";
 import { upsertWebhook } from "@/features/webhooks/webhook-actions";
+import WebhookTestButton from "@/features/webhooks/webhook-test-button";
 
 const webhookFormSchema = createInsertSchema(webhookSchema);
 
@@ -173,14 +174,15 @@ const WebhookForm = ({ webhook }: { webhook?: typeof webhookSchema.$inferSelect 
 							)}
 						/>
 
-						<div className="flex flex-col gap-y-4 col-span-2">
+						<div className="flex col-span-2 gap-x-10 justify-between">
 							<Button
+								className="w-full"
 								type="submit"
 								disabled={form.formState.isSubmitting || !form.formState.isValid}
-								className="w-full"
 							>
 								{form.formState.isSubmitting ? <Spinner /> : webhook ? "Save" : "Create Budget"}
 							</Button>
+							{webhook && <WebhookTestButton webhook={webhook} />}
 						</div>
 					</div>
 				</form>

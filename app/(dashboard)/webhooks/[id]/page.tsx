@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { dbTransaction } from "@/drizzle/client";
+import { Dialog, DialogContent, DialogTrigger } from "@/features/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/features/ui/table";
 import WebhookEventDeleteButton from "@/features/webhooks/webhook-event-delete-button";
 import WebhookForm from "@/features/webhooks/webhook-form";
@@ -44,13 +45,15 @@ async function WebhookEvents({ webhookId }: { webhookId: Promise<string> }) {
 	}
 
 	return (
-		<Table className="max-w-2xl mx-auto">
+		<Table className="max-w-3xl mx-auto">
 			<TableHeader>
 				<TableRow>
 					<TableHead>Date</TableHead>
 					<TableHead>HTTP Method</TableHead>
+					<TableHead>URL</TableHead>
 					<TableHead>Status</TableHead>
 					<TableHead>Event</TableHead>
+					<TableHead>Body</TableHead>
 					<TableHead>&nbsp;</TableHead>
 				</TableRow>
 			</TableHeader>
@@ -60,8 +63,17 @@ async function WebhookEvents({ webhookId }: { webhookId: Promise<string> }) {
 						<TableRow key={event.id}>
 							<TableCell>{event.executedAt}</TableCell>
 							<TableCell>{event.httpMethod}</TableCell>
+							<TableCell>{event.url}</TableCell>
 							<TableCell>{event.statusCode}</TableCell>
 							<TableCell>{event.type}</TableCell>
+							<TableCell>
+								<Dialog>
+									<DialogTrigger className="cursor-pointer">Show body</DialogTrigger>
+									<DialogContent className="min-w-fit">
+										<pre>{JSON.stringify(event.body, undefined, 2)}</pre>
+									</DialogContent>
+								</Dialog>
+							</TableCell>
 							<TableCell>
 								<WebhookEventDeleteButton id={event.id} />
 							</TableCell>
