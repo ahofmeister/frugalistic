@@ -52,7 +52,8 @@ async function WebhookEvents({ webhookId }: { webhookId: Promise<string> }) {
 					<TableHead>HTTP Method</TableHead>
 					<TableHead>URL</TableHead>
 					<TableHead>Status</TableHead>
-					<TableHead>Event</TableHead>
+					<TableHead>Type</TableHead>
+					<TableHead>Test</TableHead>
 					<TableHead>Body</TableHead>
 					<TableHead>&nbsp;</TableHead>
 				</TableRow>
@@ -66,6 +67,7 @@ async function WebhookEvents({ webhookId }: { webhookId: Promise<string> }) {
 							<TableCell>{event.url}</TableCell>
 							<TableCell>{event.statusCode}</TableCell>
 							<TableCell>{event.type}</TableCell>
+							<TableCell>{event.test ? "Yes" : ""}</TableCell>
 							<TableCell>
 								<Dialog>
 									<DialogTrigger className="cursor-pointer">Show body</DialogTrigger>

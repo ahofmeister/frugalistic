@@ -44,13 +44,14 @@ export async function testWebhook(webhook: typeof webhookSchema.$inferSelect) {
 
 	const body = eventTypesTestData.TRANSACTION_DUE;
 
-	await sendWebhook(webhook, body, accountId);
+	await sendWebhook(webhook, body, accountId, true);
 }
 
 export async function sendWebhook(
 	webhook: typeof webhookSchema.$inferSelect,
 	data: Record<string, unknown>,
 	accountId: string,
+	test: boolean = false,
 ) {
 	const id = uuid();
 	const body = {
@@ -73,6 +74,7 @@ export async function sendWebhook(
 		httpMethod: webhook.httpMethod,
 		type: webhook.eventType,
 		body,
+		test,
 	});
 	revalidatePath(`/webhooks/${webhook.id}`);
 }

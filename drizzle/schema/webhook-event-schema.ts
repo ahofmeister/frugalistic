@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
+	boolean,
 	foreignKey,
 	index,
 	integer,
@@ -41,6 +42,7 @@ export const webhookEventSchema = pgTable(
 		type: text({
 			enum: webhookEventTypes,
 		}).notNull(),
+		test: boolean().notNull().default(false),
 	},
 	(table) => [
 		index("webhook_history_account_id_idx").on(table.accountId),
