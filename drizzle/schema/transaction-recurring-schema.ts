@@ -17,7 +17,11 @@ import {
 } from "drizzle-orm/pg-core";
 import { categories } from "@/drizzle/schema/categories";
 import { accountId, createdAt, id, updatedAt, userId } from "@/drizzle/schema/schema-commons";
-import type { TransactionType, transactions } from "@/drizzle/schema/transaction-schema";
+import {
+	type TransactionType,
+	type transactions,
+	transactionTypes,
+} from "@/drizzle/schema/transaction-schema";
 import { users } from "@/drizzle/schema/users-schema";
 
 export const recurringIntervals = ["monthly", "annually"] as const;
@@ -42,9 +46,9 @@ export const transactionsRecurring = pgTable(
 		description: varchar().notNull(),
 		nextRun: date("next_run"),
 		amount: doublePrecision().notNull(),
-		type: text("type").$type<TransactionType>().notNull(),
+		type: text("type", { enum: transactionTypes }).$type<TransactionType>().notNull(),
 		enabled: boolean().default(true).notNull(),
-		interval: text().$type<RecurringInterval>().notNull(),
+		interval: text({ enum: recurringIntervals }).$type<RecurringInterval>().notNull(),
 		categoryId: uuid("category_id").notNull(),
 	},
 	(table) => [

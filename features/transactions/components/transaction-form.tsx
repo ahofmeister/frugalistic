@@ -90,7 +90,7 @@ const TransactionForm = ({
 		webhookId: transaction?.webhookId ?? webhooks[0]?.id ?? "",
 	};
 
-	const form = useForm<FormValues>({
+	const form = useForm({
 		resolver: zodResolver(formSchema),
 		defaultValues,
 		mode: "onChange",

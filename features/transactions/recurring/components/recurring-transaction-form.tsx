@@ -1,11 +1,13 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
+import { createInsertSchema } from "drizzle-orm/zod";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
-import type { transactionsRecurring } from "@/drizzle/schema";
+import type { z } from "zod";
+import { type categories, transactionsRecurring } from "@/drizzle/schema";
 import AmountInput from "@/features/transactions/components/amount-input";
+import CategoryNameColor from "@/features/transactions/components/category-name-color";
 import { TransactionSelectItems } from "@/features/transactions/components/transaction-select-items";
 import { updateRecurringTransaction } from "@/features/transactions/transactions-api";
 import { Button } from "@/features/ui/button";
@@ -22,30 +24,25 @@ import {
 import { Spinner } from "@/features/ui/spinner";
 import { Switch } from "@/features/ui/switch";
 
+const formSchema = createInsertSchema(transactionsRecurring);
+
 const RecurringTransactionForm = ({
 	transaction,
+	allCategories,
 }: {
 	transaction: typeof transactionsRecurring.$inferSelect;
+	allCategories: (typeof categories.$inferSelect)[];
 }) => {
-	const formSchema = z.object({
-		description: z.string().min(1),
-		amount: z.coerce.string(),
-		type: z.enum(["income", "expense", "savings"]),
-		interval: z.enum(["monthly", "annually"]),
-		enabled: z.boolean(),
-	});
-
-	const defaultValues = {
-		description: transaction.description,
-		type: transaction.type,
-		amount: transaction.amount.toString(),
-		interval: transaction.interval,
-		enabled: transaction.enabled,
-	};
-
 	const form = useForm({
 		resolver: zodResolver(formSchema),
-		defaultValues: defaultValues,
+		defaultValues: {
+			description: transaction.description,
+			type: transaction.type,
+			amount: transaction.amount,
+			interval: transaction.interval,
+			enabled: transaction.enabled,
+			categoryId: transaction.categoryId,
+		},
 		mode: "onChange",
 	});
 
@@ -53,8 +50,6 @@ const RecurringTransactionForm = ({
 		const result = await updateRecurringTransaction({
 			...values,
 			id: transaction.id,
-			amount: Number(values.amount.replace(/\D/g, "")),
-			categoryId: transaction.categoryId,
 		});
 
 		if (result?.success) {
@@ -131,7 +126,7 @@ const RecurringTransactionForm = ({
 							control={form.control}
 							name="interval"
 							render={({ field }) => (
-								<FormItem className="col-span-2">
+								<FormItem>
 									<FormLabel>Interval</FormLabel>
 									<Select
 										value={intervalValue}
@@ -146,6 +141,31 @@ const RecurringTransactionForm = ({
 										<SelectContent>
 											<SelectItem value="monthly">Monthly</SelectItem>
 											<SelectItem value="annually">Annually</SelectItem>
+										</SelectContent>
+									</Select>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+
+						<FormField
+							control={form.control}
+							name="categoryId"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Category</FormLabel>
+									<Select onValueChange={field.onChange} value={field.value}>
+										<FormControl>
+											<SelectTrigger>
+												<SelectValue placeholder="Select category" />
+											</SelectTrigger>
+										</FormControl>
+										<SelectContent>
+											{allCategories?.map((category) => (
+												<SelectItem key={category.id} value={category.id}>
+													<CategoryNameColor name={category.name} color={category.color} />
+												</SelectItem>
+											))}
 										</SelectContent>
 									</Select>
 									<FormMessage />
