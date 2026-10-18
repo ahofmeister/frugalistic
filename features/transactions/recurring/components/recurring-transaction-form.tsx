@@ -9,7 +9,6 @@ import type { z } from "zod";
 import {
 	type categories,
 	type settingSchema,
-	transactions,
 	transactionsRecurring,
 	type webhookSchema,
 } from "@/drizzle/schema";
