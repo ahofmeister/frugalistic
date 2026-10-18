@@ -4,59 +4,11 @@ import { and, asc, desc, eq, gte, ilike, lt, lte, sum } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import type { SearchFilter } from "@/app/(dashboard)/transactions/search-filter";
 import { dbTransaction } from "@/drizzle/client";
-import type { RecurringInterval, TransactionType } from "@/drizzle/schema";
+import type { TransactionType } from "@/drizzle/schema";
 import { categories } from "@/drizzle/schema/categories";
-import {
-	type TransactionWithRecurringCategory,
-	transactionsRecurring,
-} from "@/drizzle/schema/transaction-recurring-schema";
+import { transactionsRecurring } from "@/drizzle/schema/transaction-recurring-schema";
 import { transactions } from "@/drizzle/schema/transaction-schema";
 import { getActiveAccountId } from "@/features/account/account-actions";
-import { calculateNextRun } from "@/features/transactions/recurring/recurring-transactions-calculator";
-
-export async function makeTransactionRecurring(
-	transaction: TransactionWithRecurringCategory,
-	interval: RecurringInterval,
-) {
-	try {
-		await dbTransaction(async (tx) => {
-			const [recurring] = await tx
-				.insert(transactionsRecurring)
-				.values({
-					id: transaction.recurringTransaction ? transaction.recurringTransaction.id : undefined,
-					amount: transaction.amount,
-					description: transaction.description,
-					categoryId: transaction.category.id,
-					nextRun: format(calculateNextRun(transaction.datetime, interval), "yyyy-MM-dd"),
-					type: transaction.type,
-					interval,
-					userId: transaction.userId,
-					startDate: transaction.datetime,
-				})
-				.onConflictDoUpdate({
-					target: transactionsRecurring.id,
-					set: {
-						amount: transaction.amount,
-						description: transaction.description,
-						categoryId: transaction.category ? transaction.category.id : undefined,
-						nextRun: format(calculateNextRun(transaction.datetime, interval), "yyyy-MM-dd"),
-						type: transaction.type,
-						interval,
-					},
-				})
-				.returning({ id: transactionsRecurring.id });
-
-			await tx
-				.update(transactions)
-				.set({ recurringTransactionId: recurring.id })
-				.where(eq(transactions.id, transaction.id));
-		});
-
-		revalidatePath("transactions");
-	} catch (error) {
-		console.error(error);
-	}
-}
 
 export async function upsertTransaction(newTransaction: typeof transactions.$inferInsert) {
 	try {
@@ -157,19 +109,27 @@ export const deleteRecurringTransaction = async (id: string) => {
 	}
 };
 
-export async function updateRecurringTransaction(
+export async function upsertRecurringTransaction(
 	data: typeof transactionsRecurring.$inferInsert,
 ): Promise<{
 	success: boolean;
 	message?: string;
 }> {
 	try {
-		await dbTransaction((tx) =>
-			tx
-				.update(transactionsRecurring)
-				.set(data)
-				.where(eq(transactionsRecurring.id, data.id ?? "")),
-		);
+		const id = data.id;
+
+		if (id) {
+			await dbTransaction((tx) =>
+				tx
+					.update(transactionsRecurring)
+					.set({ ...data, nextRun: data.startDate })
+					.where(eq(transactionsRecurring.id, id)),
+			);
+		} else {
+			await dbTransaction((tx) => {
+				return tx.insert(transactionsRecurring).values(data);
+			});
+		}
 
 		revalidatePath("/");
 		return { success: true, message: "Transaction updated successfully" };

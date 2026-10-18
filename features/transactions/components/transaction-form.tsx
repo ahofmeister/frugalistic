@@ -23,10 +23,7 @@ import { getTextColor } from "@/features/transactions/colors";
 import AmountInput from "@/features/transactions/components/amount-input";
 import CategoryNameColor from "@/features/transactions/components/category-name-color";
 import { TransactionSelectItems } from "@/features/transactions/components/transaction-select-items";
-import {
-	makeTransactionRecurring,
-	upsertTransaction,
-} from "@/features/transactions/transactions-api";
+import { upsertTransaction } from "@/features/transactions/transactions-api";
 import { AutoComplete, type AutoCompleteRef } from "@/features/ui/auto-suggest-input";
 import { Button } from "@/features/ui/button";
 import { Calendar } from "@/features/ui/calendar";
@@ -47,16 +44,6 @@ import { cn, DB_DATE_FORMAT } from "@/lib/utils";
 
 const transactionFormSchema = createInsertSchema(transactions, {
 	description: (schema) => schema.min(1),
-}).pick({
-	description: true,
-	type: true,
-	costType: true,
-	categoryId: true,
-	amount: true,
-	datetime: true,
-	status: true,
-	dueNotificationDays: true,
-	webhookId: true,
 });
 
 export type TransactionFormValues = z.infer<typeof transactionFormSchema>;
@@ -289,11 +276,7 @@ const TransactionForm = ({
 							control={form.control}
 							name="categoryId"
 							render={({ field }) => (
-								<FormItem
-									className={cn({
-										"col-span-2": typeValue !== "expense",
-									})}
-								>
+								<FormItem>
 									<FormLabel>Category</FormLabel>
 									<Select onValueChange={field.onChange} value={categoryValue}>
 										<FormControl>
@@ -350,7 +333,7 @@ const TransactionForm = ({
 												<Button
 													variant="outline"
 													className={cn(
-														"w-full font-normal bg-transparent",
+														"w-full font-normal bg-transparent h-9",
 														!field.value && "foreground",
 													)}
 												>
@@ -467,39 +450,6 @@ const TransactionForm = ({
 						)}
 					</div>
 
-					{transaction && (
-						<div className="col-span-2 flex justify-between items-center bg-card p-4 rounded-md">
-							<p>Recurring</p>
-
-							<div className="flex gap-x-2">
-								<Button
-									type="button"
-									className="bg-transparent"
-									variant="outline"
-									disabled={
-										transaction.recurringTransaction !== null &&
-										transaction.recurringTransaction.interval === "monthly"
-									}
-									onClick={() => makeTransactionRecurring(transaction, "monthly")}
-								>
-									Monthly Recurring
-								</Button>
-
-								<Button
-									type="button"
-									variant="outline"
-									className="bg-transparent"
-									disabled={
-										transaction.recurringTransaction !== null &&
-										transaction.recurringTransaction.interval === "annually"
-									}
-									onClick={() => makeTransactionRecurring(transaction, "annually")}
-								>
-									Annually Recurring
-								</Button>
-							</div>
-						</div>
-					)}
 					<Button
 						type="submit"
 						className="w-full"

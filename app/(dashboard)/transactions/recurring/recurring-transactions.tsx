@@ -38,7 +38,12 @@ const RecurringTransactions = async () => {
 
 	return (
 		<div className="w-full">
-			<div className="text-2xl font-semibold mb-4">Recurring Transactions</div>
+			<div className="flex justify-between">
+				<div className="text-2xl font-semibold mb-4">Recurring Transactions</div>
+				<Link href="/transactions/recurring/new">
+					<Button>New Recurring Transaction</Button>
+				</Link>
+			</div>
 			{sortedTransactions?.length === 0 && (
 				<Card className=" inset-0 gap-y-4 flex flex-col h-60 items-center justify-center  text-muted-foreground text-lg">
 					No recurring transactions to display yet!

@@ -1,14 +1,15 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
+import { CalendarIcon } from "@radix-ui/react-icons";
+import { format, parseISO } from "date-fns";
 import { createInsertSchema } from "drizzle-orm/zod";
-import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
 import {
 	type categories,
 	type settingSchema,
+	transactions,
 	transactionsRecurring,
 	type webhookSchema,
 } from "@/drizzle/schema";
@@ -16,11 +17,13 @@ import AmountInput from "@/features/transactions/components/amount-input";
 import CategoryNameColor from "@/features/transactions/components/category-name-color";
 import TransactionPlannedFormFields from "@/features/transactions/components/transaction-planned-form-fields";
 import { TransactionSelectItems } from "@/features/transactions/components/transaction-select-items";
-import { updateRecurringTransaction } from "@/features/transactions/transactions-api";
+import { upsertRecurringTransaction } from "@/features/transactions/transactions-api";
 import { Button } from "@/features/ui/button";
+import { Calendar } from "@/features/ui/calendar";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/features/ui/form";
 import { Input } from "@/features/ui/input";
 import { Label } from "@/features/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/features/ui/popover";
 import {
 	Select,
 	SelectContent,
@@ -30,6 +33,7 @@ import {
 } from "@/features/ui/select";
 import { Spinner } from "@/features/ui/spinner";
 import { Switch } from "@/features/ui/switch";
+import { cn, DB_DATE_FORMAT } from "@/lib/utils";
 
 const formSchema = createInsertSchema(transactionsRecurring);
 export type RecurringTransactionFormValues = z.infer<typeof formSchema>;
@@ -40,7 +44,7 @@ const RecurringTransactionForm = ({
 	settings,
 	webhooks,
 }: {
-	transaction: typeof transactionsRecurring.$inferSelect;
+	transaction?: typeof transactionsRecurring.$inferSelect;
 	allCategories: (typeof categories.$inferSelect)[];
 	settings: typeof settingSchema.$inferSelect;
 	webhooks: (typeof webhookSchema.$inferSelect)[];
@@ -48,41 +52,38 @@ const RecurringTransactionForm = ({
 	const form = useForm({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			description: transaction.description,
-			type: transaction.type,
-			amount: transaction.amount,
-			interval: transaction.interval,
-			enabled: transaction.enabled,
-			categoryId: transaction.categoryId,
-			status: transaction.status,
+			description: transaction?.description ?? "",
+			type: transaction?.type ?? "expense",
+			amount: transaction?.amount ?? 0,
+			interval: transaction?.interval ?? "monthly",
+			enabled: transaction?.enabled ?? true,
+			categoryId: transaction?.categoryId ?? "",
+			status: transaction?.status ?? "booked",
 			dueNotificationDays: settings.dueTransactionReminderDays,
-			startDate: transaction.startDate,
-			webhookId: transaction.webhookId,
+			startDate: transaction?.startDate ?? format(new Date(), DB_DATE_FORMAT),
+			webhookId: transaction?.webhookId ?? webhooks[0]?.id ?? "",
+			nextRun: transaction?.nextRun ?? "",
 		},
 		mode: "onChange",
 	});
 
 	async function handleSubmit(values: z.infer<typeof formSchema>) {
-		console.log(values);
-		const result = await updateRecurringTransaction({
+		const result = await upsertRecurringTransaction({
 			...values,
-			id: transaction.id,
+			id: transaction?.id,
 		});
 
 		if (result?.success) {
-			toast.success("Transaction updated successfully");
+			toast.success(`Transaction ${values.id ? "saved" : "created"}`);
 		} else {
-			toast.error("Failed to update transaction");
+			toast.error(`Failed to ${values.id ? "save" : "create"} transaction`);
 		}
 	}
 
 	const typeValue = form.watch("type");
 	const intervalValue = form.watch("interval");
 	const isPlanned = form.watch("status") === "planned";
-
-	useEffect(() => {
-		form.trigger();
-	}, [form]);
+	const startDate = form.watch("startDate");
 
 	const { errors } = form.formState;
 	const errorEntries = Object.entries(errors);
@@ -207,30 +208,69 @@ const RecurringTransactionForm = ({
 							)}
 						/>
 
-						<div className="col-span-2">
-							<FormItem>
-								<FormLabel>Next Run</FormLabel>
-								<FormControl>
-									<Input
-										value={
-											transaction.nextRun ? format(new Date(transaction.nextRun), "PPP") : "N/A"
-										}
-										disabled
-									/>
-								</FormControl>
-							</FormItem>
-						</div>
+						<FormField
+							control={form.control}
+							name="startDate"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Date</FormLabel>
+									<Popover>
+										<PopoverTrigger asChild>
+											<FormControl>
+												<Button
+													variant="outline"
+													className={cn(
+														"w-full font-normal bg-transparent h-9",
+														!field.value && "foreground",
+													)}
+												>
+													{field.value ? (
+														format(parseISO(field.value), "PPP")
+													) : (
+														<span>Pick a date</span>
+													)}
+													<CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+												</Button>
+											</FormControl>
+										</PopoverTrigger>
+										<PopoverContent className="w-auto p-0" align="start">
+											<Calendar
+												weekStartsOn={1}
+												mode="single"
+												selected={parseISO(field.value)}
+												onSelect={(date) => {
+													if (date) {
+														field.onChange(format(date, DB_DATE_FORMAT));
+													}
+												}}
+												disabled={(date) => date < new Date("2000-01-01")}
+												required
+											/>
+										</PopoverContent>
+									</Popover>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+
+						<p className="text-muted-foreground self-center">
+							It runs next on{" "}
+							{format(
+								new Date(transaction?.nextRun ? transaction.nextRun : startDate),
+								settings.dateFormat,
+							)}
+						</p>
 
 						<FormField
 							control={form.control}
 							name="enabled"
 							render={({ field }) => (
 								<FormItem className="col-span-2">
-									<div className="flex items-center space-x-2">
+									<div className="flex items-center justify-between">
+										<Label htmlFor="enabled">Enabled</Label>
 										<FormControl>
 											<Switch checked={field.value} onCheckedChange={field.onChange} />
 										</FormControl>
-										<Label htmlFor="enabled">Enabled</Label>
 									</div>
 									<FormMessage />
 								</FormItem>
