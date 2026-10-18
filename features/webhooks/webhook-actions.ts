@@ -1,5 +1,5 @@
 "use server";
-import { randomInt } from "crypto";
+import { randomInt } from "node:crypto";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { v4 as uuid } from "uuid";
@@ -7,6 +7,19 @@ import { db, dbTransaction } from "@/drizzle/client";
 import { type transactions, webhookEventSchema, webhookSchema } from "@/drizzle/schema";
 import { getActiveAccountId } from "@/features/account/account-actions";
 import { generateRandomString } from "@/lib/utils";
+
+export async function getActiveWebhooks() {
+	const activeAccountId = await getActiveAccountId();
+
+	return await dbTransaction((tx) => {
+		return tx.query.webhookSchema.findMany({
+			where: {
+				accountId: activeAccountId,
+				active: true,
+			},
+		});
+	});
+}
 
 export async function upsertWebhook(webhook: typeof webhookSchema.$inferInsert) {
 	try {

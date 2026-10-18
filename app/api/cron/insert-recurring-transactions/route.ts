@@ -42,6 +42,9 @@ export const GET = withCronSecret(async (_request) => {
 					categoryId: recurringTransaction.categoryId,
 					recurringTransactionId: recurringTransaction.id,
 					costType: "fixed",
+					status: recurringTransaction.status,
+					webhookId: recurringTransaction.webhookId,
+					dueNotificationDays: recurringTransaction.dueNotificationDays,
 				});
 
 				const startDate = parseISO(recurringTransaction.startDate);

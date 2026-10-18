@@ -1,6 +1,7 @@
 import { dbTransaction } from "@/drizzle/client";
 import type { TransactionType } from "@/drizzle/schema/transaction-schema";
 import { getActiveAccountId } from "@/features/account/account-actions";
+import { getCategories } from "@/features/categories/categories-api";
 
 export interface CategoryRow {
 	id: string;
@@ -27,13 +28,7 @@ export async function getRawTransactionsAndCategories() {
 				},
 			}),
 		),
-		dbTransaction((tx) =>
-			tx.query.categories.findMany({
-				where: {
-					accountId: activeAccountId,
-				},
-			}),
-		),
+		await getCategories(),
 	]);
 	return { transactions: foundTransactions, categories: foundCategories };
 }
