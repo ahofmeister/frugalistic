@@ -1,7 +1,5 @@
 import { CategoryCard } from "@/app/(dashboard)/categories/category-card";
 import { defaultCategories } from "@/app/(dashboard)/categories/default-categories";
-import { dbTransaction } from "@/drizzle/client";
-import { getActiveAccountId } from "@/features/account/account-actions";
 import { getCategories } from "@/features/categories/categories-api";
 
 const CategoryList = async () => {
