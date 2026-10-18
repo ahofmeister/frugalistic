@@ -7,6 +7,7 @@ import {
 	doublePrecision,
 	foreignKey,
 	index,
+	integer,
 	numeric,
 	pgPolicy,
 	pgTable,
@@ -18,7 +19,9 @@ import {
 import { categories } from "@/drizzle/schema/categories";
 import { accountId, createdAt, id, updatedAt, userId } from "@/drizzle/schema/schema-commons";
 import {
+	type TransactionStatus,
 	type TransactionType,
+	transactionStatuses,
 	type transactions,
 	transactionTypes,
 } from "@/drizzle/schema/transaction-schema";
@@ -51,6 +54,12 @@ export const transactionsRecurring = pgTable(
 		interval: text({ enum: recurringIntervals }).$type<RecurringInterval>().notNull(),
 		categoryId: uuid("category_id").notNull(),
 		startDate: date("start_date").notNull(),
+		status: text({ enum: transactionStatuses })
+			.$type<TransactionStatus>()
+			.notNull()
+			.default("booked"),
+		webhookId: uuid("webhook_id"),
+		dueNotificationDays: integer(),
 	},
 	(table) => [
 		index("transactions_recurring_account_id_idx").on(table.accountId),

@@ -45,7 +45,7 @@ import { Spinner } from "@/features/ui/spinner";
 import { Switch } from "@/features/ui/switch";
 import { cn, DB_DATE_FORMAT } from "@/lib/utils";
 
-const formSchema = createInsertSchema(transactions, {
+const transactionFormSchema = createInsertSchema(transactions, {
 	description: (schema) => schema.min(1),
 }).pick({
 	description: true,
@@ -59,7 +59,7 @@ const formSchema = createInsertSchema(transactions, {
 	webhookId: true,
 });
 
-type FormValues = z.infer<typeof formSchema>;
+export type TransactionFormValues = z.infer<typeof transactionFormSchema>;
 
 const TransactionForm = ({
 	transaction,
@@ -78,7 +78,7 @@ const TransactionForm = ({
 	settings: typeof settingSchema.$inferSelect;
 	webhooks: (typeof webhookSchema.$inferSelect)[];
 }) => {
-	const defaultValues: FormValues = {
+	const defaultValues: TransactionFormValues = {
 		description: transaction?.description ?? "",
 		type: transaction?.type ?? "expense",
 		amount: transaction?.amount ?? 0,
@@ -91,7 +91,7 @@ const TransactionForm = ({
 	};
 
 	const form = useForm({
-		resolver: zodResolver(formSchema),
+		resolver: zodResolver(transactionFormSchema),
 		defaultValues,
 		mode: "onChange",
 	});
@@ -109,7 +109,7 @@ const TransactionForm = ({
 	const categoryValue = form.watch("categoryId");
 	const costTypeValue = form.watch("costType");
 
-	async function handleSubmit(values: FormValues) {
+	async function handleSubmit(values: TransactionFormValues) {
 		const { error } = await upsertTransaction({
 			...values,
 			id: transaction?.id,

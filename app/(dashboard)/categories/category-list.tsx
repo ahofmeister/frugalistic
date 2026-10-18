@@ -1,21 +1,9 @@
 import { CategoryCard } from "@/app/(dashboard)/categories/category-card";
 import { defaultCategories } from "@/app/(dashboard)/categories/default-categories";
-import { dbTransaction } from "@/drizzle/client";
-import { getActiveAccountId } from "@/features/account/account-actions";
+import { getCategories } from "@/features/categories/categories-api";
 
 const CategoryList = async () => {
-	const activeAccountId = await getActiveAccountId();
-
-	const categories = await dbTransaction((tx) => {
-		return tx.query.categories.findMany({
-			where: {
-				accountId: activeAccountId,
-			},
-			orderBy: {
-				name: "asc",
-			},
-		});
-	});
+	const categories = await getCategories();
 
 	const existingCategories = categories.map((category) => category.name);
 

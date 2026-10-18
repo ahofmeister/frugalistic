@@ -1,10 +1,12 @@
-import { asc, desc, sql } from "drizzle-orm";
+import { asc, desc } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
 import { dbTransaction } from "@/drizzle/client";
 import { transactionAutoSuggest } from "@/drizzle/schema";
 import { getActiveAccountId } from "@/features/account/account-actions";
+import { getCategories } from "@/features/categories/categories-api";
 import TransactionForm from "@/features/transactions/components/transaction-form";
+import { getActiveWebhooks } from "@/features/webhooks/webhook-actions";
 
 export const TransactionFormData = async ({
 	transactionId,
@@ -23,16 +25,12 @@ export const TransactionFormData = async ({
 			.from(transactionAutoSuggest)
 			.orderBy(desc(transactionAutoSuggest.frequency), asc(transactionAutoSuggest.description));
 
-		const categoryList = await tx.query.categories.findMany({
-			where: {
-				accountId: activeAccountId,
-			},
-			orderBy: (t) => sql`lower(${t.name}) asc`,
-		});
+		const categoryList = await getCategories();
 
 		const favorites = await tx.query.favoriteSchema.findMany({
 			with: { category: true },
 			orderBy: { description: "asc" },
+			where: { accountId: activeAccountId },
 		});
 
 		const transaction = id
@@ -54,9 +52,7 @@ export const TransactionFormData = async ({
 
 	const settings = await getSettings();
 
-	const webhooks = await dbTransaction(async (tx) => {
-		return tx.query.webhookSchema.findMany();
-	});
+	const webhooks = await getActiveWebhooks();
 
 	return (
 		<TransactionForm

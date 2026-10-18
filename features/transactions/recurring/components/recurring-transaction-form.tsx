@@ -2,12 +2,19 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { createInsertSchema } from "drizzle-orm/zod";
+import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
-import { type categories, transactionsRecurring } from "@/drizzle/schema";
+import {
+	type categories,
+	type settingSchema,
+	transactionsRecurring,
+	type webhookSchema,
+} from "@/drizzle/schema";
 import AmountInput from "@/features/transactions/components/amount-input";
 import CategoryNameColor from "@/features/transactions/components/category-name-color";
+import TransactionPlannedFormFields from "@/features/transactions/components/transaction-planned-form-fields";
 import { TransactionSelectItems } from "@/features/transactions/components/transaction-select-items";
 import { updateRecurringTransaction } from "@/features/transactions/transactions-api";
 import { Button } from "@/features/ui/button";
@@ -25,13 +32,18 @@ import { Spinner } from "@/features/ui/spinner";
 import { Switch } from "@/features/ui/switch";
 
 const formSchema = createInsertSchema(transactionsRecurring);
+export type RecurringTransactionFormValues = z.infer<typeof formSchema>;
 
 const RecurringTransactionForm = ({
 	transaction,
 	allCategories,
+	settings,
+	webhooks,
 }: {
 	transaction: typeof transactionsRecurring.$inferSelect;
 	allCategories: (typeof categories.$inferSelect)[];
+	settings: typeof settingSchema.$inferSelect;
+	webhooks: (typeof webhookSchema.$inferSelect)[];
 }) => {
 	const form = useForm({
 		resolver: zodResolver(formSchema),
@@ -42,11 +54,16 @@ const RecurringTransactionForm = ({
 			interval: transaction.interval,
 			enabled: transaction.enabled,
 			categoryId: transaction.categoryId,
+			status: transaction.status,
+			dueNotificationDays: settings.dueTransactionReminderDays,
+			startDate: transaction.startDate,
+			webhookId: transaction.webhookId,
 		},
 		mode: "onChange",
 	});
 
 	async function handleSubmit(values: z.infer<typeof formSchema>) {
+		console.log(values);
 		const result = await updateRecurringTransaction({
 			...values,
 			id: transaction.id,
@@ -61,9 +78,26 @@ const RecurringTransactionForm = ({
 
 	const typeValue = form.watch("type");
 	const intervalValue = form.watch("interval");
+	const isPlanned = form.watch("status") === "planned";
+
+	useEffect(() => {
+		form.trigger();
+	}, [form]);
+
+	const { errors } = form.formState;
+	const errorEntries = Object.entries(errors);
 
 	return (
-		<div className="max-w-2xl mx-auto px-2">
+		<div className="max-w-3xl mx-auto px-2">
+			{errorEntries.length > 0 && (
+				<div className="text-destructive text-sm" role="alert">
+					{errorEntries.map(([name, error]) => (
+						<p key={name}>
+							{name}: {error?.message?.toString()}
+						</p>
+					))}
+				</div>
+			)}
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -204,11 +238,13 @@ const RecurringTransactionForm = ({
 						/>
 					</div>
 
-					<Button
-						type="submit"
-						className="w-full"
-						disabled={form.formState.isSubmitting || !form.formState.isValid}
-					>
+					<TransactionPlannedFormFields
+						isPlanned={isPlanned}
+						webhooks={webhooks}
+						control={form.control}
+					/>
+
+					<Button type="submit" disabled={form.formState.isSubmitting || !form.formState.isValid}>
 						{form.formState.isSubmitting ? <Spinner /> : "Save Changes"}
 					</Button>
 				</form>
