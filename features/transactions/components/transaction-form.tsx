@@ -413,6 +413,7 @@ const TransactionForm = ({
 												{...field}
 												onChange={(event) => field.onChange(Number(event.target.value))}
 												type="number"
+												inputMode="numeric"
 												value={field.value ?? ""}
 											/>
 											<FormMessage />
