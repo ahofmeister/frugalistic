@@ -19,8 +19,8 @@ const buttonVariants = cva(
 				success: "bg-emerald-600 text-white shadow-xs hover:bg-emerald-600",
 			},
 			size: {
-				sm: "px-3 py-1 !text-body-sm-600 h-8",
-				md: "px-3.5 py-1.5 !text-body-md-600 h-9",
+				sm: "px-3 py-1 h-8",
+				md: "px-3.5 py-1.5 h-9",
 				lg: "px-4 py-2 !text-body-lg-600 h-10",
 				roundedIcon: "rounded-full size-9",
 				icon: "h-6 w-6 [&_svg]:size-3",

@@ -54,6 +54,7 @@ async function WebhookEvents({ webhookId }: { webhookId: Promise<string> }) {
 					<TableHead>Status</TableHead>
 					<TableHead>Type</TableHead>
 					<TableHead>Test</TableHead>
+					<TableHead>Error</TableHead>
 					<TableHead>Body</TableHead>
 					<TableHead>&nbsp;</TableHead>
 				</TableRow>
@@ -68,6 +69,7 @@ async function WebhookEvents({ webhookId }: { webhookId: Promise<string> }) {
 							<TableCell>{event.statusCode}</TableCell>
 							<TableCell>{event.type}</TableCell>
 							<TableCell>{event.test ? "Yes" : ""}</TableCell>
+							<TableCell>{event.error}</TableCell>
 							<TableCell>
 								<Dialog>
 									<DialogTrigger className="cursor-pointer">Show body</DialogTrigger>
