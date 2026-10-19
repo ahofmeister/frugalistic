@@ -2,12 +2,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format, parseISO, startOfYesterday } from "date-fns";
-import { createInsertSchema } from "drizzle-orm/zod";
 import { HeartIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import type { z } from "zod";
 import DeleteTransaction from "@/app/(dashboard)/transactions/edit/[id]/delete-transaction";
 import {
 	type categories,
@@ -16,7 +14,6 @@ import {
 	type TransactionFormValues,
 	type transactionAutoSuggest,
 	transactionFormSchema,
-	transactions,
 	type webhookSchema,
 } from "@/drizzle/schema";
 import type { TransactionWithRecurringCategory } from "@/drizzle/schema/transaction-recurring-schema";

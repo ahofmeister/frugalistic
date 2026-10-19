@@ -16,49 +16,49 @@ async function WebhooksList() {
 	}
 
 	return (
-		<div className="flex flex-col space-y-4">
-			<Link href="/webhooks/new">
-				<Button>New Webhook</Button>
-			</Link>
-			<Table>
-				<TableHeader>
-					<TableRow>
-						<TableCell>Name</TableCell>
-						<TableCell>URL</TableCell>
-						<TableCell>Description</TableCell>
-						<TableCell>HTTP Method</TableCell>
-						<TableCell>Event Type</TableCell>
-						<TableCell>Active</TableCell>
-						<TableCell></TableCell>
+		<Table>
+			<TableHeader>
+				<TableRow>
+					<TableCell>Name</TableCell>
+					<TableCell>URL</TableCell>
+					<TableCell>Description</TableCell>
+					<TableCell>HTTP Method</TableCell>
+					<TableCell>Event Type</TableCell>
+					<TableCell>Active</TableCell>
+					<TableCell></TableCell>
+				</TableRow>
+			</TableHeader>
+			<TableBody>
+				{webhooks.map((webhook) => (
+					<TableRow key={webhook.id}>
+						<TableCell>{webhook.name}</TableCell>
+						<TableCell>{webhook.url}</TableCell>
+						<TableCell>{webhook.description}</TableCell>
+						<TableCell>{webhook.httpMethod}</TableCell>
+						<TableCell>{webhook.eventType}</TableCell>
+						<TableCell>{webhook.active ? <CheckIcon /> : <XIcon />}</TableCell>
+						<TableCell>
+							<Link href={`/webhooks/${webhook.id}`}>
+								<PencilIcon size={14} />
+							</Link>
+						</TableCell>
 					</TableRow>
-				</TableHeader>
-				<TableBody>
-					{webhooks.map((webhook) => (
-						<TableRow key={webhook.id}>
-							<TableCell>{webhook.name}</TableCell>
-							<TableCell>{webhook.url}</TableCell>
-							<TableCell>{webhook.description}</TableCell>
-							<TableCell>{webhook.httpMethod}</TableCell>
-							<TableCell>{webhook.eventType}</TableCell>
-							<TableCell>{webhook.active ? <CheckIcon /> : <XIcon />}</TableCell>
-							<TableCell>
-								<Link href={`/webhooks/${webhook.id}`}>
-									<PencilIcon size={14} />
-								</Link>
-							</TableCell>
-						</TableRow>
-					))}
-				</TableBody>
-			</Table>
-		</div>
+				))}
+			</TableBody>
+		</Table>
 	);
 }
 
 const WebhookPage = () => {
 	return (
-		<Suspense fallback={<div>Loading...</div>}>
-			<WebhooksList />
-		</Suspense>
+		<div className="flex flex-col space-y-4">
+			<Link href="/webhooks/new">
+				<Button>New Webhook</Button>
+			</Link>
+			<Suspense fallback={<div>Loading...</div>}>
+				<WebhooksList />
+			</Suspense>
+		</div>
 	);
 };
 
