@@ -13,7 +13,9 @@ import {
 	type categories,
 	type favoriteSchema,
 	type settingSchema,
+	type TransactionFormValues,
 	type transactionAutoSuggest,
+	transactionFormSchema,
 	transactions,
 	type webhookSchema,
 } from "@/drizzle/schema";
@@ -42,12 +44,6 @@ import { Spinner } from "@/features/ui/spinner";
 import { Switch } from "@/features/ui/switch";
 import { cn, DB_DATE_FORMAT } from "@/lib/utils";
 
-const transactionFormSchema = createInsertSchema(transactions, {
-	description: (schema) => schema.min(1),
-});
-
-export type TransactionFormValues = z.infer<typeof transactionFormSchema>;
-
 const TransactionForm = ({
 	transaction,
 	autoSuggests,
@@ -74,7 +70,7 @@ const TransactionForm = ({
 		costType: transaction?.costType ?? "variable",
 		status: transaction?.status ?? "booked",
 		dueNotificationDays: transaction?.dueNotificationDays ?? settings.dueTransactionReminderDays,
-		webhookId: transaction?.webhookId ?? webhooks[0]?.id ?? "",
+		webhookId: transaction?.webhookId ?? webhooks[0]?.id ?? null,
 	};
 
 	const form = useForm({

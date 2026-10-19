@@ -14,6 +14,8 @@ import {
 	uuid,
 	varchar,
 } from "drizzle-orm/pg-core";
+import { createInsertSchema } from "drizzle-orm/zod";
+import type { z } from "zod";
 import { accountSchema } from "@/drizzle/schema/account-schema";
 import { categories } from "@/drizzle/schema/categories";
 import { accountId, createdAt, id, updatedAt, userId } from "@/drizzle/schema/schema-commons";
@@ -108,3 +110,9 @@ export const transactions = pgTable(
 		),
 	],
 );
+
+export const transactionFormSchema = createInsertSchema(transactions, {
+	description: (schema) => schema.min(1),
+	amount: (schema) => schema.min(1),
+});
+export type TransactionFormValues = z.infer<typeof transactionFormSchema>;
