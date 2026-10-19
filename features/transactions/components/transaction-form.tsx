@@ -297,29 +297,27 @@ const TransactionForm = ({
 							)}
 						/>
 
-						{typeValue === "expense" && (
-							<FormField
-								control={form.control}
-								name="costType"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Cost Type</FormLabel>
-										<Select onValueChange={field.onChange} value={costTypeValue}>
-											<FormControl>
-												<SelectTrigger>
-													<SelectValue placeholder="Select cost type" />
-												</SelectTrigger>
-											</FormControl>
-											<SelectContent>
-												<SelectItem value="fixed">Fixed</SelectItem>
-												<SelectItem value="variable">Variable</SelectItem>
-											</SelectContent>
-										</Select>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-						)}
+						<FormField
+							control={form.control}
+							name="costType"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Cost Type</FormLabel>
+									<Select onValueChange={field.onChange} value={costTypeValue}>
+										<FormControl>
+											<SelectTrigger>
+												<SelectValue placeholder="Select cost type" />
+											</SelectTrigger>
+										</FormControl>
+										<SelectContent>
+											<SelectItem value="fixed">Fixed</SelectItem>
+											<SelectItem value="variable">Variable</SelectItem>
+										</SelectContent>
+									</Select>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 
 						<FormField
 							control={form.control}
