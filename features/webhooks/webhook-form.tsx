@@ -3,9 +3,17 @@
 import { DevTool } from "@hookform/devtools";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createInsertSchema } from "drizzle-orm/zod";
+import { MinusIcon, PlusIcon } from "lucide-react";
 import { redirect } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { webhookEventTypes, webhookHTTPMethods, webhookSchema } from "@/drizzle/schema";
+import { type Resolver, useFieldArray, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import z from "zod";
+import {
+	type WebhookHeader,
+	webhookEventTypes,
+	webhookHTTPMethods,
+	webhookSchema,
+} from "@/drizzle/schema";
 import { Button } from "@/features/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/features/ui/form";
 import { Input } from "@/features/ui/input";
@@ -23,9 +31,11 @@ import WebhookTestButton from "@/features/webhooks/webhook-test-button";
 
 const webhookFormSchema = createInsertSchema(webhookSchema);
 
+type WebhookFormValues = typeof webhookSchema.$inferInsert;
+
 const WebhookForm = ({ webhook }: { webhook?: typeof webhookSchema.$inferSelect }) => {
-	const form = useForm({
-		resolver: zodResolver(webhookFormSchema),
+	const form = useForm<WebhookFormValues>({
+		resolver: zodResolver(webhookFormSchema) as unknown as Resolver<WebhookFormValues>,
 		defaultValues: {
 			name: webhook?.name ?? undefined,
 			url: webhook?.url ?? undefined,
@@ -33,6 +43,7 @@ const WebhookForm = ({ webhook }: { webhook?: typeof webhookSchema.$inferSelect 
 			httpMethod: webhook?.httpMethod ?? "POST",
 			active: webhook?.active ?? true,
 			eventType: webhook?.eventType,
+			headers: webhook?.headers ?? [],
 		},
 		mode: "onChange",
 	});
@@ -43,10 +54,22 @@ const WebhookForm = ({ webhook }: { webhook?: typeof webhookSchema.$inferSelect 
 			id: webhook ? webhook.id : undefined,
 		});
 
+		if (result.success) {
+			toast.success(`Webhook ${webhook?.id ? "updated" : "created"} successfully`);
+		}
+		if (result.error) {
+			toast.error(`Webhook could not be ${webhook?.id ? "updated" : "created"}`);
+		}
+
 		if (result.success && !webhook?.id) {
 			redirect("/webhooks");
 		}
 	}
+
+	const { fields, append, remove } = useFieldArray({
+		control: form.control,
+		name: "headers",
+	});
 
 	return (
 		<div className="max-w-2xl mx-auto px-2 py-4">
@@ -74,12 +97,29 @@ const WebhookForm = ({ webhook }: { webhook?: typeof webhookSchema.$inferSelect 
 
 						<FormField
 							control={form.control}
-							name="url"
+							name="eventType"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel required>URL</FormLabel>
+									<FormLabel required>Event Type</FormLabel>
 									<FormControl>
-										<Input placeholder="URL" {...field} />
+										<Select
+											value={field.value}
+											onValueChange={field.onChange}
+											defaultValue={field.value}
+										>
+											<FormControl>
+												<SelectTrigger>
+													<SelectValue />
+												</SelectTrigger>
+											</FormControl>
+											<SelectContent>
+												{webhookEventTypes.map((eventTypes) => (
+													<SelectItem key={eventTypes} value={eventTypes}>
+														<div>{eventTypes}</div>
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -133,34 +173,39 @@ const WebhookForm = ({ webhook }: { webhook?: typeof webhookSchema.$inferSelect 
 
 						<FormField
 							control={form.control}
-							name="eventType"
+							name="url"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel required>Event Type</FormLabel>
+									<FormLabel required>URL</FormLabel>
 									<FormControl>
-										<Select
-											value={field.value}
-											onValueChange={field.onChange}
-											defaultValue={field.value}
-										>
-											<FormControl>
-												<SelectTrigger>
-													<SelectValue />
-												</SelectTrigger>
-											</FormControl>
-											<SelectContent>
-												{webhookEventTypes.map((eventTypes) => (
-													<SelectItem key={eventTypes} value={eventTypes}>
-														<div>{eventTypes}</div>
-													</SelectItem>
-												))}
-											</SelectContent>
-										</Select>
+										<Input placeholder="URL" {...field} />
 									</FormControl>
 									<FormMessage />
 								</FormItem>
 							)}
 						/>
+
+						<FormLabel>Headers</FormLabel>
+						<div className="flex flex-col gap-y-2 col-span-2">
+							{fields.map((field, index) => (
+								<div key={field.id} className="flex gap-2">
+									<Input {...form.register(`headers.${index}.key`)} placeholder="Header name" />
+									<Input {...form.register(`headers.${index}.value`)} placeholder="Value" />
+									<Button size="sm" type="button" onClick={() => remove(index)}>
+										<MinusIcon />
+									</Button>
+									{form.formState.errors.headers?.[index]?.key && (
+										<p>{form.formState.errors.headers[index].key.message}</p>
+									)}
+								</div>
+							))}
+						</div>
+						<div className="col-span-2">
+							<Button type="button" onClick={() => append({ key: "", value: "" })}>
+								<PlusIcon />
+								Add header
+							</Button>
+						</div>
 
 						<FormField
 							control={form.control}

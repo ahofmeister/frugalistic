@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { boolean, foreignKey, index, pgPolicy, pgTable, text } from "drizzle-orm/pg-core";
+import { boolean, foreignKey, index, jsonb, pgPolicy, pgTable, text } from "drizzle-orm/pg-core";
 import { accountSchema } from "@/drizzle/schema/account-schema";
 import { accountId, createdAt, id, updatedAt } from "@/drizzle/schema/schema-commons";
 
@@ -8,6 +8,8 @@ export type WebhookHTTPMethod = (typeof webhookHTTPMethods)[number];
 
 export const webhookEventTypes = ["TRANSACTION_DUE"] as const;
 export type WebhookEventType = (typeof webhookEventTypes)[number];
+
+export type WebhookHeader = { key: string; value: string };
 
 export const webhookSchema = pgTable(
 	"webhook",
@@ -22,6 +24,7 @@ export const webhookSchema = pgTable(
 		description: text(),
 		httpMethod: text({ enum: webhookHTTPMethods }).$type<WebhookHTTPMethod>().notNull(),
 		eventType: text({ enum: webhookEventTypes }).$type<WebhookEventType>().notNull(),
+		headers: jsonb().$type<WebhookHeader[]>().default([]),
 	},
 	(table) => [
 		index("webhook_account_id_idx").on(table.accountId),

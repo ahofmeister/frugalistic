@@ -28,7 +28,8 @@ export const webhookEventSchema = pgTable(
 		updatedAt,
 		accountId,
 		webhookId: uuid("webhook_id").notNull(),
-		statusCode: integer("status_code").notNull(),
+		statusCode: integer("status_code"),
+		error: text(),
 		body: jsonb(),
 		url: text().notNull(),
 		executedAt: timestamp("executed_at", {

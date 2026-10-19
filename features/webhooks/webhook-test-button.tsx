@@ -1,5 +1,6 @@
 "use client";
 import { useTransition } from "react";
+import { toast } from "sonner";
 import type { webhookSchema } from "@/drizzle/schema";
 import { Button } from "@/features/ui/button";
 import { Spinner } from "@/features/ui/spinner";
@@ -13,7 +14,11 @@ const WebhookTestButton = ({ webhook }: { webhook: typeof webhookSchema.$inferSe
 			type="button"
 			onClick={() =>
 				startTransition(async () => {
-					await testWebhook(webhook);
+					const result = await testWebhook(webhook);
+
+					if (result.success) {
+						toast.success("Webhook tested");
+					}
 				})
 			}
 		>
