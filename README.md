@@ -12,17 +12,17 @@ Frugalistic is a modern financial management tool designed to help you track you
 
 ## Features
 
-* Easy Transaction Tracking: Log incomes, expenses and savings incomes with ease
+- Easy Transaction Tracking: Log incomes, expenses and savings incomes with ease
 
-* Recurring Transactions: Automatically track monthly recurring expenses and incomes.
+- Recurring Transactions: Automatically track monthly recurring expenses and incomes.
 
-* Analytics Dashboard: View expenses, savings, and income by category, month, or year.
+- Analytics Dashboard: View expenses, savings, and income by category, month, or year.
 
-* Insights: Filter transactions by custom date ranges with shortcuts like "This Month" or "This Year".
+- Insights: Filter transactions by custom date ranges with shortcuts like "This Month" or "This Year".
 
-* Autocomplete Descriptions: Avoid typos with intelligent autocomplete for transaction descriptions.
+- Autocomplete Descriptions: Avoid typos with intelligent autocomplete for transaction descriptions.
 
-* (Not yet) Demo Mode: Explore the app with preloaded demo data.
+- (Not yet) Demo Mode: Explore the app with preloaded demo data.
 
 ## Demo
 
@@ -59,4 +59,3 @@ WIP
    ```bash
    pnpm run dev
    ```
-

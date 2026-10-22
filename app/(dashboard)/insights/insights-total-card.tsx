@@ -15,6 +15,26 @@ import {
 } from "@/features/ui/card";
 import { capitalize, cn } from "@/lib/utils";
 
+function getMonthsInYear(year: number): number {
+	return year === new Date().getFullYear() ? new Date().getMonth() + 1 : 12;
+}
+
+function PercentageChangeFooter({ percentageChange }: { percentageChange: number }) {
+	const formattedPercentage = Math.abs(Math.round(percentageChange))
+		.toFixed(2)
+		.replace(/\.?0+$/, "");
+
+	const isNegative = percentageChange < 0;
+	const arrow = isNegative ? <ArrowDown size={20} /> : <ArrowUp size={20} />;
+
+	return (
+		<div className="flex gap-x-2 items-center">
+			{arrow}
+			{formattedPercentage}% from last year
+		</div>
+	);
+}
+
 function InsightsTotalCard(props: {
 	year: number;
 	type: TransactionType;
@@ -26,30 +46,10 @@ function InsightsTotalCard(props: {
 	const previousYearTotal = props.previousYearTotal;
 	const year = props.year;
 
-	function getMonthsInYear(year: number): number {
-		return year === new Date().getFullYear() ? new Date().getMonth() + 1 : 12;
-	}
-
 	const percentageChange =
 		previousYearTotal && currentYearTotal
 			? ((currentYearTotal - previousYearTotal) / previousYearTotal) * 100
 			: 0;
-
-	const Footer = () => {
-		const formattedPercentage = Math.abs(Math.round(percentageChange))
-			.toFixed(2)
-			.replace(/\.?0+$/, "");
-
-		const isNegative = percentageChange < 0;
-		const arrow = isNegative ? <ArrowDown size={20} /> : <ArrowUp size={20} />;
-
-		return (
-			<div className="flex gap-x-2 items-center">
-				{arrow}
-				{formattedPercentage}% from last year
-			</div>
-		);
-	};
 
 	const { startDate, endDate } = getYearBoundaries(year);
 
@@ -73,7 +73,7 @@ function InsightsTotalCard(props: {
 					)}
 				</CardHeader>
 				<CardContent>
-					<Footer />
+					<PercentageChangeFooter percentageChange={percentageChange} />
 				</CardContent>
 				<CardFooter>
 					<AverageAmount amount={currentYearTotal / getMonthsInYear(year)} type={type} />

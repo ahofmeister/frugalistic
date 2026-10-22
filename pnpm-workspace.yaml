@@ -1,5 +1,5 @@
 allowBuilds:
-  '@tsparticles/engine': true
+  "@tsparticles/engine": true
   esbuild: true
   sharp: true
 minimumReleaseAgeExclude:

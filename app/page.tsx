@@ -17,6 +17,31 @@ import { Badge } from "@/features/ui/badge";
 import { Button } from "@/features/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/features/ui/card";
 
+const TechItem: React.FC<{
+	name: string;
+}> = ({ name }) => (
+	<Badge variant="secondary" className="rounded-full px-4 py-1.5 text-sm font-medium">
+		{name}
+	</Badge>
+);
+const FeatureCard: React.FC<{
+	icon: ReactNode;
+	title: string;
+	description: string;
+}> = ({ icon, title, description }) => (
+	<Card className="h-full group hover:shadow-lg transition-all duration-300 border-border/50 hover:border-primary/20">
+		<CardHeader className="pb-3">
+			<div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/15 transition-colors">
+				{icon}
+			</div>
+			<CardTitle className="text-lg">{title}</CardTitle>
+		</CardHeader>
+		<CardContent>
+			<p className="text-muted-foreground">{description}</p>
+		</CardContent>
+	</Card>
+);
+
 export default function LandingPage() {
 	const features = [
 		{
@@ -35,36 +60,6 @@ export default function LandingPage() {
 			icon: Repeat,
 		},
 	];
-
-	type FeatureCardProps = {
-		icon: ReactNode;
-		title: string;
-		description: string;
-	};
-
-	const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description }) => (
-		<Card className="h-full group hover:shadow-lg transition-all duration-300 border-border/50 hover:border-primary/20">
-			<CardHeader className="pb-3">
-				<div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/15 transition-colors">
-					{icon}
-				</div>
-				<CardTitle className="text-lg">{title}</CardTitle>
-			</CardHeader>
-			<CardContent>
-				<p className="text-muted-foreground">{description}</p>
-			</CardContent>
-		</Card>
-	);
-
-	type TechItemProps = {
-		name: string;
-	};
-
-	const TechItem: React.FC<TechItemProps> = ({ name }) => (
-		<Badge variant="secondary" className="rounded-full px-4 py-1.5 text-sm font-medium">
-			{name}
-		</Badge>
-	);
 
 	const technologies = [
 		"Next.js",
