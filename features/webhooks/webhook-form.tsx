@@ -7,13 +7,7 @@ import { MinusIcon, PlusIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 import { type Resolver, useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import z from "zod";
-import {
-	type WebhookHeader,
-	webhookEventTypes,
-	webhookHTTPMethods,
-	webhookSchema,
-} from "@/drizzle/schema";
+import { webhookEventTypes, webhookHTTPMethods, webhookSchema } from "@/drizzle/schema";
 import { Button } from "@/features/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/features/ui/form";
 import { Input } from "@/features/ui/input";
