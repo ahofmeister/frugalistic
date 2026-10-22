@@ -114,9 +114,6 @@ const TransactionForm = ({
 
 	return (
 		<Form {...form}>
-			<pre>
-				{JSON.stringify(transactionFormSchema.safeParse(form.watch()).error?.issues, null, 2)}
-			</pre>
 			<form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
 				<div className="col-span-2 flex justify-between items-center">
 					<div className="flex gap-x-1 items-center">

@@ -1,7 +1,6 @@
 "use client";
 import type { Control } from "react-hook-form";
-import type { webhookSchema } from "@/drizzle/schema";
-import type { TransactionFormValues } from "@/features/transactions/components/transaction-form";
+import type { TransactionFormValues, webhookSchema } from "@/drizzle/schema";
 import type { RecurringTransactionFormValues } from "@/features/transactions/recurring/components/recurring-transaction-form";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/features/ui/form";
 import { Input } from "@/features/ui/input";
