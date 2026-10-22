@@ -4,7 +4,7 @@ import { CalendarIcon } from "@radix-ui/react-icons";
 import { format, parseISO, startOfYesterday } from "date-fns";
 import { HeartIcon } from "lucide-react";
 import { useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { type DefaultValues, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import DeleteTransaction from "@/app/(dashboard)/transactions/edit/[id]/delete-transaction";
 import {
@@ -58,19 +58,18 @@ const TransactionForm = ({
 	settings: typeof settingSchema.$inferSelect;
 	webhooks: (typeof webhookSchema.$inferSelect)[];
 }) => {
-	const defaultValues: TransactionFormValues = {
+	const defaultValues: DefaultValues<TransactionFormValues> = {
 		description: transaction?.description ?? "",
 		type: transaction?.type ?? "expense",
 		amount: transaction?.amount ?? 0,
 		datetime: transaction?.datetime ?? format(new Date(), DB_DATE_FORMAT),
-		categoryId: transaction?.category.id ?? "",
+		categoryId: transaction?.category.id,
 		costType: transaction?.costType ?? "variable",
 		status: transaction?.status ?? "booked",
 		dueNotificationDays: transaction?.dueNotificationDays ?? settings.dueTransactionReminderDays,
 		webhookId: transaction?.webhookId ?? webhooks[0]?.id ?? null,
 	};
-
-	const form = useForm({
+	const form = useForm<TransactionFormValues>({
 		resolver: zodResolver(transactionFormSchema),
 		defaultValues,
 		mode: "onChange",
@@ -114,344 +113,341 @@ const TransactionForm = ({
 	const isPlanned = form.watch("status") === "planned";
 
 	return (
-		<div>
-			<Form {...form}>
-				<form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-					<div className="col-span-2 flex justify-between items-center">
-						<div className="flex gap-x-1 items-center">
-							<Button
-								disabled={!transaction}
-								variant="outline"
-								type="button"
-								onClick={() => {
-									if (isFavorite) {
-										return removeFavorite(favorite?.id);
-									}
-									if (transaction) {
-										return addFavorite(transaction);
-									}
-								}}
-							>
-								<HeartIcon
-									color={isFavorite ? "#FF00FF" : "#FFFFFF"}
-									fill={isFavorite ? "#FF00FF" : "#FFFFFF"}
-								/>
-							</Button>
-							<Button
-								disabled={!favorites || favorites.length <= 0}
-								variant="outline"
-								type="button"
-								onClick={() => setFavoriteOpen(true)}
-							>
-								Favorites
-							</Button>
-						</div>
-						{transaction && <DeleteTransaction id={transaction.id} />}
-
-						<Dialog open={favoriteOpen} onOpenChange={setFavoriteOpen}>
-							<DialogContent>
-								<DialogHeader>
-									<DialogTitle>Favorites</DialogTitle>
-								</DialogHeader>
-								{favorites?.map((item) => (
-									<div key={item.id} className="flex justify-between">
-										<div className="flex flex-col">
-											<span className={getTextColor(item.type)}>{item.description}</span>
-											<div>
-												<span style={{ color: item.category?.color ?? "" }}>
-													{item.category?.name}
-												</span>{" "}
-												in <span>{item.type}</span>
-											</div>
-										</div>
-										<Button
-											variant="outline"
-											type="button"
-											className="flex  self-center"
-											onClick={() => {
-												form.setValue("description", item.description);
-												form.setValue("type", item.type);
-												form.setValue("amount", item.amount);
-
-												if (item.category) {
-													form.setValue("categoryId", item.category.id);
-												}
-
-												autoCompleteRef.current?.setInputValue(item.description);
-												setFavoriteOpen(false);
-											}}
-										>
-											Apply
-										</Button>
-									</div>
-								))}
-							</DialogContent>
-						</Dialog>
-					</div>
-					<div className=" grid grid-cols-1 md:grid-cols-2 gap-5 bg-card p-4">
-						<FormField
-							control={form.control}
-							name="description"
-							render={() => (
-								<FormItem className="col-span-2">
-									<FormLabel>Description</FormLabel>
-									<FormControl>
-										<AutoComplete
-											ref={autoCompleteRef}
-											value={autoSuggests?.find((autoSuggest) => {
-												return (
-													autoSuggest.type === transaction?.type &&
-													autoSuggest.description === transaction?.description &&
-													autoSuggest.category === transaction?.category.id
-												);
-											})}
-											placeholder="Enter or choose description"
-											onValueChange={(e: typeof transactionAutoSuggest.$inferSelect) => {
-												form.setValue("description", e.description ?? "", {
-													shouldValidate: true,
-												});
-												if (e.type) {
-													form.setValue("type", e.type);
-												}
-												if (e.category) {
-													form.setValue("categoryId", e.category);
-												}
-											}}
-											options={autoSuggests ?? []}
-										/>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-
-						<FormField
-							control={form.control}
-							name="amount"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Amount</FormLabel>
-									<FormControl>
-										<AmountInput value={field.value} onChange={field.onChange} />
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-
-						<FormField
-							control={form.control}
-							name="type"
-							defaultValue="expense"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Type</FormLabel>
-									<Select
-										value={typeValue}
-										onValueChange={field.onChange}
-										defaultValue={field.value}
-									>
-										<FormControl>
-											<SelectTrigger>
-												<SelectValue />
-											</SelectTrigger>
-										</FormControl>
-										<SelectContent>
-											<TransactionSelectItems />
-										</SelectContent>
-									</Select>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-
-						<FormField
-							control={form.control}
-							name="categoryId"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Category</FormLabel>
-									<Select onValueChange={field.onChange} value={categoryValue}>
-										<FormControl>
-											<SelectTrigger>
-												<SelectValue placeholder="Select category" />
-											</SelectTrigger>
-										</FormControl>
-										<SelectContent>
-											{allCategories?.map((category) => (
-												<SelectItem key={category.id} value={category.id}>
-													<CategoryNameColor name={category.name} color={category.color} />
-												</SelectItem>
-											))}
-										</SelectContent>
-									</Select>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-
-						<FormField
-							control={form.control}
-							name="costType"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Cost Type</FormLabel>
-									<Select onValueChange={field.onChange} value={costTypeValue}>
-										<FormControl>
-											<SelectTrigger>
-												<SelectValue placeholder="Select cost type" />
-											</SelectTrigger>
-										</FormControl>
-										<SelectContent>
-											<SelectItem value="fixed">Fixed</SelectItem>
-											<SelectItem value="variable">Variable</SelectItem>
-										</SelectContent>
-									</Select>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-
-						<FormField
-							control={form.control}
-							name="datetime"
-							render={({ field }) => (
-								<FormItem className="flex flex-col">
-									<FormLabel>Date</FormLabel>
-									<Popover>
-										<PopoverTrigger asChild>
-											<FormControl>
-												<Button
-													variant="outline"
-													className={cn(
-														"w-full font-normal bg-transparent h-9",
-														!field.value && "foreground",
-													)}
-												>
-													{field.value ? (
-														format(parseISO(field.value), "PPP")
-													) : (
-														<span>Pick a date</span>
-													)}
-													<CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-												</Button>
-											</FormControl>
-										</PopoverTrigger>
-										<PopoverContent className="w-auto p-0" align="start">
-											<Calendar
-												weekStartsOn={1}
-												mode="single"
-												selected={parseISO(field.value)}
-												onSelect={(date) => {
-													if (date) {
-														field.onChange(format(date, DB_DATE_FORMAT));
-													}
-												}}
-												disabled={(date) => date < new Date("2000-01-01")}
-												required
-											/>
-										</PopoverContent>
-									</Popover>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-
-						<FormItem className="flex flex-col">
-							<FormLabel>&nbsp;</FormLabel>
-							<Button
-								className="bg-transparent"
-								type="button"
-								onClick={() =>
-									form.setValue("datetime", format(startOfYesterday(), DB_DATE_FORMAT), {
-										shouldValidate: true,
-									})
+		<Form {...form}>
+			<pre>
+				{JSON.stringify(transactionFormSchema.safeParse(form.watch()).error?.issues, null, 2)}
+			</pre>
+			<form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+				<div className="col-span-2 flex justify-between items-center">
+					<div className="flex gap-x-1 items-center">
+						<Button
+							disabled={!transaction}
+							variant="outline"
+							type="button"
+							onClick={() => {
+								if (isFavorite) {
+									return removeFavorite(favorite?.id);
 								}
-								variant="outline"
-							>
-								Yesterday
-							</Button>
-						</FormItem>
+								if (transaction) {
+									return addFavorite(transaction);
+								}
+							}}
+						>
+							<HeartIcon
+								color={isFavorite ? "#FF00FF" : "#FFFFFF"}
+								fill={isFavorite ? "#FF00FF" : "#FFFFFF"}
+							/>
+						</Button>
+						<Button
+							disabled={!favorites || favorites.length <= 0}
+							variant="outline"
+							type="button"
+							onClick={() => setFavoriteOpen(true)}
+						>
+							Favorites
+						</Button>
 					</div>
+					{transaction && <DeleteTransaction id={transaction.id} />}
 
-					<div className="bg-card rounded-md p-4">
-						<FormField
-							control={form.control}
-							name="status"
-							render={({ field }) => (
-								<FormItem className="flex justify-between">
-									<FormLabel>Planned Transaction</FormLabel>
-									<Switch
-										checked={field.value === "planned"}
-										onCheckedChange={(value) => {
-											field.onChange(value ? "planned" : "booked");
+					<Dialog open={favoriteOpen} onOpenChange={setFavoriteOpen}>
+						<DialogContent>
+							<DialogHeader>
+								<DialogTitle>Favorites</DialogTitle>
+							</DialogHeader>
+							{favorites?.map((item) => (
+								<div key={item.id} className="flex justify-between">
+									<div className="flex flex-col">
+										<span className={getTextColor(item.type)}>{item.description}</span>
+										<div>
+											<span style={{ color: item.category?.color ?? "" }}>
+												{item.category?.name}
+											</span>{" "}
+											in <span>{item.type}</span>
+										</div>
+									</div>
+									<Button
+										variant="outline"
+										type="button"
+										className="flex  self-center"
+										onClick={() => {
+											form.setValue("description", item.description);
+											form.setValue("type", item.type);
+											form.setValue("amount", item.amount);
+
+											if (item.category) {
+												form.setValue("categoryId", item.category.id);
+											}
+
+											autoCompleteRef.current?.setInputValue(item.description);
+											setFavoriteOpen(false);
 										}}
-									></Switch>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-
-						{isPlanned && (
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-								<FormField
-									control={form.control}
-									name="dueNotificationDays"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Due Notification Days</FormLabel>
-											<Input
-												{...field}
-												onChange={(event) => field.onChange(Number(event.target.value))}
-												type="number"
-												inputMode="numeric"
-												value={field.value ?? ""}
-											/>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-
-								<FormField
-									control={form.control}
-									name="webhookId"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Notification Webhook</FormLabel>
-											<Select {...field} value={field.value ?? ""}>
-												<FormControl>
-													<SelectTrigger>
-														<SelectValue placeholder="Select notification webhook" />
-													</SelectTrigger>
-												</FormControl>
-												<SelectContent>
-													{webhooks?.map((webhook) => {
-														return (
-															<SelectItem key={webhook.id} value={webhook.id}>
-																{webhook.name}
-															</SelectItem>
-														);
-													})}
-												</SelectContent>
-											</Select>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-							</div>
+									>
+										Apply
+									</Button>
+								</div>
+							))}
+						</DialogContent>
+					</Dialog>
+				</div>
+				<div className=" grid grid-cols-1 md:grid-cols-2 gap-5 bg-card p-4">
+					<FormField
+						control={form.control}
+						name="description"
+						render={() => (
+							<FormItem className="col-span-2">
+								<FormLabel>Description</FormLabel>
+								<FormControl>
+									<AutoComplete
+										ref={autoCompleteRef}
+										value={autoSuggests?.find((autoSuggest) => {
+											return (
+												autoSuggest.type === transaction?.type &&
+												autoSuggest.description === transaction?.description &&
+												autoSuggest.category === transaction?.category.id
+											);
+										})}
+										placeholder="Enter or choose description"
+										onValueChange={(e: typeof transactionAutoSuggest.$inferSelect) => {
+											form.setValue("description", e.description ?? "", {
+												shouldValidate: true,
+											});
+											if (e.type) {
+												form.setValue("type", e.type);
+											}
+											if (e.category) {
+												form.setValue("categoryId", e.category);
+											}
+										}}
+										options={autoSuggests ?? []}
+									/>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
 						)}
-					</div>
+					/>
 
-					<Button
-						type="submit"
-						className="w-full"
-						disabled={form.formState.isSubmitting || !form.formState.isValid}
-					>
-						{form.formState.isSubmitting ? <Spinner /> : transaction ? "Save" : "Add Transaction"}
-					</Button>
-				</form>
-			</Form>
-		</div>
+					<FormField
+						control={form.control}
+						name="amount"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Amount</FormLabel>
+								<FormControl>
+									<AmountInput value={field.value} onChange={field.onChange} />
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
+					<FormField
+						control={form.control}
+						name="type"
+						defaultValue="expense"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Type</FormLabel>
+								<Select value={typeValue} onValueChange={field.onChange} defaultValue={field.value}>
+									<FormControl>
+										<SelectTrigger>
+											<SelectValue />
+										</SelectTrigger>
+									</FormControl>
+									<SelectContent>
+										<TransactionSelectItems />
+									</SelectContent>
+								</Select>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
+					<FormField
+						control={form.control}
+						name="categoryId"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Category</FormLabel>
+								<Select onValueChange={field.onChange} value={categoryValue}>
+									<FormControl>
+										<SelectTrigger>
+											<SelectValue placeholder="Select category" />
+										</SelectTrigger>
+									</FormControl>
+									<SelectContent>
+										{allCategories?.map((category) => (
+											<SelectItem key={category.id} value={category.id}>
+												<CategoryNameColor name={category.name} color={category.color} />
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
+					<FormField
+						control={form.control}
+						name="costType"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Cost Type</FormLabel>
+								<Select onValueChange={field.onChange} value={costTypeValue}>
+									<FormControl>
+										<SelectTrigger>
+											<SelectValue placeholder="Select cost type" />
+										</SelectTrigger>
+									</FormControl>
+									<SelectContent>
+										<SelectItem value="fixed">Fixed</SelectItem>
+										<SelectItem value="variable">Variable</SelectItem>
+									</SelectContent>
+								</Select>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
+					<FormField
+						control={form.control}
+						name="datetime"
+						render={({ field }) => (
+							<FormItem className="flex flex-col">
+								<FormLabel>Date</FormLabel>
+								<Popover>
+									<PopoverTrigger asChild>
+										<FormControl>
+											<Button
+												variant="outline"
+												className={cn(
+													"w-full font-normal bg-transparent h-9",
+													!field.value && "foreground",
+												)}
+											>
+												{field.value ? (
+													format(parseISO(field.value), "PPP")
+												) : (
+													<span>Pick a date</span>
+												)}
+												<CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+											</Button>
+										</FormControl>
+									</PopoverTrigger>
+									<PopoverContent className="w-auto p-0" align="start">
+										<Calendar
+											weekStartsOn={1}
+											mode="single"
+											selected={parseISO(field.value)}
+											onSelect={(date) => {
+												if (date) {
+													field.onChange(format(date, DB_DATE_FORMAT));
+												}
+											}}
+											disabled={(date) => date < new Date("2000-01-01")}
+											required
+										/>
+									</PopoverContent>
+								</Popover>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
+					<FormItem className="flex flex-col">
+						<FormLabel>&nbsp;</FormLabel>
+						<Button
+							className="bg-transparent"
+							type="button"
+							onClick={() =>
+								form.setValue("datetime", format(startOfYesterday(), DB_DATE_FORMAT), {
+									shouldValidate: true,
+								})
+							}
+							variant="outline"
+						>
+							Yesterday
+						</Button>
+					</FormItem>
+				</div>
+
+				<div className="bg-card rounded-md p-4">
+					<FormField
+						control={form.control}
+						name="status"
+						render={({ field }) => (
+							<FormItem className="flex justify-between">
+								<FormLabel>Planned Transaction</FormLabel>
+								<Switch
+									checked={field.value === "planned"}
+									onCheckedChange={(value) => {
+										field.onChange(value ? "planned" : "booked");
+									}}
+								></Switch>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
+					{isPlanned && (
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+							<FormField
+								control={form.control}
+								name="dueNotificationDays"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Due Notification Days</FormLabel>
+										<Input
+											{...field}
+											onChange={(event) => field.onChange(Number(event.target.value))}
+											type="number"
+											inputMode="numeric"
+											value={field.value ?? ""}
+										/>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+
+							<FormField
+								control={form.control}
+								name="webhookId"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Notification Webhook</FormLabel>
+										<Select {...field} value={field.value ?? ""}>
+											<FormControl>
+												<SelectTrigger>
+													<SelectValue placeholder="Select notification webhook" />
+												</SelectTrigger>
+											</FormControl>
+											<SelectContent>
+												{webhooks?.map((webhook) => {
+													return (
+														<SelectItem key={webhook.id} value={webhook.id}>
+															{webhook.name}
+														</SelectItem>
+													);
+												})}
+											</SelectContent>
+										</Select>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						</div>
+					)}
+				</div>
+
+				<Button
+					type="submit"
+					className="w-full"
+					disabled={form.formState.isSubmitting || !form.formState.isValid}
+				>
+					{form.formState.isSubmitting ? <Spinner /> : transaction ? "Save" : "Add Transaction"}
+				</Button>
+			</form>
+		</Form>
 	);
 };
 
