@@ -1,4 +1,4 @@
-import { endOfMonth, endOfYear, format, startOfMonth, startOfYear } from "date-fns";
+import { endOfMonth, endOfYear, format, max, min, startOfMonth, startOfYear } from "date-fns";
 import { and, eq, gte, inArray, lte } from "drizzle-orm";
 import Link from "next/link";
 import { dbTransaction } from "@/drizzle/client";
@@ -72,8 +72,9 @@ export async function BudgetList({
 	const categoryIds = Array.from(new Set(activeBudgets.map((b) => b.categoryId)));
 
 	const periods = activeBudgets.map((b) => getBudgetDateRange(b, { year, month }));
-	const widestStart = periods.reduce((min, p) => (p.start < min ? p.start : min), periods[0].start);
-	const widestEnd = periods.reduce((max, p) => (p.end > max ? p.end : max), periods[0].end);
+
+	const widestStart = format(min(periods.map((p) => p.start)), DB_DATE_FORMAT);
+	const widestEnd = format(max(periods.map((p) => p.end)), DB_DATE_FORMAT);
 
 	const candidateTransactions = await dbTransaction((tx) => {
 		return tx

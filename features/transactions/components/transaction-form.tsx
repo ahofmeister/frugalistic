@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format, parseISO, startOfYesterday } from "date-fns";
 import { HeartIcon } from "lucide-react";
+import Link from "next/link";
 import { useRef, useState } from "react";
 import { type DefaultValues, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -89,16 +90,21 @@ const TransactionForm = ({
 	const costTypeValue = form.watch("costType");
 
 	async function handleSubmit(values: TransactionFormValues) {
-		const { error } = await upsertTransaction({
-			...values,
-			id: transaction?.id,
-		});
+		const result = await upsertTransaction(values);
 
-		if (error) {
-			console.error(error);
+		if (!result.success) {
+			console.error(result.error);
 			toast.error(`Failed to ${transaction ? "save" : "create"} transaction`);
 		} else if (!transaction) {
-			toast.success("Transaction created successfully!");
+			const href = `/transactions/edit/${result.data.id}`;
+			toast.success(
+				<span>
+					Transaction created successfully!{" "}
+					<Link href={href} className="underline underline-offset-2">
+						View transaction
+					</Link>
+				</span>,
+			);
 			resetForm();
 		} else {
 			toast.success("Transaction saved successfully");

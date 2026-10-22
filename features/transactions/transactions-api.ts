@@ -10,28 +10,28 @@ import { transactionsRecurring } from "@/drizzle/schema/transaction-recurring-sc
 import { transactions } from "@/drizzle/schema/transaction-schema";
 import { getActiveAccountId } from "@/features/account/account-actions";
 
-export async function upsertTransaction(newTransaction: typeof transactions.$inferInsert) {
+export async function upsertTransaction(transaction: typeof transactions.$inferInsert) {
 	try {
-		await dbTransaction(async (tx) => {
-			if (newTransaction.id) {
-				await tx
+		const data = await dbTransaction(async (tx) => {
+			if (transaction.id) {
+				const [updated] = await tx
 					.update(transactions)
-					.set(newTransaction)
-					.where(eq(transactions.id, newTransaction.id));
-			} else {
-				await tx.insert(transactions).values(newTransaction);
+					.set(transaction)
+					.where(eq(transactions.id, transaction.id))
+					.returning();
+				return updated;
 			}
 
-			return { success: true };
+			const [created] = await tx.insert(transactions).values(transaction).returning();
+			return created;
 		});
 
 		revalidatePath("/");
-		return { error: null, success: true };
+		return { data, error: null, success: true as const };
 	} catch (error) {
-		return { error, success: false };
+		return { data: null, error, success: false as const };
 	}
 }
-
 export async function insertTransaction(newTransaction: typeof transactions.$inferInsert) {
 	await dbTransaction((tx) => {
 		return tx.insert(transactions).values(newTransaction);
