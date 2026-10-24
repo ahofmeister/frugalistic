@@ -39,7 +39,7 @@ const DeleteTransaction = (props: { id: string }) => {
 
 	return (
 		<>
-			<Button variant="destructive" onClick={() => setIsDialogOpen(true)}>
+			<Button type="button" variant="destructive" onClick={() => setIsDialogOpen(true)}>
 				<TrashIcon />
 				Delete
 			</Button>
