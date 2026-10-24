@@ -90,7 +90,10 @@ const TransactionForm = ({
 	const costTypeValue = form.watch("costType");
 
 	async function handleSubmit(values: TransactionFormValues) {
-		const result = await upsertTransaction(values);
+		const result = await upsertTransaction({
+			...values,
+			id: transaction?.id,
+		});
 
 		if (!result.success) {
 			console.error(result.error);
