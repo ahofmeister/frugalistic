@@ -36,7 +36,8 @@ const WebhookForm = ({ webhook }: { webhook?: typeof webhookSchema.$inferSelect 
 			description: webhook?.description ?? undefined,
 			httpMethod: webhook?.httpMethod ?? "POST",
 			active: webhook?.active ?? true,
-			eventType: webhook?.eventType,
+			eventType:
+				(webhook?.eventType ?? webhookEventTypes.length === 1) ? webhookEventTypes[0] : undefined,
 			headers: webhook?.headers ?? [],
 		},
 		mode: "onChange",
