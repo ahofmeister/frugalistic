@@ -164,30 +164,33 @@ type EventTypeFactories = {
 	TRANSACTION_DUE: () => TransactionTestData;
 };
 
-const amount = randomInt(100, 5000);
 type TransactionTestData = typeof transactions.$inferInsert & {
 	formattedAmount: string;
 };
 
-const eventTypesTestData: EventTypeFactories = {
-	TRANSACTION_DUE: () => ({
-		id: uuid(),
-		createdAt: new Date().toISOString(),
-		updatedAt: new Date().toISOString(),
-		datetime: new Date().toISOString(),
-		accountId: uuid(),
-		userId: uuid(),
-		amount: amount,
-		formattedAmount: formatAmount(amount),
-		description: generateRandomString(),
-		categoryId: uuid(),
-		type: randomElement(transactionTypes),
-		costType: randomElement(costTypes),
-		status: randomElement(transactionStatuses),
-		importedAt: new Date().toISOString(),
-		recurringTransactionId: uuid(),
-		externalId: uuid(),
-		dueNotificationDays: randomInt(0, 365),
-		webhookId: uuid(),
-	}),
-};
+const eventTypesTestData = {
+	TRANSACTION_DUE: (): TransactionTestData => {
+		const amount = randomInt(100, 5000);
+
+		return {
+			id: uuid(),
+			createdAt: new Date().toISOString(),
+			updatedAt: new Date().toISOString(),
+			datetime: new Date().toISOString(),
+			accountId: uuid(),
+			userId: uuid(),
+			amount,
+			formattedAmount: formatAmount(amount),
+			description: generateRandomString(),
+			categoryId: uuid(),
+			type: randomElement(transactionTypes),
+			costType: randomElement(costTypes),
+			status: randomElement(transactionStatuses),
+			importedAt: new Date().toISOString(),
+			recurringTransactionId: uuid(),
+			externalId: uuid(),
+			dueNotificationDays: randomInt(0, 365),
+			webhookId: uuid(),
+		};
+	},
+} satisfies EventTypeFactories;
