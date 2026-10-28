@@ -67,9 +67,9 @@ export const defaultAmountFormat = "#.###,##";
 export const amountFormatPresets = [
 	{ pattern: "#.##", description: "No thousands separator, point for decimals" },
 	{ pattern: "#.###,##", description: "Point for thousands, comma for decimals" },
-	{ pattern: "$#,###.##", description: "Comma for thousands, point for decimals, dollar before" },
 	{ pattern: "#.###,## €", description: "Point for thousands, comma for decimals, euro after" },
 	{ pattern: "#,###.## €", description: "Comma for thousands, point for decimals, euro after" },
+	{ pattern: "$#,###.##", description: "Comma for thousands, point for decimals, dollar before" },
 	{ pattern: "€ #,###.##", description: "Comma for thousands, point for decimals, euro before" },
 	{ pattern: "# ###,## €", description: "Space for thousands, comma for decimals, euro after" },
 	{ pattern: "#'###.## CHF", description: "Apostrophe for thousands, point for decimals" },
