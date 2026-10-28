@@ -6,7 +6,6 @@ import {
 	amountFormatPresets,
 	defaultAmountFormat,
 	formatAmount,
-	isPresetAmountFormat,
 	isValidAmountFormat,
 } from "@/features/transactions/amount-parser";
 import { Button } from "@/features/ui/button";
