@@ -3,7 +3,8 @@ import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
 import type React from "react";
-
+import { Suspense } from "react";
+import SettingsLoader from "@/app/(dashboard)/settings/settings-loadter";
 import { Toaster } from "@/features/ui/sonner";
 
 const poppinsFont = Poppins({
@@ -39,7 +40,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 	return (
 		<html lang="en" className={`dark ${poppinsFont.className}`}>
 			<body>
-				{children}
+				<Suspense>
+					<SettingsLoader>{children}</SettingsLoader>
+				</Suspense>
 				<Toaster richColors />
 			</body>
 		</html>

@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import { Bar, BarChart, LabelList, XAxis, YAxis } from "recharts";
 import type { Props } from "recharts/types/component/DefaultLegendContent";
 import type { categories, transactions } from "@/drizzle/schema";
-import TransactionAmount from "@/features/transactions/components/transaction-amount";
+import DisplayAmount from "@/features/transactions/components/display-amount";
 import {
 	ChartContainer,
 	ChartLegend,
@@ -117,7 +117,7 @@ const TransactionCategoryDistributionChart = ({
 									<div className="flex min-w-[130px] items-center text-xs text-muted-foreground">
 										<span>{name}</span>
 										<div className="ml-auto flex items-baseline gap-0.5 font-mono font-medium tabular-nums text-foreground">
-											<TransactionAmount amount={Number(value) * 100} />
+											<DisplayAmount amount={Number(value) * 100} />
 										</div>
 									</div>
 								)}

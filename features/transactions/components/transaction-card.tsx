@@ -7,7 +7,7 @@ import type { settingSchema, TransactionWithRecurringCategory } from "@/drizzle/
 import BookTransactionButton from "@/features/transactions/components/book-transaction-button";
 import CategoryNameColor from "@/features/transactions/components/category-name-color";
 import DeclinePlannedTransactionButton from "@/features/transactions/components/decline-planned-transaction-button";
-import TransactionAmount from "@/features/transactions/components/transaction-amount";
+import DisplayAmount from "@/features/transactions/components/display-amount";
 import { Badge } from "@/features/ui/badge";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/features/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/features/ui/tooltip";
@@ -98,7 +98,7 @@ export function TransactionCard({
 							{isPlanned && <BookTransactionButton transactionId={transaction.id} />}
 							{isPlanned && <DeclinePlannedTransactionButton transactionId={transaction.id} />}
 						</div>
-						<TransactionAmount amount={transaction.amount} type={transaction.type} />
+						<DisplayAmount amount={transaction.amount} type={transaction.type} />
 					</CardTitle>
 
 					<CardDescription className="flex justify-between">

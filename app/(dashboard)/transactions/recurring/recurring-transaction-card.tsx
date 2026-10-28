@@ -3,7 +3,7 @@ import Link from "next/link";
 import FormattedDate from "@/app/(dashboard)/dashboard/formatted-date";
 import type { categories, transactionsRecurring } from "@/drizzle/schema";
 import CategoryNameColor from "@/features/transactions/components/category-name-color";
-import TransactionAmount from "@/features/transactions/components/transaction-amount";
+import DisplayAmount from "@/features/transactions/components/display-amount";
 import { Badge } from "@/features/ui/badge";
 import {
 	Card,
@@ -32,7 +32,7 @@ const RecurringTransactionCard = ({
 					<CardTitle className="flex justify-between">
 						<div>{transaction.description}</div>
 						<div>
-							<TransactionAmount amount={transaction.amount} type={transaction.type} />
+							<DisplayAmount amount={transaction.amount} type={transaction.type} />
 						</div>
 					</CardTitle>
 					<CardDescription className="flex justify-between">

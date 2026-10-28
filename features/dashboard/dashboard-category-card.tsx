@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import type { Period } from "@/features/dashboard/period-selector";
-import { formatAmount } from "@/features/transactions/components/transaction-amount";
+import DisplayAmount from "@/features/transactions/components/display-amount";
 import { Card, CardContent, CardHeader, CardTitle } from "@/features/ui/card";
 import { getDateRange } from "@/lib/utils";
 
@@ -34,7 +34,9 @@ export function DashboardCategoryCard({
 				</CardHeader>
 				<CardContent className="flex flex-col gap-y-2">
 					<div className="flex gap-x-1 items-center">
-						<div className="text-lg">{formatAmount(amount)}</div>
+						<div className="text-lg">
+							<DisplayAmount amount={amount} />
+						</div>
 					</div>
 					<span className="text-sm text-gray-400">
 						{`${((amount / total) * 100).toFixed(2)}% of expenses`}

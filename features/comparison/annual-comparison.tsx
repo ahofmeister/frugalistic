@@ -1,6 +1,6 @@
 import { TotalsRows } from "@/features/comparison/comparison-total-rows";
 import CategoryNameColor from "@/features/transactions/components/category-name-color";
-import TransactionAmount from "@/features/transactions/components/transaction-amount";
+import DisplayAmount from "@/features/transactions/components/display-amount";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/features/ui/table";
 import { buildComparisonTable, getRawTransactionsAndCategories } from "./comparison-data";
 
@@ -51,7 +51,7 @@ export default async function AnnualComparison() {
 							</TableCell>
 							{category.amounts.map((amount, idx) => (
 								<TableCell key={idx} className="border border-border p-3 text-right">
-									<TransactionAmount amount={amount} type="expense" />
+									<DisplayAmount amount={amount} type="expense" />
 								</TableCell>
 							))}
 						</TableRow>

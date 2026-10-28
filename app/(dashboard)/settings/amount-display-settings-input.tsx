@@ -21,7 +21,7 @@ import { Label } from "@/features/ui/label";
 import { Spinner } from "@/features/ui/spinner";
 
 const sampleAmount = 123456;
-const customExamples = ["#,##", "#.##", "0,00", "$#.##", "#,# €"];
+const customExamples = ["#.###,##", "#,###.##", "# ###,## €", "#'###.## CHF", "#,##"];
 
 export function AmountDisplaySettingsInput({
 	initialDisplayAmount,
@@ -34,7 +34,10 @@ export function AmountDisplaySettingsInput({
 	const [isPending, startTransition] = useTransition();
 
 	const nextFormat = draft || defaultAmountFormat;
-	const error = draft && !isValidAmountFormat(draft) ? "Use # for the number, e.g. #,## €" : null;
+	const error =
+		draft && !isValidAmountFormat(draft)
+			? "Use # for the number and different separators, e.g. #.###,## €"
+			: null;
 
 	const handleOpenChange = (value: boolean) => {
 		setOpen(value);
@@ -108,8 +111,10 @@ export function AmountDisplaySettingsInput({
 						</div>
 						<div className="space-y-1 text-xs text-muted-foreground">
 							<div>
-								Type # where the amount goes and ## for the decimals. You can add a symbol before or
-								after, like € or $. Use 0 instead of # to hide the thousands separator.
+								# is the number. Pattern: <span className="font-mono">#x###y##</span>, where x is
+								the thousands separator and y is the decimal separator. Both can be any character.
+								Leave out x### for no thousands separator. You can add a symbol before or after,
+								like € or $.
 							</div>
 							{customExamples.map((example) => (
 								<div key={example}>

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { AverageAmount } from "@/app/(dashboard)/insights/average-amount";
 import type { TransactionType } from "@/drizzle/schema";
 import { getTextColor } from "@/features/transactions/colors";
-import TransactionAmount from "@/features/transactions/components/transaction-amount";
+import DisplayAmount from "@/features/transactions/components/display-amount";
 import { getYearBoundaries } from "@/features/transactions/dates";
 import {
 	Card,
@@ -62,12 +62,12 @@ function InsightsTotalCard(props: {
 			>
 				<CardHeader>
 					<CardTitle className={getTextColor(type)}>{capitalize(type as string)}</CardTitle>
-					<TransactionAmount className="text-2xl" amount={currentYearTotal} type={type} />
+					<DisplayAmount className="text-2xl" amount={currentYearTotal} type={type} />
 					{previousYearTotal && previousYearTotal > 0 && (
 						<CardDescription>
 							<span className="flex gap-x-2">
 								Previous:
-								<TransactionAmount amount={previousYearTotal} type={type} />
+								<DisplayAmount amount={previousYearTotal} type={type} />
 							</span>
 						</CardDescription>
 					)}

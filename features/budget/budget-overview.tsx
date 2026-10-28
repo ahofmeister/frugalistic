@@ -7,7 +7,7 @@ import { findBudgetById, findBudgetTransactions } from "@/features/budget/budget
 import { getBudgetDateRange } from "@/features/budget/budget-helper";
 import DeleteBudget from "@/features/budget/delete-budget";
 import { getTextColor } from "@/features/transactions/colors";
-import { formatAmount } from "@/features/transactions/components/transaction-amount";
+import DisplayAmount from "@/features/transactions/components/display-amount";
 import { capitalize } from "@/lib/utils";
 
 const typeLabels = {
@@ -92,7 +92,6 @@ export async function BudgetOverview({ budgetId }: { budgetId: Promise<string> }
 					{budget && <DeleteBudget id={budget.id} />}
 				</div>
 			</header>
-
 			<section className="flex flex-col gap-5 rounded-xl bg-card p-5">
 				<div className="flex flex-col gap-2">
 					<div
@@ -124,7 +123,9 @@ export async function BudgetOverview({ budgetId }: { budgetId: Promise<string> }
 				<dl className="flex flex-col gap-3 tabular-nums">
 					<div className="flex items-center justify-between">
 						<dt className="text-muted-foreground">Goal</dt>
-						<dd>{formatAmount(budget.amount)}</dd>
+						<dd>
+							<DisplayAmount amount={budget.amount} />
+						</dd>
 					</div>
 
 					<div className="flex items-center justify-between">
@@ -135,7 +136,9 @@ export async function BudgetOverview({ budgetId }: { budgetId: Promise<string> }
 							/>
 							<span className={getTextColor(budget.flow)}>{capitalize(budget.flow)} booked</span>
 						</dt>
-						<dd className={getTextColor(budget.flow)}>{formatAmount(Math.max(0, bookedUsed))}</dd>
+						<dd className={getTextColor(budget.flow)}>
+							<DisplayAmount amount={Math.max(0, bookedUsed)} />
+						</dd>
 					</div>
 
 					{plannedUsed !== 0 && (
@@ -148,8 +151,7 @@ export async function BudgetOverview({ budgetId }: { budgetId: Promise<string> }
 								<span className={getTextColor(budget.flow)}>Planned</span>
 							</dt>
 							<dd className={getTextColor(budget.flow)}>
-								{plannedUsed < 0 ? "−" : ""}
-								{formatAmount(Math.abs(plannedUsed))}
+								<DisplayAmount amount={plannedUsed} />
 							</dd>
 						</div>
 					)}
@@ -157,7 +159,7 @@ export async function BudgetOverview({ budgetId }: { budgetId: Promise<string> }
 					<div className="flex items-center justify-between border-t border-border pt-3">
 						<dt className="font-medium">{isOver ? "Over budget" : "Left"}</dt>
 						<dd className={`text-xl font-medium ${isOver ? "text-red-400" : ""}`}>
-							{formatAmount(Math.abs(remaining))}
+							<DisplayAmount amount={remaining} />
 						</dd>
 					</div>
 				</dl>

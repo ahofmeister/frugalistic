@@ -7,7 +7,7 @@ import type {
 	TransactionTypeWithLeftover,
 	transactions,
 } from "@/drizzle/schema/transaction-schema";
-import TransactionAmount from "@/features/transactions/components/transaction-amount";
+import DisplayAmount from "@/features/transactions/components/display-amount";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/features/ui/chart";
 import { ToggleGroup, ToggleGroupItem } from "@/features/ui/toggle-group";
 import { capitalize, shortAmount } from "@/lib/utils";
@@ -77,7 +77,7 @@ export function TransactionsChart(props: { transactions: (typeof transactions.$i
 										<div className="flex min-w-[130px] items-center text-xs text-muted-foreground">
 											<span>{name}</span>
 											<div className="ml-auto flex items-baseline gap-0.5 font-mono font-medium tabular-nums text-foreground">
-												<TransactionAmount amount={Number(value) * 100} />
+												<DisplayAmount amount={Number(value) * 100} />
 											</div>
 										</div>
 									)}
