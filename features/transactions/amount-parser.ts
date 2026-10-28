@@ -61,3 +61,58 @@ export const getDecimalIndex = (cleaned: string): number => {
 
 	return lastSeparator;
 };
+
+export const defaultAmountFormat = "#,##";
+
+export const amountFormatPresets = [
+	{ pattern: "#,## €", description: "Comma for decimals, euro after the amount" },
+	{ pattern: "#.## €", description: "Point for decimals, euro after the amount" },
+	{ pattern: "€ #.##", description: "Point for decimals, euro before the amount" },
+	{ pattern: "$#.##", description: "Point for decimals, dollar before the amount" },
+	{ pattern: "#,##", description: "Comma for decimals, point for thousands" },
+	{ pattern: "#.##", description: "Point for decimals, comma for thousands" },
+	{ pattern: "0,00", description: "Comma for decimals, no thousands separator" },
+	{ pattern: "0.00", description: "Point for decimals, no thousands separator" },
+	{ pattern: "#,#", description: "One decimal, rounded" },
+	{ pattern: "#", description: "No decimals, rounded" },
+];
+
+const patternRegex = /([#0]+)(?:([^#0\d])([#0]+))?/;
+
+export function isValidAmountFormat(pattern: string) {
+	return patternRegex.test(pattern);
+}
+
+function thousandsSeparatorFor(decimalSeparator: string) {
+	if (decimalSeparator === ",") {
+		return ".";
+	}
+	if (decimalSeparator === ".") {
+		return ",";
+	}
+	return " ";
+}
+
+export function formatAmount(amount: number, pattern: string = defaultAmountFormat) {
+	const validPattern = isValidAmountFormat(pattern) ? pattern : defaultAmountFormat;
+	const [, placeholder, decimalSeparator = "", decimalPlaceholder = ""] = patternRegex.exec(
+		validPattern,
+	) as RegExpExecArray;
+
+	const decimals = decimalPlaceholder.length;
+	const thousands = placeholder.startsWith("#") ? thousandsSeparatorFor(decimalSeparator) : "";
+
+	const step = 10 ** Math.max(2 - decimals, 0);
+	const rounded = Math.round(Math.abs(amount) / step) * step;
+
+	const whole = String(Math.floor(rounded / 100)).replace(/\B(?=(\d{3})+(?!\d))/g, thousands);
+	const fraction = String(rounded % 100)
+		.padStart(2, "0")
+		.padEnd(decimals, "0")
+		.slice(0, decimals);
+
+	const number = decimals > 0 ? `${whole}${decimalSeparator}${fraction}` : whole;
+	const text = validPattern.replace(patternRegex, () => number);
+
+	return amount < 0 && rounded > 0 ? `-${text}` : text;
+}
