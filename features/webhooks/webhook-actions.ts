@@ -4,6 +4,7 @@ import { formatISO } from "date-fns";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { v4 as uuid } from "uuid";
+import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
 import { db, dbTransaction } from "@/drizzle/client";
 import {
 	costTypes,
@@ -155,13 +156,18 @@ export async function sendWebhook(
 }
 
 export async function testWebhook(webhook: typeof webhookSchema.$inferSelect) {
-	const accountId = await getActiveAccountId();
+	const [accountId, settings] = await Promise.all([getActiveAccountId(), getSettings()]);
 
-	return sendWebhook(webhook, eventTypesTestData[webhook.eventType](), accountId, true);
+	return sendWebhook(
+		webhook,
+		eventTypesTestData[webhook.eventType](settings.transactionDisplayAmount),
+		accountId,
+		true,
+	);
 }
 
 type EventTypeFactories = {
-	TRANSACTION_DUE: () => TransactionTestData;
+	TRANSACTION_DUE: (amountPattern: string) => TransactionTestData;
 };
 
 type TransactionTestData = typeof transactions.$inferInsert & {
@@ -169,7 +175,7 @@ type TransactionTestData = typeof transactions.$inferInsert & {
 };
 
 const eventTypesTestData = {
-	TRANSACTION_DUE: (): TransactionTestData => {
+	TRANSACTION_DUE: (pattern: string): TransactionTestData => {
 		const amount = randomInt(100, 5000);
 
 		return {
@@ -180,7 +186,7 @@ const eventTypesTestData = {
 			accountId: uuid(),
 			userId: uuid(),
 			amount,
-			formattedAmount: formatAmount(amount),
+			formattedAmount: formatAmount(amount, pattern),
 			description: generateRandomString(),
 			categoryId: uuid(),
 			type: randomElement(transactionTypes),
