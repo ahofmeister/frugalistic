@@ -1,3 +1,4 @@
+import { randomInt } from "node:crypto";
 import { type ClassValue, clsx } from "clsx";
 import { endOfMonth, endOfYear, format as formatDate, startOfMonth, startOfYear } from "date-fns";
 import { redirect } from "next/navigation";
@@ -74,4 +75,8 @@ export function generateRandomString(min = 2, max = 35) {
 	return Math.random()
 		.toString(36)
 		.substring(2, min + max);
+}
+
+export function randomElement<T>(values: readonly T[]): T {
+	return values[randomInt(0, values.length - 1)];
 }

@@ -62,46 +62,70 @@ export const getDecimalIndex = (cleaned: string): number => {
 	return lastSeparator;
 };
 
-export const defaultAmountFormat = "#,##";
+export const defaultAmountFormat = "#.###,## €";
 
 export const amountFormatPresets = [
-	{ pattern: "#,## €", description: "Comma for decimals, euro after the amount" },
-	{ pattern: "#.## €", description: "Point for decimals, euro after the amount" },
-	{ pattern: "€ #.##", description: "Point for decimals, euro before the amount" },
-	{ pattern: "$#.##", description: "Point for decimals, dollar before the amount" },
-	{ pattern: "#,##", description: "Comma for decimals, point for thousands" },
-	{ pattern: "#.##", description: "Point for decimals, comma for thousands" },
-	{ pattern: "0,00", description: "Comma for decimals, no thousands separator" },
-	{ pattern: "0.00", description: "Point for decimals, no thousands separator" },
-	{ pattern: "#,#", description: "One decimal, rounded" },
-	{ pattern: "#", description: "No decimals, rounded" },
+	{ pattern: "#.###,## €", description: "Point for thousands, comma for decimals, euro after" },
+	{ pattern: "#,###.## €", description: "Comma for thousands, point for decimals, euro after" },
+	{ pattern: "€ #,###.##", description: "Comma for thousands, point for decimals, euro before" },
+	{ pattern: "$#,###.##", description: "Comma for thousands, point for decimals, dollar before" },
+	{ pattern: "# ###,## €", description: "Space for thousands, comma for decimals, euro after" },
+	{ pattern: "#'###.## CHF", description: "Apostrophe for thousands, point for decimals" },
+	{ pattern: "#,## €", description: "Comma for decimals, no thousands separator" },
+	{ pattern: "#.##", description: "Point for decimals, no thousands separator" },
+	{ pattern: "#,#", description: "One decimal, rounded, no thousands separator" },
+	{ pattern: "#", description: "No decimals, rounded, no thousands separator" },
 ];
 
-const patternRegex = /([#0]+)(?:([^#0\d])([#0]+))?/;
+export function isPresetAmountFormat(pattern: string) {
+	return amountFormatPresets.some((preset) => preset.pattern === pattern);
+}
+
+export const thousandsOptions = [
+	{ value: "point", label: "Point (1.234)", separator: "." },
+	{ value: "comma", label: "Comma (1,234)", separator: "," },
+	{ value: "space", label: "Space (1 234)", separator: " " },
+	{ value: "apostrophe", label: "Apostrophe (1'234)", separator: "'" },
+	{ value: "none", label: "None (1234)", separator: "" },
+];
+
+const patternRegex = /(?:#([^#\d])###|#+)(?:([^#\d])(#+))?/;
 
 export function isValidAmountFormat(pattern: string) {
 	return patternRegex.test(pattern);
 }
 
-function thousandsSeparatorFor(decimalSeparator: string) {
-	if (decimalSeparator === ",") {
-		return ".";
+export function getDecimalSeparator(pattern: string) {
+	return patternRegex.exec(pattern)?.[2] ?? "";
+}
+
+export function getThousandsOption(pattern: string) {
+	const match = patternRegex.exec(pattern);
+	if (!match) {
+		return "none";
 	}
-	if (decimalSeparator === ".") {
-		return ",";
+	const separator = match[1] ?? "";
+	return thousandsOptions.find((option) => option.separator === separator)?.value ?? "";
+}
+
+export function setThousandsOption(pattern: string, value: string) {
+	const match = patternRegex.exec(pattern);
+	if (!match) {
+		return pattern;
 	}
-	return " ";
+	const separator = thousandsOptions.find((option) => option.value === value)?.separator ?? "";
+	const number = separator ? `#${separator}###` : "#";
+	const decimals = match[2] ? `${match[2]}${match[3]}` : "";
+	return pattern.replace(patternRegex, () => `${number}${decimals}`);
 }
 
 export function formatAmount(amount: number, pattern: string = defaultAmountFormat) {
 	const validPattern = isValidAmountFormat(pattern) ? pattern : defaultAmountFormat;
-	const [, placeholder, decimalSeparator = "", decimalPlaceholder = ""] = patternRegex.exec(
+	const [, thousands = "", decimalSeparator = "", decimalPlaceholder = ""] = patternRegex.exec(
 		validPattern,
 	) as RegExpExecArray;
 
 	const decimals = decimalPlaceholder.length;
-	const thousands = placeholder.startsWith("#") ? thousandsSeparatorFor(decimalSeparator) : "";
-
 	const step = 10 ** Math.max(2 - decimals, 0);
 	const rounded = Math.round(Math.abs(amount) / step) * step;
 

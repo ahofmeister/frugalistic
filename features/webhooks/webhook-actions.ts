@@ -5,10 +5,18 @@ import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { v4 as uuid } from "uuid";
 import { db, dbTransaction } from "@/drizzle/client";
-import { type transactions, webhookEventSchema, webhookSchema } from "@/drizzle/schema";
+import {
+	costTypes,
+	transactionStatuses,
+	type transactions,
+	transactionTypes,
+	webhookEventSchema,
+	webhookSchema,
+} from "@/drizzle/schema";
 import { getActiveAccountId } from "@/features/account/account-actions";
 import type { ActionResult } from "@/features/errors/error-types";
-import { generateRandomString } from "@/lib/utils";
+import { formatAmount } from "@/features/transactions/amount-parser";
+import { generateRandomString, randomElement } from "@/lib/utils";
 
 export async function getActiveWebhooks() {
 	const activeAccountId = await getActiveAccountId();
@@ -149,31 +157,37 @@ export async function sendWebhook(
 export async function testWebhook(webhook: typeof webhookSchema.$inferSelect) {
 	const accountId = await getActiveAccountId();
 
-	return sendWebhook(webhook, eventTypesTestData.TRANSACTION_DUE, accountId, true);
+	return sendWebhook(webhook, eventTypesTestData[webhook.eventType](), accountId, true);
 }
 
-type EventTypeKeys = {
-	TRANSACTION_DUE: typeof transactions.$inferSelect;
+type EventTypeFactories = {
+	TRANSACTION_DUE: () => TransactionTestData;
 };
 
-const eventTypesTestData: EventTypeKeys = {
-	TRANSACTION_DUE: {
+const amount = randomInt(100, 5000);
+type TransactionTestData = typeof transactions.$inferInsert & {
+	formattedAmount: string;
+};
+
+const eventTypesTestData: EventTypeFactories = {
+	TRANSACTION_DUE: () => ({
 		id: uuid(),
 		createdAt: new Date().toISOString(),
 		updatedAt: new Date().toISOString(),
 		datetime: new Date().toISOString(),
 		accountId: uuid(),
 		userId: uuid(),
-		amount: randomInt(100, 5000),
+		amount: amount,
+		formattedAmount: formatAmount(amount),
 		description: generateRandomString(),
 		categoryId: uuid(),
-		type: "expense",
-		costType: "variable",
-		status: "planned",
+		type: randomElement(transactionTypes),
+		costType: randomElement(costTypes),
+		status: randomElement(transactionStatuses),
 		importedAt: new Date().toISOString(),
 		recurringTransactionId: uuid(),
 		externalId: uuid(),
 		dueNotificationDays: randomInt(0, 365),
 		webhookId: uuid(),
-	},
+	}),
 };

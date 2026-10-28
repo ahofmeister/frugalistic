@@ -6,6 +6,7 @@ import {
 	amountFormatPresets,
 	defaultAmountFormat,
 	formatAmount,
+	isPresetAmountFormat,
 	isValidAmountFormat,
 } from "@/features/transactions/amount-parser";
 import { Button } from "@/features/ui/button";
@@ -21,6 +22,7 @@ import { Label } from "@/features/ui/label";
 import { Spinner } from "@/features/ui/spinner";
 
 const sampleAmount = 123456;
+const customExamples = ["#,##", "#.##", "0,00", "$#.##", "#,# €"];
 
 export function AmountDisplaySettingsInput({
 	initialDisplayAmount,
@@ -105,12 +107,18 @@ export function AmountDisplaySettingsInput({
 								`Sample: ${formatAmount(sampleAmount, nextFormat)}`
 							)}
 						</div>
-						<div className="text-xs text-muted-foreground">
-							Type # where the amount goes and ## for the decimals. You can add a symbol before or
-							after, like € or $. Use 0 instead of # to hide the thousands separator.
+						<div className="space-y-1 text-xs text-muted-foreground">
+							<div>
+								Type # where the amount goes and ## for the decimals. You can add a symbol before or
+								after, like € or $. Use 0 instead of # to hide the thousands separator.
+							</div>
+							{customExamples.map((example) => (
+								<div key={example}>
+									{example} → {formatAmount(sampleAmount, example)}
+								</div>
+							))}
 						</div>
 					</div>
-
 					<div className="flex justify-end">
 						<Button onClick={handleApply} disabled={!!error || isPending}>
 							{isPending ? <Spinner /> : "Apply"}
