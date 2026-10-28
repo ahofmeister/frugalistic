@@ -3,7 +3,7 @@ import { Star } from "lucide-react";
 import { DeleteFavoriteTransactionButton } from "@/app/(dashboard)/transactions/favorites/delete-favorite-transaction-button";
 import { FavoriteQuickAddDialog } from "@/app/(dashboard)/transactions/favorites/favorite-quick-add-dialog";
 import type { favoriteSchema } from "@/drizzle/schema";
-import TransactionAmount from "@/features/transactions/components/transaction-amount";
+import DisplayAmount from "@/features/transactions/components/display-amount";
 import { Card } from "@/features/ui/card";
 
 export function FavoriteCard({
@@ -35,7 +35,7 @@ export function FavoriteCard({
 				</div>
 
 				<div className="flex items-center gap-3 shrink-0">
-					<TransactionAmount amount={favorite.amount} type={favorite.type} />
+					<DisplayAmount amount={favorite.amount} type={favorite.type} />
 					<DeleteFavoriteTransactionButton favoriteId={favorite.id} />
 				</div>
 			</div>

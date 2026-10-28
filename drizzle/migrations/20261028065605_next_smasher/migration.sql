@@ -1,0 +1,1 @@
+ALTER TABLE "setting" ALTER COLUMN "transaction_display_amount" SET NOT NULL;

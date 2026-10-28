@@ -28,6 +28,7 @@ export const settingSchema = pgTable(
 		importDefaultCategory: uuid("import_default_category"),
 		importIndicator: text("import_indicator").$type<ImportIndicator>().default("none").notNull(),
 		dueTransactionReminderDays: integer("due_transaction_reminder_days").notNull().default(14),
+		transactionDisplayAmount: text("transaction_display_amount").default("#,##").notNull(),
 	},
 	(table) => [
 		index("setting_account_id_idx").on(table.accountId),

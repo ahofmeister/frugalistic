@@ -5,7 +5,7 @@ import { dbTransaction } from "@/drizzle/client";
 import { transactions } from "@/drizzle/schema";
 import { getActiveAccountId } from "@/features/account/account-actions";
 import { getBudgetDateRange } from "@/features/budget/budget-helper";
-import { formatAmount } from "@/features/transactions/components/transaction-amount";
+import DisplayAmount from "@/features/transactions/components/display-amount";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/features/ui/card";
 import { capitalize, DB_DATE_FORMAT } from "@/lib/utils";
 
@@ -117,7 +117,8 @@ export async function BudgetList({
 								<CardTitle className="flex justify-between">
 									<p style={{ color: budget.category?.color }}>{budget.name}</p>
 									<p>
-										{formatAmount(transactionAmount)} / {formatAmount(budget.amount)}
+										<DisplayAmount amount={transactionAmount} /> /{" "}
+										<DisplayAmount amount={budget.amount} />
 									</p>
 								</CardTitle>
 								<CardDescription style={{ color: budget.category?.color }}>

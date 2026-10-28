@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { AmountDisplaySettingsInput } from "@/app/(dashboard)/settings/amount-display-settings-input";
 import { DateFormatSettingsInput } from "@/app/(dashboard)/settings/date-format-settings-input";
 import { DueTransactionReminderDaysSettingsInput } from "@/app/(dashboard)/settings/due-transaction-reminder-days-settings-input";
 import { ImportCategorySettingsInput } from "@/app/(dashboard)/settings/import-category-settings-input";
@@ -20,6 +21,8 @@ async function SettingsLoader() {
 			<ImportIndicatorSettingsInput initialImportIndicator={settings.importIndicator} />
 
 			<DueTransactionReminderDaysSettingsInput initialDays={settings.dueTransactionReminderDays} />
+
+			<AmountDisplaySettingsInput initialDisplayAmount={settings.transactionDisplayAmount} />
 		</div>
 	);
 }

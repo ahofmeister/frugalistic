@@ -2,9 +2,7 @@
 import { useRouter } from "next/navigation";
 
 import { AverageAmount } from "@/app/(dashboard)/insights/average-amount";
-import TransactionAmount, {
-	formatAmount,
-} from "@/features/transactions/components/transaction-amount";
+import DisplayAmount from "@/features/transactions/components/display-amount";
 import { getYearBoundaries } from "@/features/transactions/dates";
 import { Card, CardFooter, CardHeader, CardTitle } from "@/features/ui/card";
 
@@ -43,8 +41,8 @@ function InsightCategoryCard({
 			<CardHeader>
 				<CardTitle>
 					<div className="text-lg">{category.name}</div>
-					<div className="flex justify-between text-xl">
-						{formatAmount(category.total)}
+					<div className="flex justify-between text-lg">
+						<DisplayAmount amount={category.total} />
 						<AverageAmount amount={category.total / months} />
 					</div>
 				</CardTitle>
@@ -53,7 +51,7 @@ function InsightCategoryCard({
 				<CardFooter className="flex flex-col text-muted-foreground items-start">
 					<span className="text-sm">{year - 1}</span>
 					<div className="flex justify-between w-full">
-						<TransactionAmount amount={previousTotal} />
+						<DisplayAmount amount={previousTotal} />
 						<AverageAmount amount={(previousTotal || 0) / 12} />
 					</div>
 				</CardFooter>

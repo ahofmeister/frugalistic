@@ -11,7 +11,7 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
-import { formatAmount } from "@/features/transactions/components/transaction-amount";
+import DisplayAmount from "@/features/transactions/components/display-amount";
 import { Card } from "@/features/ui/card";
 
 export type MonthlyCategoryRow = {
@@ -87,11 +87,13 @@ const CustomTooltip = ({
 		<Card>
 			<p className="text-muted-foreground text-xs font-semibold uppercase mb-2">{dateLabel}</p>
 			{payload
-				.filter((p) => p.value > 0)
+				.filter((payloadValue) => payloadValue.value > 0)
 				.sort((a, b) => b.value - a.value)
-				.map((p) => (
-					<div key={p.name} className="flex items-center justify-between gap-6 mb-1">
-						<span className="text-foreground text-xs font-semibold">{formatAmount(p.value)}</span>
+				.map((payloadValue) => (
+					<div key={payloadValue.name} className="flex items-center justify-between gap-6 mb-1">
+						<span className="text-foreground text-xs font-semibold">
+							<DisplayAmount amount={payloadValue.value} />
+						</span>
 					</div>
 				))}
 		</Card>
@@ -108,7 +110,8 @@ export function CategorySpendingChart({ data }: { data: MonthlyCategoryRow[] }) 
 					All-time monthly breakdown
 				</h2>
 				<p className="text-muted-foreground text-sm">
-					You have spent a total {formatAmount(data.reduce((sum, row) => sum + row.total, 0))}
+					You have spent a total{" "}
+					<DisplayAmount amount={data.reduce((sum, row) => sum + row.total, 0)} />
 				</p>
 			</div>
 

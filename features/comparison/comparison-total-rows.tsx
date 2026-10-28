@@ -1,5 +1,5 @@
 import { CircleSlash2Icon } from "lucide-react";
-import TransactionAmount from "@/features/transactions/components/transaction-amount";
+import DisplayAmount from "@/features/transactions/components/display-amount";
 import { TableCell, TableRow } from "@/features/ui/table";
 import type { TotalsRow } from "./comparison-data";
 
@@ -18,15 +18,12 @@ export function TotalsRows({
 			{total.amounts.map((amount, index) => (
 				<TableCell key={index} className="border border-border p-3 text-right">
 					<div className="flex flex-col items-end gap-1">
-						<TransactionAmount amount={amount} type={total.type} />
+						<DisplayAmount amount={amount} type={total.type} />
 						{showAverage && (
 							<span className="flex items-center gap-1 text-xs font-normal text-muted-foreground">
 								<CircleSlash2Icon size={10} />
-								<TransactionAmount
-									amount={Math.round(amount / MONTHS_PER_YEAR)}
-									type={total.type}
-								/>
-								/ month
+								<DisplayAmount amount={Math.round(amount / MONTHS_PER_YEAR)} type={total.type} />/
+								month
 							</span>
 						)}
 						{total.type === "savings" && total.percentages && (

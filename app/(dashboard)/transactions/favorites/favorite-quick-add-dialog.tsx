@@ -6,7 +6,7 @@ import { parseAsBoolean, useQueryState } from "nuqs";
 import { useActionState, useState } from "react";
 import { toast } from "sonner";
 import type { favoriteSchema } from "@/drizzle/schema";
-import { formatAmount } from "@/features/transactions/components/transaction-amount";
+import DisplayAmount from "@/features/transactions/components/display-amount";
 import { insertTransaction } from "@/features/transactions/transactions-api";
 import {
 	AlertDialog,
@@ -74,7 +74,8 @@ export function FavoriteQuickAddDialog({
 				<AlertDialogHeader>
 					<AlertDialogTitle>Quick Add Transaction</AlertDialogTitle>
 					<AlertDialogDescription>
-						{favorite.description} • {formatAmount(favorite.amount)}
+						{favorite.description} •
+						<DisplayAmount amount={favorite.amount} />
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<form action={formAction}>
