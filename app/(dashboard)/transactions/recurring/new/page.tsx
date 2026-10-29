@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
 import { getCategories } from "@/features/categories/categories-api";
 import RecurringTransactionForm from "@/features/transactions/recurring/components/recurring-transaction-form";
 import { getActiveWebhooks } from "@/features/webhooks/webhook-actions";
@@ -20,14 +19,7 @@ export default async function NewRecurringTransactionPage() {
 
 const RecurringTransactionWrapper = async () => {
 	const allCategories = await getCategories();
-	const settings = await getSettings();
 	const webhooks = await getActiveWebhooks();
 
-	return (
-		<RecurringTransactionForm
-			webhooks={webhooks}
-			settings={settings}
-			allCategories={allCategories}
-		/>
-	);
+	return <RecurringTransactionForm webhooks={webhooks} allCategories={allCategories} />;
 };

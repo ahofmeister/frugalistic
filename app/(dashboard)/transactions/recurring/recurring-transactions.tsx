@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
 import RecurringTransactionCard from "@/app/(dashboard)/transactions/recurring/recurring-transaction-card";
 import { dbTransaction } from "@/drizzle/client";
 import { getActiveAccountId } from "@/features/account/account-actions";
@@ -34,8 +33,6 @@ const RecurringTransactions = async () => {
 		return a.description.localeCompare(b.description);
 	});
 
-	const settings = await getSettings();
-
 	return (
 		<div className="w-full">
 			<div className="flex justify-between">
@@ -57,11 +54,7 @@ const RecurringTransactions = async () => {
 
 			<div className="flex flex-col gap-y-2">
 				{sortedTransactions?.map((transaction) => (
-					<RecurringTransactionCard
-						dateFormat={settings.dateFormat}
-						key={transaction.id}
-						transaction={transaction}
-					/>
+					<RecurringTransactionCard key={transaction.id} transaction={transaction} />
 				))}
 			</div>
 		</div>

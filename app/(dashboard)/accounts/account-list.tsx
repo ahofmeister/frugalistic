@@ -1,5 +1,4 @@
-import { formatDate } from "date-fns";
-import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
+import FormattedDate from "@/app/(dashboard)/dashboard/formatted-date";
 import { dbTransaction } from "@/drizzle/client";
 import { RemoveAccountSharingButton } from "@/features/account/remove-account-sharing-button";
 import SwitchActiveAccountButton from "@/features/account/switch-active-account-button";
@@ -37,8 +36,6 @@ const AccountList = async () => {
 				: { memberId: profile.id },
 		});
 	});
-
-	const setting = await getSettings();
 
 	const sortedMemberships = [...memberships].sort((a, b) => {
 		const aMine = a.memberId === profile.id;
@@ -81,7 +78,11 @@ const AccountList = async () => {
 										<Badge variant="outline">Shared with {formatName(member)}</Badge>
 									)}
 								</TableCell>
-								<TableCell>{formatDate(account.createdAt, setting.dateFormat)}</TableCell>
+								<TableCell>
+									<TableCell>
+										<FormattedDate date={account.createdAt} />
+									</TableCell>
+								</TableCell>
 								<TableCell className="flex gap-x-1">
 									{isYours && profile.activeAccountId !== account.id && (
 										<SwitchActiveAccountButton accountId={account.id} />

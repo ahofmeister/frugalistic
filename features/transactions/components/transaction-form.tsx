@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { type DefaultValues, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { useSettings } from "@/app/(dashboard)/settings/settings-provider";
 import DeleteTransaction from "@/app/(dashboard)/transactions/edit/[id]/delete-transaction";
 import {
 	type categories,
@@ -47,7 +48,6 @@ const TransactionForm = ({
 	autoSuggests,
 	allCategories,
 	favorites,
-	settings,
 	webhooks,
 }: {
 	transaction?: TransactionWithRecurringCategory | undefined;
@@ -56,9 +56,10 @@ const TransactionForm = ({
 	favorites?: (typeof favoriteSchema.$inferSelect & {
 		category: typeof categories.$inferSelect;
 	})[];
-	settings: typeof settingSchema.$inferSelect;
 	webhooks: (typeof webhookSchema.$inferSelect)[];
 }) => {
+	const settings = useSettings();
+
 	const defaultValues: DefaultValues<TransactionFormValues> = {
 		description: transaction?.description ?? "",
 		type: transaction?.type ?? "expense",

@@ -16,12 +16,10 @@ import {
 
 const RecurringTransactionCard = ({
 	transaction,
-	dateFormat,
 }: {
 	transaction: typeof transactionsRecurring.$inferSelect & {
 		category: typeof categories.$inferSelect;
 	};
-	dateFormat: string;
 }) => {
 	const category = transaction.category;
 
@@ -37,7 +35,7 @@ const RecurringTransactionCard = ({
 					</CardTitle>
 					<CardDescription className="flex justify-between">
 						<CategoryNameColor name={category.name} color={category.color} />
-						<FormattedDate date={transaction.nextRun ?? "-"} format={dateFormat} />
+						<FormattedDate date={transaction.nextRun ?? "-"} />
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="flex justify-end"></CardContent>

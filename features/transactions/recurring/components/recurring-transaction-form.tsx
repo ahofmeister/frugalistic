@@ -6,12 +6,9 @@ import { createInsertSchema } from "drizzle-orm/zod";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
-import {
-	type categories,
-	type settingSchema,
-	transactionsRecurring,
-	type webhookSchema,
-} from "@/drizzle/schema";
+import FormattedDate from "@/app/(dashboard)/dashboard/formatted-date";
+import { useSettings } from "@/app/(dashboard)/settings/settings-provider";
+import { type categories, transactionsRecurring, type webhookSchema } from "@/drizzle/schema";
 import AmountInput from "@/features/transactions/components/amount-input";
 import CategoryNameColor from "@/features/transactions/components/category-name-color";
 import TransactionPlannedFormFields from "@/features/transactions/components/transaction-planned-form-fields";
@@ -40,14 +37,14 @@ export type RecurringTransactionFormValues = z.infer<typeof formSchema>;
 const RecurringTransactionForm = ({
 	transaction,
 	allCategories,
-	settings,
 	webhooks,
 }: {
 	transaction?: typeof transactionsRecurring.$inferSelect;
 	allCategories: (typeof categories.$inferSelect)[];
-	settings: typeof settingSchema.$inferSelect;
 	webhooks: (typeof webhookSchema.$inferSelect)[];
 }) => {
+	const settings = useSettings();
+
 	const form = useForm({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -60,7 +57,7 @@ const RecurringTransactionForm = ({
 			status: transaction?.status ?? "booked",
 			dueNotificationDays: settings.dueTransactionReminderDays,
 			startDate: transaction?.startDate ?? format(new Date(), DB_DATE_FORMAT),
-			webhookId: transaction?.webhookId ?? webhooks[0]?.id ?? "",
+			webhookId: transaction?.webhookId ?? webhooks[0]?.id ?? null,
 			nextRun: transaction?.nextRun ?? "",
 		},
 		mode: "onChange",
@@ -252,12 +249,11 @@ const RecurringTransactionForm = ({
 							)}
 						/>
 
-						<p className="text-muted-foreground self-center">
-							It runs next on{" "}
-							{format(
-								new Date(transaction?.nextRun ? transaction.nextRun : startDate),
-								settings.dateFormat,
-							)}
+						<p className="flex flex-col">
+							<FormLabel>Next Run</FormLabel>
+							<span className="inline-flex h-9 items-center rounded-md border border-input bg-transparent px-3 text-foreground">
+								<FormattedDate date={transaction?.nextRun ? transaction.nextRun : startDate} />
+							</span>
 						</p>
 
 						<FormField

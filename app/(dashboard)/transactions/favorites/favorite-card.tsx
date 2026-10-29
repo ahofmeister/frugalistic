@@ -1,18 +1,13 @@
 import { formatDate } from "date-fns";
 import { Star } from "lucide-react";
+import FormattedDate from "@/app/(dashboard)/dashboard/formatted-date";
 import { DeleteFavoriteTransactionButton } from "@/app/(dashboard)/transactions/favorites/delete-favorite-transaction-button";
 import { FavoriteQuickAddDialog } from "@/app/(dashboard)/transactions/favorites/favorite-quick-add-dialog";
 import type { favoriteSchema } from "@/drizzle/schema";
 import DisplayAmount from "@/features/transactions/components/display-amount";
 import { Card } from "@/features/ui/card";
 
-export function FavoriteCard({
-	favorite,
-	dateFormat,
-}: {
-	favorite: typeof favoriteSchema.$inferSelect;
-	dateFormat: string;
-}) {
+export function FavoriteCard({ favorite }: { favorite: typeof favoriteSchema.$inferSelect }) {
 	return (
 		<Card className="p-4">
 			<div className="flex items-center justify-between gap-4">
@@ -27,7 +22,10 @@ export function FavoriteCard({
 						<div className="flex items-center gap-2 mt-1">
 							<span className="text-xs text-muted-foreground">
 								{favorite.createdAt && (
-									<div>Created: {formatDate(favorite.createdAt, dateFormat)}</div>
+									<div>
+										Created:
+										<FormattedDate date={favorite.createdAt} />
+									</div>
 								)}
 							</span>
 						</div>
