@@ -1,13 +1,10 @@
 import { differenceInDays } from "date-fns";
 import FormattedDate from "@/app/(dashboard)/dashboard/formatted-date";
-import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
 import { getCurrentUser } from "@/features/auth/auth-actions";
 import { Card, CardFooter, CardHeader, CardTitle } from "@/features/ui/card";
 
 export const MemberSince = async () => {
 	const user = await getCurrentUser();
-
-	const settings = await getSettings();
 
 	return (
 		<Card>
@@ -19,7 +16,7 @@ export const MemberSince = async () => {
 			<CardFooter className="flex flex-col items-start gap-1">
 				{user?.created_at && (
 					<>
-						<FormattedDate date={user.created_at} format={settings.dateFormat} />
+						<FormattedDate date={user.created_at} />
 						<div className="text-sm text-muted-foreground">
 							{differenceInDays(new Date(), new Date(user.created_at))} days
 						</div>

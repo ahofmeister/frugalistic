@@ -1,5 +1,4 @@
 import { eq } from "drizzle-orm";
-import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
 import { dbTransaction } from "@/drizzle/client";
 import { transactions } from "@/drizzle/schema/transaction-schema";
 import TransactionList from "@/features/transactions/components/transaction-list";
@@ -39,12 +38,10 @@ export async function RelatedTransactions(props: { id: Promise<string> }) {
 		return;
 	}
 
-	const settings = await getSettings();
-
 	return (
 		<div>
 			<p className="mt-4 mb-2 text-xl">Related Transactions</p>
-			<TransactionList transactions={foundTransactions} settings={settings} />
+			<TransactionList transactions={foundTransactions} />
 		</div>
 	);
 }

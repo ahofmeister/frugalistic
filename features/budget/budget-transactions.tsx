@@ -1,10 +1,9 @@
-import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
 import { findBudgetById, findBudgetTransactions } from "@/features/budget/budget-actions";
 import TransactionList from "@/features/transactions/components/transaction-list";
 
 export async function BudgetTransactions({ budgetId }: { budgetId: Promise<string> }) {
 	const id = await budgetId;
-	const [budget, settings] = await Promise.all([findBudgetById(id), getSettings()]);
+	const budget = await findBudgetById(id);
 
 	if (!budget) {
 		return null;
@@ -18,7 +17,7 @@ export async function BudgetTransactions({ budgetId }: { budgetId: Promise<strin
 
 	return (
 		<section className="flex flex-col gap-2">
-			<TransactionList transactions={transactions} settings={settings} />
+			<TransactionList transactions={transactions} />
 		</section>
 	);
 }

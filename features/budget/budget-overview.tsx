@@ -1,25 +1,13 @@
-import { differenceInCalendarDays, formatDate, parseISO } from "date-fns";
+import { differenceInCalendarDays, parseISO } from "date-fns";
 import { notFound } from "next/navigation";
 import { validate } from "uuid";
-import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
-import type { budgetSchema } from "@/drizzle/schema";
 import { findBudgetById, findBudgetTransactions } from "@/features/budget/budget-actions";
 import { getBudgetDateRange } from "@/features/budget/budget-helper";
+import { BudgetSubtitle } from "@/features/budget/budget-subtitle";
 import DeleteBudget from "@/features/budget/delete-budget";
 import { getTextColor } from "@/features/transactions/colors";
 import DisplayAmount from "@/features/transactions/components/display-amount";
 import { capitalize } from "@/lib/utils";
-
-const typeLabels = {
-	month: "Monthly budget",
-	year: "Yearly budget",
-	manual: "Custom budget",
-} as const;
-
-const intervalLabels = {
-	monthly: "Every month",
-	annually: "Every year",
-} as const;
 
 export async function BudgetOverview({ budgetId }: { budgetId: Promise<string> }) {
 	const id = await budgetId;
@@ -71,15 +59,13 @@ export async function BudgetOverview({ budgetId }: { budgetId: Promise<string> }
 		differenceInCalendarDays(parseISO(actualBudgetPeriod.end), new Date()) + 1,
 	);
 
-	const settings = await getSettings();
-
 	return (
 		<div className="flex w-full flex-col gap-6">
 			<header className="flex flex-col gap-1">
 				<div className="flex items-center justify-between">
 					<div className="flex flex-col items-start gap-2">
 						<h1 className="text-2xl font-bold">{budget.name}</h1>
-						<BudgetSubtitle budget={budget} format={settings.dateFormat} />
+						<BudgetSubtitle budget={budget} />
 						<p
 							style={{
 								color: budget.category.color,
@@ -165,29 +151,5 @@ export async function BudgetOverview({ budgetId }: { budgetId: Promise<string> }
 				</dl>
 			</section>
 		</div>
-	);
-}
-
-function BudgetSubtitle({
-	budget,
-	format,
-}: {
-	budget: typeof budgetSchema.$inferSelect;
-	format: string;
-}) {
-	if (budget.period === "manual") {
-		return (
-			<p className="text-sm text-muted-foreground">
-				{formatDate(budget.startDate, format)} –{" "}
-				{budget.targetDate && formatDate(budget.targetDate, format)}
-			</p>
-		);
-	}
-
-	return (
-		<p className="text-sm text-muted-foreground">
-			{typeLabels[budget.period]}
-			{budget.repeating ? `, ${intervalLabels[budget.repeating].toLowerCase()}` : ""}
-		</p>
 	);
 }

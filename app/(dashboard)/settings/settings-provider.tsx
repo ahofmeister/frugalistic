@@ -2,19 +2,15 @@
 
 import type React from "react";
 import { createContext, use, useContext } from "react";
+import type { settingSchema } from "@/drizzle/schema";
 
-type Settings = {
-	dateFormat: string;
-	transactionDisplayAmount: string;
-};
-
-const SettingsContext = createContext<Settings | null>(null);
+const SettingsContext = createContext<typeof settingSchema.$inferSelect | null>(null);
 
 export default function SettingsProvider({
 	settingsPromise,
 	children,
 }: {
-	settingsPromise: Promise<Settings>;
+	settingsPromise: Promise<typeof settingSchema.$inferSelect>;
 	children: React.ReactNode;
 }) {
 	const settings = use(settingsPromise);

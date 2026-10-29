@@ -1,7 +1,6 @@
 import { format } from "date-fns";
 import type { SearchParams } from "nuqs/server";
 import { loadDashboardParams } from "@/app/(dashboard)/search-params";
-import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
 import RecurringTransactionCard from "@/app/(dashboard)/transactions/recurring/recurring-transaction-card";
 import { getRecurringTransactionsForMonth } from "@/features/transactions/transactions-api";
 import {
@@ -17,8 +16,6 @@ export default async function NextRecurringTransactions(props: {
 	const params = await loadDashboardParams(props.searchParams);
 	const recurringTransactions = await getRecurringTransactionsForMonth(params.year, params.month);
 
-	const settings = await getSettings();
-
 	return (
 		<Accordion type="single" collapsible>
 			<AccordionItem value="recurringTransactions">
@@ -33,7 +30,6 @@ export default async function NextRecurringTransactions(props: {
 								<RecurringTransactionCard
 									key={transaction.id}
 									transaction={{ ...transaction, nextRun: projectedDate }}
-									dateFormat={settings.dateFormat}
 								/>
 							);
 						})}

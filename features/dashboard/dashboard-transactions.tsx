@@ -1,6 +1,5 @@
 import type { SearchParams } from "nuqs/server";
 import { loadDashboardParams } from "@/app/(dashboard)/search-params";
-import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
 import { dbTransaction } from "@/drizzle/client";
 import { getActiveAccountId } from "@/features/account/account-actions";
 import TransactionList from "@/features/transactions/components/transaction-list";
@@ -41,7 +40,5 @@ export default async function DashboardTransactions({
 		});
 	});
 
-	const settings = await getSettings();
-
-	return <TransactionList transactions={transactionsWithRecurring ?? []} settings={settings} />;
+	return <TransactionList transactions={transactionsWithRecurring ?? []} />;
 }

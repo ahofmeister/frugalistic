@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { getSettings } from "@/app/(dashboard)/settings/settings-actions";
 import { RecurringTransactionHistory } from "@/app/(dashboard)/transactions/recurring/[id]/recurring-transaction-history";
 import DeleteRecurringTransaction from "@/app/(dashboard)/transactions/recurring/delete-recurring-transaction";
 import { dbTransaction } from "@/drizzle/client";
@@ -49,7 +48,6 @@ const RecurringTransactionWrapper = async ({ id }: { id: Promise<string> }) => {
 	}
 
 	const allCategories = await getCategories();
-	const settings = await getSettings();
 	const webhooks = await getActiveWebhooks();
 
 	return (
@@ -57,7 +55,6 @@ const RecurringTransactionWrapper = async ({ id }: { id: Promise<string> }) => {
 			<RecurringTransactionForm
 				transaction={transaction}
 				allCategories={allCategories}
-				settings={settings}
 				webhooks={webhooks}
 			/>
 		</div>

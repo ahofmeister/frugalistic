@@ -1,8 +1,11 @@
 "use client";
 import { formatDate } from "date-fns";
+import { useSettings } from "@/app/(dashboard)/settings/settings-provider";
 
-const FormattedDate = (props: { date: string; format: string }) => {
-	return formatDate(props.date, props.format);
+const FormattedDate = ({ date }: { date: string }) => {
+	const settings = useSettings();
+
+	return formatDate(date, settings.dateFormat);
 };
 
 export default FormattedDate;
