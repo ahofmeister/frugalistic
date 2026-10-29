@@ -2,6 +2,7 @@
 
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { db, dbTransaction } from "@/drizzle/client";
 import { type AccountRole, accountMemberSchema, profiles } from "@/drizzle/schema";
 import { getCurrentUser } from "@/features/auth/auth-actions";
@@ -37,7 +38,7 @@ export async function getActiveAccountId() {
 	const user = await getCurrentUser();
 
 	if (!user) {
-		throw new Error("Not authenticated");
+		redirect("/login");
 	}
 
 	const userId = user.id;
