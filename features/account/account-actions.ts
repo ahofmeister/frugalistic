@@ -56,24 +56,6 @@ export async function getActiveAccountId() {
 	return profile.activeAccountId;
 }
 
-export async function getActiveAccountName() {
-	const accountId = await getActiveAccountId();
-
-	const account = await dbTransaction((tx) => {
-		return tx.query.accountSchema.findFirst({
-			where: {
-				id: accountId,
-			},
-		});
-	});
-
-	if (!account) {
-		throw new Error("No active account set");
-	}
-
-	return account.name;
-}
-
 export async function shareAccount(email: string, role: AccountRole) {
 	const currentUser = await getCurrentUser();
 	if (!currentUser) {

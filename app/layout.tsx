@@ -40,9 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 	return (
 		<html lang="en" className={`dark ${poppinsFont.className}`}>
 			<body>
-				<Suspense>
-					<SettingsLoader>{children}</SettingsLoader>
-				</Suspense>
+				{children}
 				<Toaster richColors />
 			</body>
 		</html>

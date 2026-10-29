@@ -3,6 +3,7 @@ import "../globals.css";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import type React from "react";
 import { Suspense } from "react";
+import SettingsLoader from "@/app/(dashboard)/settings/settings-loadter";
 import { DashboardMobileNavigation } from "@/features/navigation/dashboard-mobile-navigation";
 import MainNavigation from "@/features/navigation/main-navigation";
 
@@ -13,7 +14,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
 				<Suspense>
 					<MainNavigation />
 				</Suspense>
-				<main className="px-4 w-full pt-20 lg:pt-8 overflow-y-auto pb-28 lg:pb-4">{children}</main>
+				<main className="px-4 w-full pt-20 lg:pt-8 overflow-y-auto pb-28 lg:pb-4">
+					<Suspense>
+						<SettingsLoader>{children}</SettingsLoader>
+					</Suspense>
+				</main>
 				<Suspense>
 					<DashboardMobileNavigation />
 				</Suspense>
