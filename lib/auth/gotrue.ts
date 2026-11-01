@@ -41,7 +41,7 @@ async function call<T>(
 		body: method === "GET" ? undefined : JSON.stringify(body),
 	});
 	const text = await response.text();
-	let json: Record<string, string> = {};
+	let json: Record<string, string>;
 	try {
 		json = JSON.parse(text);
 	} catch {
