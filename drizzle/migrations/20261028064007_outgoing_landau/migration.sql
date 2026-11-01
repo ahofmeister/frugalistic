@@ -1,1 +1,0 @@
-ALTER TABLE "setting" ADD COLUMN "transaction_display_amount" text DEFAULT '#,##';

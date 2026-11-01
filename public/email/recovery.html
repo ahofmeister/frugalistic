@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>Reset your password</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f4f4f7;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">
+    Use this link to choose a new password for your account.
+</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f4f4f7;">
+    <tr>
+        <td align="center" style="padding:40px 16px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:480px;background-color:#ffffff;border-radius:12px;border:1px solid #e6e6ec;">
+                <tr>
+                    <td style="padding:40px 40px 0 40px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+                        <h1 style="margin:0 0 12px 0;font-size:22px;line-height:28px;font-weight:600;color:#14141c;">
+                            Reset your password
+                        </h1>
+                        <p style="margin:0 0 28px 0;font-size:15px;line-height:24px;color:#55556a;">
+                            We received a request to reset the password for your account. Click the button below to choose a new one.
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left" style="padding:0 40px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+                        <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                <td align="center" bgcolor="#6e1ae6" style="border-radius:8px;">
+                                    <a
+                                            href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&amp;type=recovery&amp;next=/update-password"
+                                            style="display:inline-block;padding:14px 28px;font-size:15px;font-weight:600;line-height:20px;color:#ffffff;text-decoration:none;border-radius:8px;"
+                                    >
+                                        Reset password
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:28px 40px 0 40px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+                        <p style="margin:0 0 8px 0;font-size:13px;line-height:20px;color:#55556a;">
+                            This link will expire soon and can only be used once. If the button doesn't work, copy and paste this URL into your browser:
+                        </p>
+                        <p style="margin:0;font-size:13px;line-height:20px;word-break:break-all;">
+                            <a
+                                    href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&amp;type=recovery&amp;next=/update-password"
+                                    style="color:#6e1ae6;text-decoration:underline;"
+                            >{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&amp;type=recovery&amp;next=/update-password</a>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:28px 40px 40px 40px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+                        <div style="height:1px;line-height:1px;background-color:#e6e6ec;margin-bottom:20px;">&nbsp;</div>
+                        <p style="margin:0;font-size:13px;line-height:20px;color:#8a8aa0;">
+                            If you didn't request a password reset, you can safely ignore this email. Your password won't change.
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

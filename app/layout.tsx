@@ -3,8 +3,6 @@ import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
 import type React from "react";
-import { Suspense } from "react";
-import SettingsLoader from "@/app/(dashboard)/settings/settings-loadter";
 import { Toaster } from "@/features/ui/sonner";
 
 const poppinsFont = Poppins({

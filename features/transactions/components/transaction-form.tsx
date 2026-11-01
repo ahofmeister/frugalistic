@@ -12,7 +12,6 @@ import DeleteTransaction from "@/app/(dashboard)/transactions/edit/[id]/delete-t
 import {
 	type categories,
 	type favoriteSchema,
-	type settingSchema,
 	type TransactionFormValues,
 	type transactionAutoSuggest,
 	transactionFormSchema,

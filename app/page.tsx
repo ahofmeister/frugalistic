@@ -61,21 +61,13 @@ export default function LandingPage() {
 		},
 	];
 
-	const technologies = [
-		"Next.js",
-		"Vercel",
-		"TypeScript",
-		"Tailwind",
-		"shadcn/ui",
-		"Supabase",
-		"Biome",
-	];
+	const technologies = ["Next.js", "Vercel", "TypeScript", "Tailwind", "shadcn/ui", "Biome"];
 
 	return (
 		<div className="min-h-screen bg-background">
 			{/* Hero Section */}
 			<section className="relative overflow-hidden">
-				<div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-background to-background" />
+				<div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-primary/10 via-background to-background" />
 				<div className="relative max-w-5xl mx-auto px-6 pt-24 pb-20 lg:pt-36 lg:pb-28 text-center">
 					<p className="text-sm font-medium text-primary mb-4 tracking-wide uppercase">
 						Free Financial Management

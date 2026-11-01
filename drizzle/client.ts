@@ -2,10 +2,10 @@ import "server-only";
 
 import { type DrizzleConfig, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
-import { type JwtPayload, jwtDecode } from "jwt-decode";
+import { cookies } from "next/headers";
 import postgres from "postgres";
 import { relations } from "@/drizzle/schema/relations";
-import { createClient } from "@/utils/supabase/server";
+import { ACCESS_COOKIE, verifyAccessToken } from "@/lib/auth/session";
 
 const config = {
 	relations: relations,
@@ -39,10 +39,8 @@ export const db = drizzle({
 });
 
 export async function rlsDb() {
-	const client = await createClient();
-	const { data } = await client.auth.getSession();
-	const accessToken = data.session?.access_token ?? "";
-	const token = decode(accessToken);
+	const store = await cookies();
+	const token = await verifyAccessToken(store.get(ACCESS_COOKIE)?.value ?? "");
 
 	const runTransaction = ((transaction, config) => {
 		return db.transaction(async (tx) => {
@@ -50,7 +48,7 @@ export async function rlsDb() {
 				await tx.execute(sql`
 					select set_config('request.jwt.claims', '${sql.raw(JSON.stringify(token))}', TRUE);
 					select set_config('request.jwt.claim.sub', '${sql.raw(token.sub ?? "")}', TRUE);
-					set local role ${sql.raw(token.role ?? "anon")};
+					set local role ${sql.raw(token.role || "anon")};
 				`);
 
 				const result = await transaction(tx);
@@ -80,13 +78,6 @@ export async function rlsDb() {
 	};
 }
 
-function decode(accessToken: string) {
-	try {
-		return jwtDecode<JwtPayload & { role: string }>(accessToken);
-	} catch {
-		return { role: "anon" } as JwtPayload & { role: string };
-	}
-}
 type TransactionClient = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
 export async function dbTransaction<T>(fn: (tx: TransactionClient) => Promise<T>): Promise<T> {

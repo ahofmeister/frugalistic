@@ -1,1 +1,0 @@
-ALTER TABLE "transactions_recurring" ALTER COLUMN "account_id" SET DEFAULT public.active_account_id();

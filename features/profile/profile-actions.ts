@@ -2,10 +2,12 @@
 
 import { sql } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
+import { cookies } from "next/headers";
 import { dbTransaction } from "@/drizzle/client";
 import { profiles } from "@/drizzle/schema";
 import { getCurrentUser } from "@/features/auth/auth-actions";
-import { createClient } from "@/utils/supabase/server";
+import { updateUser } from "@/lib/auth/gotrue";
+import { ACCESS_COOKIE } from "@/lib/auth/session";
 
 export async function updateProfile(account: typeof profiles.$inferInsert) {
 	const user = await getCurrentUser();
@@ -67,15 +69,14 @@ export async function updatePassword(
 		};
 	}
 
-	const supabase = await createClient();
-	const { error } = await supabase.auth.updateUser({
-		password: passwordData.newPassword,
-	});
+	const store = await cookies();
+	const accessToken = store.get(ACCESS_COOKIE)?.value ?? "";
+	const result = await updateUser(accessToken, { password: passwordData.newPassword });
 
-	if (error) {
+	if (!result.ok) {
 		return {
 			success: false,
-			message: error.message,
+			message: result.message,
 		};
 	}
 

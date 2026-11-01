@@ -1,36 +1,34 @@
-import type { EmailOtpType } from "@supabase/supabase-js";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import type { NextRequest } from "next/server";
-import { createClient } from "@/utils/supabase/server";
+import { verifyToken } from "@/lib/auth/gotrue";
+import { writeSessionCookies } from "@/lib/auth/session";
 
 export async function GET(request: NextRequest) {
 	const { searchParams } = new URL(request.url);
-	const token_hash = searchParams.get("token_hash");
-	const type = searchParams.get("type") as EmailOtpType | null;
+	const tokenHash = searchParams.get("token_hash");
+	const type = searchParams.get("type");
 	const next = searchParams.get("next") ?? "/";
 
-	if (token_hash && type) {
-		const supabase = await createClient();
+	if (tokenHash && type) {
+		const result = await verifyToken(type, tokenHash);
 
-		const { error } = await supabase.auth.verifyOtp({
-			type,
-			token_hash,
-		});
-
-		if (error) {
-			if (error.code === "otp_expired") {
+		if (!result.ok) {
+			if (result.code === "otp_expired") {
 				redirect("/verify-email");
 			}
-			console.error(`[auth/confirm] Error verifying auth token:`, error);
+			console.error("[auth/confirm] Error verifying auth token:", result.message);
 			redirect("/error");
 		}
 
-		if (type === "recovery" || type === "magiclink") {
+		writeSessionCookies(await cookies(), result.data);
+
+		if (type === "recovery" || type === "magiclink" || type === "email_change") {
 			redirect(next);
 		}
 
 		if (type === "email") {
-			redirect(`/onboarding`);
+			redirect("/dashboard");
 		}
 	}
 

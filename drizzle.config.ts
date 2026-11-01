@@ -16,5 +16,5 @@ export default defineConfig({
 		url: databaseUrl,
 		ssl: true,
 	},
-	schemaFilter: ["auth"],
+	schemaFilter: ["public"],
 });

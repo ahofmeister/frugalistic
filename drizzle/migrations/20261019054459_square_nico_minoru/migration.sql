@@ -1,1 +1,0 @@
-ALTER TABLE "webhook" ADD COLUMN "headers" jsonb;

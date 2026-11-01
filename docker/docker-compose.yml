@@ -1,0 +1,37 @@
+services:
+  db:
+    image: supabase/postgres:15.8.1.060
+    restart: unless-stopped
+    env_file: docker-compose.env
+    configs:
+      - source: db-init
+        target: /docker-entrypoint-initdb.d/init-scripts/99-roles.sql
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  app:
+    image: ghcr.io/ahofmeister/frugalistic:latest
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    env_file: docker-compose.env
+    volumes:
+      - app-data:/data
+
+configs:
+  db-init:
+    content: |
+      \set pgpass `echo "$$POSTGRES_PASSWORD"`
+      alter user supabase_auth_admin with password :'pgpass';
+
+volumes:
+  db-data:
+  app-data:

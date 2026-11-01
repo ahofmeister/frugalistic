@@ -117,7 +117,7 @@ export const transactionAutoSuggest = pgView("transaction_auto_suggest", {
            PARTITION BY t.account_id, TRIM(BOTH FROM t.description), t.type
            ORDER BY count(*) DESC, max(t.updated_at) DESC, c.id
          ) AS rn
-  FROM transactions t
+  FROM transaction t
   JOIN categories c ON c.id = t.category_id AND c.account_id = t.account_id
   WHERE t.account_id = public.active_account_id()
   GROUP BY t.account_id, TRIM(BOTH FROM t.description), t.type, c.id, c.name, c.color

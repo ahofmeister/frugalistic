@@ -1,58 +1,74 @@
 "use server";
-import { headers } from "next/headers";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { cache } from "react";
+import {
+	getUser,
+	signOut as gotrueSignOut,
+	signUp as gotrueSignUp,
+	recover,
+	signInWithPassword,
+	updateUser,
+} from "@/lib/auth/gotrue";
+import { ACCESS_COOKIE, clearSessionCookies, writeSessionCookies } from "@/lib/auth/session";
 import { encodedRedirect } from "@/lib/utils";
-import { createClient } from "@/utils/supabase/server";
 
 export const signOut = async () => {
-	const supabase = await createClient();
-	await supabase.auth.signOut();
+	const store = await cookies();
+	const accessToken = store.get(ACCESS_COOKIE)?.value;
+	if (accessToken) {
+		await gotrueSignOut(accessToken);
+	}
+	clearSessionCookies(store);
 	redirect("/login");
 };
 
 export async function signIn(formData: FormData) {
-	const supabase = await createClient();
-	const { error } = await supabase.auth.signInWithPassword({
-		email: String(formData.get("email")),
-		password: String(formData.get("password")),
-	});
+	const result = await signInWithPassword(
+		String(formData.get("email")),
+		String(formData.get("password")),
+	);
 
-	if (error) {
-		return { success: false as const, code: error.code ?? "invalid_credentials" };
+	if (!result.ok) {
+		return { success: false as const, code: result.code ?? "invalid_credentials" };
 	}
 
+	writeSessionCookies(await cookies(), result.data);
 	redirect("/dashboard");
 }
 
 export const signUp = async (formData: FormData) => {
-	const origin = (await headers()).get("origin");
 	const email = formData.get("email") as string;
 	const password = formData.get("password") as string;
-	const supabase = await createClient();
 
-	const { error } = await supabase.auth.signUp({
-		email,
-		password,
-		options: {
-			emailRedirectTo: `${origin}/auth/callback`,
-		},
-	});
+	const result = await gotrueSignUp(email, password);
 
-	if (error) {
-		console.error(error);
+	if (!result.ok) {
+		console.error(result.message);
 		return redirect("/login?message=Could not authenticate user");
+	}
+
+	if (result.data.access_token && result.data.refresh_token) {
+		writeSessionCookies(await cookies(), {
+			access_token: result.data.access_token,
+			refresh_token: result.data.refresh_token,
+			expires_in: result.data.expires_in ?? 3600,
+		});
+		return redirect("/dashboard");
 	}
 
 	return redirect("/login?message=Check email to continue sign in process");
 };
 
-export const getCurrentUser = async () => {
-	const supabase = await createClient();
-	const {
-		data: { user },
-	} = await supabase.auth.getUser();
-	return user;
-};
+export const getCurrentUser = cache(async () => {
+	const store = await cookies();
+	const accessToken = store.get(ACCESS_COOKIE)?.value;
+	if (!accessToken) {
+		return null;
+	}
+	const result = await getUser(accessToken);
+	return result.ok ? result.data : null;
+});
 
 export type PasswordUpdateActionResponse = {
 	success: boolean;
@@ -65,19 +81,15 @@ export const forgotPasswordAction = async (
 	formData: FormData,
 ): Promise<PasswordUpdateActionResponse> => {
 	const email = formData.get("email")?.toString().trim();
-	const supabase = await createClient();
-	const origin = (await headers()).get("origin");
 
 	if (!email) {
 		return encodedRedirect("error", "/forgot-password", "Email is required");
 	}
 
-	const { error } = await supabase.auth.resetPasswordForEmail(email, {
-		redirectTo: `${origin}/auth/callback?redirect_to=/reset-password`,
-	});
+	const result = await recover(email);
 
-	if (error) {
-		console.error(JSON.stringify(error, undefined, 2));
+	if (!result.ok) {
+		console.error(result.message);
 		return {
 			success: false,
 			code: "error",
@@ -103,7 +115,6 @@ export async function resetPasswordAction(
 	_: AuthActionResponse | null,
 	passwordData: FormData,
 ): Promise<AuthActionResponse> {
-	const supabase = await createClient();
 	if (
 		(passwordData.get("newPassword") as string) !==
 		(passwordData.get("passwordConfirmation") as string)
@@ -111,14 +122,17 @@ export async function resetPasswordAction(
 		return { success: false, code: "passwordNotMatch" };
 	}
 
-	const { error } = await supabase.auth.updateUser({
+	const store = await cookies();
+	const accessToken = store.get(ACCESS_COOKIE)?.value ?? "";
+
+	const result = await updateUser(accessToken, {
 		password: passwordData.get("newPassword") as string,
 	});
 
-	if (error) {
-		console.error("Error resetting password:", error);
+	if (!result.ok) {
+		console.error("Error resetting password:", result.message);
 
-		if (error.code === "same_password") {
+		if (result.code === "same_password") {
 			return { success: false, code: "samePassword" };
 		}
 
