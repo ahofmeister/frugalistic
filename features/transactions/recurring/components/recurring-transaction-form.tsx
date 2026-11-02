@@ -66,6 +66,7 @@ const RecurringTransactionForm = ({
 	async function handleSubmit(values: z.infer<typeof formSchema>) {
 		const result = await upsertRecurringTransaction({
 			...values,
+			nextRun: startDate,
 			id: transaction?.id,
 		});
 
@@ -209,7 +210,7 @@ const RecurringTransactionForm = ({
 							name="startDate"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Date</FormLabel>
+									<FormLabel>Start Date</FormLabel>
 									<Popover>
 										<PopoverTrigger asChild>
 											<FormControl>
