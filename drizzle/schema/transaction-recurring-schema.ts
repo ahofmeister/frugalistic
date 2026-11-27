@@ -26,6 +26,7 @@ import {
 	transactionTypes,
 } from "@/drizzle/schema/transaction-schema";
 import { users } from "@/drizzle/schema/users-schema";
+import { webhookSchema } from "@/drizzle/schema/webhook-schema";
 
 export const recurringIntervals = ["monthly", "annually"] as const;
 export type RecurringInterval = (typeof recurringIntervals)[number];
@@ -79,6 +80,11 @@ export const transactionsRecurring = pgTable(
 			to: ["public"],
 			using: sql`is_account_member(account_id)`,
 		}),
+		foreignKey({
+			columns: [table.webhookId],
+			foreignColumns: [webhookSchema.id],
+			name: "recurring_transactions_webhook_fkey",
+		}).onDelete("set null"),
 		pgPolicy("account write members can manage rows", {
 			as: "permissive",
 			for: "all",
