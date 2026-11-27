@@ -1,0 +1,1 @@
+ALTER TABLE "transactions_recurring" ADD CONSTRAINT "recurring_transactions_webhook_fkey" FOREIGN KEY ("webhook_id") REFERENCES "webhook"("id") ON DELETE SET NULL;
